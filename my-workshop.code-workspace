@@ -1,0 +1,25 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.pythonPath": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python36\\python.exe",
+        "files.associations": {
+            "stdio.h": "c"
+        }
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Python: 当前文件",
+                "type": "python",
+                "request": "launch",
+                "program": "${file}",
+                "console": "integratedTerminal"
+            }
+        ]
+    }
+}

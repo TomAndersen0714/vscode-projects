@@ -1,0 +1,159 @@
+<configuration>
+
+    <!--指定MR程序运行框架,设置为YARN上运行,默认是在本地运行-->
+    <!--默认值:local-->
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+        <description>
+            The runtime framework for executing MapReduce jobs.
+            Can be one of local, classic or yarn.
+        </description>
+    </property>
+
+    <!--指定历史服务器JobHistory进程间通信IPC地址,即指定JobHistory的服务器地址-->
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>hadoop103:10020</value>
+    </property>
+
+    <!--指定历史服务器JobHistoryServer的Web UI地址-->
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>hadoop103:19888</value>
+    </property>
+
+    <!-- 设置Application Master是否发送数据到timeline服务器 -->
+    <!-- 默认值:false -->
+    <property>
+        <name>mapreduce.job.emit-timeline-data</name>
+        <value>true</value>
+        <description>
+            Specifies if the Application Master should emit timeline data
+            to the timeline server. Individual jobs can override this value.
+        </description>
+    </property>
+
+    <!-- 设置MR资源分配 -->
+
+    <!-- 为每个MR Job设置Application Master所用的内存大小,单位MB -->
+    <!-- 默认值:1536 -->
+    <!-- 由于本机为实验机,因此为AM分配的内存需要减小 -->
+    <property>
+        <name>yarn.app.mapreduce.am.resource.mb</name>
+        <value>512</value>
+        <description>The amount of memory the MR AppMaster needs.</description>
+    </property>
+    <!-- 此值设置的是Application Master的Java运行参数 -->
+    <!-- 其中JVM堆内存必须小于 yarn.app.mapreduce.am.resource.mb 对应值-->
+    <property>
+        <name>yarn.app.mapreduce.am.command-opts</name>
+        <value>-Xmx410m</value>
+        <description>
+            Java opts for the MR App Master processes.
+        </description>
+    </property>
+    <!-- 为每个Map Task请求的内存大小 -->
+    <!-- 由于是实验机器,在当前节点的 yarn-site.xml 中为Container分配的物理内存为1536MB
+    因此需要适当降低此值,用于能够同时执行多个Mapper -->
+    <!-- 默认值:1024 -->
+    <property>
+        <name>mapreduce.map.memory.mb</name>
+        <value>512</value>
+        <description>
+            The amount of memory to request from the scheduler for each map task.
+        </description>
+    </property>
+    <!-- 此值设置的是Map子进程的Java运行参数,例如可以设置Xmx/MaxPermSize等
+    若此值未设置,则使用mapred.child.java.opts参数对应值
+    Map子进程的JVM堆内存必须小于mapreduce.map.memory.mb,一般此值为mapreduce.map.memory.mb*0.8 -->
+    <property>
+        <name>mapreduce.map.java.opts</name>
+        <value>-Xmx410m</value>
+        <description>
+            Java opts only for the child processes that are maps. If set,
+            this will be used instead of mapred.child.java.opts.
+        </description>
+    </property>
+    <!-- 为每个Reduce Task请求的内存大小 -->
+    <!-- 由于是实验机器,在当前节点的yarn-site.xml中为Container分配的物理内存为1536MB
+    因此需要适当降低此值 -->
+    <!-- 默认值:1024 -->
+    <property>
+        <name>mapreduce.reduce.memory.mb</name>
+        <value>1024</value>
+        <description>
+            The amount of memory to request from the scheduler for each reduce task.
+        </description>
+    </property>
+    <!-- 此值设置的是Reduce子进程的Java运行参数,例如可以设置Xmx/MaxPermSize等
+    若此值未设置,则使用mapred.child.java.opts参数对应值
+    Reduce子进程的JVM堆内存必须小于mapreduce.reduce.memory.mb,一般此值为mapreduce.reduce.memory.mb*0.8 -->
+    <property>
+        <name>mapreduce.reduce.java.opts</name>
+        <value>-Xmx820m</value>
+        <description>
+            Java opts only for the child processes that are reduces. If set,
+            this will be used instead of mapred.child.java.opts.
+        </description>
+    </property>
+    <!-- 文件排序可用内,单位MB -->
+    <!-- 默认值:100 -->
+    <property>
+        <name>mapreduce.task.io.sort.mb</name>
+        <value>256</value>
+        <description>
+            The total amount of buffer memory to use while sorting 
+            files, in megabytes.  By default, gives each merge stream 1MB, which
+            should minimize seeks.
+        </description>
+    </property>
+
+    <!-- 以下是关于压缩功能的相关配置 -->
+
+    <!-- map输出是否压缩 -->
+    <!-- 默认值:false -->
+    <property>
+        <name>mapreduce.map.output.compress</name>
+        <value>true</value>
+        <description>
+            Should the outputs of the maps be compressed before being
+            sent across the network. Uses SequenceFile compression.
+        </description>
+    </property>
+    <!-- 设置map输出压缩所使用的对应压缩算法的编解码器,此处使用snappy压缩 -->
+    <!-- 默认值:org.apache.hadoop.io.compress.DefaultCodec -->
+    <property>
+        <name>mapreduce.map.output.compress.codec</name>
+        <value>org.apache.hadoop.io.compress.SnappyCodec</value>
+        <description>
+            If the map outputs are compressed, how should they be compressed?
+        </description>
+    </property>
+    <!-- 设置job最终输出文件是否压缩 -->
+    <!-- 默认值:false -->
+    <property>
+        <name>mapreduce.output.fileoutputformat.compress</name>
+        <value>true</value>
+        <description>Should the job outputs be compressed?
+        </description>
+    </property>
+    <!-- 设置job最终输出文件所使用的压缩算法对应的编解码器,此处使用lzo压缩 -->
+    <!-- 默认值:org.apache.hadoop.io.compress.DefaultCodec -->
+    <property>
+        <name>mapreduce.output.fileoutputformat.compress.codec</name>
+        <value>com.hadoop.compression.lzo.LzopCodec</value>
+        <description>If the job outputs are compressed, how should they be compressed?
+        </description>
+    </property>
+    <!-- 设置序列文件的压缩格式,建议设置成BLOCK -->
+    <!-- 默认值:RECORD -->
+    <property>
+        <name>mapreduce.output.fileoutputformat.compress.type</name>
+        <value>BLOCK</value>
+        <description>If the job outputs are to compressed as SequenceFiles, how should
+               they be compressed? Should be one of NONE, RECORD or BLOCK.
+        </description>
+    </property>
+
+</configuration>

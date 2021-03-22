@@ -1,0 +1,5 @@
+# 此文件夹主要存放测试Flume Sink Processor的故障转移Failover功能的Flume配置文件
+# 功能:flume1将指定端口的监听输出传输给flume2和flume3,分别输出到各自的控制台
+# flume1:Netcat Source->Memory Channel->Failover Sink Processor->Avro Sink
+# flume2:Avro Source->Memory Channel->Logger Sink
+# flume3:Avro Source->Memory Channel->Logger Sink

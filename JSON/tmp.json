@@ -1,0 +1,330 @@
+// xdmp.question_b
+{
+    '_id': ObjectId('5639bf1b89bc4603d5c612bd'),
+    'is_dynamic': False,
+    'answers': ['亲，能拍的基本都是有货的额。如果遇上断码缺色会及时通知您的，请放心购买~'],
+    'qid': -217,
+    'tags': [],
+    'is_editable': False,
+    'question': '|码齐吗|有没有|',
+    'is_transfer': False,
+    'create_time': datetime.datetime(2015, 11, 4, 8, 17, 31, 230000),
+    'subcategory_id': ObjectId('5639bf1a89bc4603d5c61256'),
+    'is_dynamicable': False,
+    'update_time': datetime.datetime(2017, 8, 29, 9, 16, 12, 838000),
+    'replies': [{
+        'answer': '亲，能拍的基本都是有货的额。如果遇上断码缺色会及时通知您的，请放心购买~',
+        'answer_id': ObjectId('5aaa4cb5f2468e79fe149bbe'),
+        'auto_send_in_hybrid_mode': False,
+        'auto_send_in_auto_mode': True
+    }],
+    'auto_send_in_auto_mode': True
+}
+
+{
+    '_id': ObjectId('5639bf1b89bc4603d5c612c0'),
+    'is_dynamic': False,
+    'answers': ['亲，我们将尽快为您安排。'],
+    'qid': -214,
+    'tags': [],
+    'is_editable': False,
+    'question': '|尽快哟|尽快|尽快哦|尽快啊|尽快吧|要尽快|',
+    'is_transfer': False,
+    'create_time': datetime.datetime(2015, 11, 4, 8, 17, 31, 306000),
+    'subcategory_id': ObjectId('5639bf1a89bc4603d5c61256'),
+    'is_dynamicable': False,
+    'update_time': datetime.datetime(2017, 8, 29, 9, 16, 12, 859000),
+    'replies': [{
+        'answer': '亲，我们将尽快为您安排。',
+        'answer_id': ObjectId('5aaa4cb5f2468e79fe149bc1'),
+        'auto_send_in_hybrid_mode': False,
+        'auto_send_in_auto_mode': True
+    }],
+    'auto_send_in_auto_mode': True
+}
+
+// xdmp.subcategory
+{
+    '_id': ObjectId('5639bf1a89bc4603d5c61257'),
+    'scid': 1,
+    'create_time': datetime.datetime(2015, 11, 4, 8, 17, 30, 469000),
+    'name': '尺码相关'
+}
+
+// mini_mongo: xdmp.shop_question
+{
+    '_id': ObjectId('5ea2a60a6bb2a30018277f82'),
+    'questions': [{
+        'question': '幅度萨芬地方'
+    }],
+    'update_time': datetime.datetime(2020, 4, 24, 8, 40, 42, 229000),
+    'shop_id': ObjectId('5c1cae2c89bc4612f165dbd0'),
+    'is_keyword': False,
+    'is_transfer': False,
+    'create_time': datetime.datetime(2020, 4, 24, 8, 40, 42, 229000),
+    'question_status': [{
+        'q': '幅度萨芬地方',
+        'old': False,
+        'h': '780c1661e2ba609120a3b27ecab7b838'
+    }],
+    'replies': [{
+        'answer_id': ObjectId('5ea2a60a6bb2a30018277f81'),
+        'auto_send_in_hybrid_mode': True,
+        'answer': '21',
+        'auto_send_in_auto_mode': True
+    }]
+}
+
+{
+    '_id': ObjectId('5dedc977cc71af0015634ba0'),
+    'questions': [{
+        'question': '吃饭了吗 ？'
+    }],
+    'update_time': datetime.datetime(2019, 12, 20, 3, 15, 50, 38000),
+    'replies': [{
+        'auto_send_in_auto_mode': True,
+        'answer': '吃过了， 你呢 ？11',
+        'sale_statuses': [1, 2, 3, 4],
+        'auto_send_in_hybrid_mode': False,
+        'reply_sequence_num': 0,
+        'answer_id': ObjectId('5dedc988cc71af001862f3f6')
+    }],
+    'is_keyword': False,
+    'question_status': [{
+        'q': '吃饭了吗 ？',
+        'old': False,
+        'h': '06c551186276760b8df1c7e284b63176'
+    }],
+    'shop_id': ObjectId('5c1cae2c89bc4612f165dbd0'),
+    'source': {
+        'replies': 12
+    },
+    'is_transfer': False,
+    'create_time': datetime.datetime(2019, 12, 9, 4, 11, 35, 853000)
+}
+
+{
+    '_id': ObjectId('5db87da79a56070013c24d19'),
+    'is_keyword': True,
+    'shop_id': ObjectId('5c1cae2c89bc4612f165dbd0'),
+    'update_time': datetime.datetime(2020, 4, 29, 18, 9, 8, 735000),
+    'questions': [{
+        'question': '11'
+    }],
+    'replies': [{
+        'sale_statuses': [1],
+        'reply_sequence_num': 0,
+        'answer': '售前',
+        'auto_send_in_auto_mode': True,
+        'auto_send_in_hybrid_mode': True,
+        'answer_id': ObjectId('5e858ca46fc1b200150e2243'),
+        'random_expression': False
+    }, {
+        'answer_id': ObjectId('5e858526e4f3320018ea6d9a'),
+        'random_expression': False,
+        'sale_statuses': [2],
+        'reply_sequence_num': 0,
+        'answer': '发货前',
+        'auto_send_in_auto_mode': True,
+        'auto_send_in_hybrid_mode': False
+    }, {
+        'answer': '发货后',
+        'auto_send_in_auto_mode': True,
+        'auto_send_in_hybrid_mode': False,
+        'answer_id': ObjectId('5e85852ba674480016d2923e'),
+        'random_expression': False,
+        'sale_statuses': [3],
+        'reply_sequence_num': 0
+    }, {
+        'auto_send_in_auto_mode': True,
+        'auto_send_in_hybrid_mode': False,
+        'answer_id': ObjectId('5e85852f65dcb40016b37944'),
+        'random_expression': False,
+        'sale_statuses': [4],
+        'reply_sequence_num': 0,
+        'answer': '售后'
+    }],
+    'create_time': datetime.datetime(2019, 10, 29, 17, 57, 59, 894000),
+    'is_transfer': False,
+    'source': {
+        'questions': 12,
+        'replies': 2,
+        'is_keyword': 2
+    },
+    'question_status': [{
+        'h': '6512bd43d9caa6e02c990b0a82652dca',
+        'old': False,
+        'q': '11'
+    }]
+}
+
+// Mongo: xdmp.shop_question
+{
+    '_id': ObjectId('563c7ea089bc46749509da93'),
+    'question': '人民公园',
+    'is_keyword': True,
+    'answers': ['烈士纪念碑', '划船'],
+    'shop_id': ObjectId('563c179089bc46434ff34a50'),
+    'is_enabled': True,
+    'create_time': datetime.datetime(2015, 11, 6, 10, 19, 12, 18000),
+    'update_time': datetime.datetime(2017, 11, 26, 17, 57, 31, 770000),
+    'question_status': [{
+        'q': '人民公园',
+        'old': False,
+        'h': '035439a0258ee1b09a570bd504cdb5e0'
+    }],
+    'source': {
+        'version': 12,
+        'questions': 12,
+        'replies': 12
+    },
+    'questions': [{
+        'question': '人民公园'
+    }],
+    'replies': [{
+        'answer_id': ObjectId('5a1b008bf2468e564c5f66b9'),
+        'answer': '烈士纪念碑',
+        'auto_send_in_auto_mode': True,
+        'auto_send_in_hybrid_mode': False
+    }, {
+        'answer_id': ObjectId('5a1b008bf2468e564c5f66ba'),
+        'answer': '划船',
+        'auto_send_in_auto_mode': True,
+        'auto_send_in_hybrid_mode': False
+    }],
+    'version': 2
+}
+
+// mongo_goods: xdmp.spu
+{
+    '_id': ObjectId('563c267089bc46435a825266'),
+    'plat_goods_id': '523342113271',
+    'create_time': datetime.datetime(2015, 11, 6, 4, 2, 56, 643000),
+    'plat_goods_url': 'http://item.taobao.com/item.htm?id=523342113271&spm=2015.23197656.0.0',
+    'is_answer_goods': True,
+    'plat_goods_img': 'https://img.alicdn.com/bao/uploaded/i3/TB1jh6tKXXXXXbbXXXXXXXXXXXX_!!0-item_pic.jpg',
+    'shop_id': ObjectId('563b4d3c89bc4636af93ed17'),
+    'platform': 'tb',
+    'plat_goods_name': '创意充电宝 石头移动电源 可定制LOGO 定做文字图案 情侣必选包邮',
+    'plat_extra': {
+        'has_invoice': False,
+        'food_security': {},
+        'has_warranty': False,
+        'one_station': False,
+        'detail_url': 'http://item.taobao.com/item.htm?id=523342113271&spm=2015.23197656.0.0',
+        'newprepay': 'default',
+        'nick': 'zhf1071232',
+        'is_lightning_consignment': False,
+        'pic_url': 'https://img.alicdn.com/bao/uploaded/i3/TB1jh6tKXXXXXbbXXXXXXXXXXXX_!!0-item_pic.jpg',
+        'price': '122.50',
+        'post_fee': '0.00',
+        'express_fee': '0.00',
+        'location': {
+            'state': '广东',
+            'city': '深圳'
+        },
+        'is_3D': False,
+        'has_discount': False,
+        'valid_thru': 7,
+        'sell_point': '工厂直销，可定制logo 文字图案，情侣必选',
+        'violation': False,
+        'cid': 50009211,
+        'is_xinpin': True,
+        'freight_payer': 'buyer',
+        'ems_fee': '0.00',
+        'type': 'fixed',
+        'num_iid': 523342113271,
+        'sell_promise': False,
+        'title': '创意充电宝 石头移动电源 可定制LOGO 定做文字图案 情侣必选包邮',
+        'is_virtual': False
+    },
+    'create_answer_goods_time': datetime.datetime(2015, 11, 6, 10, 33, 58, 462000),
+    'is_onsale': False,
+    'status': 10,
+    'custom_props': None,
+    'relation_props': [],
+    'system_props': None,
+    'update_time': datetime.datetime(2020, 5, 27, 3, 19, 42, 875000)
+}
+
+{
+    '_id': ObjectId('5639c11289bc4604e967e56a'),
+    'shop_id': ObjectId('5639c11189bc4604e967e55c'),
+    'create_answer_goods_time': datetime.datetime(2015, 11, 4, 8, 25, 54, 640000),
+    'is_answer_goods': True,
+    'create_time': datetime.datetime(2015, 11, 4, 8, 25, 54, 638000),
+    'plat_goods_url': 'http://item.taobao.com/item.htm?id=26103896988',
+    'plat_goods_id': '26103896988',
+    'plat_goods_img': 'http://img04.taobaocdn.com/bao/uploaded/i4/17950024719056853/T1WCNuFcNcXXXXXXXX_!!0-item_pic.jpg',
+    'platform': 'tb',
+    'plat_goods_name': '精品女袜'
+}
+
+{
+    '_id': ObjectId('565c029d89bc4641360a0cee'),
+    'plat_extra': {
+        'one_station': False,
+        'title': 'Littleswan/小天鹅 TB80-V3188CLH 8公斤/kg全自动洗衣机不缠绕',
+        'pic_url': 'https://img.alicdn.com/bao/uploaded/i4/TB1isAGKFXXXXXsXpXXXXXXXXXX_!!0-item_pic.jpg',
+        'sell_point': '水魔方不缠绕 高漂低洗更节 水 1998抢',
+        'is_xinpin': False,
+        'nick': '小天鹅官方旗舰店',
+        'has_invoice': True,
+        'num_iid': 40827673392,
+        'has_warranty': False,
+        'post_fee': '0.00',
+        'valid_thru': 7,
+        'sold_quantity': 1623,
+        'is_3D': False,
+        'has_discount': True,
+        'location': {
+            'city': '无锡',
+            'state': '江苏'
+        },
+        'sell_promise': True,
+        'ems_fee': '0.00',
+        'freight_payer': 'seller',
+        'violation': False,
+        'type': 'fixed',
+        'food_security': {},
+        'detail_url': 'http://item.taobao.com/item.htm?id=40827673392&spm=2015.23197656.0.0',
+        'price': '2699.00',
+        'cid': 350301,
+        'express_fee': '0.00',
+        'is_lightning_consignment': False,
+        'is_virtual': False
+    },
+    'plat_goods_img': 'https://img.alicdn.com/bao/uploaded/i4/TB1isAGKFXXXXXsXpXXXXXXXXXX_!!0-item_pic.jpg',
+    'platform': 'tb',
+    'plat_goods_url': 'http://item.taobao.com/item.htm?id=40827673392&spm=2015.23197656.0.0',
+    'shop_id': ObjectId('5656d1e889bc4630979f7401'),
+    'create_answer_goods_time': datetime.datetime(2016, 4, 22, 6, 43, 0, 866000),
+    'plat_goods_id': '40827673392',
+    'plat_goods_name': 'Littleswan/小天鹅 TB80-V3188CLH 8公斤/kg全自动洗衣机不缠绕',
+    'create_time': datetime.datetime(2015, 11, 30, 8, 2, 37, 121000),
+    'is_answer_goods': True
+}
+
+// pdd mongo xdmp:goods
+{
+    '_id': ObjectId('5c34679f3f4f53004886de2a'),
+    'plat_extra': {
+        'wareStatus': 8,
+        'itemNum': '',
+        'onlineTime': 1533799778000,
+        'title': '苏泊尔（SUPOR）电蒸锅电热锅多用途锅10L大容量三层多功能ZN28YC808-130',
+        'offlineTime': 1524907065000,
+        'outerId': '',
+        'categoryId': 754,
+        'colType': 0,
+        'wareId': 10349672570
+    },
+    'shop_id': ObjectId('5c34648c3f4f5300f158b6d2'),
+    'platform': 'jd',
+    'plat_goods_url': 'https://item.jd.com/12294479017.html',
+    'plat_goods_name': '苏泊尔（SUPOR）电蒸锅电热锅多用途锅10L大容量三层多功能ZN28YC808-130',
+    'update_time': datetime.datetime(2019, 1, 8, 9, 4, 31, 879000),
+    'plat_goods_id': '10349672570',
+    'plat_goods_img': 'https://img12.360buyimg.com/n5/jfs/t4663/17/4141127230/237658/696fa828/590a997dN542756ed.jpg',
+    'create_time': datetime.datetime(2019, 1, 8, 9, 4, 31, 879000)
+}

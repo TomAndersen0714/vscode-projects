@@ -1,0 +1,103 @@
+<configuration>
+
+    <!--Site specific YARN configuration properties-->
+
+    <!--设置Reducer获取数据的方式-->
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+
+    <!--此参数指的是nodemanager的可用内存大小,单位为Mb,设置为主机内存大小-->
+    <!--本次实验主机内存大小为2GB,此参数根据各机器分配的物理内存大小设置,若大于物理内存值会影响程序运行效率-->
+    <!--默认值:8192-->
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>2048</value>
+    </property>
+
+    <!--开启日志聚集功能-->
+    <property>
+        <name>yarn.log-aggregation-enable</name>
+        <value>true</value>
+    </property>
+
+    <!--日志聚集位置,默认为HDFS文件系统的/tmp/logs路径下,默认格式为/tmp/logs/${user}/logs-->
+    <!--默认值:/tmp/logs-->
+    <property>
+        <name>yarn.nodemanager.remote-app-log-dir</name>
+        <value>/tmp/logs</value>
+    </property>
+
+    <!--聚集日志保留时间设置7天-->
+    <property>
+        <name>yarn.log-aggregation.retain-seconds</name>
+        <value>604800</value>
+    </property>
+
+    <!--以下是关于ResourceMangaer HA模式的配置-->
+    <!--设置开启YARN HA模式-->
+    <property>
+        <name>yarn.resourcemanager.ha.enabled</name>
+        <value>true</value>
+    </property>
+
+    <!--设置ResourceManager Cluster ID即RM集群名-->
+    <property>
+        <name>yarn.resourcemanager.cluster-id</name>
+        <value>RMcluster</value>
+    </property>
+
+    <!--设置RM集群中的RM节点ID-->
+    <property>
+        <name>yarn.resourcemanager.ha.rm-ids</name>
+        <value>rm1,rm2</value>
+    </property>
+
+    <!--以下是关于RM集群中rm1节点的配置-->
+    <!--指定RM集群中rm1节点的ip地址-->
+    <property>
+        <name>yarn.resourcemanager.hostname.rm1</name>
+        <value>hadoop102</value>
+    </property>
+
+    <!--指定RM集群中rm1节点的Web UI地址-->
+    <property>
+        <name>yarn.resourcemanager.webapp.address.rm1</name>
+        <value>hadoop102:8088</value>
+    </property>
+
+    <!--以下是关于RM集群中rm2节点的配置-->
+    <!--指定RM集群中rm2节点的ip地址-->
+    <property>
+        <name>yarn.resourcemanager.hostname.rm2</name>
+        <value>hadoop101</value>
+    </property>
+
+    <!--指定RM集群中rm2节点的Web UI地址-->
+    <property>
+        <name>yarn.resourcemanager.webapp.address.rm2</name>
+        <value>hadoop101:8088</value>
+    </property>
+
+    <!--指定RM集群使用的Zookeeper集群所提供的Client端口-->
+    <!--注意与Zookeeper集群中设置的客户端端口一致-->
+    <property>
+        <name>yarn.resourcemanager.zk-address</name>
+        <value>zkServer1:2181,zkServer2:2181,zkServer3:2181</value>
+    </property>
+
+    <!--启用RM自动恢复-->
+    <!--需同时设置yarn.resourcemanager.store.class-->
+    <property>
+        <name>yarn.resourcemanager.recovery.enabled</name>
+        <value>true</value>
+    </property>
+
+    <!--指定resourcemanager的状态信息存储在zookeeper集群的工具类-->
+    <property>
+        <name>yarn.resourcemanager.store.class</name>
+        <value>org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore</value>
+    </property>
+
+</configuration>

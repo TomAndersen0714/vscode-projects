@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <!-- 设置tez依赖的jar包路径,值为上传的Tez文件目录所在的HDFS路径 -->
+    <property>
+        <name>tez.lib.uris</name>
+        <value>${fs.defaultFS}/apps/tez-0.9.1</value>
+        <description>
+            String value to a file path.
+            The location of the Tez libraries which will be localized for DAGs.
+        </description>
+        <type>string</type>
+    </property>
+
+    <!-- 设置Tez lib的classpath -->
+    <property>
+        <name>tez.lib.uris.classpath</name>
+        <value>${fs.defaultFS}/apps/tez-0.9.1,${fs.defaultFS}/apps/tez-0.9.1/lib</value>
+        <description>
+            Specify additional user classpath information to be used for Tez AM 
+            and all containers.This will be appended to the classpath after PWD.
+            Defines the relative classpath into the archives that are set in 
+            tez.lib.uris.
+        </description>
+        <type>string</type>
+    </property>
+
+    <!-- 设置是否使用集群中的hadoop函数库,如果为false,则使用tez.lib.uris中包含的hadoop依赖 -->
+    <property>
+        <name>tez.use.cluster.hadoop-libs</name>
+        <value>true</value>
+        <description>
+            Boolean value.
+            Specify whether hadoop libraries required to run Tez should be the ones deployed on the cluster.
+            This is disabled by default - with the expectation being that tez.lib.uris has a complete
+            tez-deployment which contains the hadoop libraries.
+        </description>
+        <type>boolean</type>
+    </property>
+
+    <!-- 如果没有设置 tez.am.launch.cmd-opts 参数,则便会使用此功能.
+    此参数设定Tez Job所能使用的JVM堆内存占整个Container内存大小的比例
+    如果YARN中的container内存资源较少,则将此值适当减小,反之则适当增大. -->
+    <property>
+        <name>tez.container.max.java.heap.fraction</name>
+        <value>0.2</value>
+        <description>
+            Double value. Tez automatically determines the Xmx for the JVMs used to run
+            Tez tasks and app masters. This feature is enabled if the user has not
+            specified Xmx or Xms values in the launch command opts. Doing automatic Xmx
+            calculation is preferred because Tez can determine the best value based on
+            actual allocation of memory to tasks the cluster. The value if used as a
+            fraction that is applied to the memory allocated Factor to size Xmx based
+            on container memory size. Value should be greater than 0 and less than 1.
+
+            Set this value to -1 to allow Tez to use different default max heap fraction
+            for different container memory size. Current policy is to use 0.7 for container
+            smaller than 4GB and use 0.8 for larger container.
+        </description>
+        <type>float</type>
+    </property>
+
+
+    <!-- 使用Yarn Timeline Server记录Tez task的历史日志
+        开启此功能的前提是在YARN中启用了Timeline服务 -->
+    <property>
+        <name>tez.history.logging.service.class</name>
+        <value>org.apache.tez.dag.history.logging.ats.ATSHistoryLoggingService</value>
+        <description>
+            Configuring Tez to use YARN Timeline.
+        </description>
+    </property>
+</configuration>

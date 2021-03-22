@@ -1,0 +1,94 @@
+<configuration>
+
+    <!--指定HDFS副本因子数,由于实验主机磁盘空间不足,本次实验中设置为1,一般需要设置为3-->
+    <!-- 默认值:3 -->
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+        <description>
+            Default block replication. 
+            The actual number of replications can be specified when the file is created.
+            The default is used if replication is not specified in create time.
+        </description>
+    </property>
+
+    <!--以下是NameNode配置-->
+    <!--指定NameNode节点的Web UI地址-->
+    <!-- 默认值:0.0.0.0:50070 -->
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>hadoop101:50070</value>
+        <description>
+            The address and the base port where the dfs namenode web ui will listen on.
+        </description>
+    </property>
+
+    <!--指定NameNode节点上存储name table(fsimage)文件的本地路径,可以是逗号分割的多路径.-->
+    <!--默认值:file://${hadoop.tmp.dir}/dfs/name-->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/namenode/fsimage</value>
+        <description>
+            Determines where on the local filesystem the DFS name node
+            should store the name table(fsimage).
+        </description>
+    </property>
+
+    <!--指定NameNode节点上存储transaction(edits)文件的本地路径,可以是逗号分割的多路径.-->
+    <!--默认值:${dfs.namenode.name.dir}-->
+    <property>
+        <name>dfs.namenode.edits.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/namenode/edits</value>
+        <description>
+            Determines where on the local filesystem the DFS name node
+            should store the transaction (edits) file. 
+        </description>
+    </property>
+
+    <!--指定DataNode节点上存储Blocks文件的本地路径,可以是逗号分割的多路径.-->
+    <!--默认值:file://${hadoop.tmp.dir}/dfs/data-->
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/datanode/data</value>
+        <description>
+            Determines where on the local filesystem an DFS data node 
+            should store its blocks.
+        </description>
+    </property>
+
+    <!--以下是SecondaryNameNode配置-->
+    <!--指定NameNode辅助名称节点SecondaryNameNode的Web UI地址-->
+    <!-- 默认值:0.0.0.0:50090 -->
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>hadoop103:50090</value>
+        <description>
+            The secondary namenode http server address and port.
+        </description>
+    </property>
+
+    <!--指定SecondaryNameNode节点上存储temporary images文件的本地路径,可以是逗号分割的多路径.-->
+    <!--默认值:file://${hadoop.tmp.dir}/dfs/namesecondary-->
+    <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/namesecondary/fsimage</value>
+        <description>
+            Determines where on the local filesystem the DFS secondary
+            name node should store the temporary images to merge.
+        </description>
+    </property>
+
+    <!--指定SecondaryNameNode节点上存储temporary edits文件的本地路径,可以是逗号分割的多路径.-->
+    <!--默认值:${dfs.namenode.checkpoint.dir}-->
+    <property>
+        <name>dfs.namenode.checkpoint.edits.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/namesecondary/edits</value>
+        <description>
+            Determines where on the local filesystem the DFS secondary
+            name node should store the temporary edits to merge.
+        </description>
+    </property>
+
+</configuration>
+
+

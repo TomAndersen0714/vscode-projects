@@ -1,0 +1,15 @@
+-default_num_replicas=3
+-fs_data_dirs=/data0/kudu/master
+-fs_wal_dir=/data0/kudu/master
+-log_dir=/data0/var/log/kudu
+-log_force_fsync_all=false
+-logbuflevel=0
+-max_log_size=1800
+-minloglevel=0
+-superuser_acl
+-user_acl=*
+-v=0
+-webserver_certificate_file
+-webserver_port=8051
+-webserver_private_key_file
+-webserver_private_key_password_cmd

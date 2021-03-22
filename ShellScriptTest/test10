@@ -1,0 +1,18 @@
+#!/bin/bash
+# 此脚本用于测试ssh工具远程执行多条命令方式
+# 使用的前提是已经设置密钥对并以默认私钥文件名存放在默认路径~/.ssh/下(即ssh免密登录)
+# 或者使用-i参数手动指定私钥位置
+
+host=192.168.126.101
+
+ssh tomandersen@$host <<EOF
+source /etc/profile
+echo \$JAVA_HOME
+echo "this is a test!"
+EOF
+
+ssh tomandersen@$host "
+source /etc/profile
+echo \$JAVA_HOME
+echo 'this is a test!'
+"

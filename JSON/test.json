@@ -1,0 +1,37 @@
+{
+    '_id': ObjectId('563c7ea089bc46749509da93'),
+    'answers': ['烈士纪念碑', '划船'],
+    'create_time': datetime.datetime(2015, 11, 6, 10, 19, 12, 18000),
+    'is_enabled': True,
+    'is_keyword': True,
+    'question': '人民公园',
+    'question_status': [{
+        'h': '035439a0258ee1b09a570bd504cdb5e0',
+        'old': False,
+        'q': '人民公园'
+    }],
+    'questions': [{
+        'question': '人民公园'
+    }],
+    'replies': [{
+            'answer': '烈士纪念碑',
+            'answer_id': ObjectId('5a1b008bf2468e564c5f66b9'),
+            'auto_send_in_auto_mode': True,
+            'auto_send_in_hybrid_mode': False
+        },
+        {
+            'answer': '划船',
+            'answer_id': ObjectId('5a1b008bf2468e564c5f66ba'),
+            'auto_send_in_auto_mode': True,
+            'auto_send_in_hybrid_mode': False
+        }
+    ],
+    'shop_id': ObjectId('563c179089bc46434ff34a50'),
+    'source': {
+        'questions': 12,
+        'replies': 12,
+        'version': 12
+    },
+    'update_time': datetime.datetime(2017, 11, 26, 17, 57, 31, 770000),
+    'version': 2
+}
