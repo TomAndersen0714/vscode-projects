@@ -2,12 +2,19 @@
     "folders": [
         {
             "path": "."
+        },
+        {
+            "path": "..\\PythonStudy"
         }
     ],
     "settings": {
         "python.pythonPath": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python36\\python.exe",
         "files.associations": {
-            "stdio.h": "c"
+            "*.cu": "cpp",
+            "stdio.h": "c",
+            "cstdlib": "c",
+            "stdint.h": "c",
+            "string.h": "c"
         }
     },
     "launch": {
