@@ -1,0 +1,135 @@
+{
+    '_id': ObjectId('5cefe46bb723ed00087d684e'),
+    'create_time': datetime.datetime(2019, 5, 30, 14, 10, 51, 753000),
+    'update_time': datetime.datetime(2021, 4, 29, 9, 23, 0, 71000),
+    'nick': '成都小多科技有限公司',
+    'is_create_qc_engine_shop': True,
+    'groups': [{
+        'group': '售前客服组',
+        'is_active': True,
+        'group_description': '对售前客服进行质检，客服默认为售前客服'
+    }, {
+        'group': '售后客服组',
+        'is_active': True,
+        'group_description': '对售后客服进行质检'
+    }, {
+        'group': 'ke',
+        'is_active': False,
+        'is_deletable': True,
+        'group_description': ''
+    }, {
+        'group': '客服顾问',
+        'is_active': True,
+        'is_deletable': True,
+        'group_description': ''
+    }, {
+        'group': '新手导购',
+        'is_active': True,
+        'is_deletable': True,
+        'group_description': ''
+    }, {
+        'group': '从',
+        'is_active': True,
+        'is_deletable': True,
+        'group_description': ''
+    }, {
+        'group': '111',
+        'is_active': True,
+        'is_deletable': True,
+        'group_description': ''
+    }, {
+        'group': '2222222',
+        'is_active': True,
+        'is_deletable': True,
+        'group_description': ''
+    }, {
+        'group': '1',
+        'is_active': True,
+        'is_deletable': True,
+        'group_description': ''
+    }],
+    'shop_id': '5640050589bc461b91cd3715',
+    'is_close': False,
+    'nlu_code': '',
+    'is_start_use': True,
+    'start_use_time': datetime.datetime(2019, 5, 30, 14, 10, 51, 753000),
+    'expire_time': datetime.datetime(2022, 3, 3, 0, 52, 2, 145000),
+    'whitelist': ['marketing']
+}
+
+
+{
+    '_id': ObjectId('5cf216a2b723ed00087d6855'),
+    'Extra close braceset': {
+        'expire_time': datetime.datetime(2020, 2, 4, 8, 52, 2, 147000)
+    }
+}
+
+
+{
+    '_id': ObjectId('5d159da8b723ed00087d68e2'),
+    'create_time': datetime.datetime(2019, 6, 28, 4, 55, 4, 567000),
+    'update_time': datetime.datetime(2020, 8, 24, 8, 5, 30, 773000),
+    'nick': '嬉皮狗旗舰店',
+    'is_create_qc_engine_shop': True,
+    'groups': [{
+        'group': '售前客服组',
+        'is_active': True,
+        'group_description': '对售前客服进行质检，客服默认为售前客服'
+    }, {
+        'group': '售后客服组',
+        'is_active': True,
+        'group_description': '对售后客服进行质检'
+    }],
+    'shop_id': '5b5693db89bc4605806a3d62',
+    'is_start_use': True,
+    'start_use_time': datetime.datetime(2019, 6, 28, 4, 55, 4, 567000),
+    'expire_time': datetime.datetime(2022, 3, 3, 0, 52, 2, 145000),
+    'whitelist': [],
+    'is_close': False
+}
+
+{
+    '_id': ObjectId('5cefba1bb723ed3b983725c0'),
+    'create_time': datetime.datetime(2019, 5, 30, 11, 10, 19, 595000),
+    'update_time': datetime.datetime(2020, 8, 24, 8, 5, 30, 824000),
+    'nick': 'qctest',
+    'is_create_qc_engine_shop': True,
+    'groups': [{
+        'group': '售前客服组',
+        'is_active': True,
+        'group_description': '对售前客服进行质检，客服默认为售前客服'
+    }, {
+        'group': '售后客服组',
+        'is_active': True,
+        'group_description': '对售后客服进行质检'
+    }],
+    'is_start_use': True,
+    'start_use_time': datetime.datetime(2019, 5, 30, 11, 10, 19, 595000),
+    'expire_time': datetime.datetime(2022, 3, 3, 0, 52, 2, 145000),
+    'whitelist': [],
+    'is_close': False
+} 
+
+
+{
+    '_id': ObjectId('5d15b6c0b723ed00087d68fb'),
+    'create_time': datetime.datetime(2019, 6, 28, 6, 42, 8, 893000),
+    'update_time': datetime.datetime(2019, 10, 15, 7, 18, 40, 409000),
+    'nick': '志高程平专卖店',
+    'is_create_qc_engine_shop': True,
+    'groups': [{
+        'group': '售前客服组',
+        'is_active': True,
+        'group_description': '对售前客服进行质检，客服默认为售前客服'
+    }, {
+        'group': '售后客服组',
+        'is_active': True,
+        'group_description': '对售后客服进行质检'
+    }],
+    'shop_id': '5c91a51889bc465df31339a9',
+    'is_close': True,
+    'nlu_code': '',
+    'is_start_use': True,
+    'start_use_time': datetime.datetime(2019, 6, 28, 6, 42, 8, 893000)
+}
