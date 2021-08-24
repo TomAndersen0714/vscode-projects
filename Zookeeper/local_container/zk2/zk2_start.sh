@@ -9,6 +9,7 @@ docker run -d \
 --add-host=hadoop101:192.168.126.101 \
 --add-host=hadoop102:192.168.126.102 \
 --add-host=hadoop103:192.168.126.103 \
+--env=JVMFLAGS="-Xms1024m -Xmx2048m" \
 --restart=on-failure:3 \
 -p 2171:2181 \
 -p 2888:2888 \
