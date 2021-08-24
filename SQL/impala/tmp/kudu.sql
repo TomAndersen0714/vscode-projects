@@ -204,5 +204,9 @@ alter table tmp.range_partition_test drop if exists range partition 20210801<=VA
 alter table tmp.range_partition_test add range partition 20210803<=VALUES<20210806
 
 
+ALTER TABLE dipper_ods.ask_order_conversion_stat_day
+SET TBLPROPERTIES('kudu.table_name' = 'impala::dipper_ods.ask_order_conversion_stat_day')
 
+ALTER TABLE dipper_ods.ask_order_conversion_stat_day
+SET TBLPROPERTIES('EXTERNAL' = 'TRUE')
 
