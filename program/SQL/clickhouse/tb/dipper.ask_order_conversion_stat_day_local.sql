@@ -12,7 +12,8 @@ CREATE TABLE dipper.ask_order_conversion_stat_day_local on cluster cluster_3s_2r
 )
 ENGINE = ReplicatedMergeTree('/clickhouse/dipper/tables/{layer}_{shard}/ask_order_conversion_stat_day_local', '{replica}')  
 PARTITION BY day 
-ORDER BY (shop_id,platform) SETTINGS index_granularity = 8192
+ORDER BY (shop_id,platform) 
+SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 CREATE TABLE dipper.ask_order_conversion_stat_day_all on cluster cluster_3s_2r
 as dipper.ask_order_conversion_stat_day_local
