@@ -134,15 +134,16 @@ ORDER BY day ASC
 -- BG实时概况(会话总量+告警分布+日环比+中高级告警比例+告警完结率)
 -- PS: 对于BG部门新增/更名的问题,由于所有统计都是下钻到了店铺维度,因此即使BG变更,其环比计算依旧不受影响
 SELECT -- BG部门维度聚合统计
-    BG,
-    sum(shop_today_dialog_cnt) AS bg_today_dialog_cnt, -- BG当天当前的会话总量
-    sum(shop_yesterday_dialog_cnt) AS bg_yesterday_dialog_cnt, -- BG昨天同时刻的会话总量
+    bg_name,
+    sum(snick_today_dialog_cnt) AS bg_today_dialog_cnt, -- BG当天当前的会话总量
+    sum(snick_yesterday_dialog_cnt) AS bg_yesterday_dialog_cnt, -- BG昨天同时刻的会话总量
     if(
         bg_yesterday_dialog_cnt!=0, round(sum(diff_dialog_cnt)/bg_yesterday_dialog_cnt*100,2), 0.00
     ) AS bg_dialog_relative_ratio, -- BG会话总量日环比
     sum(snick_today_level_1_cnt) AS bg_today_level_1_cnt, -- BG当天当前初级告警总量 -- BG告警分布
     sum(snick_today_level_2_cnt) AS bg_today_level_2_cnt, -- BG当天当前中级告警总量 -- BG告警分布
     sum(snick_today_level_3_cnt) AS bg_today_level_3_cnt, -- BG当天当前高级告警总量 -- BG告警分布
+    bg_today_level_1_cnt+bg_today_level_2_cnt+bg_today_level_3_cnt, AS bg_today_warning_cnt , -- BG当天当前告警总量
     if(
         bg_today_dialog_cnt!=0, round((bg_today_level_2_cnt+bg_today_level_3_cnt)/bg_today_dialog_cnt*100,2), 0.00
     ) AS bg_level_2_3_ratio, -- BG当天当前中高级告警比例
@@ -154,34 +155,49 @@ SELECT -- BG部门维度聚合统计
     if(
         bg_today_level_3_cnt!=0, round(bg_today_level_3_finished_cnt/bg_today_level_3_cnt*100,2), 0.00
     ) AS bg_level_3_finished_ratio -- BG当天当前高级告警完结率
-FROM ( 
-    -- 查询BG部门(一级部门)下的snick
-    SELECT 
-        department_name AS bg,
-        
+FROM (
 
-    SELECT -- 店铺-子账号映射
-        snick,
-        parent_department_path[1] AS bg_department_id
-    FROM xqc_dim.group_all
-    GLOBAL RIGHT JOIN (
+    -- 获取BG下需要查询的snick
+    SELECT bg_name, snick
+    FROM (
+        -- BG_name--BG_id
         SELECT 
-            mp_shop_id AS shop_id,
-            snick
-        FROM xqc_dim.snick_all
-        -- WHERE snick IN ({{snick_list}})
+            department_name AS bg_name,
+            department_id AS bg_id
+        FROM xqc_dim.group_all
+        WHERE company_id = '5f747ba42c90fd0001254404'
+        AND level = 1
+        AND is_shop = 'False'
     )
-    ON department_id = shop_id
-    WHERE company_id = '5f73e9c1684bf70001413636'
-    AND is_shop = 'True'
-) AS bg_snick_map
+    GLOBAL LEFT JOIN (
+        -- BG_id--snick
+        SELECT DISTINCT
+            parent_department_path[1] AS bg_id,
+            snick
+        FROM xqc_dim.group_all
+        GLOBAL JOIN (
+            SELECT 
+                mp_shop_id AS shop_id,
+                snick
+            FROM xqc_dim.snick_all
+            WHERE company_id = '5f747ba42c90fd0001254404'
+            -- WHERE snick IN ('{{snicks=snick_list}}') or mp_shop_id IN ('{{shop_ids=shop_id_list}}')
+        )
+        ON department_id = shop_id
+        WHERE company_id = '5f747ba42c90fd0001254404'
+        AND is_shop = 'True'
+    )
+    USING bg_id
+
+) AS bg_snick
 GLOBAL LEFT JOIN (
+
     -- 子账号维度聚合统计
     SELECT *
     FROM (
         SELECT -- 子账号维度今天和昨天会话数据聚合统计
             snick,
-            sum(day = 20210914 AND `time`<=now()) AS snick_yesterday_dialog_cnt, -- 子账号昨天同时刻会话总量
+            sum(day = 20210914 AND `time`<=toString(now())) AS snick_yesterday_dialog_cnt, -- 子账号昨天同时刻会话总量
             sum(day = 20210915) AS snick_today_dialog_cnt, -- 子账号当天当前会话总量
             (snick_today_dialog_cnt - snick_yesterday_dialog_cnt) AS diff_dialog_cnt -- 子账号当天和昨天同时刻会话总量差值
         FROM xqc_ods.dialog_all
@@ -193,7 +209,7 @@ GLOBAL LEFT JOIN (
         -- 子账号维度当天告警数据聚合统计
         SELECT
             snick,
-            count(1) AS shop_today_warning_cnt, -- 子账号当天当前的告警总量
+            count(1) AS snick_today_warning_cnt, -- 子账号当天当前的告警总量
             sum(`level` = 1) AS snick_today_level_1_cnt, -- 子账号当天初级告警量
             sum(`level` = 2) AS snick_today_level_2_cnt, -- 子账号当天中级告警量
             sum(`level` = 3) AS snick_today_level_3_cnt, -- 子账号当天高级告警量
@@ -202,7 +218,6 @@ GLOBAL LEFT JOIN (
             sum(`level` = 3 AND is_finished = 'True') 
                 AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量
         FROM xqc_ods.event_alert_1_all FINAL
-        WHERE day = 20210915
         GLOBAL RIGHT JOIN(
             SELECT id AS dialog_id, snick
             FROM xqc_ods.dialog_all
@@ -210,10 +225,117 @@ GLOBAL LEFT JOIN (
             -- AND snick IN ({{snick_list}})
         ) AS dialog_snick
         USING dialog_id
+        WHERE day = 20210915
         GROUP BY snick
     ) AS snick_warning_stat -- 各个子账号当天当前的告警统计
     USING snick
+
 ) AS bg_snick_stat
 USING snick
-GROUP BY BG
-ORDER BY BG ASC
+GROUP BY bg_name
+ORDER BY bg_name ASC
+LIMIT 8 -- 因为前端UI长度限制,在查询时写死限制8条记录
+
+
+-- BG实时概况(会话总量+告警分布+日环比+中高级告警比例+告警完结率)
+SELECT -- BG部门维度聚合统计
+    bg_name,
+    sum(snick_today_dialog_cnt) AS bg_today_dialog_cnt, -- BG当天当前的会话总量
+    sum(snick_yesterday_dialog_cnt) AS bg_yesterday_dialog_cnt, -- BG昨天同时刻的会话总量
+    if(
+        bg_yesterday_dialog_cnt!=0, round(sum(diff_dialog_cnt)/bg_yesterday_dialog_cnt*100,2), 0.00
+    ) AS bg_dialog_relative_ratio, -- BG会话总量日环比
+    sum(snick_today_level_1_cnt) AS bg_today_level_1_cnt, -- BG当天当前初级告警总量 -- BG告警分布
+    sum(snick_today_level_2_cnt) AS bg_today_level_2_cnt, -- BG当天当前中级告警总量 -- BG告警分布
+    sum(snick_today_level_3_cnt) AS bg_today_level_3_cnt, -- BG当天当前高级告警总量 -- BG告警分布
+    bg_today_level_1_cnt+bg_today_level_2_cnt+bg_today_level_3_cnt, AS bg_today_warning_cnt , -- BG当天当前告警总量
+    if(
+        bg_today_dialog_cnt!=0, round((bg_today_level_2_cnt+bg_today_level_3_cnt)/bg_today_dialog_cnt*100,2), 0.00
+    ) AS bg_level_2_3_ratio, -- BG当天当前中高级告警比例
+    sum(snick_today_level_2_finished_cnt) AS bg_today_level_2_finished_cnt, -- BG当天当前已完结中级告警总量
+    sum(snick_today_level_3_finished_cnt) AS bg_today_level_3_finished_cnt, -- BG当天当前已完结高级告警总量
+    if(
+        bg_today_level_2_cnt!=0, round(bg_today_level_2_finished_cnt/bg_today_level_2_cnt*100,2), 0.00
+    ) AS bg_level_2_finished_ratio, -- BG当天当前中级告警完结率
+    if(
+        bg_today_level_3_cnt!=0, round(bg_today_level_3_finished_cnt/bg_today_level_3_cnt*100,2), 0.00
+    ) AS bg_level_3_finished_ratio -- BG当天当前高级告警完结率
+FROM (
+
+    -- 获取BG下需要查询的snick
+    SELECT bg_name, snick
+    FROM (
+        -- BG_name--BG_id
+        SELECT 
+            department_name AS bg_name,
+            department_id AS bg_id
+        FROM xqc_dim.group_all
+        WHERE company_id = '5f747ba42c90fd0001254404'
+        AND level = 1
+        AND is_shop = 'False'
+    )
+    GLOBAL LEFT JOIN (
+        -- BG_id--snick
+        SELECT DISTINCT
+            parent_department_path[1] AS bg_id,
+            snick
+        FROM xqc_dim.group_all
+        GLOBAL JOIN (
+            SELECT 
+                mp_shop_id AS shop_id,
+                snick
+            FROM xqc_dim.snick_all
+            WHERE company_id = '5f747ba42c90fd0001254404'
+
+        )
+        ON department_id = shop_id
+        WHERE company_id = '5f747ba42c90fd0001254404'
+        AND is_shop = 'True'
+    )
+    USING bg_id
+
+) AS bg_snick
+GLOBAL LEFT JOIN (
+
+    -- 子账号维度聚合统计
+    SELECT *
+    FROM (
+        SELECT -- 子账号维度今天和昨天会话数据聚合统计
+            snick,
+            sum(day = 20210914 AND `time`<=toString(now())) AS snick_yesterday_dialog_cnt, -- 子账号昨天同时刻会话总量
+            sum(day = 20210915) AS snick_today_dialog_cnt, -- 子账号当天当前会话总量
+            (snick_today_dialog_cnt - snick_yesterday_dialog_cnt) AS diff_dialog_cnt -- 子账号当天和昨天同时刻会话总量差值
+        FROM xqc_ods.dialog_all
+        WHERE day BETWEEN 20210914 AND 20210915
+
+        GROUP BY snick
+    ) AS snick_dialog_stat -- 各个子账号昨天同时刻的会话总量
+    GLOBAL LEFT JOIN (
+        -- 子账号维度当天告警数据聚合统计
+        SELECT
+            snick,
+            count(1) AS snick_today_warning_cnt, -- 子账号当天当前的告警总量
+            sum(`level` = 1) AS snick_today_level_1_cnt, -- 子账号当天初级告警量
+            sum(`level` = 2) AS snick_today_level_2_cnt, -- 子账号当天中级告警量
+            sum(`level` = 3) AS snick_today_level_3_cnt, -- 子账号当天高级告警量
+            sum(`level` = 2 AND is_finished = 'True') 
+                AS snick_today_level_2_finished_cnt, -- 子账号当天中级已处理告警量
+            sum(`level` = 3 AND is_finished = 'True') 
+                AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量
+        FROM xqc_ods.event_alert_1_all FINAL
+        GLOBAL RIGHT JOIN(
+            SELECT id AS dialog_id, snick
+            FROM xqc_ods.dialog_all
+            WHERE day = 20210915
+        ) AS dialog_snick
+        USING dialog_id
+        WHERE day = 20210915
+        GROUP BY snick
+    ) AS snick_warning_stat -- 各个子账号当天当前的告警统计
+    USING snick
+
+) AS bg_snick_stat
+USING snick
+GROUP BY bg_name
+ORDER BY bg_name ASC
+LIMIT 8 -- 因为前端UI长度限制,在查询时写死限制8条记录

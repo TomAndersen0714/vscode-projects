@@ -133,3 +133,71 @@ ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'event_alert_1_local', rand())
 CREATE TABLE buffer.event_alert_1_buffer ON CLUSTER cluster_3s_2r
 AS xqc_ods.event_alert_1_all
 ENGINE = Buffer('xqc_ods', 'event_alert_1_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)
+
+-- 实时告警表(改)
+CREATE TABLE xqc_ods.alert_local ON CLUSTER cluster_3s_2r(
+    `id` String,
+    `level` Int64,
+    `warning_type` String,
+    `dialog_id` String,
+    `message_id` String,
+    `time` DateTime,
+    `day` Int64,
+    `is_finished` String,
+    `finish_time` String,
+    `seller_nick` String,
+    `shop_id` String,
+    `snick` String,
+    `cnick` String,
+    `employee_name` String,
+    `superior_name` String
+)
+ENGINE = ReplicatedReplacingMergeTree(
+    '/clickhouse/xqc_ods/tables/{layer}_{shard}/alert_local',
+    '{replica}',
+    time
+)
+PARTITION BY `day`
+ORDER BY (`level`,`warning_type`)
+SETTINGS index_granularity=8192, storage_policy='rr'
+
+CREATE TABLE xqc_ods.alert_all ON CLUSTER cluster_3s_2r
+AS xqc_ods.alert_local
+ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'alert_local', rand())
+
+-- 填充测试数据
+TRUNCATE TABLE xqc_ods.alert_local ON CLUSTER cluster_3s_2r
+INSERT INTO xqc_ods.alert_all
+SELECT
+    id, 
+    type AS level,
+    reason AS warning_type,
+    dialog_id,
+    'test' AS message_id,
+    parseDateTimeBestEffort(create_time) AS time,
+    day,
+    done as is_finished,
+    if(done='True',toString(now()),'') as finish_time,
+    `seller_nick`,
+    `shop_id`,
+    `snick`,
+    `cnick`,
+    'test' AS employee_name,
+    'test' AS superior_name
+FROM xqc_ods.event_alert_all
+WHERE day BETWEEN 20210624 AND 20210916
+
+
+ALTER TABLE xqc_dim.group_local ON CLUSTER cluster_3s_2r 
+DELETE WHERE company_id='5f747ba42c90fd0001254404'
+
+INSERT INTO xqc_dim.group_all
+VALUES 
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254401','一级部门1','False','',[],1),
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254402','一级部门2','False','',[],1),
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254403','一级部门3','False','',[],1),
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254404','二级部门1','False','',['5f747ba42c90fd0001254401'],2),
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254405','二级部门2','False','',['5f747ba42c90fd0001254403'],2),
+('5f747ba42c90fd0001254404','方太','','','5edfa47c8f591c00163ef7d6','方太京东旗舰店','True','jd',['5f747ba42c90fd0001254401','5f747ba42c90fd0001254404'],3),
+('5f747ba42c90fd0001254404','方太','','','5e9d390d68283c002457b52f','方太京东自营旗舰店','True','jd',['5f747ba42c90fd0001254402','5f747ba42c90fd0001254405'],3)
+('5f747ba42c90fd0001254404','方太','','','5cac112e98ef4100118a9c9f','方太官方旗舰店','True','tb',['5f747ba42c90fd0001254403','5f747ba42c90fd0001254405'],3)

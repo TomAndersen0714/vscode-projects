@@ -1,341 +1,146 @@
-select a.*,
-    b.json_list as json_list
-from (
-        SELECT platform,
-            sum(session_count) as total_count,
-            sum(subtract_score_count) as abnormal_count,
-            sum(subtract_score_count) / sum(session_count) as abnormal_rate,
-            sum(ai_subtract_score_count) as ai_abnormal_cnt,
-            sum(manual_qc_count) as human_check_count,
-            toInt32(
-                round(
-                    (0.9604 * sum(session_count)) /(0.0025 * sum(session_count) + 0.9604),
-                    0
-                )
-            ) as suggestion_check_count,
-            round(
-                (
-                    sum(session_count) * 100 + sum(ai_add_score) - sum(ai_subtract_score)
-                ) / sum(session_count),
-                2
-            ) AS avg_score,
-            round((sum(manual_qc_count) / sum(session_count)), 4) as check_rate,
-            sum(manual_subtract_score_count) as human_abnormal_count,
-            length(
-                arrayReduce(
-                    'groupUniqArray',
-                    flatten(groupArray(high_abnormal_emo_list))
-                )
-            ) as high_ex_emotion_count,
-            toString(
-                arrayReduce(
-                    'groupUniqArray',
-                    flatten(groupArray(high_abnormal_emo_list))
-                )
-            ) as high_ex_emotion_dialog_id
-        FROM ods.qc_session_count_all
-        WHERE date between 1630425600 and 1631030399
-            and shop_name in ('方太官方旗舰店')
-            and department_id != ''
-        group by platform
-    ) as a
-    left join (
-        select platform,
-            toString(groupArray(json_info)) as json_list
-        from (
-                SELECT platform,
-                    concat(
-                        '{\"day\":',
-                        toString(toInt64(date)),
-                        ',\"subtract_score_proportion\":',
-                        toString((sum(subtract_score_count) / sum(session_count))),
-                        ',\"manual_subtract_score_proportion\":',
-                        toString(
-                            (
-                                sum(manual_subtract_score_count) / sum(session_count)
-                            )
-                        ),
-                        ',\"ai_subtract_score_proportion\":',
-                        toString(
-                            (
-                                sum(ai_subtract_score_count) / sum(session_count)
-                            )
-                        ),
-                        '}'
-                    ) as json_info
-                FROM ods.qc_session_count_all
-                WHERE date between 1630425600 and 1631030399
-                    and shop_name in ('方太官方旗舰店')
-                group by date,
-                    platform
-                order by date
-            ) json
-        group by platform
-    ) as b on a.platform = b.platform
-
-
-select 'server' as type,
-    employee_id,
-    employee_name,
-    sum(session_count) as total_count,
-    0 as total_check,
-    sum(ai_subtract_score) as abnormal_score,
-    sum(subtract_score_count) / sum(session_count) as abnormal_rate,
-    sum(ai_subtract_score) - sum(manual_subtract_score) - sum(rule_score) as ai_abnormal_score,
-    sum(manual_subtract_score) as human_abnormal_score,
-    0 as human_total_check,
-    0 as average_check,
-    sum(rule_score) AS user_rule_score,
-    round(
-        (
-            sum(session_count) * 100 + sum(ai_add_score) - sum(ai_subtract_score)
-        ) / sum(session_count),
-        2
-    ) AS avg_score
-from ods.qc_session_count_all
-where date >= 1630425600
-    and date < 1631030400
-    and shop_name in ('方太官方旗舰店')
-    and employee_name != ''
-group by employee_id,
-    employee_name
-order by avg_score desc
-limit 10
-union all
-select 'server_read_mark' as type,
-    employee_id,
-    employee_name,
-    sum(session_count) as total_count,
-    0 as total_check,
-    0 as abnormal_score,
-    0 as abnormal_rate,
-    0 as ai_abnormal_score,
-    0 as human_abnormal_score,
-    sum(manual_qc_count) as human_total_check,
-    sum(manual_qc_count) / if(
-        dateDiff('day', toDate(1630425600), toDate(1631030400)) = 0,
-        1,
-        dateDiff('day', toDate(1630425600), toDate(1631030400))
-    ) as average_check,
-    0 as user_rule_score,
-    0 as avg_score
-from ods.qc_session_count_all
-where date >= 1630425600
-    and date < 1631030400
-    and shop_name in ('方太官方旗舰店')
-    and employee_name != ''
-    and manual_qc_count != 0
-group by employee_id,
-    employee_name
-order by human_total_check desc
-limit 10
-union all
-select 'read_mark' as type,
-    account_id as employee_id,
-    username as employee_name,
-    0 as total_count,
-    count(1) as total_check,
-    0 as abnormal_score,
-    0 as abnormal_rate,
-    0 as ai_abnormal_count,
-    0 as human_abnormal_count,
-    0 as human_total_check,
-    count(1) / if(
-        dateDiff('day', toDate(1630425600), toDate(1631030400)) = 0,
-        1,
-        dateDiff('day', toDate(1630425600), toDate(1631030400))
-    ) as average_check,
-    0 as user_rule_score,
-    0 as avg_score
-from ods.qc_read_mark_detail_all
-where username != ''
-    and date >= 1630425600
-    and date < 1631030400
-    and shop_name in ('方太官方旗舰店')
-    and employee_name != ''
-group by account_id,
-    username
-order by total_check desc
-limit 10
-
-select a.platform as platform,
-    type,
-    b.qc_id as qc_id,
-    b.qc_name as qc_name,
-    round(b.count_info / a.count_all_info, 4) as qc_proportion
-from (
-        select platform,
-            sum(qc_count) as count_all_info
-        from ods.qc_question_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and shop_name in ('方太官方旗舰店')
-            and `type` in ('ai', 's_emotion', 'c_emotion')
-        group by platform
-    ) as a
-    left join (
-        select platform,
-            `type`,
-            qc_id,
-            qc_name,
-            sum(qc_count) as count_info
-        from ods.qc_question_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and `type` in ('ai', 's_emotion', 'c_emotion')
-            and shop_name in ('方太官方旗舰店')
-        group by platform,
-            `type`,
-            qc_id,
-            qc_name
-        order by count_info desc
-    ) as b on a.platform = b.platform
-UNION ALL
-SELECT a.platform AS platform,
-    's_emotion' AS `type`,
-    b.qc_id AS qc_id,
-    b.qc_name AS qc_name,
-    round(b.count_info / a.count_all_info, 4) AS qc_proportion
+SELECT
+    BG,
+    BU,
+    shop_name,
+    superior_name, -- 客服负责人
+    employee_name, -- 客服
+    snick, -- 子账号
+    cnick, -- 顾客
+    dialog_id,
+    level, -- 告警等级
+    warning_type, -- 告警项
+    time, -- 告警时间
+    if(
+        is_finished='True',
+        round((parseDateTimeBestEffort(finish_time) - parseDateTimeBestEffort(time))/60),
+        round((now() - parseDateTimeBestEffort(time))/60)
+    ) AS warning_duration, -- 告警时长(min)
+    finish_time, -- 告警结束时间
+    is_finished -- 是否完结
 FROM (
-        SELECT platform,
-            sum(qc_count) AS count_all_info
-        FROM ods.qc_question_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and shop_name in ('方太官方旗舰店')
-            AND `type` = 's_emotion'
-        GROUP BY platform,
-            `type`
-    ) AS a
-    LEFT JOIN (
-        SELECT platform,
-            `type`,
-            qc_id,
-            qc_name,
-            sum(qc_count) AS count_info
-        FROM ods.qc_question_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and shop_name in ('方太官方旗舰店')
-            AND `type` = 's_emotion'
-        GROUP BY platform,
-            `type`,
-            qc_id,
-            qc_name
-    ) AS b ON a.platform = b.platform
-union all
-select a.platform as platform,
-    'manual' as `type`,
-    b.qc_id as qc_id,
-    b.qc_name_all as qc_name,
-    round(b.count_info / a.count_all_info, 4) as qc_proportion
-from (
-        select platform,
-            sum(qc_count) as count_all_info
-        from ods.qc_question_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and shop_name in ('方太官方旗舰店')
-            and `type` = 'manual'
-        group by platform,
-            `type`
-    ) as a
-    left join (
-        select platform,
-            `type`,
-            qc_id,
-            replaceAll(replaceAll(qc_name, '未设置一级标签/', ''), '未设置二级标签/', '') as qc_name_all,
-            sum(qc_count) as count_info
-        from ods.qc_question_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and `type` = 'manual'
-            and shop_name in ('方太官方旗舰店')
-        group by platform,
-            `type`,
-            qc_id,
-            qc_name
-        limit 10
-    ) as b on a.platform = b.platform
-order by qc_proportion desc
-union all
-select b.platform as platform,
-    'qc_word' as `type`,
-    '' as qc_id,
-    a.word as qc_name,
-    round((a.words_count_info / b.words_count_all), 4) as qc_proportion
-from (
-        select platform,
-            word,
-            sum(words_count) as words_count_info
-        from ods.qc_words_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and shop_name in ('方太官方旗舰店')
-        group by platform,
-            word
-        order by words_count_info desc
-    ) a
-    left join (
-        select platform,
-            sum(words_count) as words_count_all
-        from ods.qc_words_detail_all
-        WHERE date >= 1630425600
-            and date < 1631030399
-            and shop_name in ('方太官方旗舰店')
-        group by platform
-        order by words_count_all
-    ) b on a.platform = b.platform
-limit 10
+    SELECT *
+    FROM xqc_ods.event_alert_1_all
+    WHERE day BETWEEN {{start_day}} AND {{end_day}}
+        AND if({{is_finished}}!='全部',is_finished = {{is_finished}}, is_finished!=''),
+        AND if({{warning_type}}!='全部',warning_type = {{warning_type}}, warning_type!=''),
+        AND if({{level}}!='全部',level = {{level}}, level!='')
+) AS event_alert
+GLOBAL LEFT JOIN (
+    -- BG, BU, shop_name, snick, superior_name, employee_name, cnick, dialog_id
+    SELECT * 
+    FROM ( 
+        -- BG, BU, shop_name, snick
+        SELECT *
+        FROM (
+            SELECT
+                parent_department_path[1] AS BG,
+                parent_department_path[2] AS BU,
+                department_id AS shop_id,
+                department_name AS shop_name
+            FROM xqc_dim.group_all
+            WHERE company_id = {{company_id}}
+            AND is_shop = 'True'
+            AND if({{BG}}!='全部',parent_department_path[1] = {{BG}}, parent_department_path[1]!='')
+            AND if({{BU}}!='全部',parent_department_path[2] = {{BU}}, parent_department_path[2]!='')
+            AND if({{shop_name}}!='全部',shop_name = {{shop_name}}, shop_name!='')
+        )
+        GLOBAL LEFT JOIN(
+            -- shop_id, snick
+            SELECT 
+                mp_shop_id AS shop_id, 
+                snick
+            FROM xqc_dim.snick_all
+            WHERE company_id = {{company_id}}
+            AND if({{snick}}!='全部',snick = {{snick}}, snick IN ({{snick_list}}))
+            -- {{snick}} 是下拉框选项, {{snick_list}} 是权限隔离支持查看的snick数组, 前者必须为后者的子集
+        ) AS shop_snick
+        USING shop_id
+    )
+    GLOBAL LEFT JOIN(
+        SELECT superior_name, employee_name, snick, cnick, id AS dialog_id
+        FROM xqc_ods.dialog_all
+        WHERE day BETWEEN {{start_day}} AND {{end_day}}
+        AND if({{snick}}!='全部',snick = {{snick}}, snick IN ({{snick_list}}))
+        -- {{snick}} 是下拉框选项, {{snick_list}} 是权限隔离支持查看的snick数组, 前者必须为后者的子集
+        AND if({{superior_name}}!='全部',superior_name = {{superior_name}}, superior_name!=''),
+    )
+    USING snick
+) AS dim_stat
+USING dialog_id
+-- ORDER BY {{order_by_clause}} -- 支持按照告警时间,处理完成时间排序
+-- LIMIT {{limit_clause}}
 
-SELECT a.company_id AS company_id,
-    a.name AS name,
-    sum (b.label_count) AS label_count
+
+
+
+
+SELECT
+    BG, BU,
+    shop_name,
+    superior_name, -- 客服负责人
+    employee_name, -- 客服
+    snick, -- 子账号
+    cnick, -- 顾客
+    dialog_id,
+    message_id,
+    level, -- 告警等级
+    warning_type, -- 告警项
+    time, -- 告警时间
+    if(
+        is_finished='True',
+        round((parseDateTimeBestEffort(finish_time) - parseDateTimeBestEffort(time))/60),
+        round((now() - parseDateTimeBestEffort(time))/60)
+    ) AS warning_duration, -- 告警时长(min)
+    finish_time, -- 告警结束时间
+    is_finished -- 是否完结
 FROM (
-        with (
-            select max(date)
-            FROM ods.qc_case_label_detail_all
-            WHERE company_id = '5f747ba42c90fd0001254404'
-        ) as max_date
-        SELECT DISTINCT `date`,
-            company_id,
-            concat(
-                parent_label_name,
-                if(
-                    label_name = '',
-                    label_name,
-                    concat('/', label_name)
-                )
-            ) AS name
-        FROM ods.qc_case_label_detail_all
-        WHERE company_id = '5f747ba42c90fd0001254404'
-            and date = max_date
-    ) AS a
-    LEFT JOIN (
-        with (
-            select max(date)
-            FROM ods.qc_case_label_detail_all
-            WHERE company_id = '5f747ba42c90fd0001254404'
-        ) as max_date
-        SELECT `date`,
-            company_id,
-            concat(
-                parent_label_name,
-                if(
-                    label_name = '',
-                    label_name,
-                    concat('/', label_name)
-                )
-            ) AS name,
-            sum(IF (dialog_id = '', 0, 1)) AS label_count
-        FROM ods.qc_case_label_detail_all
-        WHERE shop_name IN ('方太官方旗舰店')
-            and date = max_date
-        GROUP BY `date`,
-            company_id,
-            name
-    ) AS b ON a.company_id = b.company_id
-    AND a.name = b.name
-    and a.date = b.date
-GROUP by company_id,
-    name
+    -- BG, BU, shop_name, shop_id, snick
+    SELECT *
+    FROM (
+        SELECT
+            parent_department_path[1] AS BG,
+            parent_department_path[2] AS BU,
+            department_id AS shop_id,
+            department_name AS shop_name
+        FROM xqc_dim.group_all
+        WHERE company_id = {{company_id}}
+        AND is_shop = 'True'
+        AND if({{BG}}!='全部',parent_department_path[1] = {{BG}}, parent_department_path[1]!='')
+        AND if({{BU}}!='全部',parent_department_path[2] = {{BU}}, parent_department_path[2]!='')
+        AND if({{shop_name}}!='全部',shop_name = {{shop_name}}, shop_name!='')
+    )
+    GLOBAL INNER JOIN(
+        -- shop_id, snick
+        SELECT
+            mp_shop_id AS shop_id,
+            seller_nick AS shop_name,
+            snick
+        FROM xqc_dim.snick_all
+        WHERE company_id = {{company_id}}
+        AND if({{snick}}!='全部',snick = {{snick}}, snick !=''))
+        -- {{snick}} 是下拉框选项, {{snick_list}} 是权限隔离支持查看的snick数组, 前者理论上为后者的子集
+        AND ( -- 权限隔离筛选条件
+            shop_id IN {{shop_id_list}} OR snick IN {{snick_list}}
+        )
+    ) AS shop_snick
+    USING shop_id, shop_name
+)
+GLOBAL LEFT JOIN(
+    -- snick, cnick, level, warning_type, dialog_id, message_id, time, day, is_finished, 
+    -- finish_time, shop_id, employee_name, superior_name
+    SELECT *
+    FROM xqc_ods.event_alert_1_all
+    WHERE day BETWEEN {{start_day}} AND {{end_day}}
+        AND if({{is_finished}}!='全部',is_finished = {{is_finished}}, is_finished!=''),
+        AND if({{warning_type}}!='全部',warning_type = {{warning_type}}, warning_type!=''),
+        AND if({{level}}!='全部',level = {{level}}, level!='')
+        AND if({{superior_name}}!='全部',superior_name = {{superior_name}}, superior_name!=''),
+        AND if({{snick}}!='全部',snick = {{snick}}, snick !=''))
+        -- {{snick}} 是下拉框选项, {{snick_list}} 是权限隔离支持查看的snick数组, 前者理论上为后者的子集
+        AND ( -- 权限隔离筛选条件
+            shop_id IN {{shop_id_list}} OR snick IN {{snick_list}}
+        )
+)
+USING snick
+ORDER BY {{order_by_clause}}
+LIMIT {{limit_clause}}

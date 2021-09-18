@@ -171,6 +171,25 @@ docker exec -i 9e clickhouse-client \
 
 
 
-SELECT distinct snick
-FROM xqc_dim.snick_all
-WHERE shop_id IN ({{shop_ids=shop_list}})
+-- 测试company_id
+5f73e9c1684bf70001413636
+-- 方太测试数据
+ALTER TABLE xqc_dim.group_local ON CLUSTER cluster_3s_2r DELETE WHERE company_id='5f747ba42c90fd0001254404'
+INSERT INTO xqc_dim.group_all
+VALUES 
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254401','一级部门1','False','',[],1),
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254402','一级部门2','False','',[],1),
+('5f747ba42c90fd0001254404','方太','','','5f747ba42c90fd0001254403','一级部门3','False','',[],1),
+('5f747ba42c90fd0001254404','方太','','','5edfa47c8f591c00163ef7d6','方太京东旗舰店','True','jd',['5f747ba42c90fd0001254401'],2),
+('5f747ba42c90fd0001254404','方太','','','5e9d390d68283c002457b52f','方太京东自营旗舰店','True','jd',['5f747ba42c90fd0001254402'],2)
+('5f747ba42c90fd0001254404','方太','','','5e9d350bcff5ed002486ded8','方太官方旗舰店','True','jd',['5f747ba42c90fd0001254403'],2)
+
+`company_id`
+5f747ba42c90fd0001254404
+
+`shop_id`
+5edfa47c8f591c00163ef7d6
+5e9d390d68283c002457b52f
+5e9d350bcff5ed002486ded8
+5eb8acf16119f0001cbdaa5f
+5cac112e98ef4100118a9c9f
