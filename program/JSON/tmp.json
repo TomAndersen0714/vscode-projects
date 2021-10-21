@@ -1,80 +1,148 @@
 {
-    "id": "61372098699003a721a63a51",
-    "CreateTime": "2021-09-07T16:19:36.5229801+08:00",
-    "UpdateTime": "2021-09-07T16:19:36.5229801+08:00",
-    "company_id": "61372098699003a721a63a52",
-    "company_name": "宝尊",
+    "_id": "614ec471e1b0392636f612f5",
+    "create_time": "2021-09-25 08:49:16.584000",
+    "update_time": "2021-09-25 08:49:16.584000",
+    "company_id": "5f73e9c1684bf70001413636",
+    "company_name": "测试",
     "sub_groups": [{
-            "id": "000186a07b05020ece99da1e",
+        "id": "614ece01c56956618a29c638",
+        "company_id": "5f73e9c1684bf70001413636",
+        "is_shop": false,
+        "name": "部门1",
+        "platform": "",
+        "sub_groups": [{
+            "id": "614ece0ac56956618a29c639",
+            "company_id": "5f73e9c1684bf70001413636",
             "is_shop": false,
-            "name": "1级部门1",
+            "name": "部门2",
+            "platform": "",
             "sub_groups": [{
-                "id": "000000000000000000000000",
+                "id": "614ece12c56956618a29c63a",
+                "company_id": "5f73e9c1684bf70001413636",
                 "is_shop": false,
-                "name": "2级部门1",
+                "name": "部门3",
+                "platform": "",
                 "sub_groups": [{
-                    "id": "61370f2b424350e14cdbf4c5",
-                    "is_shop": false,
-                    "name": "3级部门1",
-                    "sub_groups": [{
-                        "id": "000000000000000000000000",
-                        "is_shop": false,
-                        "name": "",
-                        "sub_groups": [{
-                            "id": "61370f2b424350e14cdbf4c9",
-                            "is_shop": false,
-                            "name": "耐克官方旗舰店",
-                            "sub_groups": null
-                        }]
-                    }]
+                    "id": "5d5be95298ef41001222f790",
+                    "company_id": "5f73e9c1684bf70001413636",
+                    "is_shop": true,
+                    "name": "wangjq_1990",
+                    "platform": "tb",
+                    "sub_groups": []
+                }, {
+                    "id": "5d08498698ef41001087dde8",
+                    "company_id": "5f73e9c1684bf70001413636",
+                    "is_shop": true,
+                    "name": "随风而行216",
+                    "platform": "tb",
+                    "sub_groups": []
+                }, {
+                    "id": "5bfe7a6a89bc4612f16586a5",
+                    "company_id": "5f73e9c1684bf70001413636",
+                    "is_shop": true,
+                    "name": "测试店铺 非卖品",
+                    "platform": "tb",
+                    "sub_groups": []
                 }]
             }, {
-                "id": "61370f2b424350e14cdbf4c2",
+                "id": "614ece2ec56956618a29c63d",
+                "company_id": "5f73e9c1684bf70001413636",
                 "is_shop": false,
-                "name": "2级部门2",
-                "sub_groups": [{
-                    "id": "61370f2b424350e14cdbf4c6",
-                    "is_shop": false,
-                    "name": "3级部门2",
-                    "sub_groups": [{
-                        "id": "61370f2b424350e14cdbf4c9",
-                        "is_shop": false,
-                        "name": "4级部门1",
-                        "sub_groups": null
-                    }]
-                }]
+                "name": "发给",
+                "platform": "",
+                "sub_groups": []
             }]
-        },
-        {
-            "id": "000186a07b05020ece99da1f",
+        }]
+    }, {
+        "id": "614ece4ac56956618a29c63e",
+        "company_id": "5f73e9c1684bf70001413636",
+        "is_shop": false,
+        "name": "二的地方多付多付多付付二的地方多付多付多付付付付二的地方多付多付多付付付付二的地方多付多付多付付付付付付",
+        "platform": "",
+        "sub_groups": [{
+            "id": "614ece52c56956618a29c63f",
+            "company_id": "5f73e9c1684bf70001413636",
             "is_shop": false,
-            "name": "1级部门2",
+            "name": "聚合物",
+            "platform": "",
             "sub_groups": [{
-                "id": "61370f2b424350e14cdbf4c3",
+                "id": "614ecfd6c56956618a29c64f",
+                "company_id": "5f73e9c1684bf70001413636",
                 "is_shop": false,
-                "name": "2级部门3",
+                "name": "维护未",
+                "platform": "",
                 "sub_groups": [{
-                    "id": "61370f2b424350e14cdbf4c7",
-                    "is_shop": false,
-                    "name": "3级部门3",
-                    "sub_groups": [{
-                        "id": "000000000000000000000000",
-                        "is_shop": false,
-                        "name": "",
-                        "sub_groups": [{
-                            "id": "613710d74136668f42c5d839",
-                            "is_shop": false,
-                            "name": "PUMA官方旗舰店",
-                            "sub_groups": null
-                        }]
-                    }]
-                }, {
-                    "id": "61370f2b424350e14cdbf4c8",
-                    "is_shop": false,
-                    "name": "3级部门4",
-                    "sub_groups": null
+                    "id": "613ef1e1ec7097000e494123",
+                    "company_id": "5f73e9c1684bf70001413636",
+                    "is_shop": true,
+                    "name": "邓锐zero",
+                    "platform": "tb",
+                    "sub_groups": []
                 }]
+            }, {
+                "id": "614ed25ec56956618a29c650",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": false,
+                "name": "感觉到",
+                "platform": "",
+                "sub_groups": []
+            }, {
+                "id": "614ed263c56956618a29c651",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": false,
+                "name": "感觉到",
+                "platform": "",
+                "sub_groups": []
+            }, {
+                "id": "614ed26ec56956618a29c652",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": false,
+                "name": "感觉到",
+                "platform": "",
+                "sub_groups": []
+            }, {
+                "id": "614ed26ec56956618a29c653",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": false,
+                "name": "感觉到",
+                "platform": "",
+                "sub_groups": []
+            }, {
+                "id": "614ed275c56956618a29c654",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": false,
+                "name": "感觉到",
+                "platform": "",
+                "sub_groups": []
+            }, {
+                "id": "614ed27fc56956618a29c655",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": false,
+                "name": "感觉到",
+                "platform": "",
+                "sub_groups": []
+            }, {
+                "id": "5e7dbfa6e4f3320016e9b7d1",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": true,
+                "name": "智晓多谋生鲜专营店",
+                "platform": "jd",
+                "sub_groups": []
+            }, {
+                "id": "5f1f97bdfbb9ba0017f73f18",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": true,
+                "name": "阳光宅男820",
+                "platform": "tb",
+                "sub_groups": []
+            }, {
+                "id": "5f8ff0c0a3967d00188dca48",
+                "company_id": "5f73e9c1684bf70001413636",
+                "is_shop": true,
+                "name": "木月瑞希尔",
+                "platform": "tb",
+                "sub_groups": []
             }]
-        }
-    ]
+        }]
+    }]
 }

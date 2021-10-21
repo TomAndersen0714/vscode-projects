@@ -1,4 +1,5 @@
 -- XQC公司组织架构维度表
+-- PS: Airflow T+1拉取
 CREATE TABLE xqc_dim.group_local ON CLUSTER cluster_3s_2r(
     `company_id` String,
     `company_name` String,
@@ -16,13 +17,13 @@ ENGINE = ReplicatedMergeTree(
     '{replica}'
 )
 ORDER BY (`company_id`,`department_id`) 
-SETTINGS index_granularity=8192, storage_policy='default_policy'
+SETTINGS index_granularity=8192, storage_policy='rr'
 
 CREATE TABLE xqc_dim.group_all ON CLUSTER cluster_3s_2r
 AS xqc_dim.group_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'group_local', rand())
 
--- XQC店铺维度表
+/* -- XQC店铺维度表
 CREATE TABLE xqc_dim.shop_local ON CLUSTER cluster_3s_2r(
     `id` String,
     `create_time` String,
@@ -40,7 +41,7 @@ ENGINE = ReplicatedMergeTree(
 )
 PARTITION BY `platform`
 ORDER BY (`company_id`,`plat_shop_name`) 
-SETTINGS index_granularity=8192, storage_policy='default_policy'
+SETTINGS index_granularity=8192, storage_policy='rr'
 
 CREATE TABLE xqc_dim.shop_all ON CLUSTER cluster_3s_2r 
 AS xqc_dim.shop_local
@@ -67,11 +68,11 @@ ENGINE = ReplicatedMergeTree(
 )
 PARTITION BY `platform`
 ORDER BY (`snick`) 
-SETTINGS index_granularity=8192, storage_policy='default_policy'
+SETTINGS index_granularity=8192, storage_policy='rr'
 
 CREATE TABLE xqc_dim.snick_all ON CLUSTER cluster_3s_2r 
 AS xqc_dim.snick_local
-ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'snick_local', rand())
+ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'snick_local', rand()) */
 
 
 -- XQC实时会话表
@@ -94,19 +95,21 @@ ENGINE = ReplicatedMergeTree(
 )
 PARTITION BY (`day`, `platform`)
 ORDER BY `snick`
-SETTINGS index_granularity=8192, storage_policy='default_policy'
+SETTINGS index_granularity=8192, storage_policy='rr'
 
 CREATE TABLE xqc_ods.dialog_all ON CLUSTER cluster_3s_2r 
 AS xqc_ods.dialog_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'dialog_local', rand())
 
-CREATE TABLE buffer.dialog_buffer ON CLUSTER cluster_3s_2r 
+CREATE TABLE buffer.xqc_ods_dialog_buffer ON CLUSTER cluster_3s_2r 
 AS xqc_ods.dialog_all
 ENGINE = Buffer('xqc_ods', 'dialog_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)
 
+
 -- 实时告警表
-CREATE TABLE xqc_ods.event_alert_local ON CLUSTER cluster_3s_2r(
+CREATE TABLE xqc_ods.alert_local ON CLUSTER cluster_3s_2r(
     `id` String,
+    `platform` String,
     `level` Int64,
     `warning_type` String,
     `dialog_id` String,
@@ -115,21 +118,29 @@ CREATE TABLE xqc_ods.event_alert_local ON CLUSTER cluster_3s_2r(
     `day` Int64,
     `is_finished` String,
     `finish_time` String,
+    `shop_id` String,
+    `seller_nick` String,
+    `snick` String,
+    `cnick` String,
+    `employee_name` String,
+    `superior_name` String,
     `update_time` DateTime
 )
 ENGINE = ReplicatedReplacingMergeTree(
-    '/clickhouse/xqc_ods/tables/{layer}_{shard}/event_alert_local',
+    '/clickhouse/xqc_ods/tables/{layer}_{shard}/alert_local',
     '{replica}',
-    update_time
+    `update_time`
 )
 PARTITION BY `day`
-ORDER BY (`dialog_id`,`id`)
-SETTINGS index_granularity=8192, storage_policy='default_policy'
+PRIMARY KEY (`level`,`warning_type`)
+ORDER BY (`level`,`warning_type`,`id`)
+SETTINGS index_granularity=8192, storage_policy='rr'
+-- Distributed
+CREATE TABLE xqc_ods.alert_all ON CLUSTER cluster_3s_2r
+AS xqc_ods.alert_local
+ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'alert_local', rand())
+-- Buffer
+CREATE TABLE buffer.xqc_ods_alert_buffer ON CLUSTER cluster_3s_2r 
+AS xqc_ods.alert_all
+ENGINE = Buffer('xqc_ods', 'alert_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)
 
-CREATE TABLE xqc_ods.event_alert_all ON CLUSTER cluster_3s_2r
-AS xqc_ods.event_alert_local
-ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'event_alert_local', rand())
-
-CREATE TABLE buffer.event_alert_buffer ON CLUSTER cluster_3s_2r
-AS xqc_ods.event_alert_all
-ENGINE = Buffer('xqc_ods', 'event_alert_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)

@@ -5,6 +5,12 @@
         },
         {
             "path": "..\\PythonStudy"
+        },
+        {
+            "path": "..\\codes\\xiaoduo\\qc-engine"
+        },
+        {
+            "path": "..\\codes\\xiaoduo\\xh-mc"
         }
     ],
     "settings": {

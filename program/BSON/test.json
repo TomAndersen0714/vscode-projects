@@ -1,0 +1,14 @@
+{
+    '_id': ObjectId('5f747ba42c90fd000125440b'),
+    'create_time': datetime.datetime(2020, 9, 30, 12, 35, 48, 248000),
+    'update_time': datetime.datetime(2020, 9, 30, 12, 35, 48, 248000),
+    'company_id': ObjectId('5f747ba42c90fd0001254404'),
+    'username': '方太',
+    'status': 1,
+    'sex': 1,
+    'phone': '',
+    'superior_name': '',
+    'role_id': ObjectId('5f747ba42c90fd0001254406'),
+    'entry_time': 1601469348,
+    'department_id': ObjectId('5f747ba42c90fd000125440a')
+}

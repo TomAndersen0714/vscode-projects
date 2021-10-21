@@ -1,32 +1,33 @@
 -- 全局告警统计
 
--- 告警等级下拉框(全局告警统计)
+-- 全局告警统计-告警等级下拉框
 等级固定为初级,中级,高级, 默认为全部
 
--- 告警项下拉框(全局告警统计)
-大数据端只能查询已经发生的告警项, 不能查询实时设置的, 查询实时的得通过后端接口
-修改: 前端表示表示无法查询后端接口, 因此需要直接查询大数据端
+-- 全局告警统计-告警项下拉框
+PS: 大数据端只能查询已经发生的告警项, 不能查询实时设置的, 查询实时的得通过后端接口
+修改: 由于前端表示表示无法直接调用后端接口, 需要查询大数据端
+
 SELECT DISTINCT warning_type
-FROM xqc_ods.event_alert_all
-WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}}))
-    AND toYYYYMMDD(toDate({{day.end=today}}))
+FROM xqc_ods.alert_all
+WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}'))
+    AND toYYYYMMDD(toDate('{{day.end=today}}'))
 AND shop_id GLOBAL IN (
     -- 已订阅店铺
     SELECT tenant_id AS shop_id
     FROM xqc_dim.company_tenant
-    WHERE company_id = '{{ company_id=60dd5e791597f82cd050da9f }}'
+    WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
 )
 -- 权限隔离
 AND (
-        shop_id IN splitByChar(',','{{shop_id_list= }}') 
+        shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
         OR
-        snick IN splitByChar(',','{{snick_list= }}')
+        snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
     )
 -- 下拉框筛选
 AND if('{{level=全部}}'!='全部',level={{level}},level >= 0) -- 告警等级
 
 
--- 告警趋势图(全局告警统计)
+-- 全局告警统计-告警趋势图
 SELECT 
     day AS `日期`,
     CASE
@@ -34,99 +35,111 @@ SELECT
         WHEN platform='tb' THEN '淘宝'
         WHEN platform='ks' THEN '快手'
         WHEN platform='dy' THEN '抖音'
-        ELSE '其他'
+        ELSE platform
     END AS `平台`,
     platform_alert_daily_count -- 平台告警统计
 FROM (
-        SELECT arrayJoin(
-            arrayMap(
-                x->toYYYYMMDD(toDate(x)),
-                range(toUInt32(toDate('{{day.start=week_ago}}')), toUInt32(toDate('{{day.end=today}}') + 1), 1)
-            )
-        ) AS day
-) AS time_axis
+        SELECT * FROM (
+            SELECT arrayJoin(
+                arrayMap(
+                    x->toYYYYMMDD(toDate(x)),
+                    range(toUInt32(toDate('{{ day_start=week_ago }}')), toUInt32(toDate('{{ day_end=today }}') + 1), 1)
+                )
+            ) AS day
+        ) AS time_axis
+        GLOBAL CROSS JOIN (
+            -- 已订阅店铺所在平台
+            SELECT distinct platform
+            FROM xqc_dim.company_tenant
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        ) AS platform_axis
+) AS time_platform_axis
 GLOBAL LEFT JOIN (
     SELECT 
         day,
         platform,
         count(1) AS platform_alert_daily_count
-    FROM xqc_ods.event_alert_all FINAL
-    WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}}))
-        AND toYYYYMMDD(toDate({{day.end=today}}))
+    FROM xqc_ods.alert_all FINAL
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        AND toYYYYMMDD(toDate('{{ day.end=today }}'))
         -- 已订阅店铺
         AND shop_id GLOBAL IN (
             SELECT tenant_id AS shop_id
             FROM xqc_dim.company_tenant
-            WHERE company_id = '{{company_id=60dd5e791597f82cd050da9f}}'
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
         -- 权限隔离
         AND (
-                shop_id IN splitByChar(',','{{shop_id_list= }}') 
+                shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
                 OR
-                snick IN splitByChar(',','{{snick_list= }}')
+                snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
             )
         -- 下拉框筛选
-        AND if('{{level=全部}}'!='全部',level={{level}},level >= 0) -- 告警等级
-        AND if('{{warning_type}}'!='全部',warning_type={{warning_type}},warning_type!='') -- 告警内容
+        AND if({{ level=-1 }}!=-1,level={{ level=-1 }},level >= 0) -- 告警等级
+        AND if('{{ warning_type=全部 }}'!='全部',warning_type='{{ warning_type=全部 }}',warning_type!='') -- 告警内容
     GROUP BY day, platform
 )
-USING day
-ORDER BY day ASC, platform ASC
+USING day,platform
+ORDER BY day ASC, platform DESC
 
 
--- 告警统计列表-告警总量(全局告警统计)
+-- 全局告警统计-告警统计列表-告警总量
+-- PS: 指定时间段内, 默认时间段为近7天数据
 SELECT 
-    count(1) AS alert_daily_count
-FROM xqc_ods.event_alert_all FINAL
-WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}})) 
-    AND toYYYYMMDD(toDate({{day.end=today}}))
+    count(1) AS alert_period_count
+FROM xqc_ods.alert_all FINAL
+WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) 
+        AND toYYYYMMDD(toDate('{{day.end=today}}'))
     -- 已订阅店铺
     AND shop_id GLOBAL IN (
         SELECT tenant_id AS shop_id
         FROM xqc_dim.company_tenant
-        WHERE company_id = '{{company_id=60dd5e791597f82cd050da9f}}'
+        WHERE company_id = '{{company_id=5f747ba42c90fd0001254404}}'
     )
     -- 权限隔离
     AND (
-            shop_id IN splitByChar(',','{{shop_id_list= }}') 
+            shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
             OR
-            snick IN splitByChar(',','{{snick_list= }}')
+            snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
         )
     -- 下拉框筛选
     AND if('{{level=全部}}'!='全部',level={{level}},level!=0) -- 告警等级
     AND if('{{warning_type}}'!='全部',warning_type={{warning_type}},warning_type!='') -- 告警内容
 
 
--- 告警统计列表(全局告警统计)
-
--- 平台时间段内告警总量, 日均告警量
+-- 全局告警统计-告警统计列表-告警总量,日均告警量
+-- PS: 各平台,指定时间段
+WITH (
+    SELECT dateDiff('day',toDate('{{day.start=week_ago}}'),toDate('{{day.end=today}}'))
+) AS interval
 SELECT
     platform,
     count(1) AS platform_warning_cnt, -- 平台对应时间段内的告警总量
-    dateDiff('day',toDate('{{day.start=week_ago}}'),toDate('{{day.end=today}}')) AS interval,
-    -- 平台对应时间段内的日均告警量
     if(interval>0, round(platform_warning_cnt/interval,2), 0.00) AS platform_warning_cnt_avg
-FROM xqc_ods.event_alert_all
-WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}})) 
-    AND toYYYYMMDD(toDate({{day.end=today}}))
+    -- 平台对应时间段内的日均告警量
+FROM xqc_ods.alert_all
+WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) 
+    AND toYYYYMMDD(toDate('{{day.end=today}}'))
     -- 已订阅店铺
     AND shop_id GLOBAL IN (
           SELECT tenant_id AS shop_id
           FROM xqc_dim.company_tenant
-          WHERE company_id = '{{ company_id=60dd5e791597f82cd050da9f }}'
+          WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
        )
     -- 权限隔离
     AND (
-            shop_id IN splitByChar(',','{{shop_id_list= }}') 
+            shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
             OR
-            snick IN splitByChar(',','{{snick_list= }}')
+            snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
         )
     -- 下拉框筛选
     AND if('{{level=全部}}'!='全部',level={{level}},level!=0) -- 告警等级
     AND if('{{warning_type}}'!='全部',warning_type={{warning_type}},warning_type!='') -- 告警内容
 GROUP BY platform
 
--- 平台每日告警项统计
+-- 全局告警统计-告警统计列表-各告警项统计
+-- PS: 各平台,指定时间段内,每天
+-- PS: 后续需要支持34个告警项
 SELECT
     platform AS `平台`,
     day AS `日期`,
@@ -140,25 +153,28 @@ SELECT
     sum(warning_type='买家辱骂') AS `买家辱骂`,
     sum(warning_type='差评或要挟差评') AS `差评或要挟差评`,
     sum(warning_type='投诉或第三方曝光') AS `投诉或第三方曝光`
-FROM xqc_ods.event_alert_all
-WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}})) 
-    AND toYYYYMMDD(toDate({{day.end=today}}))
+FROM xqc_ods.alert_all
+WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) 
+    AND toYYYYMMDD(toDate('{{day.end=today}}'))
     -- 已订阅店铺
     AND shop_id GLOBAL IN (
           SELECT tenant_id AS shop_id
           FROM xqc_dim.company_tenant
-          WHERE company_id = '{{ company_id=60dd5e791597f82cd050da9f }}'
+          WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
        )
     -- 权限隔离
     AND (
-            shop_id IN splitByChar(',','{{shop_id_list= }}') 
+            shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
             OR
-            snick IN splitByChar(',','{{snick_list= }}')
+            snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
         )
 GROUP BY platform, day
 ORDER BY platform ASC, day DESC
 
 -- 合并
+WITH (
+    SELECT dateDiff('day',toDate('{{day.start=week_ago}}'),toDate('{{day.end=today}}'))
+) AS interval
 SELECT
     platform AS `平台`,
     day AS `日期`,
@@ -177,24 +193,23 @@ SELECT
 FROM (
     SELECT
         platform,
-        count(1) AS platform_warning_cnt, -- 平台对应时间段内的告警总量
-        dateDiff('day',toDate('{{day.start=week_ago}}'),toDate('{{day.end=today}}')) AS interval,
-        -- 平台对应时间段内的日均告警量
+        count(1) AS platform_warning_cnt, -- 各个平台对应时间段内的告警总量
         if(interval>0, round(platform_warning_cnt/interval,2), 0.00) AS platform_warning_cnt_avg
-    FROM xqc_ods.event_alert_all
-    WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}})) 
-        AND toYYYYMMDD(toDate({{day.end=today}}))
+        -- 各个平台对应时间段内的日均告警量
+    FROM xqc_ods.alert_all
+    WHERE day BETWEEN toYYYYMMDD(toDate()) 
+        AND toYYYYMMDD(toDate('{{day.end=today}}'))
         -- 已订阅店铺
         AND shop_id GLOBAL IN (
             SELECT tenant_id AS shop_id
             FROM xqc_dim.company_tenant
-            WHERE company_id = '{{ company_id=60dd5e791597f82cd050da9f }}'
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
         -- 权限隔离
         AND (
-                shop_id IN splitByChar(',','{{shop_id_list= }}') 
+                shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
                 OR
-                snick IN splitByChar(',','{{snick_list= }}')
+                snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
             )
         -- 下拉框筛选
         AND if('{{level=全部}}'!='全部',level={{level}},level!=0) -- 告警等级
@@ -215,22 +230,22 @@ GLOBAL JOIN (
         sum(warning_type='买家辱骂') AS `买家辱骂`,
         sum(warning_type='差评或要挟差评') AS `差评或要挟差评`,
         sum(warning_type='投诉或第三方曝光') AS `投诉或第三方曝光`
-    FROM xqc_ods.event_alert_all
-    WHERE day BETWEEN toYYYYMMDD(toDate({{day.start=week_ago}})) 
-        AND toYYYYMMDD(toDate({{day.end=today}}))
+    FROM xqc_ods.alert_all
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) 
+            AND toYYYYMMDD(toDate('{{day.end=today}}'))
         -- 已订阅店铺
         AND shop_id GLOBAL IN (
             SELECT tenant_id AS shop_id
             FROM xqc_dim.company_tenant
-            WHERE company_id = '{{ company_id=60dd5e791597f82cd050da9f }}'
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
         -- 权限隔离
         AND (
-                shop_id IN splitByChar(',','{{shop_id_list= }}') 
+                shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}') 
                 OR
-                snick IN splitByChar(',','{{snick_list= }}')
+                snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
             )
     GROUP BY platform, day
 )
-USING platfrom
+USING platform
 ORDER BY platform ASC, day DESC
