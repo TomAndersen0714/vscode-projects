@@ -1,6 +1,7 @@
--- 客服服务质量+客服被检量
+-- ods.qc_session_count_all
 insert into ods.qc_session_count_all
-select toDate('{ds}') as `date`,
+select
+    toDate('{ds}') as `date`,
     a.platform,
     company_id,
     company_name,
@@ -32,7 +33,8 @@ select toDate('{ds}') as `date`,
     length(b.dialog_array),
     b.dialog_array
 from (
-        select session_info.`date`,
+        select
+            session_info.`date`,
             session_info.platform as platform,
             dim_info.company_id as company_id,
             '' as company_name,
@@ -62,29 +64,18 @@ from (
             session_info.rule_add_score_count as rule_add_score_count,
             session_info.rule_add_score as rule_add_score
         from (
-                select `date`,
+                select
+                    `date`,
                     platform,
                     `group`,
                     seller_nick as shop_name,
                     snick,
                     count(1) AS session_count,
                     sum(
-                        if(
-                            score_add > 0
-                            or mark_score_add > 0
-                            or rule_add_score_info > 0,
-                            1,
-                            0
-                        )
+                        if(score_add > 0 or mark_score_add > 0 or rule_add_score_info > 0, 1, 0 ) 
                     ) as add_score_count,
                     sum(
-                        if(
-                            score > 0
-                            or mark_score > 0
-                            or rule_score_info > 0,
-                            1,
-                            0
-                        )
+                        if(score > 0 or mark_score > 0 or rule_score_info > 0, 1, 0 )
                     ) AS subtract_score_count,
                     sum(if(length(mark_ids) != 0, 1, 0)) as manual_qc_count,
                     sum(if(arraySum(abnormals_count) > 0, 1, 0)) AS ai_abnormal_count,
@@ -105,7 +96,8 @@ from (
                         select dialog_info.*,
                             rule_score_info
                         from (
-                                select `date`,
+                                select
+                                    `date`,
                                     platform,
                                     `group`,
                                     seller_nick,
@@ -123,32 +115,35 @@ from (
                                 WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                             ) as dialog_info
                             left join (
-                                SELECT _id,
+                                SELECT
+                                    _id,
                                     sum(score) as rule_score_info
-                                FROM dwd.xdqc_dialog_all array
-                                    join rule_stats_score as score,
+                                FROM dwd.xdqc_dialog_all 
+                                array join
+                                    rule_stats_score as score,
                                     rule_stats_count as count
                                 WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                                 group by _id
-                            ) as rule using(_id)
+                            ) as rule 
+                            using(_id)
                     ) as rule_info
                     left join (
-                        SELECT _id,
+                        SELECT
+                            _id,
                             sum(score) as rule_add_score_info
-                        FROM dwd.xdqc_dialog_all array
-                            join rule_add_stats_score as score,
+                        FROM dwd.xdqc_dialog_all 
+                        array join 
+                            rule_add_stats_score as score,
                             rule_add_stats_count as count
                         WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                         group by _id
-                    ) rule_add using(_id)
-                GROUP BY date,
-                    platform,
-                    seller_nick,
-                    group,
-                    snick
+                    ) rule_add 
+                    using(_id)
+                GROUP BY date, platform, seller_nick, group, snick
             ) as session_info
             left join (
-                SELECT a.company_id AS company_id,
+                SELECT
+                    a.company_id AS company_id,
                     a._id AS department_id,
                     a.name AS department_name,
                     b.employee_id AS employee_id,
@@ -158,9 +153,10 @@ from (
                         select *
                         from ods.xinghuan_department_all
                         where day = { ds_nodash }
-                    ) AS a GLOBAL
-                    LEFT JOIN (
-                        SELECT a._id AS employee_id,
+                    ) AS a 
+                    GLOBAL LEFT JOIN (
+                        SELECT 
+                            a._id AS employee_id,
                             a.department_id AS department_id,
                             a.username AS employee_name,
                             b.snick AS snick
@@ -168,27 +164,28 @@ from (
                                 select *
                                 from ods.xinghuan_employee_all
                                 where day = { ds_nodash }
-                            ) AS a GLOBAL
-                            LEFT JOIN (
+                            ) AS a 
+                            GLOBAL LEFT JOIN (
                                 select *
                                 from ods.xinghuan_employee_snick_all
-                                where day = { ds_nodash }
-                                    and platform = 'jd'
-                            ) AS b ON a._id = b.employee_id
-                    ) AS b ON a._id = b.department_id
-            ) dim_info on session_info.snick = dim_info.snick
+                                where day = { ds_nodash } and platform = 'jd'
+                            ) AS b 
+                            ON a._id = b.employee_id
+                    ) AS b 
+                    ON a._id = b.department_id
+            ) dim_info 
+            on session_info.snick = dim_info.snick
     ) as a
     left join (
-        select day,
+        select
+            day,
             shop_name,
             snick,
             groupArray(dialog_id) as dialog_array
         from ods.xinghuan_qc_abnormal_all
-        where row_number < 4
-            and day = { ds_nodash }
-        group by day,
-            shop_name,
-            snick
-    ) as b on a.date = b.day
+        where row_number < 4 and day = { ds_nodash }
+        group by day, shop_name, snick
+    ) as b 
+    on a.date = b.day
     and a.shop_name = b.shop_name
     and a.snick = b.snick

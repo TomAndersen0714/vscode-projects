@@ -1,5 +1,6 @@
 -- 后端查询SQL
 -- 客服服务质量排行
+-- ods.qc_session_count_all
 select 
     'server' as type, 
     employee_id, 
@@ -14,7 +15,7 @@ select
     0 as average_check, 
     sum(rule_score) AS user_rule_score, 
     round((sum(session_count) *100 +sum(ai_add_score) -sum(ai_subtract_score)) /sum(session_count),2) AS avg_score 
-from ods.qc_session_count_all 
+from ods.qc_session_count_all
 where date >= %d 
 and date < %d 
 and shop_name in %s 
@@ -31,6 +32,7 @@ union all
 
 -- 客服被检量排行
 -- PS: 仅统计客服被抽检的那几天的数据, 即 manual_qc_count != 0
+-- ods.qc_session_count_all
 select 
     'server_read_mark' as type, 
     employee_id, 
@@ -64,6 +66,7 @@ limit 10
 union all
 
 -- 质检人员质检量排行
+-- ods.qc_read_mark_detail_all
 select 
     'read_mark' as type, 
     account_id as employee_id, 
@@ -78,7 +81,7 @@ select
     count(1)/if(dateDiff('day', toDate(%d), toDate(%d))=0,1, dateDiff('day', toDate(%d), toDate(%d))) as average_check, 
     0 as user_rule_score, 
     0 as avg_score 
-from ods.qc_read_mark_detail_all 
+from ods.qc_read_mark_detail_all
 where username != '' 
 and date >= %d 
 and date < %d 

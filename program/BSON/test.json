@@ -1,14 +1,50 @@
 {
-    '_id': ObjectId('5f747ba42c90fd000125440b'),
-    'create_time': datetime.datetime(2020, 9, 30, 12, 35, 48, 248000),
-    'update_time': datetime.datetime(2020, 9, 30, 12, 35, 48, 248000),
-    'company_id': ObjectId('5f747ba42c90fd0001254404'),
-    'username': '方太',
+    '_id': ObjectId('5f73e9c1684bf7000141363d'),
+    'create_time': datetime.datetime(2020, 9, 30, 2, 13, 21, 201000),
+    'update_time': datetime.datetime(2020, 9, 30, 2, 13, 21, 201000),
+    'company_id': ObjectId('5f73e9c1684bf70001413636'),
+    'username': '测试',
     'status': 1,
     'sex': 1,
     'phone': '',
     'superior_name': '',
-    'role_id': ObjectId('5f747ba42c90fd0001254406'),
-    'entry_time': 1601469348,
-    'department_id': ObjectId('5f747ba42c90fd000125440a')
+    'job_number': '',
+    'role_id': ObjectId('5f73e9c1684bf70001413638'),
+    'entry_time': 1601432001,
+    'data_permit': {
+        'shops': [{
+            'id': ObjectId('5bfe7a6a89bc4612f16586a5'),
+            'platform': 'tb',
+            'seller_nick': '杜可风按'
+        }, {
+            'id': ObjectId('5d08498698ef41001087dde8'),
+            'platform': 'tb',
+            'seller_nick': 'hjahdsa'
+        }, {
+            'id': ObjectId('5d5be95298ef41001222f790'),
+            'platform': 'tb',
+            'seller_nick': 'wangjq_1990'
+        }, {
+            'id': ObjectId('5e7dbfa6e4f3320016e9b7d1'),
+            'platform': 'jd',
+            'seller_nick': '智晓多谋生鲜专营店'
+        }, {
+            'id': ObjectId('5f1f97bdfbb9ba0017f73f18'),
+            'platform': 'tb',
+            'seller_nick': '阳光宅男820'
+        }, {
+            'id': ObjectId('5f8ff0c0a3967d00188dca48'),
+            'platform': 'tb',
+            'seller_nick': '木月瑞希尔'
+        }, {
+            'id': ObjectId('613ef1e1ec7097000e494123'),
+            'platform': 'tb',
+            'seller_nick': '邓锐zero'
+        }],
+        'snicks': [],
+        'group_desc': [],
+        'department_desc': [],
+        'check_shop': False,
+        'check_snick': False
+    }
 }

@@ -11,6 +11,9 @@
         },
         {
             "path": "..\\codes\\xiaoduo\\xh-mc"
+        },
+        {
+            "path": "..\\codes\\ClickHouse"
         }
     ],
     "settings": {
@@ -20,7 +23,11 @@
             "stdio.h": "c",
             "cstdlib": "c",
             "stdint.h": "c",
-            "string.h": "c"
+            "string.h": "c",
+            "array": "cpp",
+            "any": "cpp",
+            "string_view": "cpp",
+            "regex": "cpp"
         }
     },
     "launch": {
