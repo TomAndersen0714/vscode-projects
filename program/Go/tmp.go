@@ -1,87 +1,9 @@
-select 
-	'server' as type, 
-	employee_id, 
-	employee_name, 
-	sum(session_count) as total_count, 
-	0 as total_check, 
-	sum(ai_subtract_score) as abnormal_score, 
-	sum(subtract_score_count) / sum(session_count)  as abnormal_rate, 
-	sum(ai_subtract_score)- sum(manual_subtract_score)-sum(rule_score) as ai_abnormal_score, 
-	sum(manual_subtract_score) as human_abnormal_score, 
-	0 as human_total_check, 
-	0 as average_check, 
-	sum(rule_score) AS user_rule_score, 
-	round((sum(session_count) *100 +sum(ai_add_score) -sum(ai_subtract_score)) /sum(session_count),2) AS avg_score 
-from ods.qc_session_count_all 
-where date >= %d 
-and date < %d 
-and shop_name in %s 
-and employee_name != '' 
-group by employee_id, employee_name 
-order by avg_score desc limit 10 
+SELECT a.company_id AS company_id, a.name AS name, sum (b.label_count) AS label_count FROM (with ( select max(date)  FROM ods.qc_case_label_detail_all WHERE 
+company_id = '%s' -- companyId.Hex()
+as max_date SELECT DISTINCT `date`, company_id, concat(parent_label_name,if(label_name = '', label_name,concat('/',label_name))) AS name FROM ods.qc_case_label_detail_all WHERE 
+company_id = '%s' and date = max_date) AS a LEFT JOIN -- companyId.Hex()
+(with  ( select max(date)  FROM ods.qc_case_label_detail_all WHERE company_id = '%s') as  max_date  -- companyId.Hex()
 
-union all
-
-select 
-	'server_read_mark' as type, 
-	employee_id, 
-	employee_name, 
-	sum(session_count) as total_count, 
-	0 as total_check, 
-	0 as abnormal_score, 
-	0 as abnormal_rate, 
-	0 as ai_abnormal_score, 
-	0 as human_abnormal_score, 
-	sum(manual_qc_count) as human_total_check, 
-	sum(manual_qc_count)/if(dateDiff('day', toDate(%d), toDate(%d))=0,1, dateDiff('day', toDate(%d), toDate(%d))) as average_check, 
-	0 as user_rule_score,
-	0 as avg_score 
-from ods.qc_session_count_all 
-where date >= %d 
-and date < %d 
-and shop_name in %s 
-and employee_name != '' 
-and manual_qc_count != 0 
-group by employee_id, employee_name 
-order by human_total_check desc 
-limit 10 
-
-union all
-
-select 
-	'read_mark' as type, 
-	account_id as employee_id, 
-	username as employee_name, 
-	0 as total_count, 
-	count(1) as total_check, 
-	0 as abnormal_score, 
-	0 as abnormal_rate, 
-	0 as ai_abnormal_count, 
-	0 as human_abnormal_count, 
-	0 as human_total_check, 
-	count(1)/if(dateDiff('day', toDate(%d), toDate(%d))=0,1, dateDiff('day', toDate(%d), toDate(%d))) as average_check, 
-	0 as user_rule_score, 
-	0 as avg_score 
-from ods.qc_read_mark_detail_all 
-where username != '' 
-and date >= %d 
-and date < %d 
-and shop_name in %s 
-and employee_name != '' 
-group by account_id,username 
-order by total_check desc 
-limit 10
-
-(
-	startDate, endDate, shopStr
-)
-
-(
-	startDate, endDate, startDate, endDate,
-	startDate, endDate, shopStr
-)
-
-(
-	startDate, endDate, startDate, endDate,
-	startDate, endDate, shopStr
-)
+SELECT `date`, company_id, concat(parent_label_name,if(label_name = '',label_name,concat('/',label_name))) AS name, sum(IF (dialog_id= '',0,1)) AS label_count FROM ods.qc_case_label_detail_all 
+WHERE shop_name IN %s and date = max_date -- shopStr
+GROUP BY `date`, company_id, name) AS b ON a.company_id = b.company_id AND a.name = b.name and a.date =b.date GROUP by company_id,name

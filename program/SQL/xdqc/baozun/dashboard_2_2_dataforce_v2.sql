@@ -391,37 +391,42 @@ SELECT
     finish_time,
     is_finished
 FROM (
-        SELECT bg_info.department_name AS BG,
-            bu_info.department_name AS BU,
+        SELECT
+            bg_info.department_name AS BG,
+            '' AS BU,
+            -- bu_info.department_name AS BU,
             shop_info.department_id AS shop_id,
             shop_info.department_name AS shop_name
-        FROM xqc_dim.group_all AS shop_info GLOBAL
-            LEFT JOIN (
-                SELECT department_id,
-                    department_name
-                FROM xqc_dim.group_all
-            ) AS bg_info ON parent_department_path [1] = bg_info.department_id GLOBAL
-            LEFT JOIN (
-                SELECT department_id,
-                    department_name
-                FROM xqc_dim.group_all
-            ) AS bu_info ON parent_department_path [2] = bu_info.department_id
+        FROM xqc_dim.group_all AS shop_info
+        GLOBAL LEFT JOIN (
+            SELECT
+                department_id,
+                department_name
+            FROM xqc_dim.group_all
+        ) AS bg_info 
+        ON shop_info.parent_department_path [1] = bg_info.department_id 
+        -- GLOBAL LEFT JOIN (
+        --     SELECT department_id,
+        --         department_name
+        --     FROM xqc_dim.group_all
+        -- ) AS bu_info
+        -- ON shop_info.parent_department_path [2] = bu_info.department_id
         WHERE company_id = '6131e6554524490001fc6825'
-            AND is_shop = 'True'
-            AND parent_department_path [1] != ''
-            AND parent_department_path [2] != ''
-    ) GLOBAL
-    INNER JOIN(
+        AND is_shop = 'True'
+        AND parent_department_path [1] != ''
+        AND parent_department_path [2] != ''
+    ) 
+    GLOBAL INNER JOIN(
         SELECT *
-        FROM xqc_ods.alert_all
-        WHERE day BETWEEN 20210924 AND 20210928
+        FROM xqc_ods.alert_all FINAL
+        WHERE day BETWEEN 20211102 AND 20211102
             AND (
-                shop_id IN ['5cd268e42bf9a8000f9301d7','6131c3766ebd17000a93c0cd','6139c118e16787000fb8a1cf','6139c3c96ebd17000e94b5b5','6139e720fb530f0010c19481','613af5f56ebd17000f942ca2','614ae633fb530f0010c1b33f','614c21b16ebd170010947761']
-                OR snick IN []
+                shop_id IN splitByChar(',','{{ shop_id_list }}')
             )
             AND is_finished != ''
-            AND level != 0
+            AND level = {{level}}
             AND warning_type != ''
-    ) AS alert_info USING shop_id
+    ) AS alert_info 
+    USING shop_id
 ORDER BY time DESC
 LIMIT 20 OFFSET 0

@@ -1,4 +1,4 @@
-/dialog
+v1/data_monitor/dialog
 data: {
     total_count: 4482 // 会话总量
     avg_score: 102 // 质检平均分
@@ -6,7 +6,7 @@ data: {
     abnormal_rate: 0.19567157518964748 // 扣分会话占比
     ai_abnormal_count: 877 // AI质检异常会话量
     high_ex_emotion_count: 109 // 高异常情绪案例数量
-    high_emotion_dialogs: ["616a8576155364000171433f",…] // 高异常情绪案例
+    high_emotion_dialogs: ["616a8576155364000171433f", …] // 高异常情绪案例
     human_check_count: 2 // 人工抽检量
     suggestion_check_count: 354 // 建议抽检量
     check_rate: 0.0004 // 抽检比例
@@ -20,16 +20,16 @@ data: {
 }
 
 
-/qc
+v1/data_monitor/qc
 data: {
     // AI质检问题
-    ai_qc: { 
+    ai_qc: {
         name: 单句响应慢 // 质检项
         rate: 0.3477 // 质检项占比
     }
     // 人工质检问题
-    human_qc: { 
-        name: 淘宝售前/默认分类/错别字 // 质检项
+    human_qc: {
+        name: 淘宝售前 / 默认分类 / 错别字 // 质检项
         rate: 0.3 // 质检项占比
     }
 
@@ -40,7 +40,7 @@ data: {
     }
 }
 
-/customer
+v1/data_monitor/customer
 data: {
     check: { // 质检人员质检量 
         name: "李晓婷" // 姓名
@@ -63,4 +63,10 @@ data: {
         total_dialog: 180 // 会话总量
         user_rule_score: 0 // 自定义扣分
     }
+}
+
+v1/data_monitor/case
+data: { // 案例分析
+    "case_count": 0, // 案例总数
+    "no_case": [] // 无场景案例
 }

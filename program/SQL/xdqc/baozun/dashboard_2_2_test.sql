@@ -58,7 +58,7 @@ FROM (
             department_name AS bg_name,
             department_id AS bg_id
         FROM xqc_dim.group_all
-        WHERE company_id = '5f747ba42c90fd0001254404'
+        WHERE company_id = '6131e6554524490001fc6825'
         AND level = 1
         AND is_shop = 'False'
     )
@@ -73,11 +73,11 @@ FROM (
                 mp_shop_id AS shop_id,
                 snick
             FROM xqc_dim.snick_all
-            WHERE company_id = '5f747ba42c90fd0001254404'
+            WHERE company_id = '6131e6554524490001fc6825'
             -- WHERE snick IN ('{{snicks=snick_list}}') or mp_shop_id IN ('{{shop_ids=shop_id_list}}')
         )
         ON department_id = shop_id
-        WHERE company_id = '5f747ba42c90fd0001254404'
+        WHERE company_id = '6131e6554524490001fc6825'
         AND is_shop = 'True'
     )
     USING bg_id
@@ -176,7 +176,7 @@ SELECT
     is_finished -- 是否完结
 FROM (
     SELECT *
-    FROM xqc_ods.event_alert_1_all
+    FROM xqc_ods.event_alert_all
     WHERE day BETWEEN 20210914 AND 20210915
         -- AND if({{is_finished}}!='全部',is_finished = {{is_finished}}, is_finished!=''),
         -- AND if({{warning_type}}!='全部',warning_type = {{warning_type}}, warning_type!=''),
@@ -195,7 +195,7 @@ GLOBAL LEFT JOIN (
                 department_id AS shop_id,
                 department_name AS shop_name
             FROM xqc_dim.group_all
-            WHERE company_id = '5f747ba42c90fd0001254404'
+            WHERE company_id = '6131e6554524490001fc6825'
             AND is_shop = 'True'
             -- AND if({{BG}}!='全部',parent_department_path[1] = {{BG}}, parent_department_path[1]!='')
             -- AND if({{BU}}!='全部',parent_department_path[2] = {{BU}}, parent_department_path[2]!='')
@@ -206,7 +206,7 @@ GLOBAL LEFT JOIN (
                 mp_shop_id AS shop_id, 
                 snick
             FROM xqc_dim.snick_all
-            WHERE company_id = '5f747ba42c90fd0001254404'
+            WHERE company_id = '6131e6554524490001fc6825'
             -- AND if({{snick}}!='全部',snick = {{snick}}, snick IN ({{snick_list}})) -- {{snick}} 必须是权限隔离snick列表{{snick_list}}的子集
         ) AS shop_snick
         USING shop_id

@@ -32,3 +32,8 @@ ENGINE = Buffer('ods', 'xinghuan_employee_snick_all', 16, 5, 10, 81920, 409600, 
 docker exec -i 7dd8d79f4280 clickhouse-client --port=9900 --query=\
 "INSERT INTO buffer.ods_xinghuan_employee_snick_buffer FORMAT Avro" \
 < /tmp/ods.xinghuan_employee_snick_all_20210801_20211024.Avro
+
+-- 发现缺少8月份数据, 因此从备份数据中恢复8月份的记录
+INSERT INTO ods.xinghuan_employee_snick_all
+SELECT * FROM tmp.xinghuan_employee_snick_bak
+WHERE day BETWEEN 20210801 AND 20210831

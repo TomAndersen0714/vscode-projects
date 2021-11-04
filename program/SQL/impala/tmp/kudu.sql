@@ -219,3 +219,16 @@ SET TBLPROPERTIES('EXTERNAL' = 'TRUE')
 
 insert into dipper_ods.ask_order_conversion_stat_day 
 values(20210829,'577e044b89bc46642bc91a6a','tb','cate_robot_ordered',89,89,89,90,4263.20,47.90)
+
+
+
+CREATE TABLE tmp.kudu_test (
+  reminder_day INT NOT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
+  PRIMARY KEY (reminder_day)
+)
+PARTITION BY HASH (reminder_day) PARTITIONS 4, 
+RANGE (reminder_day) (
+    PARTITION 20210802<=VALUES<20210803,
+    PARTITION 20210803<=VALUES<20210804
+) STORED AS KUDU
+TBLPROPERTIES ('kudu.master_addresses' = 'cdh0,cdh1,cdh2')
