@@ -1,6 +1,8 @@
 -- ods.qc_question_detail_all
 -- ods.qc_words_detail_all
 
+-- AI质检问题排行TOP10
+-- PS: AI质检问题包括 type 的值为 ('ai', 's_emotion', 'c_emotion')
 select a.platform as platform,
     type,
     b.qc_id as qc_id,
@@ -16,7 +18,7 @@ from (
             and `type` in ('ai', 's_emotion', 'c_emotion')
         group by platform
     ) as a
-    left join (
+    global right join (
         select platform,
             `type`,
             qc_id,
@@ -32,46 +34,15 @@ from (
             qc_id,
             qc_name
         order by count_info desc
+        limit 10
     ) as b on a.platform = b.platform
+order by qc_proportion desc
+limit 10
 
 UNION ALL
 
-SELECT a.platform AS platform, -- 客服情感
-    's_emotion' AS `type`,
-    b.qc_id AS qc_id,
-    b.qc_name AS qc_name,
-    round(b.count_info / a.count_all_info, 4) AS qc_proportion
-FROM (
-        SELECT platform,
-            sum(qc_count) AS count_all_info
-        FROM ods.qc_question_detail_all
-        WHERE date >= %d
-            and date < %d
-            and shop_name in %s -- startDate, endDate, shopStr
-            AND `type` = 's_emotion'
-        GROUP BY platform,
-            `type`
-    ) AS a
-    LEFT JOIN (
-        SELECT platform,
-            `type`,
-            qc_id,
-            qc_name,
-            sum(qc_count) AS count_info
-        FROM ods.qc_question_detail_all
-        WHERE date >= %d
-            and date < %d
-            and shop_name in %s -- startDate, endDate, shopStr
-            AND `type` = 's_emotion'
-        GROUP BY platform,
-            `type`,
-            qc_id,
-            qc_name
-    ) AS b ON a.platform = b.platform
-
-union all
-
-select a.platform as platform, -- 人工质检问题
+-- 人工质检问题Top10
+select a.platform as platform,
     'manual' as `type`,
     b.qc_id as qc_id,
     b.qc_name_all as qc_name,
@@ -87,7 +58,7 @@ from (
         group by platform,
             `type`
     ) as a
-    left join (
+    global right join (
         select platform,
             `type`,
             qc_id,
@@ -102,13 +73,16 @@ from (
             `type`,
             qc_id,
             qc_name
+        order by count_info DESC
         limit 10
     ) as b on a.platform = b.platform
 order by qc_proportion desc
+LIMIT 10
 
 union all
 
-select b.platform as platform, -- 质检词分布
+-- 质检词分布Top10
+select b.platform as platform,
     'qc_word' as `type`,
     '' as qc_id,
     a.word as qc_name,
@@ -121,10 +95,10 @@ from (
         WHERE date >= %d
             and date < %d
             and shop_name in %s -- startDate, endDate, shopStr
-        group by platform, word
-        order by words_count_info desc
+        group by platform,
+            word
     ) a
-    left join (
+    global right join (
         select platform,
             sum(words_count) as words_count_all
         from ods.qc_words_detail_all
@@ -132,7 +106,8 @@ from (
             and date < %d
             and shop_name in %s -- startDate, endDate, shopStr
         group by platform
-        order by words_count_all DESC
-        LIMIT 10
+        order by words_count_all desc
+        limit 10
     ) b on a.platform = b.platform
+order by qc_proportion DESC
 limit 10

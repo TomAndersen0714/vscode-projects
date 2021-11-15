@@ -1,0 +1,21 @@
+/api/v1/query/shop
+// 质检报表-店铺
+[{
+    "shop_name": "PUMA官方旗舰店",
+    "department_name": "宝尊集团",
+    "department_id": "6131e6554524490001fc682d",
+    "employee_count": 5,
+    "all_count": 4266,
+    "ai_count": 4266,
+    "ai_abnormal_count": 393,
+    "ai_excellent_count": 2069,
+    "suggest_count": 352,
+    "read_count": 185,
+    "check_rate": "4.34%",
+    "tag_score_count": 0,
+    "tag_add_score_count": 0,
+    "avg_score": 0,
+    "ai_abnormal_rate": "9.21%",
+    "tag_score_rate": "0%"
+},{},{}
+]

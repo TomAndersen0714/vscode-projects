@@ -51,13 +51,13 @@ from (
                         toString(toInt64(date)),
                         ',"subtract_score_proportion":', -- 总扣分
                         toString((sum(subtract_score_count) / sum(session_count))),
-                        ',"manual_subtract_score_proportion":', -- 人工质检扣分
+                        ',"manual_subtract_score_proportion":', -- 人工质检扣分占比
                         toString(
                             (
                                 sum(manual_subtract_score_count) / sum(session_count)
                             )
                         ),
-                        ',"ai_subtract_score_proportion":', -- AI质检扣分
+                        ',"ai_subtract_score_proportion":', -- AI质检扣分占比
                         toString(
                             (
                                 sum(ai_subtract_score_count) / sum(session_count)

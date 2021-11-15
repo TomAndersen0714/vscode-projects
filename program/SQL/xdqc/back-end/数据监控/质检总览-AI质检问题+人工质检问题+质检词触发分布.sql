@@ -36,7 +36,7 @@ from (
 
 UNION ALL
 
-SELECT a.platform AS platform, -- 客服情感
+SELECT a.platform AS platform, -- 客服情绪
     's_emotion' AS `type`,
     b.qc_id AS qc_id,
     b.qc_name AS qc_name,

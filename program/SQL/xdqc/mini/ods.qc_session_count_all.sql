@@ -1,4 +1,6 @@
--- ods.qc_session_count_all
+-- AI质检+人工质检+自定义质检-各客服质检触发次数和分值统计
+-- PS: 质检平台中员工既可能是客服也可能是质检员
+
 insert into ods.qc_session_count_all
 select toDate('{ds}') as `date`,
     a.platform,
@@ -121,7 +123,8 @@ from (
                             ) as rule using(_id)
                     ) as rule_info
                     left join (
-                        SELECT _id,
+                        SELECT
+                            _id,
                             sum(score) as rule_add_score_info
                         FROM dwd.xdqc_dialog_all
                         array join
@@ -133,6 +136,7 @@ from (
                 GROUP BY date, platform, seller_nick, group, snick
             ) as session_info
             left join (
+                -- 查询所有已绑定子账号的公司id,分组id,分组名,员工id,员工名,对应的子账号名
                 SELECT a.company_id AS company_id,
                     a._id AS department_id,
                     a.name AS department_name,
@@ -140,28 +144,37 @@ from (
                     b.employee_name AS employee_name,
                     b.snick AS snick
                 FROM (
+                        -- 查询所有的子账号分组信息
                         select *
                         from ods.xinghuan_department_all
                         where day = { ds_nodash }
-                    ) AS a GLOBAL
-                    LEFT JOIN (
+                    ) AS a 
+                    GLOBAL LEFT JOIN (
+                        -- 查询所有已绑定子账号的员工id,分组id,员工名,子账号名
+                        -- PS: 没有绑定子账号的员工, 其分组id为null
                         SELECT a._id AS employee_id,
                             b.department_id AS department_id,
                             a.username AS employee_name,
                             b.snick AS snick
                         FROM(
+                                -- 查询所有员工信息
                                 select *
                                 from ods.xinghuan_employee_all
                                 where day = { ds_nodash }
-                            ) AS a GLOBAL
-                            LEFT JOIN (
+                            ) AS a 
+                            GLOBAL LEFT JOIN (
+                                -- 查询所有子账号
+                                -- PS: 未绑定员工的子账号, employee_id='000000000000000000000000', 即无法配对
                                 select *
                                 from ods.xinghuan_employee_snick_all
                                 where day = { ds_nodash }
                                     and platform = 'tb'
-                            ) AS b ON a._id = b.employee_id
-                    ) AS b ON a._id = b.department_id
-            ) dim_info on session_info.snick = dim_info.snick
+                            ) AS b 
+                            ON a._id = b.employee_id
+                    ) AS b 
+                    ON a._id = b.department_id
+            ) dim_info 
+            on session_info.snick = dim_info.snick
     ) as a
     left join (
         select

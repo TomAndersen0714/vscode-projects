@@ -1,3 +1,4 @@
+-- AI质检-各子账号AI质检项触发次数统计
 insert into ods.xinghuan_qc_abnormal_all
 select
     { ds_nodash } as day,

@@ -1,69 +1,134 @@
-SELECT 
-    BG,
-    BU,
-    shop_name,
-    superior_name,
-    employee_name,
-    snick,
-    cnick,
-    dialog_id,
-    message_id,
-    alert_info.id AS alert_id,
-    level,
-    warning_type,
-    time AS warning_time
-    toInt64(
-       if(
-           is_finished='True',
-           round((parseDateTimeBestEffort(if(finish_time!='',finish_time,toString(now()))) - parseDateTimeBestEffort(time))/60),
-           round((now() - parseDateTimeBestEffort(time))/60)
-        )
-    ) AS warning_duration,
-    finish_time,
-    is_finished
-FROM
-(
-    SELECT
-        bg_info.department_name AS BG,
-        bu_info.department_name AS BU,
-        shop_info.department_id AS shop_id,
-        shop_info.department_name AS shop_name
-    FROM xqc_dim.group_all AS shop_info 
-    GLOBAL LEFT JOIN
-    (
-        SELECT
-            department_id,
-            department_name
-        FROM xqc_dim.group_all
-    ) AS bg_info
-    ON parent_department_path[1] = bg_info.department_id 
-    GLOBAL LEFT JOIN
-    (
-        SELECT  
-            department_id,
-            department_name
-        FROM xqc_dim.group_all
-    ) AS bu_info
-    ON parent_department_path[2] = bu_info.department_id
-    WHERE company_id = '6131e6554524490001fc6825'
-    AND is_shop = 'True'
-    -- 下拉框筛选
-    AND if('{{ BG=全部 }}'!='全部',parent_department_path[1]='{{BG=全部}}', parent_department_path[1] !='')
-    AND if('{{ BU=全部 }}'!='全部',parent_department_path[2]='{{BU=全部}}', 1=1)
-) 
-GLOBAL INNER JOIN (
-    SELECT  *
-    FROM xqc_ods.alert_all FINAL
-    -- 时间筛选框
-    WHERE day BETWEEN 20211102 AND 20211102
-    -- 已订阅店铺
-    AND shop_id GLOBAL IN (
-        SELECT tenant_id AS shop_id
-        FROM xqc_dim.company_tenant
-        WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- AND platform = '{{ platform=jd }}'
-    )
-) AS alert_info 
-USING shop_id
-ORDER BY time DESC
-LIMIT 20 OFFSET 0
+select a.platform as platform,
+    type,
+    b.qc_id as qc_id,
+    b.qc_name as qc_name,
+    round(b.count_info / a.count_all_info, 4) as qc_proportion
+from (
+        select platform,
+            sum(qc_count) as count_all_info
+        from ods.qc_question_detail_all
+        WHERE date between toDateTime(toDate('{{start_date}}')) and toDateTime(toDate('{{end_date}}'))
+            and shop_name in ['方太官方旗舰店']
+            and `type` in ('ai', 's_emotion', 'c_emotion')
+        group by platform
+    ) as a
+    left join (
+        select platform,
+            `type`,
+            qc_id,
+            qc_name,
+            sum(qc_count) as count_info
+        from ods.qc_question_detail_all
+        WHERE date between toDateTime(toDate('{{start_date}}')) and toDateTime(toDate('{{end_date}}'))
+            and `type` in ('ai', 's_emotion', 'c_emotion')
+            and shop_name in ['方太官方旗舰店']
+        group by platform,
+            `type`,
+            qc_id,
+            qc_name
+        order by count_info desc
+        -- limit 10
+    ) as b on a.platform = b.platform
+-- order by qc_proportion desc
+-- limit 10
+
+UNION ALL
+-- SELECT a.platform AS platform,
+--     's_emotion' AS `type`,
+--     b.qc_id AS qc_id,
+--     b.qc_name AS qc_name,
+--     round(b.count_info / a.count_all_info, 4) AS qc_proportion
+-- FROM (
+--         SELECT platform,
+--             sum(qc_count) AS count_all_info
+--         FROM ods.qc_question_detail_all
+--         WHERE date >= %d
+--             and date < %d
+--             and shop_name in ['方太官方旗舰店']
+--             AND `type` = 's_emotion'
+--         GROUP BY platform,
+--             `type`
+--     ) AS a
+--     LEFT JOIN (
+--         SELECT platform,
+--             `type`,
+--             qc_id,
+--             qc_name,
+--             sum(qc_count) AS count_info
+--         FROM ods.qc_question_detail_all
+--         WHERE date >= %d
+--             and date < %d
+--             and shop_name in ['方太官方旗舰店']
+--             AND `type` = 's_emotion'
+--         GROUP BY platform,
+--             `type`,
+--             qc_id,
+--             qc_name
+--     ) AS b ON a.platform = b.platform
+
+union all
+select a.platform as platform,
+    'manual' as `type`,
+    b.qc_id as qc_id,
+    b.qc_name_all as qc_name,
+    round(b.count_info / a.count_all_info, 4) as qc_proportion
+from (
+        select platform,
+            sum(qc_count) as count_all_info
+        from ods.qc_question_detail_all
+        WHERE date between toDateTime(toDate('{{start_date}}')) and toDateTime(toDate('{{end_date}}'))
+            and shop_name in ['方太官方旗舰店']
+            and `type` = 'manual'
+        group by platform,
+            `type`
+    ) as a
+    left join (
+        select platform,
+            `type`,
+            qc_id,
+            replaceAll(replaceAll(qc_name, '未设置一级标签/', ''), '未设置二级标签/', '') as qc_name_all,
+            sum(qc_count) as count_info
+        from ods.qc_question_detail_all
+        WHERE date between toDateTime(toDate('{{start_date}}')) and toDateTime(toDate('{{end_date}}'))
+            and `type` = 'manual'
+            and shop_name in ['方太官方旗舰店']
+        group by platform,
+            `type`,
+            qc_id,
+            qc_name
+        -- order by count_info desc
+        limit 10
+    ) as b on a.platform = b.platform
+-- order by qc_proportion desc
+limit 10
+
+union all
+
+select b.platform as platform,
+    'qc_word' as `type`,
+    '' as qc_id,
+    a.word as qc_name,
+    round((a.words_count_info / b.words_count_all), 4) as qc_proportion
+from (
+        select platform,
+            word,
+            sum(words_count) as words_count_info
+        from ods.qc_words_detail_all
+        WHERE date between toDateTime(toDate('{{start_date}}')) and toDateTime(toDate('{{end_date}}'))
+            and shop_name in ['方太官方旗舰店']
+        group by platform,
+            word
+        order by words_count_info desc
+    ) a
+    left join (
+        select platform,
+            sum(words_count) as words_count_all
+        from ods.qc_words_detail_all
+        WHERE date between toDateTime(toDate('{{start_date}}')) and toDateTime(toDate('{{end_date}}'))
+            and shop_name in ['方太官方旗舰店']
+        group by platform
+        order by words_count_all -- desc
+        -- limit 10
+    ) b on a.platform = b.platform
+-- order by qc_proportion desc
+limit 10

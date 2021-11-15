@@ -1,4 +1,4 @@
--- 平台维度
+-- 平台
 -- ods.qc_statistical_all
 -- ods.qc_session_count_all
 

@@ -17,6 +17,9 @@
         },
         {
             "path": "..\\codes\\xiaoduo\\xqc"
+        },
+        {
+            "path": "..\\codes\\xiaoduo\\query-sdk"
         }
     ],
     "settings": {

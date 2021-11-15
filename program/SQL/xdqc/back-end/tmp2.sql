@@ -1,7 +1,87 @@
--- 查询各个子账号分组人工质检-标签个数
-SELECT
-    seller_nick,
-    department_name,
+1.1服务态度-暗示升级类
+1.2服务禁忌-重复回复
+1.3未解决问题
+1.4未灵活处理
+1.5问A答B
+1.6未履行承诺
+1.7产品知识技能
+1.8回复错误
+1.9未回复
+2.1包装简陋
+2.2发残次品
+2.3发货慢
+2.4漏发货
+2.5错发货
+2.6发其他客户退货商品
+3.1吴江仓
+3.2广东仓
+3.3京东仓
+4.1不派件
+4.2丢件
+4.3快递员服务态度
+4.4网点收费
+4.5虚假签收
+4.6物流破损
+4.7运输时效
+4.8未送货上门
+4.9物流停滞
+4.10派错
+5.1苏-中通
+5.2粤-中通
+5.3苏-顺丰
+5.4粤-顺丰
+5.5粤-圆通
+5.6苏-韵达
+5.7苏-EMS
+5.8跨越物流
+5.9京东物流
+6.1乱收费
+6.2安装师傅服务态度
+6.3未准时上门
+6.4无人联系安装
+6.5技术问题
+6.6约不到时间
+7.1京东安装
+7.2灯保姆
+7.3神工
+8.1收到外观瑕疵
+8.2余光
+8.3漏水
+8.4噪音/异响/异味
+8.5生锈/掉漆/脏污/材质
+8.6耗电量快
+8.7照明不亮
+8.8串码
+8.9做工差
+8.10浴霸不取暖
+8.11整机不工作
+8.12WIFI链接不上
+8.13频闪
+8.14延迟
+8.15底座发烫
+9.1光线刺眼
+9.2光线亮度不够
+9.3价格贵
+9.4热度不够
+9.5凉霸/风扇灯风力不够
+9.6与其它渠道商品不一致
+9.7觉得产品设计不合理的
+9.8产品不带插头
+9.9分包发货机制
+9.10保价退差流程
+9.11多仓发货机制
+9.12用户不理解营销活动
+9.13用户不理解页面描述
+10.1价格错误/失效
+10.2漏铺货
+10.3错铺货
+10.4页面参数不全
+10.5页面错误
+10.6超卖
+10.7缺货
+10.8活动差价
+10.9直播返款不及时
+
     sumIf(tag_cnt,tag_name='1.1服务态度-暗示升级类') AS `1.1服务态度-暗示升级类`,
     sumIf(tag_cnt,tag_name='1.2服务禁忌-重复回复') AS `1.2服务禁忌-重复回复`,
     sumIf(tag_cnt,tag_name='1.3未解决问题') AS `1.3未解决问题`,
@@ -85,80 +165,3 @@ SELECT
     sumIf(tag_cnt,tag_name='10.7缺货') AS `10.7缺货`,
     sumIf(tag_cnt,tag_name='10.8活动差价') AS `10.8活动差价`,
     sumIf(tag_cnt,tag_name='10.9直播返款不及时') AS `10.9直播返款不及时`
-FROM (
-    SELECT
-        day,
-        seller_nick,
-        snick, 
-        tag_id,
-        count(1) AS tag_cnt
-    FROM (
-        SELECT
-            toInt32(toYYYYMMDD(begin_time)) AS day,
-            seller_nick,
-            snick,
-            tag_score_add_stats_id AS tag_id
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-        AND platform = '{{platform}}'
-        AND snick IN (
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-            AND company_id = '{{ company_id }}'
-            AND platform = '{{platform}}'
-        )
-        UNION ALL
-        SELECT
-            toInt32(toYYYYMMDD(begin_time)) AS day,
-            seller_nick,
-            snick, 
-            tag_score_stats_id AS tag_id
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-        AND platform = '{{platform}}'
-        AND snick IN (
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-            AND company_id = '{{ company_id }}'
-            AND platform = '{{platform}}'
-        )
-    ) AS dialog_info
-    ARRAY JOIN 
-        tag_id
-    WHERE tag_id!=''
-    GROUP BY day, seller_nick, snick, tag_id
-) AS snick_tag_info
-GLOBAL LEFT JOIN (
-    -- 查找子账号和部门之间的映射关系
-    SELECT
-        day, snick, department_id, department_name
-    FROM (
-        SELECT day, snick, department_id
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-        AND company_id = '{{ company_id }}'
-        AND platform = '{{platform}}'
-    ) AS snick_info
-    GLOBAL RIGHT JOIN (
-        SELECT day, _id AS department_id, name AS department_name
-        FROM ods.xinghuan_department_all
-        WHERE day = toYYYYMMDD(today()-1)
-        AND company_id = '{{ company_id }}'
-    ) AS department_info
-    USING department_id
-) AS snick_department_info
-ON snick_tag_info.day = snick_department_info.day
-AND snick_tag_info.snick = snick_department_info.snick
-GLOBAL INNER JOIN (
-    SELECT 
-        _id AS tag_id,
-        name AS tag_name
-    FROM ods.xdqc_tag_all
-    WHERE day = toYYYYMMDD(today()-1)
-    AND platform = '{{platform}}'
-) AS tag_info
-ON snick_tag_info.tag_id = tag_info.tag_id
-GROUP BY seller_nick, department_id, department_name
-ORDER BY seller_nick, department_name

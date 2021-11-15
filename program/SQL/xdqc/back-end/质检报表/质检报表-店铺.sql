@@ -1,4 +1,4 @@
--- 店铺维度
+-- 店铺
 -- ods.qc_statistical_all
 -- ods.qc_session_count_all
 
@@ -14,7 +14,7 @@ select
     ai_count, -- AI质检量/AI质检会话总量
     ai_abnormal_count, -- AI异常会话量/AI质检扣分会话量
     ai_excellent_count, -- AI加分会话量/AI质检加分会话量
-    read_count,
+    read_count, -- 人工抽检量/人工质检会话数量
     suggest_count, -- 建议抽检量/建议人工质检会话数量
     check_rate, -- 抽检比例/人工质检会话量占比
     tag_score_count, -- 人工质检扣分会话量
@@ -35,6 +35,7 @@ select
         '%'
     ) AS tag_score_rate -- 人工扣分会话占比/人工质检扣分会话占比
 from (
+        -- 统计各分组的各种质检项目触发次数等
         select company_id,
             seller_nick as shop_name,
             platform,
@@ -65,6 +66,7 @@ from (
             department_id
     ) as emp
     left join (
+        -- 统计各个分组的平均分
         SELECT company_id,
             shop_name,
             platform,
@@ -83,7 +85,10 @@ from (
             platform,
             department_name,
             department_id
-    ) as score using(company_id, department_id)
+    ) as score 
+    using(company_id, department_id)
+order by %s %s -- (sortKey, sortType)
+limit %d offset %d -- (req.PageSize, (req.CurrentPage-1)*req.PageSize)
 
 -- if req.DepartmentId != ""
 select shop_name,
@@ -167,3 +172,5 @@ from (
             department_name,
             department_id
     ) as score using(company_id, department_id)
+order by %s %s -- (sortKey, sortType)
+limit %d offset %d -- (req.PageSize, (req.CurrentPage-1)*req.PageSize)
