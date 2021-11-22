@@ -1,6 +1,3 @@
--- AI质检+人工质检+自定义质检-各客服质检触发次数和分值统计
--- PS: 质检平台中员工既可能是客服也可能是质检员
-
 insert into ods.qc_session_count_all
 select toDate('{ds}') as `date`,
     a.platform,
@@ -71,10 +68,22 @@ from (
                     snick,
                     count(1) AS session_count,
                     sum(
-                        if(score_add > 0 or mark_score_add > 0 or rule_add_score_info > 0, 1, 0 )
+                        if(
+                            score_add > 0
+                            or mark_score_add > 0
+                            or rule_add_score_info > 0,
+                            1,
+                            0
+                        )
                     ) as add_score_count,
                     sum(
-                        if(score > 0 or mark_score > 0 or rule_score_info > 0, 1, 0 )
+                        if(
+                            score > 0
+                            or mark_score > 0
+                            or rule_score_info > 0,
+                            1,
+                            0
+                        )
                     ) AS subtract_score_count,
                     sum(if(length(mark_ids) != 0, 1, 0)) as manual_qc_count,
                     sum(if(arraySum(abnormals_count) > 0, 1, 0)) AS ai_abnormal_count,
@@ -115,30 +124,31 @@ from (
                             left join (
                                 SELECT _id,
                                     sum(score) as rule_score_info
-                                FROM dwd.xdqc_dialog_all array
-                                    join rule_stats_score as score,
+                                FROM dwd.xdqc_dialog_all
+                                array join 
+                                    rule_stats_score as score,
                                     rule_stats_count as count
                                 WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                                 group by _id
                             ) as rule using(_id)
                     ) as rule_info
                     left join (
-                        SELECT
-                            _id,
+                        SELECT _id,
                             sum(score) as rule_add_score_info
-                        FROM dwd.xdqc_dialog_all
-                        array join
-                            rule_add_stats_score as score,
+                        FROM dwd.xdqc_dialog_all array
+                            join rule_add_stats_score as score,
                             rule_add_stats_count as count
                         WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                         group by _id
                     ) rule_add 
                     using(_id)
-                GROUP BY 
-                    date, platform, seller_nick, group, snick
+                GROUP BY date,
+                    platform,
+                    seller_nick,
+                    group,
+                    snick
             ) as session_info
             left join (
-                -- 查询所有已绑定子账号的公司id,分组id,分组名,员工id,员工名,对应的子账号名
                 SELECT a.company_id AS company_id,
                     a._id AS department_id,
                     a.name AS department_name,
@@ -146,49 +156,40 @@ from (
                     b.employee_name AS employee_name,
                     b.snick AS snick
                 FROM (
-                        -- 查询所有的子账号分组信息
                         select *
                         from ods.xinghuan_department_all
                         where day = { ds_nodash }
-                    ) AS a 
-                    GLOBAL LEFT JOIN (
-                        -- 查询所有已绑定子账号的员工id,分组id,员工名,子账号名
-                        -- PS: 没有绑定子账号的员工, 其分组id为null
+                    ) AS a GLOBAL
+                    LEFT JOIN (
                         SELECT a._id AS employee_id,
                             b.department_id AS department_id,
                             a.username AS employee_name,
                             b.snick AS snick
                         FROM(
-                                -- 查询所有员工信息
                                 select *
                                 from ods.xinghuan_employee_all
                                 where day = { ds_nodash }
-                            ) AS a 
-                            GLOBAL LEFT JOIN (
-                                -- 查询所有子账号
-                                -- PS: 未绑定员工的子账号, employee_id='000000000000000000000000', 即无法配对
+                            ) AS a GLOBAL
+                            RIGHT JOIN (
                                 select *
                                 from ods.xinghuan_employee_snick_all
                                 where day = { ds_nodash }
                                     and platform = 'tb'
-                            ) AS b 
-                            ON a._id = b.employee_id
-                    ) AS b 
-                    ON a._id = b.department_id
-            ) dim_info 
-            on session_info.snick = dim_info.snick
+                            ) AS b ON a._id = b.employee_id
+                    ) AS b ON a._id = b.department_id
+            ) dim_info on session_info.snick = dim_info.snick
     ) as a
     left join (
-        select
-            day,
+        select day,
             shop_name,
             snick,
             groupArray(dialog_id) as dialog_array
         from ods.xinghuan_qc_abnormal_all
         where row_number < 4
-        and day = { ds_nodash }
-        group by day,shop_name, snick
-    ) as b 
-    on a.date = b.day
+            and day = { ds_nodash }
+        group by day,
+            shop_name,
+            snick
+    ) as b on a.date = b.day
     and a.shop_name = b.shop_name
     and a.snick = b.snick

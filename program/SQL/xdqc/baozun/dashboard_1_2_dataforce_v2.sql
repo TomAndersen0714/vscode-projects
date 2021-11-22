@@ -139,7 +139,7 @@ SELECT
     if(level_2_cnt!=0, round(sum(level=2 and is_finished='True')/level_2_cnt*100,2), 0.00) AS level_2_finished_ratio, -- 中级告警完结率
     if(level_3_cnt!=0, round(sum(level=3 and is_finished='True')/level_3_cnt*100,2), 0.00) AS level_3_finished_ratio-- 高级告警完结率
 FROM
-    xqc_ods.alert_all
+    xqc_ods.alert_all FINAL
 WHERE
     day = today
 -- 已订阅店铺
@@ -167,7 +167,7 @@ SELECT
     sum(is_finished = 'False') AS not_finished_cnt, -- 各告警项未处理总量
     sum(1) AS warning_cnt, -- 各告警项总量
     if(warning_cnt!=0, round((warning_cnt-not_finished_cnt)/warning_cnt*100,2), 0.00) AS warning_finished_ratio-- 各告警项完结率
-FROM xqc_ods.alert_all
+FROM xqc_ods.alert_all FINAL
 WHERE day=today
 -- 已订阅店铺
 AND shop_id GLOBAL IN (
@@ -224,7 +224,7 @@ GLOBAL LEFT JOIN (
         sum(level=2) AS level_2_cnt, -- 中级告警总量
         sum(level=3) AS level_3_cnt, -- 高级告警总量
         (level_2_cnt + level_3_cnt) AS level_2_3_sum -- 中高级告警总和
-    FROM xqc_ods.alert_all
+    FROM xqc_ods.alert_all FINAL
     WHERE day BETWEEN month_ago AND today
     -- 已订阅店铺
     AND shop_id GLOBAL IN (
@@ -346,7 +346,7 @@ GLOBAL LEFT JOIN (
                 AS snick_today_level_2_finished_cnt, -- 子账号当天中级已处理告警量
             sum(`level` = 3 AND is_finished = 'True') 
                 AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量
-        FROM xqc_ods.alert_all
+        FROM xqc_ods.alert_all FINAL
         WHERE day = today
         -- 已订阅店铺
         AND shop_id GLOBAL IN (

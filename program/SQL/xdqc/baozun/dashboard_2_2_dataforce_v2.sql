@@ -64,7 +64,7 @@ SELECT
     sum(is_finished = 'False') AS not_finished_cnt, -- 各告警项未处理总量
     sum(1) AS warning_cnt, -- 各告警项总量
     if(warning_cnt!=0, round((warning_cnt-not_finished_cnt)/warning_cnt*100,2), 0.00) AS warning_finished_ratio-- 各告警项完结率
-FROM xqc_ods.alert_all
+FROM xqc_ods.alert_all FINAL
 WHERE day=today
 -- 已订阅店铺
 AND shop_id GLOBAL IN (
@@ -184,7 +184,7 @@ GLOBAL LEFT JOIN (
                 AS snick_today_level_2_finished_cnt, -- 子账号当天中级已处理告警量
             sum(`level` = 3 AND is_finished = 'True') 
                 AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量
-        FROM xqc_ods.alert_all
+        FROM xqc_ods.alert_all FINAL
         WHERE day = today
         -- 已订阅店铺
         AND shop_id GLOBAL IN (
@@ -235,7 +235,7 @@ SELECT
     is_finished -- 是否完结
 FROM (
     SELECT *
-    FROM xqc_ods.alert_all
+    FROM xqc_ods.alert_all FINAL
     WHERE day BETWEEN 20210914 AND 20210915
 ) AS event_alert
 LEFT JOIN (

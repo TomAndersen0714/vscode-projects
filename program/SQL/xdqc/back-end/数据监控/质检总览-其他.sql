@@ -73,4 +73,5 @@ from (
                 order by date
             ) json
         group by platform
-    ) as b on a.platform = b.platform
+    ) as b 
+    on a.platform = b.platform
