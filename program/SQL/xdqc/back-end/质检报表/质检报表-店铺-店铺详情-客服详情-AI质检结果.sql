@@ -24,6 +24,7 @@ select
     sum(abnormals_type_15) as abnormal_withdraw_msg, -- 异常撤回
     sum(abnormals_type_16) as no_answer_before -- 转接前未有效回复
 from (
+        -- PS: 此处JOIN时, 未过滤子表, 即存在扫全表
         select *
         from ods.qc_detail_all as detail
         global left join ods.xinghuan_employee_snick_all as employee 
@@ -34,9 +35,9 @@ from (
         and `date` >= %d
         and `date` <= %d -- (req.EmployeeId, req.ShopName, req.StartDate, req.EndDate)
     ) as info
-left join ods.xinghuan_employee_all as temp 
+left join ods.xinghuan_employee_all as temp
 on info.employee_id = temp._id and info.day = temp.day
-where has(%s, department_id) -- (service.BuildSqlArrayById(departmentIds))
+where has(['%s'], department_id) -- (service.BuildSqlArrayById(departmentIds))
 group by employee_id,
     seller_nick,
     snick,

@@ -75,7 +75,8 @@ from (
             qc_name
         order by count_info DESC
         limit 10
-    ) as b on a.platform = b.platform
+    ) as b
+    on a.platform = b.platform
 order by qc_proportion desc
 LIMIT 10
 

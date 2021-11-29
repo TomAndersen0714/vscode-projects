@@ -35,36 +35,37 @@ from (
                     a_employee.employee_id as employee_id,
                     e_snick.department_id as department_id
                 from (
+                    SELECT
+                        account_info.company_id AS company_id,
+                        account_info.account_id AS account_id,
+                        employee_info.username AS username,
+                        account_info.employee_id AS employee_id
+                    FROM (
                         SELECT
-                            account_info.account_id AS account_id,
-                            employee_info.username AS username,
-                            account_info.employee_id AS employee_id
-                        FROM (
-                            SELECT
-                                _id AS account_id,
-                                employee_id
-                            FROM ods.xinghuan_account_all
-                            WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
-                        ) AS account_info
-                        LEFT JOIN (
-                            SELECT
-                                _id AS employee_id,
-                                username
-                            FROM ods.xinghuan_employee_all
-                            WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
-                        ) AS employee_info 
-                        USING(employee_id)
-                    ) as a_employee
-                    left join (
-                        select
-                            company_id,
-                            department_id,
-                            employee_id
-                        from ods.xinghuan_employee_snick_all
+                            _id AS account_id,
+                            employee_id,
+                            company_id
+                        FROM ods.xinghuan_account_all
                         WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
-                    ) as e_snick 
-                    using(employee_id)
-                    -- PS: 未绑定员工的子账号, 无法关联到 employee和account, 但是所有员工信息都获取到了
+                    ) AS account_info
+                    LEFT JOIN (
+                        SELECT
+                            _id AS employee_id,
+                            username
+                        FROM ods.xinghuan_employee_all
+                        WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
+                    ) AS employee_info
+                    USING(employee_id)
+                ) as a_employee
+                left join (
+                    select
+                        department_id,
+                        employee_id
+                    from ods.xinghuan_employee_snick_all
+                    WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
+                ) as e_snick 
+                using(employee_id)
+                -- PS: 未绑定员工的子账号, 无法关联到 employee和account, 但是所有员工信息都获取到了
             ) AS account
             LEFT JOIN (
                 SELECT
@@ -75,5 +76,7 @@ from (
                 WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
             ) AS department 
             ON department._id = account.department_id
+            -- PS: 未绑定员工的子账号, 无法关联到 employee和account, 但是所有员工信息都获取到了, 故存在部分
+            -- 员工无法定位到对应的子账号分组
     ) dim_info 
     on dialog_info.last_mark_id = dim_info.account_id
