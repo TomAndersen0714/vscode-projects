@@ -2,12 +2,6 @@
     "folders": [
         {
             "path": "."
-        },
-        {
-            "path": "..\\PythonStudy"
-        },
-        {
-            "path": "..\\codes\\ClickHouse"
         }
     ],
     "settings": {
