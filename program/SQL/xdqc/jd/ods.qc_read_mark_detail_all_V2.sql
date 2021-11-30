@@ -21,6 +21,7 @@ from (
         where toYYYYMMDD(begin_time) = { ds_nodash }
             and last_mark_id != ''
     ) as dialog_info
+    -- PS: 尝试是否可以通过两次JOIN来拼接 snick 信息和 account 信息, 上线之前需要评估好影响范围
     left join (
         SELECT
             account.company_id AS company_id,
