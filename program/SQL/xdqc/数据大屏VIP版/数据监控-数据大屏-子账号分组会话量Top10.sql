@@ -3,6 +3,21 @@
 -- 1. 统计各个子账号当天会话量
 -- PS: 目前缺少子账号和对应分组的映射, 需要先修改表结构, 然后从融合版迁移维度表历史数据
 -- 到老淘宝, 以及拉取最新的维度数据 ods.xinghuan_employee_snick_all
+WITH
+(SELECT toYYYYMMDD(today())) AS today,
+(
+    SELECT COUNT(1)
+    FROM xqc_ods.dialog_all
+    WHERE day = today
+
+    -- 已订阅店铺
+    AND shop_id GLOBAL IN (
+        SELECT tenant_id AS shop_id
+        FROM xqc_dim.company_tenant
+        WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        AND platform = '{{ platform=tb }}'
+    )
+) AS today_dialog_cnt -- 当天目前已有会话总量
 SELECT
     snick, -- 子账号名
     COUNT(1) AS snick_today_dialog_cnt -- 子账号当天会话量
@@ -10,7 +25,7 @@ FROM xqc_ods.dialog_all
 WHERE day = today
 
 -- 已订阅店铺
-AND mp_shop_id GLOBAL IN (
+AND shop_id GLOBAL IN (
     SELECT tenant_id AS shop_id
     FROM xqc_dim.company_tenant
     WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
@@ -108,9 +123,27 @@ GLOBAL LEFT JOIN (
 USING department_id
 
 -- 3. 将子账号统计结果附加到分组信息中
+WITH
+(SELECT toYYYYMMDD(today())) AS today,
+(
+    SELECT COUNT(1)
+    FROM xqc_ods.dialog_all
+    WHERE day = today
+
+    -- 已订阅店铺
+    AND shop_id GLOBAL IN (
+        SELECT tenant_id AS shop_id
+        FROM xqc_dim.company_tenant
+        WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        AND platform = '{{ platform=tb }}'
+    )
+) AS today_dialog_cnt -- 当天目前已有会话总量
 SELECT
     department_name,
-    sum(snick_today_dialog_cnt) AS department_dialog_cnt
+    sum(snick_today_dialog_cnt) AS department_dialog_cnt,
+    if(
+        today_dialog_cnt != 0, round(department_dialog_cnt/today_dialog_cnt,2), 0.00
+    ) AS department_dialog_cnt_percent -- 分组当天会话量占比
 FROM (
     -- 1. 统计各个子账号当天会话量
     SELECT
@@ -120,7 +153,7 @@ FROM (
     WHERE day = today
 
     -- 已订阅店铺
-    AND mp_shop_id GLOBAL IN (
+    AND shop_id GLOBAL IN (
         SELECT tenant_id AS shop_id
         FROM xqc_dim.company_tenant
         WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'

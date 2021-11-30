@@ -6,14 +6,14 @@ ods.qc_session_count_all
 
 -- 融合版v1mini-bigdata-002 CH(1b73e87dc75e)导出历史维度数据到 OSS盘: /opt/bigdata
 docker exec -i 1b7 clickhouse-client --port=19000 --query=\
-"SELECT * FROM ods.xinghuan_employee_snick_all WHERE day >= 20210901 FORMAT Avro" \
-> /opt/bigdata/ods.xinghuan_employee_snick_all_20210901_.Avro
+"SELECT * FROM ods.xinghuan_employee_snick_all WHERE day >= 20210901 AND day<=20211128 FORMAT Avro" \
+> /opt/bigdata/ods.xinghuan_employee_snick_all_20210901_20211128.Avro
 
 -- bigdata005 将oos盘数据发送到 bigdata008
-scp /opt/bigdata/ods.xinghuan_employee_snick_all_20210901_.Avro root@zjk-bigdata008:/tmp/ods.xinghuan_employee_snick_all_20210901_.Avro 
+scp /opt/bigdata/ods.xinghuan_employee_snick_all_20210901_20211128.Avro root@zjk-bigdata008:/tmp/
 
 -- 备份Airflow脚本
-已备份
+gitlab已备份
 
 -- 备份已有数据
 CREATE TABLE tmp.xinghuan_employee_snick_bak
@@ -24,6 +24,8 @@ ORDER BY day
 INSERT INTO tmp.xinghuan_employee_snick_bak
 SELECT * FROM ods.xinghuan_employee_snick_all
 WHERE day >= 20210901
+
+SELECT COUNT(1) FROM tmp.xinghuan_employee_snick_bak
 
 -- 添加原表缺失字段 department_id
 ALTER TABLE tmp.xinghuan_employee_snick_local ON CLUSTER cluster_3s_2r
@@ -60,14 +62,14 @@ ENGINE = Buffer('ods', 'xinghuan_employee_snick_all', 16, 5, 10, 81920, 409600, 
 
 -- 清空已备份数据
 ALTER TABLE ods.xinghuan_employee_snick_local ON CLUSTER cluster_3s_2r
-DELETE WHERE day >= 20210901
+DELETE WHERE day >= 20210901 AND day<=20211128
 
 OPTIMIZE TABLE ods.xinghuan_employee_snick_local ON CLUSTER cluster_3s_2r
 
 -- bigdata008:7524cac17c99 上传数据
 docker exec -i 7524cac17c99 clickhouse-client --port=29000 --query=\
 "INSERT INTO buffer.ods_xinghuan_employee_snick_buffer FORMAT Avro" \
-< /tmp/ods.xinghuan_employee_snick_all_20210901_.Avro
+< /tmp/ods.xinghuan_employee_snick_all_20210901_20211128.Avro
 
 
 -- 重新加载元数据: 重跑load_data_tmp2ods及其上游任务, upstream & recursive
