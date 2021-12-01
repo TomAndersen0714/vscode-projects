@@ -1,32 +1,15 @@
-WITH
-(SELECT toYYYYMMDD(today())) AS today,
-(
-    SELECT COUNT(1)
-    FROM xqc_ods.dialog_all
-    WHERE day = today
-
-    -- 已订阅店铺
-    AND shop_id GLOBAL IN (
-        SELECT tenant_id AS shop_id
-        FROM xqc_dim.company_tenant
-        WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
-        AND platform = '{{ platform=tb }}'
-    )
-) AS today_dialog_cnt -- 当天目前已有会话总量
+WITH ( SELECT toYYYYMMDD(today()) ) AS today
 SELECT
-    department_name,
-    sum(snick_today_dialog_cnt) AS department_dialog_cnt,
-    if(
-        today_dialog_cnt != 0, round(department_dialog_cnt/today_dialog_cnt,2), 0.00
-    ) AS department_dialog_cnt_percent -- 分组当天会话量占比
+    seller_nick AS `店铺`,
+    department_name AS `分组`,
+    sum(snick_alert_cnt) AS `告警量`
 FROM (
-    -- 1. 统计各个子账号当天会话量
     SELECT
-        snick, -- 子账号名
-        COUNT(1) AS snick_today_dialog_cnt -- 子账号当天会话量
-    FROM xqc_ods.dialog_all
-    WHERE day = today
-
+        seller_nick,
+        snick,
+        COUNT(1) AS snick_alert_cnt
+    FROM xqc_ods.alert_all FINAL
+    WHERE day=today
     -- 已订阅店铺
     AND shop_id GLOBAL IN (
         SELECT tenant_id AS shop_id
@@ -34,10 +17,12 @@ FROM (
         WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
         AND platform = '{{ platform=tb }}'
     )
-    GROUP BY snick
+    -- 筛选新版本告警
+    AND `level` IN [1,2,3]
+    GROUP BY seller_nick, snick
 )
 GLOBAL LEFT JOIN (
-    -- 2. 获取子账号与子账号分组的T+1映射
+    -- 获取子账号与子账号分组的T+1映射
     -- PS: 由于子账号分组最多有3层, 因此需要进行2次JOIN, 来获取子账号分组的路径
     SELECT
         snick, department_name
@@ -91,6 +76,17 @@ GLOBAL LEFT JOIN (
                     FROM ods.xinghuan_department_all
                     WHERE day = toYYYYMMDD(yesterday())
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    AND (
+                        parent_id GLOBAL IN (
+                            SELECT DISTINCT
+                                _id AS department_id
+                            FROM ods.xinghuan_department_all
+                            WHERE day = toYYYYMMDD(yesterday())
+                            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        ) -- 清除子账号父分组被删除, 而子分组依旧存在的脏数据
+                        OR 
+                        parent_id = '' -- 保留顶级分组
+                    )
                 ) AS level_4
                 GLOBAL LEFT JOIN (
                     SELECT 
@@ -128,6 +124,6 @@ GLOBAL LEFT JOIN (
     USING department_id
 ) AS snick_department_name_map
 USING snick
-GROUP BY department_name
-ORDER BY department_dialog_cnt DESC
-LIMIT 10
+GROUP BY seller_nick, department_name
+ORDER BY `告警量` DESC
+LIMIT 5

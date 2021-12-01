@@ -22,7 +22,7 @@ from (
             and last_mark_id != ''
     ) as dialog_info
     -- PS: 尝试是否可以通过两次JOIN来拼接 snick 信息和 account 信息, 上线之前需要评估好影响范围
-    left join (
+    global left join (
         SELECT
             account.company_id AS company_id,
             department._id AS department_id,
@@ -44,7 +44,8 @@ from (
                         FROM (
                             SELECT
                                 _id AS account_id,
-                                employee_id
+                                employee_id,
+                                company_id
                             FROM ods.xinghuan_account_all
                             WHERE day = { ds_nodash }
                         ) AS account_info
@@ -57,15 +58,6 @@ from (
                         ) AS employee_info 
                         USING(employee_id)
                     ) as a_employee
-                    left join (
-                        select
-                            company_id,
-                            department_id,
-                            employee_id
-                        from ods.xinghuan_employee_snick_all
-                        WHERE day = { ds_nodash }
-                    ) as e_snick 
-                    using(employee_id)
             ) AS account
             LEFT JOIN (
                 SELECT
