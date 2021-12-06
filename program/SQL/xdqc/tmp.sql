@@ -1,56 +1,57 @@
 SELECT
-    COUNT(1) AS `人工质检量`
-FROM dwd.xdqc_dialog_all
-WHERE toYYYYMMDD(begin_time) BETWEEN {{day.start}} AND {{day.end}}
-AND seller_nick IN ['方太官方旗舰店','方太集成烹饪中心旗舰店']
-AND mark_ids != []
-
-
-
-SELECT
-    /* toDate('{ds}') AS `date`,
-    dialog_info.platform as platform,
-    dim_info.company_id as company_id,
-    '' as company_name,
-    '' as department_id,
-    '' as department_name,
-    dialog_info.account_id as account_id,
-    dim_info.username as username,
-    dialog_info.seller_nick as shop_name,
-    dialog_info.dialog_id as dialog_id, */
-    COUNT(1)
+    day,
+    '{{ platform }}' AS platform,
+    seller_nick,
+    shop_id,
+    COUNT(1) AS qc_dialog_cnt
 FROM (
     SELECT
-        platform,
+        toInt32(toYYYYMMDD(begin_time)) AS day,
         seller_nick,
         snick,
-        _id as dialog_id,
-        last_mark_id AS account_id
+        _id
     FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{day.start}}')) AND toYYYYMMDD(toDate('{{day.end}}'))
-    AND seller_nick IN ['方太官方旗舰店','方太集成烹饪中心旗舰店']
-    AND last_mark_id != ''
-) as dialog_info
+    WHERE toYYYYMMDD(begin_time) BETWEEN {{start_day}} AND {{end_day}}
+    AND platform = '{{ platform }}'
+    -- 过滤关联了质检标准的店铺
+    AND seller_nick GLOBAL IN (
+        SELECT DISTINCT seller_nick
+        FROM ods.xinghuan_qc_norm_relate_all
+        WHERE day BETWEEN {{start_day}} AND {{end_day}}
+        AND platform = '{{ platform }}'
+    )
+    -- 过滤关联了质检标注的子账号
+    AND snick GLOBAL IN (
+        -- 查询所有关联了质检标准的子账号分组下的子账号
+        SELECT DISTINCT snick
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day BETWEEN {{start_day}} AND {{end_day}}
+        AND platform = '{{ platform }}'
+        AND department_id GLOBAL IN (
+            -- 查询关联了质检标准的子账号分组ID
+            SELECT DISTINCT department_id
+            FROM ods.xinghuan_qc_norm_relate_all
+            WHERE day BETWEEN {{start_day}} AND {{end_day}}
+            AND platform = '{{ platform }}'
+        )
+    )
+) AS dialog_info
 GLOBAL LEFT JOIN (
-    SELECT
-        account_info.company_id AS company_id,
-        account_info.account_id AS account_id,
-        employee_info.username AS username
-    FROM (
-        SELECT
-            _id AS account_id,
-            employee_id,
-            company_id
-        FROM ods.xinghuan_account_all
-        WHERE day = toYYYYMMDD(yesterday())
-    ) AS account_info
-    GLOBAL LEFT JOIN (
-        SELECT
-            _id AS employee_id,
-            username
-        FROM ods.xinghuan_employee_all
-        WHERE day = toYYYYMMDD(yesterday())
-    ) AS employee_info 
-    USING(employee_id)
-) dim_info
-USING(account_id)
+    -- 查询所有关联了质检标准的子账号分组下的子账号
+    SELECT DISTINCT
+        snick,
+        mp_shop_id AS shop_id
+    FROM ods.xinghuan_employee_snick_all
+    WHERE day BETWEEN {{start_day}} AND {{end_day}}
+    AND platform = '{{ platform }}'
+    AND department_id GLOBAL IN (
+        -- 查询关联了质检标准的子账号分组ID
+        SELECT DISTINCT department_id
+        FROM ods.xinghuan_qc_norm_relate_all
+        WHERE day BETWEEN {{start_day}} AND {{end_day}}
+        AND platform = '{{ platform }}'
+    )
+) AS snick_shop_id
+USING snick
+GROUP BY day, seller_nick, shop_id
+ORDER BY day, seller_nick

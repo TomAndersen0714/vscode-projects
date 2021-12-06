@@ -115,12 +115,14 @@ from (
                             left join (
                                 SELECT _id,
                                     sum(score) as rule_score_info
-                                FROM dwd.xdqc_dialog_all array
-                                    join rule_stats_score as score,
+                                FROM dwd.xdqc_dialog_all 
+                                array join
+                                    rule_stats_score as score,
                                     rule_stats_count as count
                                 WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                                 group by _id
-                            ) as rule using(_id)
+                            ) as rule
+                            using(_id)
                     ) as rule_info
                     left join (
                         SELECT
