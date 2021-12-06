@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# 检查字符串是否非空
+# 注意:对字符串进行判断时最好使用双引号以保证其为单个字符串
+# 否则其变量值可能为多个字符串而导致结果不正确
+
+# -n用于检查字符串是否非空
+if [ -n "$1" ]; then
+    echo "This string is not empty."
+else
+    echo "This string is empty."
+fi
+
+# -z用于检查字符串长度是否为0
+if [ ! -z "$1" ];then
+    echo "This string is not empty."
+else
+    echo "This string is empty."
+fi
+
+# 或者使用字符串拼接的技巧进行判断
+if [ "x$1" != "x" ];then
+    echo "This string is not empty."
+else
+    echo "This string is empty."
+fi

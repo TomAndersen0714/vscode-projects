@@ -1,0 +1,20 @@
+#!/bin/bash
+# test8:用于练习特殊参数变量
+echo "The number of parameters is $#"
+echo "The current script is $0"
+echo "The first parameter is $1"
+echo "The parameter-10 is ${10}"
+echo "The parameters string is $*"
+# 使用shift命令可以将参数列表前移指定次数，每次移动一次则覆盖一次$1，参数个数减1
+shift 1
+echo "The parameters list is $@"
+
+# 用于练习特殊状态变量
+date 
+echo "The last command or parameter is $_"
+date +%Y-%m-%d
+echo "The last command or parameter is $_"
+echo "123"> tmp &
+echo "The last command exit code is $?"
+echo "The last background shell PID is $!"
+echo "The current shell PID is $$"

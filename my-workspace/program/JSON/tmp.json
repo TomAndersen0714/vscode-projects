@@ -1,0 +1,51 @@
+{
+    '_id': ObjectId('5f851f569651ae00016970ff'),
+    'create_time': datetime.datetime(2020, 10, 13, 3, 30, 30, 39000),
+    'update_time': datetime.datetime(2021, 9, 16, 13, 1, 40, 512000),
+    'company_id': ObjectId('5f747ba42c90fd0001254404'),
+    'username': '许剑',
+    'status': 1,
+    'sex': 1,
+    'phone': '15757101953',
+    'superior_id': ObjectId('5f81130cde07a80001cb2aaf'),
+    'superior_name': '路莎莎',
+    'job_number': 'E73291',
+    'role_id': ObjectId('5f747ba42c90fd0001254407'),
+    'entry_time': 1498060800,
+    'data_permit': {
+        'shops': [{
+            'id': ObjectId('5cac112e98ef4100118a9c9f'),
+            'platform': 'tb',
+            'seller_nick': '方太官方旗舰店'
+        }, {
+            'id': ObjectId('5e9d350bcff5ed002486ded8'),
+            'platform': 'jd',
+            'seller_nick': '方太官方旗舰店'
+        }, {
+            'id': ObjectId('5e9d390d68283c002457b52f'),
+            'platform': 'jd',
+            'seller_nick': '方太京东自营旗舰店'
+        }, {
+            'id': ObjectId('5eb8acf16119f0001cbdaa5f'),
+            'platform': 'jd',
+            'seller_nick': '方太厨卫旗舰店'
+        }, {
+            'id': ObjectId('5ec268eba4e6550015829402'),
+            'platform': 'jd',
+            'seller_nick': '方太烟灶旗舰店'
+        }, {
+            'id': ObjectId('5edfa47c8f591c00163ef7d6'),
+            'platform': 'jd',
+            'seller_nick': '方太京东旗舰店'
+        }, {
+            'id': ObjectId('6045bb797985c4000958a35c'),
+            'platform': 'jd',
+            'seller_nick': '方太集成烹饪中心京东自营旗舰店'
+        }],
+        'snicks': [],
+        'group_desc': [],
+        'department_desc': [],
+        'check_shop': False,
+        'check_snick': False
+    }
+}

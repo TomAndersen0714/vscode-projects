@@ -1,0 +1,6 @@
+#!/bin/bash
+if (($(date +%Y) == 2020)); then
+    echo "This year is 2020"
+fi
+for ((i = 0; i < 10; i++)); do echo "Hello"; done
+

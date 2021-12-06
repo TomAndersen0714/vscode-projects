@@ -1,0 +1,53 @@
+v1/dialog/farther/list
+data: {
+    count: 280492,
+    dialogs: [{
+        "id": "6159d376d419b300018aaa94",
+        "cnick": "love宋宁宁",
+        "snick": "方太官方旗舰店:售后小天",
+        "seller_nick": "方太官方旗舰店",
+        "room_id": "",
+        "mark": "",
+        "plat_goods_ids": [],
+        "begin_timestamp": 1633276790,
+        "end_timestamp": 1633276874,
+        "qc_word_stats": [],
+        "c_emotion_stats": [],
+        "s_emotion_stats": [],
+        "abnormal_stats": [],
+        "excellent_stats": [],
+        "score": 0,
+        "score_add": 0,
+        "tags": [],
+        "tag_score_stats": [],
+        "message_tag_stats": null,
+        "message_add_tag_stats": null,
+        "add_tags": [],
+        "tag_score_add_stats": [],
+        "has_read": false,
+        "has_read_others": false,
+        "has_mark": false,
+        "employee_name": "姚天宇",
+        "employee_id": "610b546f25879e0001e44c4b",
+        "mark_id": "6159d3ca197b9f0001f974a9",
+        "mark_judge": 0,
+        "mark_score": 0,
+        "msg_count": 14,
+        "is_remind": false,
+        "order_info": {
+          "status": "unorder"
+        },
+        "human_check": false,
+        "rule_stats": [],
+        "rule_add_stats": [],
+        "wx_rule_stats": [],
+        "wx_rule_add_stats": [],
+        "undo_stat": {
+          "rules": [],
+          "abnormals": []
+        }
+      },
+      {},
+      {}
+    ]
+}

@@ -1,0 +1,8 @@
+#!/bin/bash
+# 花括号使用练习
+var=50
+var1=100
+var2=200
+# 若想要实现var变量后拼接字符串就需要使用花括号
+echo $var1 ${var}1
+echo $var2 ${var}2

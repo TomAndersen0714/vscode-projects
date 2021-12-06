@@ -1,0 +1,25 @@
+#!/bin/bash
+# 通过ssh工具调用远程主机命令
+pcount=$#
+if ((pcount != 3)); then
+    echo "Wrong Parameter!"
+    echo "Request parameters:user hostname port"
+    exit 1
+fi
+# 获取远端用户名参数
+userName=$1
+# 获取远端主机地址参数
+remoteHostName=$2
+# 获取ssh连接端口号
+port=$3
+# 启动ssh工具连接
+if ssh -p $port -tt $userName@$remoteHostName >remotessh.log 2>&1 <<remotessh; then
+# 远程执行脚本
+. /root/script_test/test.sh
+# 退出ssh连接终端
+exit
+remotessh
+    echo "Finished successfully!"
+else
+    echo "Finished with wrong!"
+fi

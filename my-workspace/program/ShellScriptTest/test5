@@ -1,0 +1,9 @@
+#!/bin/bash
+# 双方括号使用练习
+fileName=test5
+if [[ $fileName==test* ]]; then
+    echo "This is a test file!"
+    if [[ $fileName==test5 ]]; then
+        echo "This file is test5!"
+    fi
+fi
