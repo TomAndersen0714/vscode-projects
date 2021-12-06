@@ -1,5 +1,0 @@
-#!/bin/bash
-# test7:用于对比各种脚本程序执行方式的区别
-echo "The variable var1 is" $var1
-echo "The environment variable env1 is" $env1
-echo "The current shell PID is $$"

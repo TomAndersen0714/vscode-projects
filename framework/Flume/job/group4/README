@@ -1,6 +1,0 @@
-# 此文件夹主要存放实现对不同源的日志进行聚合的flume配置文件
-# 功能:flume1监听指定的某个或多个文件,将追加内容发送给flume3,flume2监听本地指定端口
-# 将接收到的数据传输给flume3,flume3将这些更新数据输出到控制台
-# flume1:TailDir Source->Memory Channel->Avro Sink
-# flume2:NetCat Source->Memory Channel->Avro Sink
-# flume3:Avro Source->Memory Channel->Logger Sink

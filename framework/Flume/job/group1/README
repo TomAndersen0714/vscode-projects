@@ -1,5 +1,0 @@
-# 此文件夹主要用于存放测试TailDir Source至HDFS Sink以及Roll File Sink的配置文件
-# 功能:flume1将监控文件的更新数据传输给flume2和flume3,分别输出到HDFS和本地文件中
-# flume1:TailDir Source->Memory Channel->Avro Sink
-# flume2:Avro Source->Memory Channel->HDFS Sink
-# flume3:Avro Source->Memory Channel->Roll File Sink

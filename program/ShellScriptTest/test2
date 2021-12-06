@@ -1,4 +1,0 @@
-#!/bin/bash
-# 括号使用练习
-year=$(date +%Y)
-echo "This year is $year"
