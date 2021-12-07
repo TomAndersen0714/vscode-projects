@@ -1,57 +1,8 @@
-SELECT
-    day,
-    '{{ platform }}' AS platform,
-    seller_nick,
-    shop_id,
-    COUNT(1) AS qc_dialog_cnt
-FROM (
-    SELECT
-        toInt32(toYYYYMMDD(begin_time)) AS day,
-        seller_nick,
-        snick,
-        _id
-    FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN {{start_day}} AND {{end_day}}
-    AND platform = '{{ platform }}'
-    -- 过滤关联了质检标准的店铺
-    AND seller_nick GLOBAL IN (
-        SELECT DISTINCT seller_nick
-        FROM ods.xinghuan_qc_norm_relate_all
-        WHERE day BETWEEN {{start_day}} AND {{end_day}}
-        AND platform = '{{ platform }}'
-    )
-    -- 过滤关联了质检标注的子账号
-    AND snick GLOBAL IN (
-        -- 查询所有关联了质检标准的子账号分组下的子账号
-        SELECT DISTINCT snick
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day BETWEEN {{start_day}} AND {{end_day}}
-        AND platform = '{{ platform }}'
-        AND department_id GLOBAL IN (
-            -- 查询关联了质检标准的子账号分组ID
-            SELECT DISTINCT department_id
-            FROM ods.xinghuan_qc_norm_relate_all
-            WHERE day BETWEEN {{start_day}} AND {{end_day}}
-            AND platform = '{{ platform }}'
-        )
-    )
-) AS dialog_info
-GLOBAL LEFT JOIN (
-    -- 查询所有关联了质检标准的子账号分组下的子账号
-    SELECT DISTINCT
-        snick,
-        mp_shop_id AS shop_id
-    FROM ods.xinghuan_employee_snick_all
-    WHERE day BETWEEN {{start_day}} AND {{end_day}}
-    AND platform = '{{ platform }}'
-    AND department_id GLOBAL IN (
-        -- 查询关联了质检标准的子账号分组ID
-        SELECT DISTINCT department_id
-        FROM ods.xinghuan_qc_norm_relate_all
-        WHERE day BETWEEN {{start_day}} AND {{end_day}}
-        AND platform = '{{ platform }}'
-    )
-) AS snick_shop_id
-USING snick
-GROUP BY day, seller_nick, shop_id
-ORDER BY day, seller_nick
+-- 修复京东/老淘宝/融合版 Airflow BUG, 增加Task, 保证后续数据能够正常汇总
+完成
+
+-- 另起一个DAG用于发送各个平台 10.01~11.25 所有的数据到老淘宝
+发送端将原始DAG进行复制, 然后日期修改为10.01开始重跑对应的数据, 发送端一直重跑
+
+-- 老淘宝询单转化数据写入
+重写Fix DAG, 等待发送端数据重跑完成之后, 启动老淘宝Fix DAG, 将数据汇总到ClickHouse
