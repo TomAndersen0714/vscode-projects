@@ -28,20 +28,21 @@ from (
             account.account_id AS account_id,
             account.username AS username
         FROM (
-                -- PS: 未绑定员工的子账号, 无法获取到子账号分组 company_id,department_id, 但是所有质检员信息都获取到了
                 select
-                    e_snick.company_id as company_id,
-                    account_id,
-                    username,
+                    a_employee.company_id AS company_id,
+                    a_employee.account_id AS account_id,
+                    a_employee.username AS username,
                     a_employee.employee_id as employee_id,
                     e_snick.department_id as department_id
                 from (
                         SELECT
+                            account_info.company_id AS company_id,
                             account_info.account_id AS account_id,
                             employee_info.username AS username,
                             account_info.employee_id AS employee_id
                         FROM (
                             SELECT
+                                company_id,
                                 _id AS account_id,
                                 employee_id
                             FROM ods.xinghuan_account_all
@@ -58,7 +59,6 @@ from (
                     ) as a_employee
                     left join (
                         select
-                            company_id,
                             department_id,
                             employee_id
                         from ods.xinghuan_employee_snick_all
@@ -75,5 +75,5 @@ from (
                 WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
             ) AS department 
             ON department._id = account.department_id
-    ) dim_info 
+    ) dim_info
     on dialog_info.last_mark_id = dim_info.account_id

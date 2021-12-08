@@ -1,4 +1,4 @@
--- AI质检-各客服质检问题明细汇总
+-- AI质检-扣分行为统计
 -- ods.dialog_all
 -- ods.xinghuan_department_all
 -- ods.xinghuan_employee_all
@@ -67,7 +67,7 @@ from (
     ) dim_info on ai_qc_info.snick = dim_info.snick
 
 
--- 人工质检-各客服质检问题明细汇总
+-- 人工质检-质检标签统计
 -- ods.xinghuan_employee_snick_all
 -- ods.xinghuan_employee_all
 -- ods.xinghuan_department_all

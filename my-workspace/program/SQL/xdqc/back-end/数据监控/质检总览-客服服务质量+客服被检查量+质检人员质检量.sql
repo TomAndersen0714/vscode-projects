@@ -1,7 +1,7 @@
 -- 后端查询SQL
 -- 客服服务质量排行
 -- ods.qc_session_count_all
-select 
+select
     'server' as type, 
     employee_id, 
     employee_name, 

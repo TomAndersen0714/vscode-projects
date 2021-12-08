@@ -299,13 +299,12 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_all
                         WHERE day = { ds_nodash }
-                    ) AS a 
-                    GLOBAL LEFT JOIN (
+                    ) AS a GLOBAL
+                    LEFT JOIN (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
                             and platform = 'tb'
-                    ) AS b 
-                    ON a._id = b.employee_id
+                    ) AS b ON a._id = b.employee_id
             ) AS b ON a._id = b.department_id
     ) dim_info on ai_qc_info.snick = dim_info.snick

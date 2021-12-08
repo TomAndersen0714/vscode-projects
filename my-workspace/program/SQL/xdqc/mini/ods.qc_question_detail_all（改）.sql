@@ -15,52 +15,53 @@ SELECT toDate('{ds}'),
     ai_qc_info.qc_name,
     ai_qc_info.qc_count
 from (
-        select `seller_nick`,
-            platform,
-            `group`,
-            'ai' as type,
-            snick,
-            qc_id,
-            '' as qc_name,
-            qc_count
-        from dwd.xdqc_dialog_all
-        array join
-            abnormals_type as qc_id,
-            abnormals_count as qc_count
-        where toYYYYMMDD(begin_time) = { ds_nodash }
-            and qc_count != 0
-            and platform = 'tb'
-    ) ai_qc_info
-    left join (
-        SELECT a.company_id AS company_id,
-            a._id AS department_id,
-            a.name AS department_name,
-            b.employee_id AS employee_id,
-            b.employee_name AS employee_name,
+    select `seller_nick`,
+        platform,
+        `group`,
+        'ai' as type,
+        snick,
+        qc_id,
+        '' as qc_name,
+        qc_count
+    from dwd.xdqc_dialog_all
+    array join
+        abnormals_type as qc_id,
+        abnormals_count as qc_count
+    where toYYYYMMDD(begin_time) = { ds_nodash }
+        and qc_count != 0
+        and platform = 'tb'
+) ai_qc_info
+GLOBAL LEFT JOIN (
+    SELECT a.company_id AS company_id,
+        a._id AS department_id,
+        a.name AS department_name,
+        b.employee_id AS employee_id,
+        b.employee_name AS employee_name,
+        b.snick AS snick
+    FROM (
+        SELECT *
+        FROM ods.xinghuan_department_all
+        WHERE day = { ds_nodash }
+    ) AS a 
+    GLOBAL LEFT JOIN (
+        SELECT a._id AS employee_id,
+            b.department_id AS department_id,
+            a.username AS employee_name,
             b.snick AS snick
         FROM (
-                SELECT *
-                FROM ods.xinghuan_department_all
-                WHERE day = { ds_nodash }
-            ) AS a GLOBAL
-            LEFT JOIN (
-                SELECT a._id AS employee_id,
-                    b.department_id AS department_id,
-                    a.username AS employee_name,
-                    b.snick AS snick
-                FROM (
-                        SELECT *
-                        FROM ods.xinghuan_employee_all
-                        WHERE day = { ds_nodash }
-                    ) AS a GLOBAL
-                    LEFT JOIN (
-                        SELECT *
-                        FROM ods.xinghuan_employee_snick_all
-                        WHERE day = { ds_nodash }
-                            and platform = 'tb'
-                    ) AS b ON a._id = b.employee_id
-            ) AS b ON a._id = b.department_id
-    ) dim_info on ai_qc_info.snick = dim_info.snick
+            SELECT *
+            FROM ods.xinghuan_employee_all
+            WHERE day = { ds_nodash }
+        ) AS a 
+        GLOBAL RIGHT JOIN (
+            SELECT *
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = { ds_nodash }
+                and platform = 'tb'
+        ) AS b ON a._id = b.employee_id
+    ) AS b ON a._id = b.department_id
+) dim_info 
+on ai_qc_info.snick = dim_info.snick
 
 -- 人工质检-质检标签汇总
 insert into ods.qc_question_detail_all
@@ -172,8 +173,8 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_all
                         WHERE day = { ds_nodash }
-                    ) AS a GLOBAL
-                    LEFT JOIN (
+                    ) AS a 
+                    GLOBAL RIGHT JOIN (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
@@ -236,8 +237,8 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_all
                         WHERE day = { ds_nodash }
-                    ) AS a GLOBAL
-                    LEFT JOIN (
+                    ) AS a 
+                    GLOBAL RIGHT JOIN (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
@@ -300,12 +301,11 @@ from (
                         FROM ods.xinghuan_employee_all
                         WHERE day = { ds_nodash }
                     ) AS a 
-                    GLOBAL LEFT JOIN (
+                    GLOBAL RIGHT JOIN (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
                             and platform = 'tb'
-                    ) AS b 
-                    ON a._id = b.employee_id
+                    ) AS b ON a._id = b.employee_id
             ) AS b ON a._id = b.department_id
     ) dim_info on ai_qc_info.snick = dim_info.snick

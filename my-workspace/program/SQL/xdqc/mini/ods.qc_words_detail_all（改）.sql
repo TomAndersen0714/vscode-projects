@@ -54,7 +54,7 @@ FROM (
                 WHERE day = { ds_nodash }
             ) AS a 
             GLOBAL LEFT JOIN (
-                -- 查询所有相互绑定的员工和子账号, PS: 无法查询出未绑定员工的子账号
+                -- 查询所有相互绑定子账号和对应分组, 如果绑定了员工则也获取员工信息
                 SELECT a._id AS employee_id,
                     b.department_id AS department_id,
                     a.username AS employee_name,
@@ -65,7 +65,7 @@ FROM (
                         FROM ods.xinghuan_employee_all
                         WHERE day = { ds_nodash }
                     ) AS a
-                    GLOBAL LEFT JOIN (
+                    GLOBAL RIGHT JOIN (
                         -- 查询所有的子账号
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
