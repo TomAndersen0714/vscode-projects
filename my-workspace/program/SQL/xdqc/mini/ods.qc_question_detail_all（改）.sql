@@ -63,7 +63,7 @@ GLOBAL LEFT JOIN (
 ) dim_info 
 on ai_qc_info.snick = dim_info.snick
 
--- 人工质检-质检标签汇总
+-- 人工质检-"扣分"质检标签汇总
 insert into ods.qc_question_detail_all
 SELECT toDate('{ds}'),
     'tb' as platform,
@@ -80,7 +80,8 @@ SELECT toDate('{ds}'),
     manual_qc_info.qc_name,
     manual_qc_info.qc_count
 from (
-        select tag_info.seller_nick,
+        select
+            tag_info.seller_nick,
             tag_info.`group`,
             'manual' as type,
             tag_info.snick,
@@ -95,7 +96,7 @@ from (
                     count(1) as qc_count
                 from ods.xinghuan_dialog_tag_score_all
                 where day = { ds_nodash }
-                    and cal_op = 0
+                    and cal_op = 0 -- 仅扣分标签
                 group by tag_id,
                     seller_nick,
                     `group`,

@@ -78,9 +78,9 @@ from (
                     ) as add_score_count,
                     sum(
                         if(
-                            score > 0
-                            or mark_score > 0
-                            or rule_score_info > 0,
+                            score > 0 -- AI质检
+                            or mark_score > 0 -- 人工质检
+                            or rule_score_info > 0, -- 自定义质检扣分
                             1,
                             0
                         )

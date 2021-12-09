@@ -38,7 +38,7 @@ from (
         FROM ods.qc_session_count_all
         WHERE date between %d and %d -- startDate, endDate, shopStr
             and shop_name in %s
-            and department_id != ''
+            -- and department_id != ''
         group by platform
     ) as a
     left join (

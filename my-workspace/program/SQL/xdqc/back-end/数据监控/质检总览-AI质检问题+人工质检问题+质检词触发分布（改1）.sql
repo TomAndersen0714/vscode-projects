@@ -15,7 +15,11 @@ from (
         WHERE date >= %d
             and date < %d
             and shop_name in %s -- startDate, endDate, shopStr
-            and `type` in ('ai', 's_emotion', 'c_emotion')
+            and (
+                `type` = 'ai' 
+                OR (`type` = 's_emotion' AND qc_id>='4') 
+                OR (`type` = 'c_emotion' AND qc_id>='4')
+            )
         group by platform
     ) as a
     global right join (
@@ -27,7 +31,11 @@ from (
         from ods.qc_question_detail_all
         WHERE date >= %d
             and date < %d
-            and `type` in ('ai', 's_emotion', 'c_emotion')
+            and (
+                `type` = 'ai' 
+                OR (`type` = 's_emotion' AND qc_id>='4') 
+                OR (`type` = 'c_emotion' AND qc_id>='4')
+            )
             and shop_name in %s -- startDate, endDate, shopStr
         group by platform,
             `type`,
@@ -35,7 +43,8 @@ from (
             qc_name
         order by count_info desc
         limit 10
-    ) as b on a.platform = b.platform
+    ) as b 
+    on a.platform = b.platform
 order by qc_proportion desc
 limit 10
 

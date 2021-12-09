@@ -1,60 +1,36 @@
-                     insert into ods.qc_read_mark_detail_all 
-                      select 
-                      toDate('{ds}') AS `day`,
-                      dialog_info.platform as platform,
-                      dim_info.company_id as company_id ,
-                      '' as company_name,
-                     dim_info.department_id as department_id,
-                     dim_info.department_name  as department_name,
-                     dialog_info.last_mark_id as account_id,
-                     dim_info.username as username,
-                     dialog_info.seller_nick as seller_nick,
-                     dialog_info.dialog_id as dialog_id
-                     from 
-                     (select  platform,seller_nick,snick,_id as dialog_id ,last_mark_id  from dwd.xdqc_dialog_all where toYYYYMMDD(begin_time) = {ds_nodash} and last_mark_id != '')
-                      as dialog_info 
-                     left join 
-                     (
-           SELECT account.company_id AS company_id,
-       department._id AS department_id,
-       department.name AS department_name,
-       account.account_id AS account_id,
-       account.username AS username
-FROM (
-select 
-    a_employee.company_id as company_id,
-    a_employee.account_id AS account_id,
-    a_employee.username AS username,
-    a_employee.employee_id as employee_id,
-    e_snick.department_id as department_id
-from (
-
- SELECT 
-        account_info.company_id AS company_id,
-        account_info.account_id AS account_id,
-        employee_info.username AS username,
-        account_info.employee_id AS employee_id
-   FROM
-     (SELECT company_id,
-             _id AS account_id,
-             employee_id
-      FROM ods.xinghuan_account_all
-      WHERE day = {ds_nodash}) AS account_info
-   LEFT JOIN
-     (SELECT _id AS employee_id,
-             username
-      FROM ods.xinghuan_employee_all
-      WHERE day = {ds_nodash}) AS employee_info USING(employee_id)
-) as a_employee
-left join 
-(select company_id,department_id,employee_id from ods.xinghuan_employee_snick_all  WHERE day = {ds_nodash}  ) as e_snick 
-using(employee_id)) AS account
-LEFT JOIN
-  (SELECT _id,
-          company_id,
-          name
-   FROM ods.xinghuan_department_all
-   WHERE day = {ds_nodash}) AS department
-ON department._id = account.department_id
-) dim_info 
-on dialog_info.last_mark_id  = dim_info.account_id
+SELECT platform,
+    sum(session_count) as total_count, -- 会话总量
+    sum(subtract_score_count) as abnormal_count,-- 扣分会话
+    sum(subtract_score_count) / sum(session_count) as abnormal_rate, -- 扣分会话占比
+    sum(ai_subtract_score_count) as ai_abnormal_cnt, -- AI质检异常会话量
+    sum(manual_qc_count) as human_check_count, -- 人工抽检量
+    toInt32(
+        round(
+            (0.9604 * sum(session_count)) /(0.0025 * sum(session_count) + 0.9604),
+            0
+        )
+    ) as suggestion_check_count, -- 建议抽检量
+    round(
+        (
+            sum(session_count) * 100 + sum(ai_add_score) - sum(ai_subtract_score)
+        ) / sum(session_count),
+        2
+    ) AS avg_score, -- 质检平均分
+    round((sum(manual_qc_count) / sum(session_count)), 4) as check_rate, -- 抽检比例
+    sum(manual_subtract_score_count) as human_abnormal_count, -- 人工质检扣分量
+    length(
+        arrayReduce(
+            'groupUniqArray',
+            flatten(groupArray(high_abnormal_emo_list))
+        )
+    ) as high_ex_emotion_count, -- 高异常情绪案例数量
+    toString(
+        arrayReduce(
+            'groupUniqArray',
+            flatten(groupArray(high_abnormal_emo_list))
+        )
+    ) as high_ex_emotion_dialog_id -- 高异常情绪案例
+FROM ods.qc_session_count_all
+WHERE date between %d and %d -- startDate, endDate, shopStr
+    and shop_name in %s
+    and department_id != ''
