@@ -43,3 +43,4 @@ func BuildQcSql(startDate, endDate int64, shopName []string) string {
 	sqlPartThree := "group by platform,`type`,qc_id,qc_name order by count_info desc limit 10) as b on a.platform = b.platform order by qc_proportion desc limit 10 UNION ALL "
 	sqlBuilder.WriteString(sqlPartThree)
 
+-- 
