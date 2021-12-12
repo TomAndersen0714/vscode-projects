@@ -1,36 +1,51 @@
-SELECT platform,
-    sum(session_count) as total_count, -- 会话总量
-    sum(subtract_score_count) as abnormal_count,-- 扣分会话
-    sum(subtract_score_count) / sum(session_count) as abnormal_rate, -- 扣分会话占比
-    sum(ai_subtract_score_count) as ai_abnormal_cnt, -- AI质检异常会话量
-    sum(manual_qc_count) as human_check_count, -- 人工抽检量
-    toInt32(
-        round(
-            (0.9604 * sum(session_count)) /(0.0025 * sum(session_count) + 0.9604),
-            0
+INSERT INTO xqc_ods.qc_dialog_cnt_all
+SELECT
+    day,
+    'tb' AS platform,
+    shop_id,
+    seller_nick,
+    COUNT(1) AS qc_dialog_cnt
+FROM (
+    SELECT
+        toInt32(toYYYYMMDD(begin_time)) AS day,
+        seller_nick,
+        snick,
+        _id
+    FROM dwd.xdqc_dialog_all
+    WHERE toYYYYMMDD(begin_time) = 20210901
+    AND platform = 'tb'
+    AND seller_nick GLOBAL IN (
+        SELECT DISTINCT seller_nick
+        FROM ods.xinghuan_qc_norm_relate_all
+        WHERE day = 20210901
+        AND platform = 'tb'
+    )
+    AND snick GLOBAL IN (
+        SELECT DISTINCT snick
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = 20210901
+        AND platform = 'tb'
+        AND department_id GLOBAL IN (
+            SELECT DISTINCT department_id
+            FROM ods.xinghuan_qc_norm_relate_all
+            WHERE day = 20210901
+            AND platform = 'tb'
         )
-    ) as suggestion_check_count, -- 建议抽检量
-    round(
-        (
-            sum(session_count) * 100 + sum(ai_add_score) - sum(ai_subtract_score)
-        ) / sum(session_count),
-        2
-    ) AS avg_score, -- 质检平均分
-    round((sum(manual_qc_count) / sum(session_count)), 4) as check_rate, -- 抽检比例
-    sum(manual_subtract_score_count) as human_abnormal_count, -- 人工质检扣分量
-    length(
-        arrayReduce(
-            'groupUniqArray',
-            flatten(groupArray(high_abnormal_emo_list))
-        )
-    ) as high_ex_emotion_count, -- 高异常情绪案例数量
-    toString(
-        arrayReduce(
-            'groupUniqArray',
-            flatten(groupArray(high_abnormal_emo_list))
-        )
-    ) as high_ex_emotion_dialog_id -- 高异常情绪案例
-FROM ods.qc_session_count_all
-WHERE date between %d and %d -- startDate, endDate, shopStr
-    and shop_name in %s
-    and department_id != ''
+    )
+) AS dialog_info
+GLOBAL LEFT JOIN (
+    SELECT DISTINCT
+        snick,
+        mp_shop_id AS shop_id
+    FROM ods.xinghuan_employee_snick_all
+    WHERE day = 20210901
+    AND platform = 'tb'
+    AND department_id GLOBAL IN (
+        SELECT DISTINCT department_id
+        FROM ods.xinghuan_qc_norm_relate_all
+        WHERE day = 20210901
+        AND platform = 'tb'
+    )
+) AS snick_shop_id
+USING snick
+GROUP BY day, seller_nick, shop_id
