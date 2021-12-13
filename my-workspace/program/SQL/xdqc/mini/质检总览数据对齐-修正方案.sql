@@ -15,7 +15,7 @@ ods.qc_session_count_all 表统计逻辑中:
 
 
 -- AI质检问题Top10
--- PS: 修正未实现过滤正面情感, 导致扣分问题统计百分比之和不足一百, 即各问题百分比偏低的问题
+-- PS: 修正未实现过滤正面情感, 导致扣分问题统计百分比之和不足一百, 同时各问题百分比偏低的问题
 xh-mc/handler/data_monitor.go:455
 func BuildQcSql(startDate, endDate int64, shopName []string) string {
 	shopStr := BuildShopStr(shopName)

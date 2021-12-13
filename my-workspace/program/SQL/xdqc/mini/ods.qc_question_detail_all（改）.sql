@@ -103,6 +103,7 @@ from (
                     snick
             ) as tag_info
             left join (
+                -- 获取质检标准名-人工质检规则名-人工质检标签名
                 select norm_tag.tag_id,
                     toString(
                         concat(
@@ -122,6 +123,7 @@ from (
                         )
                     ) as all_tag_name
                 from (
+                        -- 获取标签及其所属质检标准
                         select b._id as qc_norm_id,
                             b.name as qc_norm_name,
                             a._id as tag_id,
@@ -143,18 +145,24 @@ from (
                                 from ods.xinghuan_qc_norm_all
                                 where day = { ds_nodash }
                                     and status = 1
-                            ) as b on a.qc_norm_id = b._id
+                            ) as b 
+                            on a.qc_norm_id = b._id
                     ) as norm_tag
                     left join (
+                        -- 获取质检标准-人工质检规则
                         select _id,
                             name
                         from ods.xdqc_tag_sub_category_all
                         where day = { ds_nodash }
-                    ) as sub_category on norm_tag.sub_category_id = sub_category._id
-            ) as all_tag_name_info on tag_info.tag_id = all_tag_name_info.tag_id
+                    ) as sub_category 
+                    on norm_tag.sub_category_id = sub_category._id
+            ) as all_tag_name_info 
+            on tag_info.tag_id = all_tag_name_info.tag_id
     ) as manual_qc_info
     left join (
-        SELECT a.company_id AS company_id,
+        -- 获取子账号信息
+        SELECT
+            a.company_id AS company_id,
             a._id AS department_id,
             a.name AS department_name,
             b.employee_id AS employee_id,
@@ -182,7 +190,8 @@ from (
                             and platform = 'tb'
                     ) AS b ON a._id = b.employee_id
             ) AS b ON a._id = b.department_id
-    ) dim_info on manual_qc_info.snick = dim_info.snick
+    ) dim_info 
+    on manual_qc_info.snick = dim_info.snick
 
 -- AI质检-客服情绪汇总
 insert into ods.qc_question_detail_all

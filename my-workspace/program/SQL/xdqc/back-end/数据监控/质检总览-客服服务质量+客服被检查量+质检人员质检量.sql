@@ -56,7 +56,7 @@ union all
 
 -- 质检人员质检量排行
 -- ods.qc_read_mark_detail_all
-select 
+select
     'read_mark' as type, 
     account_id as employee_id, 
     username as employee_name, 
