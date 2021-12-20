@@ -33,10 +33,10 @@ ALTER TABLE tmp.xinghuan_qc_norm_relate_all ON CLUSTER cluster_3s_2r ADD COLUMN 
 ALTER TABLE ods.xinghuan_qc_norm_relate_local ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
 ALTER TABLE ods.xinghuan_qc_norm_relate_all ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
 
-tmp.xdqc_tag_local
-tmp.xdqc_tag_all
-ods.xdqc_tag_local
-ods.xdqc_tag_all
+ALTER TABLE tmp.xdqc_tag_local ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+ALTER TABLE tmp.xdqc_tag_all ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+ALTER TABLE ods.xdqc_tag_local ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+ALTER TABLE ods.xdqc_tag_all ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
 
 
 -- 京东
@@ -103,6 +103,11 @@ ALTER TABLE tmp.xinghuan_qc_norm_relate_all ON CLUSTER cluster_3s_2r ADD COLUMN 
 ALTER TABLE ods.xinghuan_qc_norm_relate_local ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
 ALTER TABLE ods.xinghuan_qc_norm_relate_all ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
 
+ALTER TABLE tmp.xdqc_tag_local ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+ALTER TABLE tmp.xdqc_tag_all ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+ALTER TABLE ods.xdqc_tag_local ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+ALTER TABLE ods.xdqc_tag_all ON CLUSTER cluster_3s_2r ADD COLUMN company_id String AFTER platform
+
 -- 快手
 -- 在platform字段之后增加 company_id:
 ALTER TABLE tmp.xdqc_abnormal_check_setting_all ADD COLUMN company_id String AFTER platform
@@ -116,3 +121,6 @@ ALTER TABLE ods.xdqc_emotion_check_item_all ADD COLUMN company_id String AFTER p
 
 ALTER TABLE tmp.xinghuan_qc_norm_relate_all ADD COLUMN company_id String AFTER platform
 ALTER TABLE ods.xinghuan_qc_norm_relate_all ADD COLUMN company_id String AFTER platform
+
+ALTER TABLE tmp.xdqc_tag_all ADD COLUMN company_id String AFTER platform
+ALTER TABLE ods.xdqc_tag_all ADD COLUMN company_id String AFTER platform
