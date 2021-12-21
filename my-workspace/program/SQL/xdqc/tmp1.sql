@@ -1,81 +1,148 @@
-CREATE VIEW app_csm.shop_nick_view AS WITH old_shop AS (
-    SELECT *,
-        row_number() OVER (
-            PARTITION BY platform,
-            plat_user_id
-            ORDER BY `_id` DESC
-        ) rank_number
-    FROM dim.shop_nick
-),
-t_base AS (
-    SELECT new_shop.shop_id `_id`,
-        new_shop.category_name category_zh,
-        new_shop.create_time,
-        new_shop.expire_time,
-        new_shop.update_time,
-        new_shop.plat_shop_name,
-        new_shop.plat_user_id,
-        new_shop.platform,
-        old_shop.xd_shop_nick,
-        old_shop.category,
-        old_shop.version,
-        old_shop.plat_shop_id,
-        old_shop.plat_shop_cid,
-        old_shop.user_id,
-        old_shop.reminder_version,
-        old_shop.account_limit
-    FROM dim.platform_shop_nick new_shop
-        LEFT OUTER JOIN old_shop ON new_shop.platform = old_shop.platform
-        AND old_shop.rank_number = 1
-        AND new_shop.plat_user_id = old_shop.plat_user_id
-),
-t1_0 AS (
-    SELECT *,
-        row_number() OVER (
-            PARTITION BY platform,
-            main_nick
-            ORDER BY `_id` DESC
-        ) rank_number
-    FROM app_crm.ods_fxxk_shop
-),
-t1 AS (
-    SELECT `_id`,
-        main_nick,
-        platform_map.value platform,
-        create_time,
-        shop_name,
-        company_id,
-        `status`
-    FROM t1_0
-        LEFT OUTER JOIN app_csm.platform_map platform_map ON t1_0.platform = platform_map.name
-    WHERE rank_number = 1
-),
-t2_0 AS (
-    SELECT *,
-        row_number() OVER (
-            PARTITION BY customer_name
-            ORDER BY customer_name ASC,
-                impl_owner DESC
-        ) rank_number
-    FROM app_crm.ods_fxxk_order
-),
-t2 AS (
-    SELECT t_base.*,
-        customer.`_id` customer_id,
-        customer.name customer_name,
-        customer.maintainer,
-        customer.`owner` salesman,
-        t2_0.impl_owner,
-        t2_0.impl_owner implman,
-        t2_0.train_owner,
-        customer.province,
-        customer.city
-    FROM t_base
-        LEFT OUTER JOIN t1 ON t1.main_nick = t_base.plat_user_id
-        AND t1.platform = t_base.platform
-        LEFT OUTER JOIN app_crm.ods_fxxk_customer customer ON t1.company_id = customer.`_id`
-        LEFT OUTER JOIN t2_0 ON t1.company_id = t2_0.customer_name
-        AND t2_0.rank_number = 1
-)
-SELECT *
-FROM t2
+select 
+    a.day,
+    a.platform,
+    b.company_id,
+    b.department_id,
+    b.department_name,
+    b.employee_id,
+    b.employee_name,
+    a.snick,
+    a.`group`,
+    a.seller_nick,
+    a.sessionc_count,
+    a.qc_count,
+    a.mark_score,
+    a.mark_score_add,
+    a.abnormals_count,
+    a.excellents_count,
+    a.abnormals_sum,
+    a.excellents_sum,
+    a.read_mark_count,
+    a.tag_score_stats_count,
+    a.tag_score_add_stats_count,
+    a.rule_score_stats_count,
+    a.rule_score_add_stats_count,
+    a.mark_list,
+    a.tag_json_list
+from (
+        select 
+            t1.*,
+            t2.tag_json_list
+        from (
+                SELECT 
+                    toDate('2021-12-20') as `day`,
+                    a.platform as platform,
+                    a.snick as snick,
+                    a.`group` as `group`,
+                    a.seller_nick as seller_nick,
+                    count(1) as sessionc_count,
+                    count(1) as qc_count,
+                    sum(a.mark_score) as mark_score,
+                    sum(a.mark_score_add) as mark_score_add,
+                    sum(if(arraySum(a.abnormals_count) > 0, 1, 0)) as abnormals_count,
+                    sum(if(arraySum(a.excellents_count) > 0, 1, 0)) as excellents_count,
+                    sum(arraySum(a.abnormals_count)) as abnormals_sum,
+                    sum(arraySum(a.excellents_count)) as excellents_sum,
+                    sum(if(length(mark_ids) != 0, 1, 0)) as read_mark_count,
+                    sum(if(length(a.tag_score_stats_id) > 0, 1, 0)) as tag_score_stats_count,
+                    sum(if(length(a.tag_score_add_stats_id) > 0, 1, 0)) as tag_score_add_stats_count,
+                    sum(if(length(a.rule_stats_id) > 0, 1, 0)) as rule_score_stats_count,
+                    sum(if(length(a.rule_add_stats_id) > 0, 1, 0)) as rule_score_add_stats_count,
+                    arrayReduce('groupUniqArray', groupArray(b.username)) as mark_list
+                FROM (
+                        select *
+                        from dwd.xdqc_dialog_all
+                        WHERE toYYYYMMDD(begin_time) = 20211220
+                    ) as a 
+                    GLOBAL left join (
+                        select 
+                            account_info.account_id as account_id,
+                            employee_info.username as username
+                        from (
+                                select 
+                                    _id as account_id,
+                                    employee_id
+                                from ods.xinghuan_account_all
+                                where day = 20211220
+                            ) as account_info
+                            left join (
+                                select _id as employee_id,
+                                    username
+                                from ods.xinghuan_employee_all
+                                where day = 20211220
+                            ) as employee_info using(employee_id)
+                    ) as b on a.last_mark_id = b.account_id
+                group by `day`,
+                    a.platform,
+                    a.snick,
+                    a.`group`,
+                    a.seller_nick
+            ) t1 
+            GLOBAL left join (
+                select 
+                    day,
+                    snick,
+                    groupArray(tag_json_list) as tag_json_list
+                from (
+                        SELECT day,
+                            snick,
+                            concat(
+                                '{"tag_id":"',
+                                tag_id,
+                                '","tag_name":"',
+                                `name`,
+                                '","tag_score":',
+                                toString(score),
+                                ',"total":',
+                                toString(count(1)),
+                                ',"cal_op":',
+                                toString(cal_op),
+                                '}'
+                            ) as tag_json_list
+                        FROM ods.xinghuan_dialog_tag_score_all
+                        WHERE day = 20211220
+                        group by `day`,
+                            snick,
+                            tag_id,
+                            `name`,
+                            cal_op,
+                            score
+                    )
+                group by day,
+                    snick
+            ) as t2 
+            on t1.snick = t2.snick
+    ) AS a
+    left join (
+        SELECT 
+            a.company_id AS company_id,
+            a._id AS department_id,
+            a.name AS department_name,
+            b.employee_id AS employee_id,
+            b.employee_name AS employee_name,
+            b.snick AS snick
+        FROM (
+                select *
+                from ods.xinghuan_department_all
+                where day = 20211220
+            ) AS a 
+            GLOBAL LEFT JOIN (
+                SELECT a._id AS employee_id,
+                    b.department_id AS department_id,
+                    a.username AS employee_name,
+                    b.snick AS snick
+                FROM(
+                        select *
+                        from ods.xinghuan_employee_all
+                        where day = 20211220
+                    ) AS a 
+                    GLOBAL RIGHT JOIN (
+                        select *
+                        from ods.xinghuan_employee_snick_all
+                        where day = 20211220
+                            and platform = 'tb'
+                    ) AS b ON a._id = b.employee_id
+            ) AS b 
+            ON a._id = b.department_id
+    ) b 
+    on a.snick = b.snick

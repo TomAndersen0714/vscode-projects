@@ -13,8 +13,7 @@ from (
     select *
     from ods.qc_detail_all as detail
     left join ods.xinghuan_employee_snick_all as employee
-    on detail.snick = employee.snick
-    and toInt32(toYYYYMMDD(detail.`date`)) = employee.day 
+    on detail.snick = employee.snick and toInt32(toYYYYMMDD(detail.`date`)) = employee.day 
     where employee_id = '%s' 
     and seller_nick = '%s' 
     and snick = '%s' 
