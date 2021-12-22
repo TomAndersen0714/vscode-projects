@@ -30,7 +30,7 @@ from (
             t2.tag_json_list
         from (
                 SELECT
-                    toDate('2021-12-20') as `day`,
+                    toDate('{ds}') as `day`,
                     a.platform as platform,
                     a.snick as snick,
                     a.`group` as `group`,
@@ -52,7 +52,7 @@ from (
                 FROM (
                     select *
                     from dwd.xdqc_dialog_all
-                    WHERE toYYYYMMDD(begin_time) = 20211220
+                    WHERE toYYYYMMDD(begin_time) = { ds_nodash }
                 ) as a
                 GLOBAL left join (
                     select
@@ -63,13 +63,13 @@ from (
                             _id as account_id,
                             employee_id
                         from ods.xinghuan_account_all
-                        where day = 20211220
+                        where day = { ds_nodash }
                     ) as account_info
                     left join (
                         select _id as employee_id,
                             username
                         from ods.xinghuan_employee_all
-                        where day = 20211220
+                        where day = { ds_nodash }
                     ) as employee_info using(employee_id)
                 ) as b on a.last_mark_id = b.account_id
                 group by `day`,
@@ -86,7 +86,7 @@ from (
                     groupArray(tag_json_list) as tag_json_list
                 from (
                         SELECT day,
-                            'tb' AS platform,
+                            platform,
                             snick,
                             concat(
                                 '{"tag_id":"',
@@ -102,7 +102,7 @@ from (
                                 '}'
                             ) as tag_json_list
                         FROM ods.xinghuan_dialog_tag_score_all
-                        WHERE day = 20211220
+                        WHERE day = { ds_nodash }
                         group by `day`,
                             platform,
                             snick,
@@ -130,7 +130,7 @@ from (
         FROM (
             select *
             from ods.xinghuan_department_all
-            where day = 20211220
+            where day = { ds_nodash }
         ) AS a 
         GLOBAL RIGHT JOIN (
             SELECT a._id AS employee_id,
@@ -141,12 +141,12 @@ from (
             FROM(
                     select *
                     from ods.xinghuan_employee_all
-                    where day = 20211220
+                    where day = { ds_nodash }
                 ) AS a
                 GLOBAL RIGHT JOIN (
                     select *
                     from ods.xinghuan_employee_snick_all
-                    where day = 20211220
+                    where day = { ds_nodash }
                 ) AS b ON a._id = b.employee_id
         ) AS b 
         ON a._id = b.department_id

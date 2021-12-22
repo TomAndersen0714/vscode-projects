@@ -1,4 +1,4 @@
--- AI质检-扣分问题汇总
+-- AI质检-扣分标签汇总
 insert into ods.qc_question_detail_all
 SELECT toDate('{ds}'),
     ai_qc_info.platform,
@@ -29,11 +29,11 @@ from (
             abnormals_count as qc_count
         where toYYYYMMDD(begin_time) = { ds_nodash }
             and qc_count != 0
-            and platform = 'tb'
     ) AS ai_qc_info 
     GLOBAL left join (
         SELECT 
             a.company_id AS company_id,
+            b.platform,
             a._id AS department_id,
             a.name AS department_name,
             b.employee_id AS employee_id,
@@ -44,8 +44,9 @@ from (
                 FROM ods.xinghuan_department_all
                 WHERE day = { ds_nodash }
             ) AS a 
-            GLOBAL LEFT JOIN (
+            GLOBAL RIGHT JOIN (
                 SELECT a._id AS employee_id,
+                    b.platform,
                     b.department_id AS department_id,
                     a.username AS employee_name,
                     b.snick AS snick
@@ -58,17 +59,17 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
-                            and platform = 'tb'
                     ) AS b ON a._id = b.employee_id
             ) AS b 
             ON a._id = b.department_id
     ) dim_info 
-    on ai_qc_info.snick = dim_info.snick
+    on ai_qc_info.platform = dim_info.platform
+    and ai_qc_info.snick = dim_info.snick
 
 -- 人工质检-质检标签汇总
 insert into ods.qc_question_detail_all
 SELECT toDate('{ds}'),
-    'tb' as platform,
+    manual_qc_info.platform as platform,
     dim_info.company_id,
     '' AS company_name,
     dim_info.department_id,
@@ -91,6 +92,7 @@ from (
             tag_info.qc_count as qc_count
         from (
                 select tag_id,
+                    platform,
                     seller_nick,
                     `group`,
                     snick,
@@ -99,6 +101,7 @@ from (
                 where day = { ds_nodash }
                     and cal_op = 0
                 group by tag_id,
+                    platform,
                     seller_nick,
                     `group`,
                     snick
@@ -157,6 +160,7 @@ from (
     ) as manual_qc_info
     left join (
         SELECT a.company_id AS company_id,
+            b.platform,
             a._id AS department_id,
             a.name AS department_name,
             b.employee_id AS employee_id,
@@ -167,8 +171,9 @@ from (
                 FROM ods.xinghuan_department_all
                 WHERE day = { ds_nodash }
             ) AS a GLOBAL
-            LEFT JOIN (
+            RIGHT JOIN (
                 SELECT a._id AS employee_id,
+                    b.platform,
                     b.department_id AS department_id,
                     a.username AS employee_name,
                     b.snick AS snick
@@ -186,7 +191,8 @@ from (
             ) AS b 
             ON a._id = b.department_id
     ) dim_info 
-    on manual_qc_info.snick = dim_info.snick
+    on manual_qc_info.platform = dim_info.platform
+    and manual_qc_info.snick = dim_info.snick
 
 -- AI质检-客服情绪汇总
 insert into ods.qc_question_detail_all
@@ -219,10 +225,10 @@ from (
             s_emotion_count as qc_count
         where toYYYYMMDD(begin_time) = { ds_nodash }
             and qc_count != 0
-            and platform = 'tb'
     ) ai_qc_info
     left join (
         SELECT a.company_id AS company_id,
+            b.platform,
             a._id AS department_id,
             a.name AS department_name,
             b.employee_id AS employee_id,
@@ -233,8 +239,9 @@ from (
                 FROM ods.xinghuan_department_all
                 WHERE day = { ds_nodash }
             ) AS a 
-            GLOBAL LEFT JOIN (
+            GLOBAL RIGHT JOIN (
                 SELECT a._id AS employee_id,
+                    b.platform,
                     b.department_id AS department_id,
                     a.username AS employee_name,
                     b.snick AS snick
@@ -247,13 +254,13 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
-                            and platform = 'tb'
                     ) AS b 
                     ON a._id = b.employee_id
             ) AS b 
             ON a._id = b.department_id
     ) dim_info 
-    on ai_qc_info.snick = dim_info.snick
+    on ai_qc_info.platform = dim_info.platform
+    and ai_qc_info.snick = dim_info.snick
 
 -- AI质检-买家情绪汇总
 insert into ods.qc_question_detail_all
@@ -285,10 +292,10 @@ from (
             c_emotion_count as qc_count
         where toYYYYMMDD(begin_time) = { ds_nodash }
             and qc_count != 0
-            and platform = 'tb'
     ) ai_qc_info
     left join (
         SELECT a.company_id AS company_id,
+            b.platform,
             a._id AS department_id,
             a.name AS department_name,
             b.employee_id AS employee_id,
@@ -299,8 +306,9 @@ from (
                 FROM ods.xinghuan_department_all
                 WHERE day = { ds_nodash }
             ) AS a 
-            GLOBAL LEFT JOIN (
+            GLOBAL RIGHT JOIN (
                 SELECT a._id AS employee_id,
+                    b.platform,
                     b.department_id AS department_id,
                     a.username AS employee_name,
                     b.snick AS snick
@@ -313,10 +321,10 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
-                            and platform = 'tb'
                     ) AS b 
                     ON a._id = b.employee_id
             ) AS b 
             ON a._id = b.department_id
     ) dim_info 
-    on ai_qc_info.snick = dim_info.snick
+    on ai_qc_info.platform = dim_info.platform
+    and ai_qc_info.snick = dim_info.snick

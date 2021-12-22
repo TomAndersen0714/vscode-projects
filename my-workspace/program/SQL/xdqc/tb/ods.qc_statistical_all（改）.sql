@@ -148,7 +148,8 @@ from (
                     select *
                     from ods.xinghuan_employee_snick_all
                     where day = { ds_nodash }
-                ) AS b ON a._id = b.employee_id
+                ) AS b 
+                ON a._id = b.employee_id
         ) AS b 
         ON a._id = b.department_id
     ) b

@@ -1,5 +1,5 @@
 insert into ods.qc_statistical_all
-select 
+select
     a.day,
     a.platform,
     b.company_id,
@@ -142,7 +142,8 @@ from (
                         from ods.xinghuan_employee_snick_all
                         where day = { ds_nodash }
                             and platform = 'tb'
-                    ) AS b ON a._id = b.employee_id
+                    ) AS b 
+                    ON a._id = b.employee_id
             ) AS b 
             ON a._id = b.department_id
     ) b 
