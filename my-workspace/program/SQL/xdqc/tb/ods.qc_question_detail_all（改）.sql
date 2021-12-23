@@ -186,7 +186,6 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
-                            and platform = 'tb'
                     ) AS b ON a._id = b.employee_id
             ) AS b 
             ON a._id = b.department_id

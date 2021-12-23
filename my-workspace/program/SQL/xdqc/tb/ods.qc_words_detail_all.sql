@@ -1,35 +1,43 @@
-insert into ods.qc_question_detail_all
+insert into ods.qc_words_detail_all
 SELECT toDate('{ds}'),
-    ai_qc_info.platform,
+    words_info.platform,
     dim_info.company_id,
     '' AS company_name,
     dim_info.department_id,
     dim_info.department_name,
     dim_info.employee_id,
     dim_info.employee_name,
-    ai_qc_info.seller_nick as shop_name,
-    ai_qc_info.`group`,
-    ai_qc_info.`type`,
-    ai_qc_info.qc_id,
-    ai_qc_info.qc_name,
-    ai_qc_info.qc_count
-from (
-        select `seller_nick`,
+    words_info.shop_name,
+    words_info.`group`,
+    words_info.snick,
+    words_info.source,
+    words_info.word,
+    words_info.words_count
+FROM (
+        SELECT `date`,
             platform,
+            seller_nick AS shop_name,
             `group`,
-            's_emotion' as type,
             snick,
-            qc_id,
-            '' as qc_name,
-            qc_count
-        from dwd.xdqc_dialog_all array
-            join s_emotion_type as qc_id,
-            s_emotion_count as qc_count
-        where toYYYYMMDD(begin_time) = { ds_nodash }
-            and qc_count != 0
-            and platform = 'tb'
-    ) ai_qc_info
-    left join (
+            source,
+            word,
+            sum(count) AS words_count
+        FROM dwd.xdqc_dialog_all 
+        ARRAY JOIN
+            qc_word_word AS word,
+            qc_word_source AS source,
+            qc_word_count AS count
+        WHERE toYYYYMMDD(begin_time) = { ds_nodash }
+            AND qc_word_word != []
+        GROUP BY `date`,
+            platform,
+            seller_nick,
+            `group`,
+            snick,
+            source,
+            word
+    ) AS words_info 
+    GLOBAL LEFT JOIN (
         SELECT a.company_id AS company_id,
             a._id AS department_id,
             a.name AS department_name,
@@ -40,8 +48,8 @@ from (
                 SELECT *
                 FROM ods.xinghuan_department_all
                 WHERE day = { ds_nodash }
-            ) AS a GLOBAL
-            LEFT JOIN (
+            ) AS a 
+            GLOBAL LEFT JOIN (
                 SELECT a._id AS employee_id,
                     b.department_id AS department_id,
                     a.username AS employee_name,
@@ -50,12 +58,15 @@ from (
                         SELECT *
                         FROM ods.xinghuan_employee_all
                         WHERE day = { ds_nodash }
-                    ) AS a GLOBAL
-                    RIGHT JOIN (
+                    ) AS a 
+                    GLOBAL RIGHT JOIN (
                         SELECT *
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = { ds_nodash }
                             and platform = 'tb'
-                    ) AS b ON a._id = b.employee_id
-            ) AS b ON a._id = b.department_id
-    ) dim_info on ai_qc_info.snick = dim_info.snick
+                    ) AS b
+                    ON a._id = b.employee_id
+            ) AS b
+            ON a._id = b.department_id
+    ) dim_info
+    on words_info.snick = dim_info.snick

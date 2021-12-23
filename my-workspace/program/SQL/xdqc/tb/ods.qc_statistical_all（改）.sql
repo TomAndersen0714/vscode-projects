@@ -132,7 +132,7 @@ from (
             select *
             from ods.xinghuan_department_all
             where day = { ds_nodash }
-        ) AS a 
+        ) AS a
         GLOBAL RIGHT JOIN (
             SELECT a._id AS employee_id,
                 b.platform,

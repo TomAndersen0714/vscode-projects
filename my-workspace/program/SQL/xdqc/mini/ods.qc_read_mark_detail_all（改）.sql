@@ -1,25 +1,26 @@
 insert into ods.qc_read_mark_detail_all
 select
     toDate('{{ ds }}') AS `day`,
-    dialog_info.platform as platform,
-    dim_info.company_id as company_id,
-    '' as company_name,
-    dim_info.department_id as department_id,
-    dim_info.department_name as department_name,
-    dialog_info.last_mark_id as account_id,
-    dim_info.username as username,
-    dialog_info.seller_nick as seller_nick,
-    dialog_info.dialog_id as dialog_id
+    dialog_info.platform AS platform,
+    dim_info.company_id AS company_id,
+    '' AS company_name,
+    dim_info.department_id AS department_id,
+    dim_info.department_name AS department_name,
+    dialog_info.last_mark_id AS account_id,
+    dim_info.username AS username,
+    dialog_info.seller_nick AS seller_nick,
+    dialog_info.dialog_id AS dialog_id
 from (
         select
             platform,
             seller_nick,
             snick,
-            _id as dialog_id,
+            _id AS dialog_id,
             last_mark_id
         from dwd.xdqc_dialog_all
-        where toYYYYMMDD(begin_time) = toYYYYMMDD(toDate('{{ ds }}')) and last_mark_id != ''
-    ) as dialog_info
+        where toYYYYMMDD(begin_time) = toYYYYMMDD(toDate('{{ ds }}')) 
+        and last_mark_id != ''
+    ) AS dialog_info
     left join (
         SELECT
             account.company_id AS company_id,
@@ -32,8 +33,8 @@ from (
                     a_employee.company_id AS company_id,
                     a_employee.account_id AS account_id,
                     a_employee.username AS username,
-                    a_employee.employee_id as employee_id,
-                    e_snick.department_id as department_id
+                    a_employee.employee_id AS employee_id,
+                    e_snick.department_id AS department_id
                 from (
                         SELECT
                             account_info.company_id AS company_id,
@@ -56,14 +57,14 @@ from (
                             WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
                         ) AS employee_info 
                         USING(employee_id)
-                    ) as a_employee
+                    ) AS a_employee
                     left join (
                         select
                             department_id,
                             employee_id
                         from ods.xinghuan_employee_snick_all
                         WHERE day = toYYYYMMDD(toDate('{{ ds }}'))
-                    ) as e_snick 
+                    ) AS e_snick 
                     using(employee_id)
             ) AS account
             LEFT JOIN (

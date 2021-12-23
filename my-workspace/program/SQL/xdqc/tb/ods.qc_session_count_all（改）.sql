@@ -1,12 +1,12 @@
 insert into ods.qc_session_count_all
 select toDate('{ds}') as `date`,
     a.platform,
-    company_id,
-    company_name,
-    department_id,
-    department_name,
-    employee_id,
-    employee_name,
+    a.company_id,
+    a.company_name,
+    a.department_id,
+    a.department_name,
+    a.employee_id,
+    a.employee_name,
     a.`group`,
     a.shop_name,
     a.snick,
@@ -150,6 +150,7 @@ from (
             ) as session_info
             left join (
                 SELECT a.company_id AS company_id,
+                    b.platform,
                     a._id AS department_id,
                     a.name AS department_name,
                     b.employee_id AS employee_id,
@@ -159,9 +160,10 @@ from (
                         select *
                         from ods.xinghuan_department_all
                         where day = { ds_nodash }
-                    ) AS a 
+                    ) AS a
                     GLOBAL RIGHT JOIN (
                         SELECT a._id AS employee_id,
+                            b.platform,
                             b.department_id AS department_id,
                             a.username AS employee_name,
                             b.snick AS snick
@@ -174,14 +176,15 @@ from (
                                 select *
                                 from ods.xinghuan_employee_snick_all
                                 where day = { ds_nodash }
-                                    and platform = 'tb'
                             ) AS b ON a._id = b.employee_id
                     ) AS b ON a._id = b.department_id
             ) dim_info 
-            on session_info.snick = dim_info.snick
+            on session_info.platform = dim_info.platform
+            and session_info.snick = dim_info.snick
     ) as a
     left join (
         select day,
+            platform,
             shop_name,
             snick,
             groupArray(dialog_id) as dialog_array
@@ -189,9 +192,11 @@ from (
         where row_number < 4
             and day = { ds_nodash }
         group by day,
+            platform,
             shop_name,
             snick
     ) as b 
     on a.date = b.day
+    and a.platform = b.platform
     and a.shop_name = b.shop_name
     and a.snick = b.snick
