@@ -1,35 +1,28 @@
-insert into ods.qc_question_detail_all
-SELECT toDate('{ds}'),
-    ai_qc_info.platform,
-    dim_info.company_id,
-    '' AS company_name,
-    dim_info.department_id,
-    dim_info.department_name,
-    dim_info.employee_id,
-    dim_info.employee_name,
-    ai_qc_info.seller_nick as shop_name,
-    ai_qc_info.`group`,
-    ai_qc_info.`type`,
-    ai_qc_info.qc_id,
-    ai_qc_info.qc_name,
-    ai_qc_info.qc_count
+insert into ods.qc_statistical_department_all
+select a.`date`,
+    b.company_id,
+    b.department_id,
+    b.department_name,
+    sum(sessionc_count) as all_count,
+    sum(qc_count) as ai_count,
+    sum(abnormals_count) as ai_abnormal_count,
+    sum(excellents_count) as ai_excellent_count,
+    sum(read_mark_count) as read_count,
+    sum(if(tag_score_stats_count > 0, 1, 0)) as tag_score_count,
+    sum(if(tag_score_add_stats_count > 0, 1, 0)) as tag_add_score_count,
+    round((0.9604 * all_count) /(0.0025 * all_count + 0.9604), 0) as suggest_count,
+    concat(
+        CAST(
+            round(
+                (sum(if(read_mark_count > 0, 1, 0)) * 100 / all_count),
+                2
+            ),
+            'String'
+        ),
+        '%'
+    ) as check_rate,
+    arrayReduce('groupUniqArray', flatten(groupArray(mark_list))) as mark_list
 from (
-        select `seller_nick`,
-            platform,
-            `group`,
-            's_emotion' as type,
-            snick,
-            qc_id,
-            '' as qc_name,
-            qc_count
-        from dwd.xdqc_dialog_all array
-            join s_emotion_type as qc_id,
-            s_emotion_count as qc_count
-        where toYYYYMMDD(begin_time) = { ds_nodash }
-            and qc_count != 0
-            and platform = 'tb'
-    ) ai_qc_info
-    left join (
         SELECT a.company_id AS company_id,
             a._id AS department_id,
             a.name AS department_name,
@@ -37,9 +30,9 @@ from (
             b.employee_name AS employee_name,
             b.snick AS snick
         FROM (
-                SELECT *
-                FROM ods.xinghuan_department_all
-                WHERE day = { ds_nodash }
+                select *
+                from ods.xinghuan_department_all
+                where day = { ds_nodash }
             ) AS a GLOBAL
             LEFT JOIN (
                 SELECT a._id AS employee_id,
@@ -47,15 +40,22 @@ from (
                     a.username AS employee_name,
                     b.snick AS snick
                 FROM (
-                        SELECT *
-                        FROM ods.xinghuan_employee_all
-                        WHERE day = { ds_nodash }
+                        select *
+                        from ods.xinghuan_employee_all
+                        where day = { ds_nodash }
                     ) AS a GLOBAL
                     RIGHT JOIN (
-                        SELECT *
-                        FROM ods.xinghuan_employee_snick_all
-                        WHERE day = { ds_nodash }
+                        select *
+                        from ods.xinghuan_employee_snick_all
+                        where day = { ds_nodash }
                             and platform = 'tb'
                     ) AS b ON a._id = b.employee_id
             ) AS b ON a._id = b.department_id
-    ) dim_info on ai_qc_info.snick = dim_info.snick
+    ) b GLOBAL
+    left join ods.qc_statistical_all a on a.snick = b.snick
+where a.`date` = toDate('{ds}')
+group by a.`date`,
+    b.company_id,
+    b.department_id,
+    b.department_name
+order by ai_abnormal_count desc

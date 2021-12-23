@@ -1,117 +1,68 @@
-SELECT toDate('2021-12-20'),
-    'tb' as platform,
-    dim_info.company_id,
-    '' AS company_name,
-    dim_info.department_id,
-    dim_info.department_name,
-    dim_info.employee_id,
-    dim_info.employee_name,
-    manual_qc_info.seller_nick as shop_name,
-    manual_qc_info.`group`,
-    manual_qc_info.`type`,
-    manual_qc_info.qc_id,
-    manual_qc_info.qc_name,
-    manual_qc_info.qc_count
+insert into ods.qc_read_mark_detail_all
+select toDate('{ds}') AS `day`,
+    dialog_info.platform as platform,
+    dim_info.company_id as company_id,
+    '' as company_name,
+    dim_info.department_id as department_id,
+    dim_info.department_name as department_name,
+    dialog_info.last_mark_id as account_id,
+    dim_info.username as username,
+    dialog_info.seller_nick as seller_nick,
+    dialog_info.dialog_id as dialog_id
 from (
-        select tag_info.seller_nick,
-            tag_info.`group`,
-            'manual' as type,
-            tag_info.snick,
-            tag_info.tag_id as qc_id,
-            all_tag_name_info.all_tag_name as qc_name,
-            tag_info.qc_count as qc_count
-        from (
-                select tag_id,
-                    seller_nick,
-                    `group`,
-                    snick,
-                    count(1) as qc_count
-                from ods.xinghuan_dialog_tag_score_all
-                where day = 20211220
-                    and cal_op = 0
-                group by tag_id,
-                    seller_nick,
-                    `group`,
-                    snick
-            ) as tag_info
-            left join (
-                select norm_tag.tag_id,
-                    toString(
-                        concat(
-                            if(
-                                norm_tag.qc_norm_name = '',
-                                '未设置一级标签',
-                                norm_tag.qc_norm_name
-                            ),
-                            '/',
-                            if(
-                                sub_category.name = '',
-                                '未设置二级标签',
-                                sub_category.name
-                            ),
-                            '/',
-                            norm_tag.tag_name
-                        )
-                    ) as all_tag_name
-                from (
-                        select b._id as qc_norm_id,
-                            b.name as qc_norm_name,
-                            a._id as tag_id,
-                            a.name as tag_name,
-                            a.sub_category_id as sub_category_id
-                        from (
-                                select _id,
-                                    category_id,
-                                    sub_category_id,
-                                    seller_nick,
-                                    qc_norm_id,
-                                    name
-                                from ods.xdqc_tag_all
-                                where day = 20211220
-                            ) as a
-                            left join (
-                                select _id,
-                                    name
-                                from ods.xinghuan_qc_norm_all
-                                where day = 20211220
-                                    and status = 1
-                            ) as b on a.qc_norm_id = b._id
-                    ) as norm_tag
-                    left join (
-                        select _id,
-                            name
-                        from ods.xdqc_tag_sub_category_all
-                        where day = 20211220
-                    ) as sub_category on norm_tag.sub_category_id = sub_category._id
-            ) as all_tag_name_info on tag_info.tag_id = all_tag_name_info.tag_id
-    ) as manual_qc_info
+        select platform,
+            seller_nick,
+            snick,
+            _id as dialog_id,
+            last_mark_id
+        from dwd.xdqc_dialog_all
+        where toYYYYMMDD(begin_time) = { ds_nodash }
+            and last_mark_id != ''
+    ) as dialog_info
     left join (
-        SELECT a.company_id AS company_id,
-            a._id AS department_id,
-            a.name AS department_name,
-            b.employee_id AS employee_id,
-            b.employee_name AS employee_name,
-            b.snick AS snick
+        SELECT account.company_id AS company_id,
+            department._id AS department_id,
+            department.name AS department_name,
+            account.account_id AS account_id,
+            account.username AS username
         FROM (
-                SELECT *
-                FROM ods.xinghuan_department_all
-                WHERE day = 20211220
-            ) AS a GLOBAL
+                select a_employee.company_id as company_id,
+                    a_employee.account_id AS account_id,
+                    a_employee.username AS username,
+                    a_employee.employee_id as employee_id,
+                    e_snick.department_id as department_id
+                from (
+                        SELECT account_info.company_id AS company_id,
+                            account_info.account_id AS account_id,
+                            employee_info.username AS username,
+                            account_info.employee_id AS employee_id
+                        FROM (
+                                SELECT company_id,
+                                    _id AS account_id,
+                                    employee_id
+                                FROM ods.xinghuan_account_all
+                                WHERE day = { ds_nodash }
+                            ) AS account_info
+                            LEFT JOIN (
+                                SELECT _id AS employee_id,
+                                    username
+                                FROM ods.xinghuan_employee_all
+                                WHERE day = { ds_nodash }
+                            ) AS employee_info USING(employee_id)
+                    ) as a_employee
+                    left join (
+                        select company_id,
+                            department_id,
+                            employee_id
+                        from ods.xinghuan_employee_snick_all
+                        WHERE day = { ds_nodash }
+                    ) as e_snick using(employee_id)
+            ) AS account
             LEFT JOIN (
-                SELECT a._id AS employee_id,
-                    b.department_id AS department_id,
-                    a.username AS employee_name,
-                    b.snick AS snick
-                FROM (
-                        SELECT *
-                        FROM ods.xinghuan_employee_all
-                        WHERE day = 20211220
-                    ) AS a GLOBAL
-                    RIGHT JOIN (
-                        SELECT *
-                        FROM ods.xinghuan_employee_snick_all
-                        WHERE day = 20211220
-                            and platform = 'tb'
-                    ) AS b ON a._id = b.employee_id
-            ) AS b ON a._id = b.department_id
-    ) dim_info on manual_qc_info.snick = dim_info.snick
+                SELECT _id,
+                    company_id,
+                    name
+                FROM ods.xinghuan_department_all
+                WHERE day = { ds_nodash }
+            ) AS department ON department._id = account.department_id
+    ) dim_info on dialog_info.last_mark_id = dim_info.account_id
