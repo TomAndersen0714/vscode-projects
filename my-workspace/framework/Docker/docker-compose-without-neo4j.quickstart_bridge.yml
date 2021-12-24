@@ -1,8 +1,7 @@
-networks:
-  default:
-    name: datahub_network
+version: '2.3'
 services:
   broker:
+    network_mode: "bridge"
     container_name: broker
     depends_on:
     - zookeeper
@@ -19,7 +18,9 @@ services:
     ports:
     - 29092:29092
     - 9092:9092
+
   datahub-frontend-react:
+    network_mode: "bridge"
     container_name: datahub-frontend-react
     depends_on:
     - datahub-gms
@@ -40,7 +41,9 @@ services:
     image: linkedin/datahub-frontend-react:${DATAHUB_VERSION:-head}
     ports:
     - 9002:9002
+
   datahub-gms:
+    network_mode: "bridge"
     container_name: datahub-gms
     depends_on:
     - mysql
@@ -66,7 +69,9 @@ services:
     - 8080:8080
     volumes:
     - ${HOME}/.datahub/plugins:/etc/datahub/plugins
+
   elasticsearch:
+    network_mode: "bridge"
     container_name: elasticsearch
     environment:
     - discovery.type=single-node
@@ -77,8 +82,7 @@ services:
       start_period: 2m
       test:
       - CMD-SHELL
-      - curl -sS --fail 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s'
-        || exit 1
+      - curl -sS --fail 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s' || exit 1
     hostname: elasticsearch
     image: elasticsearch:7.9.3
     mem_limit: 1g
@@ -86,7 +90,9 @@ services:
     - 9200:9200
     volumes:
     - esdata:/usr/share/elasticsearch/data
+
   elasticsearch-setup:
+    network_mode: "bridge"
     container_name: elasticsearch-setup
     depends_on:
     - elasticsearch
@@ -96,7 +102,9 @@ services:
     - ELASTICSEARCH_PROTOCOL=http
     hostname: elasticsearch-setup
     image: linkedin/datahub-elasticsearch-setup:${DATAHUB_VERSION:-head}
+
   kafka-setup:
+    network_mode: "bridge"
     container_name: kafka-setup
     depends_on:
     - broker
@@ -106,7 +114,9 @@ services:
     - KAFKA_BOOTSTRAP_SERVER=broker:29092
     hostname: kafka-setup
     image: linkedin/datahub-kafka-setup:${DATAHUB_VERSION:-head}
+
   mysql:
+    network_mode: "bridge"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     container_name: mysql
     environment:
@@ -121,7 +131,9 @@ services:
     volumes:
     - ../mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     - mysqldata:/var/lib/mysql
+
   mysql-setup:
+    network_mode: "bridge"
     container_name: mysql-setup
     depends_on:
     - mysql
@@ -133,7 +145,9 @@ services:
     - DATAHUB_DB_NAME=datahub
     hostname: mysql-setup
     image: acryldata/datahub-mysql-setup:head
+
   schema-registry:
+    network_mode: "bridge"
     container_name: schema-registry
     depends_on:
     - zookeeper
@@ -145,7 +159,9 @@ services:
     image: confluentinc/cp-schema-registry:5.4.0
     ports:
     - 8081:8081
+
   zookeeper:
+    network_mode: "bridge"
     container_name: zookeeper
     environment:
     - ZOOKEEPER_CLIENT_PORT=2182
@@ -156,8 +172,9 @@ services:
     - 2182:2182
     volumes:
     - zkdata:/var/opt/zookeeper
-version: '2.3'
+
 volumes:
   esdata: null
   mysqldata: null
   zkdata: null
+

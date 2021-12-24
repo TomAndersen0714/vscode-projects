@@ -1,0 +1,973 @@
+Downloading sample data...
+[2021-12-24 16:53:34,001] ERROR    {datahub.entrypoints:115} - File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 672, in urlopen
+    494  def urlopen(
+    495      self,
+    496      method,
+    497      url,
+    498      body=None,
+    499      headers=None,
+    500      retries=None,
+    501      redirect=True,
+    502      assert_same_host=True,
+    503      timeout=_Default,
+    504      pool_timeout=None,
+    505      release_conn=None,
+    506      chunked=False,
+    507      body_pos=None,
+    508      **response_kw
+    509  ):
+ (...)
+    668              url,
+    669              timeout=timeout_obj,
+    670              body=body,
+    671              headers=headers,
+--> 672              chunked=chunked,
+    673          )
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     method = 'GET'
+     url = '/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     body = None
+     headers = {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'
+                }
+     retries = Retry(total=0, connect=None, read=False, redirect=None, status=None)
+     redirect = False
+     assert_same_host = False
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb302b0>
+     _Default = <object object at 0x7f99bb61c530>
+     pool_timeout = None
+     release_conn = False
+     chunked = False
+     body_pos = None
+     response_kw = {'preload_content': False,
+                    'decode_content': False}
+     timeout_obj = <urllib3.util.timeout.Timeout object at 0x7f99adb22fd0>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 376, in _make_request
+    351  def _make_request(
+    352      self, conn, method, url, timeout=_Default, chunked=False, **httplib_request_kw
+    353  ):
+ (...)
+    372      conn.timeout = timeout_obj.connect_timeout
+    373  
+    374      # Trigger any extra validation we need to do.
+    375      try:
+--> 376          self._validate_conn(conn)
+    377      except (SocketTimeout, BaseSSLError) as e:
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     conn = <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0>
+     method = 'GET'
+     url = '/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb22fd0>
+     _Default = <object object at 0x7f99bb61c530>
+     chunked = False
+     httplib_request_kw = {'body': None,
+                           'headers': {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 
+                           'keep-alive'}}
+     conn.timeout = None
+     timeout_obj.connect_timeout = None
+     self._validate_conn = <method 'HTTPSConnectionPool._validate_conn' of HTTPSConnectionPool(host='raw.githubusercontent.com', port=443) connecti
+                            onpool.py:986>
+     SocketTimeout = <class 'socket.timeout'>
+     BaseSSLError = <class 'ssl.SSLError'>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 994, in _validate_conn
+    986  def _validate_conn(self, conn):
+ (...)
+    990      super(HTTPSConnectionPool, self)._validate_conn(conn)
+    991  
+    992      # Force connect early to allow us to validate the connection.
+    993      if not getattr(conn, "sock", None):  # AppEngine might not have  `.sock`
+--> 994          conn.connect()
+    995  
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     conn = <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0>
+     HTTPSConnectionPool = <class 'urllib3.connectionpool.HTTPSConnectionPool'>
+     conn.connect = <method 'VerifiedHTTPSConnection.connect' of <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0> conne
+                     ction.py:298>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connection.py", line 360, in connect
+    298  def connect(self):
+ (...)
+    356          key_password=self.key_password,
+    357          ca_certs=self.ca_certs,
+    358          ca_cert_dir=self.ca_cert_dir,
+    359          server_hostname=server_hostname,
+--> 360          ssl_context=context,
+    361      )
+    ..................................................
+     self = <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0>
+     self.key_password = None
+     self.ca_certs = '/usr/local/lib/python3.6/site-packages/certifi/cacert.pem'
+     self.ca_cert_dir = None
+     server_hostname = 'raw.githubusercontent.com'
+     context = <ssl.SSLContext object at 0x7f99a34ff3c8>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/util/ssl_.py", line 370, in ssl_wrap_socket
+    296  def ssl_wrap_socket(
+    297      sock,
+    298      keyfile=None,
+    299      certfile=None,
+    300      cert_reqs=None,
+    301      ca_certs=None,
+    302      server_hostname=None,
+    303      ssl_version=None,
+    304      ciphers=None,
+    305      ssl_context=None,
+    306      ca_cert_dir=None,
+    307      key_password=None,
+    308  ):
+ (...)
+    366      if (
+    367          server_hostname is not None and not is_ipaddress(server_hostname)
+    368      ) or IS_SECURETRANSPORT:
+    369          if HAS_SNI and server_hostname is not None:
+--> 370              return context.wrap_socket(sock, server_hostname=server_hostname)
+    371  
+    ..................................................
+     sock = <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     keyfile = None
+     certfile = None
+     cert_reqs = None
+     ca_certs = '/usr/local/lib/python3.6/site-packages/certifi/cacert.pem'
+     server_hostname = 'raw.githubusercontent.com'
+     ssl_version = None
+     ciphers = None
+     ssl_context = <ssl.SSLContext object at 0x7f99a34ff3c8>
+     ca_cert_dir = None
+     key_password = None
+     IS_SECURETRANSPORT = False
+     HAS_SNI = True
+     context.wrap_socket = <method 'SSLContext.wrap_socket' of <ssl.SSLContext object at 0x7f99a34ff3c8> ssl.py:357>
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 365, in wrap_socket
+    357  def wrap_socket(self, sock, server_side=False,
+    358                  do_handshake_on_connect=True,
+    359                  suppress_ragged_eofs=True,
+    360                  server_hostname=None, session=None):
+    361      return SSLSocket(sock=sock, server_side=server_side,
+    362                       do_handshake_on_connect=do_handshake_on_connect,
+    363                       suppress_ragged_eofs=suppress_ragged_eofs,
+    364                       server_hostname=server_hostname,
+--> 365                       _context=self, _session=session)
+    ..................................................
+     self = <ssl.SSLContext object at 0x7f99a34ff3c8>
+     sock = <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     server_side = False
+     do_handshake_on_connect = True
+     suppress_ragged_eofs = True
+     server_hostname = 'raw.githubusercontent.com'
+     session = None
+     SSLSocket = <class 'ssl.SSLSocket'>
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 776, in __init__
+    685  def __init__(self, sock=None, keyfile=None, certfile=None,
+    686               server_side=False, cert_reqs=CERT_NONE,
+    687               ssl_version=PROTOCOL_TLS, ca_certs=None,
+    688               do_handshake_on_connect=True,
+    689               family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None,
+    690               suppress_ragged_eofs=True, npn_protocols=None, ciphers=None,
+    691               server_hostname=None,
+    692               _context=None, _session=None):
+ (...)
+    772                  timeout = self.gettimeout()
+    773                  if timeout == 0.0:
+    774                      # non-blocking
+    775                      raise ValueError("do_handshake_on_connect should not be specified for non-blocking sockets")
+--> 776                  self.do_handshake()
+    777  
+    ..................................................
+     self = <ssl.SSLSocket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     sock = <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     keyfile = None
+     certfile = None
+     server_side = False
+     cert_reqs = <VerifyMode.CERT_NONE: 0>
+     CERT_NONE = <VerifyMode.CERT_NONE: 0>
+     ssl_version = <_SSLMethod.PROTOCOL_TLS: 2>
+     PROTOCOL_TLS = <_SSLMethod.PROTOCOL_TLS: 2>
+     ca_certs = None
+     do_handshake_on_connect = True
+     family = <AddressFamily.AF_INET: 2>
+     AF_INET = <AddressFamily.AF_INET: 2>
+     type = <SocketKind.SOCK_STREAM: 1>
+     SOCK_STREAM = <SocketKind.SOCK_STREAM: 1>
+     proto = 0
+     fileno = None
+     suppress_ragged_eofs = True
+     npn_protocols = None
+     ciphers = None
+     server_hostname = 'raw.githubusercontent.com'
+     _context = <ssl.SSLContext object at 0x7f99a34ff3c8>
+     _session = None
+     timeout = None
+     self.do_handshake = <method 'SSLSocket.do_handshake' of <ssl.SSLSocket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_ST
+                          REAM, proto=6> ssl.py:1029>
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 1036, in do_handshake
+    1029  def do_handshake(self, block=False):
+ (...)
+    1032      timeout = self.gettimeout()
+    1033      try:
+    1034          if timeout == 0.0 and block:
+    1035              self.settimeout(None)
+--> 1036          self._sslobj.do_handshake()
+    1037      finally:
+    ..................................................
+     self = <ssl.SSLSocket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     block = False
+     timeout = None
+     self._sslobj.do_handshake = # AttributeError
+          self._sslobj = None
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 648, in do_handshake
+    646  def do_handshake(self):
+    647      """Start the SSL/TLS handshake."""
+--> 648      self._sslobj.do_handshake()
+    649      if self.context.check_hostname:
+    ..................................................
+     self = <ssl.SSLObject object at 0x7f99a3507048>
+     self.context.check_hostname = False
+    ..................................................
+
+---- (full traceback above) ----
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 672, in urlopen
+    chunked=chunked,
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 376, in _make_request
+    self._validate_conn(conn)
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 994, in _validate_conn
+    conn.connect()
+File "/usr/local/lib/python3.6/site-packages/urllib3/connection.py", line 360, in connect
+    ssl_context=context,
+File "/usr/local/lib/python3.6/site-packages/urllib3/util/ssl_.py", line 370, in ssl_wrap_socket
+    return context.wrap_socket(sock, server_hostname=server_hostname)
+File "/usr/lib64/python3.6/ssl.py", line 365, in wrap_socket
+    _context=self, _session=session)
+File "/usr/lib64/python3.6/ssl.py", line 776, in __init__
+    self.do_handshake()
+File "/usr/lib64/python3.6/ssl.py", line 1036, in do_handshake
+    self._sslobj.do_handshake()
+File "/usr/lib64/python3.6/ssl.py", line 648, in do_handshake
+    self._sslobj.do_handshake()
+
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+While handling the above exception, another exception occurred:
+
+File "/usr/local/lib/python3.6/site-packages/requests/adapters.py", line 449, in send
+    394  def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+ (...)
+    445                  assert_same_host=False,
+    446                  preload_content=False,
+    447                  decode_content=False,
+    448                  retries=self.max_retries,
+--> 449                  timeout=timeout
+    450              )
+    ..................................................
+     self = <requests.adapters.HTTPAdapter object at 0x7f99a3507128>
+     request = <PreparedRequest [GET]>
+     stream = False
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb302b0>
+     verify = True
+     cert = None
+     proxies = OrderedDict
+               {}
+     self.max_retries = Retry(total=0, connect=None, read=False, redirect=None, status=None)
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 720, in urlopen
+    494  def urlopen(
+    495      self,
+    496      method,
+    497      url,
+    498      body=None,
+    499      headers=None,
+    500      retries=None,
+    501      redirect=True,
+    502      assert_same_host=True,
+    503      timeout=_Default,
+    504      pool_timeout=None,
+    505      release_conn=None,
+    506      chunked=False,
+    507      body_pos=None,
+    508      **response_kw
+    509  ):
+ (...)
+    716          elif isinstance(e, (SocketError, HTTPException)):
+    717              e = ProtocolError("Connection aborted.", e)
+    718  
+    719          retries = retries.increment(
+--> 720              method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+    721          )
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     method = 'GET'
+     url = '/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     body = None
+     headers = {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'
+                }
+     retries = Retry(total=0, connect=None, read=False, redirect=None, status=None)
+     redirect = False
+     assert_same_host = False
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb302b0>
+     _Default = <object object at 0x7f99bb61c530>
+     pool_timeout = None
+     release_conn = False
+     chunked = False
+     body_pos = None
+     response_kw = {'preload_content': False,
+                    'decode_content': False}
+     SocketError = <class 'OSError'>
+     HTTPException = <class 'http.client.HTTPException'>
+     ProtocolError = <class 'urllib3.exceptions.ProtocolError'>
+     retries.increment = <method 'Retry.increment' of Retry(total=0, connect=None, read=False, redirect=None, status=None) retry.py:355>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/util/retry.py", line 400, in increment
+    355  def increment(
+    356      self,
+    357      method=None,
+    358      url=None,
+    359      response=None,
+    360      error=None,
+    361      _pool=None,
+    362      _stacktrace=None,
+    363  ):
+ (...)
+    396  
+    397      elif error and self._is_read_error(error):
+    398          # Read retry?
+    399          if read is False or not self._is_method_retryable(method):
+--> 400              raise six.reraise(type(error), error, _stacktrace)
+    401          elif read is not None:
+    ..................................................
+     self = Retry(total=0, connect=None, read=False, redirect=None, status=None)
+     method = 'GET'
+     url = '/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     response = None
+     error = ProtocolError('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+     _pool = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     _stacktrace = <traceback object at 0x7f99a3515a88>
+     self._is_read_error = <method 'Retry._is_read_error' of Retry(total=0, connect=None, read=False, redirect=None, status=None) retry.py:311>
+     read = False
+     self._is_method_retryable = <method 'Retry._is_method_retryable' of Retry(total=0, connect=None, read=False, redirect=None, status=None) retry.py:31
+                                  7>
+     six.reraise = <function 'reraise' six.py:729>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/packages/six.py", line 734, in reraise
+    729  def reraise(tp, value, tb=None):
+    730      try:
+    731          if value is None:
+    732              value = tp()
+    733          if value.__traceback__ is not tb:
+--> 734              raise value.with_traceback(tb)
+    735          raise value
+    ..................................................
+     tp = <class 'urllib3.exceptions.ProtocolError'>
+     value = None
+     tb = None
+     value.__traceback__ = # AttributeError
+          value = None
+     value.with_traceback = # AttributeError
+          value = None
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 672, in urlopen
+    494  def urlopen(
+    495      self,
+    496      method,
+    497      url,
+    498      body=None,
+    499      headers=None,
+    500      retries=None,
+    501      redirect=True,
+    502      assert_same_host=True,
+    503      timeout=_Default,
+    504      pool_timeout=None,
+    505      release_conn=None,
+    506      chunked=False,
+    507      body_pos=None,
+    508      **response_kw
+    509  ):
+ (...)
+    668              url,
+    669              timeout=timeout_obj,
+    670              body=body,
+    671              headers=headers,
+--> 672              chunked=chunked,
+    673          )
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     method = 'GET'
+     url = '/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     body = None
+     headers = {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'
+                }
+     retries = Retry(total=0, connect=None, read=False, redirect=None, status=None)
+     redirect = False
+     assert_same_host = False
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb302b0>
+     _Default = <object object at 0x7f99bb61c530>
+     pool_timeout = None
+     release_conn = False
+     chunked = False
+     body_pos = None
+     response_kw = {'preload_content': False,
+                    'decode_content': False}
+     timeout_obj = <urllib3.util.timeout.Timeout object at 0x7f99adb22fd0>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 376, in _make_request
+    351  def _make_request(
+    352      self, conn, method, url, timeout=_Default, chunked=False, **httplib_request_kw
+    353  ):
+ (...)
+    372      conn.timeout = timeout_obj.connect_timeout
+    373  
+    374      # Trigger any extra validation we need to do.
+    375      try:
+--> 376          self._validate_conn(conn)
+    377      except (SocketTimeout, BaseSSLError) as e:
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     conn = <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0>
+     method = 'GET'
+     url = '/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb22fd0>
+     _Default = <object object at 0x7f99bb61c530>
+     chunked = False
+     httplib_request_kw = {'body': None,
+                           'headers': {'User-Agent': 'python-requests/2.23.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 
+                           'keep-alive'}}
+     conn.timeout = None
+     timeout_obj.connect_timeout = None
+     self._validate_conn = <method 'HTTPSConnectionPool._validate_conn' of HTTPSConnectionPool(host='raw.githubusercontent.com', port=443) connecti
+                            onpool.py:986>
+     SocketTimeout = <class 'socket.timeout'>
+     BaseSSLError = <class 'ssl.SSLError'>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 994, in _validate_conn
+    986  def _validate_conn(self, conn):
+ (...)
+    990      super(HTTPSConnectionPool, self)._validate_conn(conn)
+    991  
+    992      # Force connect early to allow us to validate the connection.
+    993      if not getattr(conn, "sock", None):  # AppEngine might not have  `.sock`
+--> 994          conn.connect()
+    995  
+    ..................................................
+     self = <urllib3.connectionpool.HTTPSConnectionPool object at 0x7f99a3507320>
+     conn = <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0>
+     HTTPSConnectionPool = <class 'urllib3.connectionpool.HTTPSConnectionPool'>
+     conn.connect = <method 'VerifiedHTTPSConnection.connect' of <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0> conne
+                     ction.py:298>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/connection.py", line 360, in connect
+    298  def connect(self):
+ (...)
+    356          key_password=self.key_password,
+    357          ca_certs=self.ca_certs,
+    358          ca_cert_dir=self.ca_cert_dir,
+    359          server_hostname=server_hostname,
+--> 360          ssl_context=context,
+    361      )
+    ..................................................
+     self = <urllib3.connection.VerifiedHTTPSConnection object at 0x7f99a35078d0>
+     self.key_password = None
+     self.ca_certs = '/usr/local/lib/python3.6/site-packages/certifi/cacert.pem'
+     self.ca_cert_dir = None
+     server_hostname = 'raw.githubusercontent.com'
+     context = <ssl.SSLContext object at 0x7f99a34ff3c8>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/urllib3/util/ssl_.py", line 370, in ssl_wrap_socket
+    296  def ssl_wrap_socket(
+    297      sock,
+    298      keyfile=None,
+    299      certfile=None,
+    300      cert_reqs=None,
+    301      ca_certs=None,
+    302      server_hostname=None,
+    303      ssl_version=None,
+    304      ciphers=None,
+    305      ssl_context=None,
+    306      ca_cert_dir=None,
+    307      key_password=None,
+    308  ):
+ (...)
+    366      if (
+    367          server_hostname is not None and not is_ipaddress(server_hostname)
+    368      ) or IS_SECURETRANSPORT:
+    369          if HAS_SNI and server_hostname is not None:
+--> 370              return context.wrap_socket(sock, server_hostname=server_hostname)
+    371  
+    ..................................................
+     sock = <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     keyfile = None
+     certfile = None
+     cert_reqs = None
+     ca_certs = '/usr/local/lib/python3.6/site-packages/certifi/cacert.pem'
+     server_hostname = 'raw.githubusercontent.com'
+     ssl_version = None
+     ciphers = None
+     ssl_context = <ssl.SSLContext object at 0x7f99a34ff3c8>
+     ca_cert_dir = None
+     key_password = None
+     IS_SECURETRANSPORT = False
+     HAS_SNI = True
+     context.wrap_socket = <method 'SSLContext.wrap_socket' of <ssl.SSLContext object at 0x7f99a34ff3c8> ssl.py:357>
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 365, in wrap_socket
+    357  def wrap_socket(self, sock, server_side=False,
+    358                  do_handshake_on_connect=True,
+    359                  suppress_ragged_eofs=True,
+    360                  server_hostname=None, session=None):
+    361      return SSLSocket(sock=sock, server_side=server_side,
+    362                       do_handshake_on_connect=do_handshake_on_connect,
+    363                       suppress_ragged_eofs=suppress_ragged_eofs,
+    364                       server_hostname=server_hostname,
+--> 365                       _context=self, _session=session)
+    ..................................................
+     self = <ssl.SSLContext object at 0x7f99a34ff3c8>
+     sock = <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     server_side = False
+     do_handshake_on_connect = True
+     suppress_ragged_eofs = True
+     server_hostname = 'raw.githubusercontent.com'
+     session = None
+     SSLSocket = <class 'ssl.SSLSocket'>
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 776, in __init__
+    685  def __init__(self, sock=None, keyfile=None, certfile=None,
+    686               server_side=False, cert_reqs=CERT_NONE,
+    687               ssl_version=PROTOCOL_TLS, ca_certs=None,
+    688               do_handshake_on_connect=True,
+    689               family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None,
+    690               suppress_ragged_eofs=True, npn_protocols=None, ciphers=None,
+    691               server_hostname=None,
+    692               _context=None, _session=None):
+ (...)
+    772                  timeout = self.gettimeout()
+    773                  if timeout == 0.0:
+    774                      # non-blocking
+    775                      raise ValueError("do_handshake_on_connect should not be specified for non-blocking sockets")
+--> 776                  self.do_handshake()
+    777  
+    ..................................................
+     self = <ssl.SSLSocket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     sock = <socket.socket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     keyfile = None
+     certfile = None
+     server_side = False
+     cert_reqs = <VerifyMode.CERT_NONE: 0>
+     CERT_NONE = <VerifyMode.CERT_NONE: 0>
+     ssl_version = <_SSLMethod.PROTOCOL_TLS: 2>
+     PROTOCOL_TLS = <_SSLMethod.PROTOCOL_TLS: 2>
+     ca_certs = None
+     do_handshake_on_connect = True
+     family = <AddressFamily.AF_INET: 2>
+     AF_INET = <AddressFamily.AF_INET: 2>
+     type = <SocketKind.SOCK_STREAM: 1>
+     SOCK_STREAM = <SocketKind.SOCK_STREAM: 1>
+     proto = 0
+     fileno = None
+     suppress_ragged_eofs = True
+     npn_protocols = None
+     ciphers = None
+     server_hostname = 'raw.githubusercontent.com'
+     _context = <ssl.SSLContext object at 0x7f99a34ff3c8>
+     _session = None
+     timeout = None
+     self.do_handshake = <method 'SSLSocket.do_handshake' of <ssl.SSLSocket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_ST
+                          REAM, proto=6> ssl.py:1029>
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 1036, in do_handshake
+    1029  def do_handshake(self, block=False):
+ (...)
+    1032      timeout = self.gettimeout()
+    1033      try:
+    1034          if timeout == 0.0 and block:
+    1035              self.settimeout(None)
+--> 1036          self._sslobj.do_handshake()
+    1037      finally:
+    ..................................................
+     self = <ssl.SSLSocket [closed] fd=-1, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=6>
+     block = False
+     timeout = None
+     self._sslobj.do_handshake = # AttributeError
+          self._sslobj = None
+    ..................................................
+
+File "/usr/lib64/python3.6/ssl.py", line 648, in do_handshake
+    646  def do_handshake(self):
+    647      """Start the SSL/TLS handshake."""
+--> 648      self._sslobj.do_handshake()
+    649      if self.context.check_hostname:
+    ..................................................
+     self = <ssl.SSLObject object at 0x7f99a3507048>
+     self.context.check_hostname = False
+    ..................................................
+
+---- (full traceback above) ----
+File "/usr/local/lib/python3.6/site-packages/requests/adapters.py", line 449, in send
+    timeout=timeout
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 720, in urlopen
+    method, url, error=e, _pool=self, _stacktrace=sys.exc_info()[2]
+File "/usr/local/lib/python3.6/site-packages/urllib3/util/retry.py", line 400, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+File "/usr/local/lib/python3.6/site-packages/urllib3/packages/six.py", line 734, in reraise
+    raise value.with_traceback(tb)
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 672, in urlopen
+    chunked=chunked,
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 376, in _make_request
+    self._validate_conn(conn)
+File "/usr/local/lib/python3.6/site-packages/urllib3/connectionpool.py", line 994, in _validate_conn
+    conn.connect()
+File "/usr/local/lib/python3.6/site-packages/urllib3/connection.py", line 360, in connect
+    ssl_context=context,
+File "/usr/local/lib/python3.6/site-packages/urllib3/util/ssl_.py", line 370, in ssl_wrap_socket
+    return context.wrap_socket(sock, server_hostname=server_hostname)
+File "/usr/lib64/python3.6/ssl.py", line 365, in wrap_socket
+    _context=self, _session=session)
+File "/usr/lib64/python3.6/ssl.py", line 776, in __init__
+    self.do_handshake()
+File "/usr/lib64/python3.6/ssl.py", line 1036, in do_handshake
+    self._sslobj.do_handshake()
+File "/usr/lib64/python3.6/ssl.py", line 648, in do_handshake
+    self._sslobj.do_handshake()
+
+ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+While handling the above exception, another exception occurred:
+
+File "/usr/local/lib/python3.6/site-packages/datahub/entrypoints.py", line 102, in main
+    99   def main(**kwargs):
+    100      # This wrapper prevents click from suppressing errors.
+    101      try:
+--> 102          sys.exit(datahub(standalone_mode=False, **kwargs))
+    103      except click.exceptions.Abort:
+    ..................................................
+     kwargs = {}
+     datahub = <Group datahub>
+     click.exceptions.Abort = <class 'click.exceptions.Abort'>
+    ..................................................
+
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 829, in __call__
+    827  def __call__(self, *args, **kwargs):
+    828      """Alias for :meth:`main`."""
+--> 829      return self.main(*args, **kwargs)
+    ..................................................
+     self = <Group datahub>
+     args = ()
+     kwargs = {'standalone_mode': False}
+     self.main = <method 'BaseCommand.main' of <Group datahub> core.py:716>
+    ..................................................
+
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 782, in main
+    716  def main(
+    717      self,
+    718      args=None,
+    719      prog_name=None,
+    720      complete_var=None,
+    721      standalone_mode=True,
+    722      **extra
+    723  ):
+ (...)
+    778  
+    779      try:
+    780          try:
+    781              with self.make_context(prog_name, args, **extra) as ctx:
+--> 782                  rv = self.invoke(ctx)
+    783                  if not standalone_mode:
+    ..................................................
+     self = <Group datahub>
+     args = ['docker', 'ingest-sample-data', ]
+     prog_name = 'datahub'
+     complete_var = None
+     standalone_mode = False
+     extra = {}
+     self.make_context = <method 'BaseCommand.make_context' of <Group datahub> core.py:680>
+     ctx = <click.core.Context object at 0x7f99bb4f3048>
+     self.invoke = <method 'MultiCommand.invoke' of <Group datahub> core.py:1221>
+    ..................................................
+
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 1259, in invoke
+    1221  def invoke(self, ctx):
+ (...)
+    1255              ctx.invoked_subcommand = cmd_name
+    1256              Command.invoke(self, ctx)
+    1257              sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)
+    1258              with sub_ctx:
+--> 1259                  return _process_result(sub_ctx.command.invoke(sub_ctx))
+    1260  
+    ..................................................
+     self = <Group datahub>
+     ctx = <click.core.Context object at 0x7f99bb4f3048>
+     ctx.invoked_subcommand = 'docker'
+     cmd_name = 'docker'
+     sub_ctx = <click.core.Context object at 0x7f99bb4f30b8>
+     cmd.make_context = <method 'BaseCommand.make_context' of <Group docker> core.py:680>
+     args = ['ingest-sample-data', ]
+     _process_result = <function 'MultiCommand.invoke.<locals>._process_result' core.py:1222>
+     sub_ctx.command.invoke = <method 'MultiCommand.invoke' of <Group docker> core.py:1221>
+    ..................................................
+
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 1259, in invoke
+    1221  def invoke(self, ctx):
+ (...)
+    1255              ctx.invoked_subcommand = cmd_name
+    1256              Command.invoke(self, ctx)
+    1257              sub_ctx = cmd.make_context(cmd_name, args, parent=ctx)
+    1258              with sub_ctx:
+--> 1259                  return _process_result(sub_ctx.command.invoke(sub_ctx))
+    1260  
+    ..................................................
+     self = <Group docker>
+     ctx = <click.core.Context object at 0x7f99bb4f30b8>
+     ctx.invoked_subcommand = 'ingest-sample-data'
+     cmd_name = 'ingest-sample-data'
+     sub_ctx = <click.core.Context object at 0x7f99ad309400>
+     cmd.make_context = <method 'BaseCommand.make_context' of <Command ingest-sample-data> core.py:680>
+     args = []
+     _process_result = <function 'MultiCommand.invoke.<locals>._process_result' core.py:1222>
+     sub_ctx.command.invoke = <method 'Command.invoke' of <Command ingest-sample-data> core.py:1060>
+    ..................................................
+
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 1066, in invoke
+    1060  def invoke(self, ctx):
+ (...)
+    1062      in the right way.
+    1063      """
+    1064      _maybe_show_deprecated_notice(self)
+    1065      if self.callback is not None:
+--> 1066          return ctx.invoke(self.callback, **ctx.params)
+    ..................................................
+     self = <Command ingest-sample-data>
+     ctx = <click.core.Context object at 0x7f99ad309400>
+     self.callback = <function 'ingest_sample_data' telemetry.py:139>
+     ctx.invoke = <method 'Context.invoke' of <click.core.Context object at 0x7f99ad309400> core.py:572>
+     ctx.params = {'path': None}
+    ..................................................
+
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 610, in invoke
+    572  def invoke(*args, **kwargs):  # noqa: B902
+ (...)
+    606  
+    607      args = args[2:]
+    608      with augment_usage_errors(self):
+    609          with ctx:
+--> 610              return callback(*args, **kwargs)
+    ..................................................
+     args = ()
+     kwargs = {'path': None}
+     self = <click.core.Context object at 0x7f99ad309400>
+     ctx = <click.core.Context object at 0x7f99ad309400>
+     callback = <function 'ingest_sample_data' telemetry.py:139>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/datahub/telemetry/telemetry.py", line 141, in wrapper
+    139  @wraps(func)
+    140  def wrapper(*args: Any, **kwargs: Any) -> Any:
+--> 141      res = func(*args, **kwargs)
+    142      telemetry_instance.ping(func.__module__, func.__name__)
+    ..................................................
+     func = <function 'ingest_sample_data' docker.py:315>
+     args = ()
+     Any = typing.Any
+     kwargs = {'path': None}
+     telemetry_instance.ping = <method 'Telemetry.ping' of <datahub.telemetry.telemetry.Telemetry object at 0x7f99a87c01d0> telemetry.py:80>
+     func.__module__ = 'datahub.cli.docker'
+     func.__name__ = 'ingest_sample_data'
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/datahub/cli/docker.py", line 331, in ingest_sample_data
+    322  def ingest_sample_data(path: Optional[str]) -> None:
+ (...)
+    327          with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp_file:
+    328              path = str(pathlib.Path(tmp_file.name))
+    329  
+    330              # Download the bootstrap MCE file from GitHub.
+--> 331              mce_json_download_response = requests.get(GITHUB_BOOTSTRAP_MCES_URL)
+    332              mce_json_download_response.raise_for_status()
+    ..................................................
+     ingest_sample_data = <Command ingest-sample-data>
+     path = '/tmp/tmpnf280aan.json'
+     Optional = typing.Optional
+     tempfile.NamedTemporaryFile = <function 'NamedTemporaryFile' tempfile.py:524>
+     tmp_file = <tempfile._TemporaryFileWrapper object at 0x7f99a3577ef0>
+     pathlib.Path = <class 'pathlib.Path'>
+     tmp_file.name = '/tmp/tmpnf280aan.json'
+     requests.get = <function 'get' api.py:64>
+     GITHUB_BOOTSTRAP_MCES_URL = 'https://raw.githubusercontent.com/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/requests/api.py", line 76, in get
+    64   def get(url, params=None, **kwargs):
+ (...)
+    72       :rtype: requests.Response
+    73       """
+    74   
+    75       kwargs.setdefault('allow_redirects', True)
+--> 76       return request('get', url, params=params, **kwargs)
+    ..................................................
+     url = 'https://raw.githubusercontent.com/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     params = None
+     kwargs = {'allow_redirects': True}
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/requests/api.py", line 61, in request
+    16   def request(method, url, **kwargs):
+ (...)
+    57       # By using the 'with' statement we are sure the session is closed, thus we
+    58       # avoid leaving sockets open which can trigger a ResourceWarning in some
+    59       # cases, and look like a memory leak in others.
+    60       with sessions.Session() as session:
+--> 61           return session.request(method=method, url=url, **kwargs)
+    ..................................................
+     method = 'get'
+     url = 'https://raw.githubusercontent.com/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     kwargs = {'params': None,
+               'allow_redirects': True}
+     sessions.Session = <class 'requests.sessions.Session'>
+     session = <requests.sessions.Session object at 0x7f99a3577e80>
+     session.request = <method 'Session.request' of <requests.sessions.Session object at 0x7f99a3577e80> sessions.py:463>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/requests/sessions.py", line 530, in request
+    463  def request(self, method, url,
+    464          params=None, data=None, headers=None, cookies=None, files=None,
+    465          auth=None, timeout=None, allow_redirects=True, proxies=None,
+    466          hooks=None, stream=None, verify=None, cert=None, json=None):
+ (...)
+    526          'timeout': timeout,
+    527          'allow_redirects': allow_redirects,
+    528      }
+    529      send_kwargs.update(settings)
+--> 530      resp = self.send(prep, **send_kwargs)
+    531  
+    ..................................................
+     self = <requests.sessions.Session object at 0x7f99a3577e80>
+     method = 'get'
+     url = 'https://raw.githubusercontent.com/linkedin/datahub/master/metadata-ingestion/examples/mce_files/bootstrap_mce.json'
+     params = None
+     data = None
+     headers = None
+     cookies = None
+     files = None
+     auth = None
+     timeout = None
+     allow_redirects = True
+     proxies = {}
+     hooks = None
+     stream = None
+     verify = None
+     cert = None
+     json = None
+     settings = {'verify': True,
+                 'proxies': OrderedDict
+                            {},
+                 'stream': False,
+                 'cert': None}
+     self.send = <method 'Session.send' of <requests.sessions.Session object at 0x7f99a3577e80> sessions.py:614>
+     prep = <PreparedRequest [GET]>
+     send_kwargs = {'timeout': None,
+                    'allow_redirects': True,
+                    'verify': True,
+                    'proxies': OrderedDict
+                               {},
+                    'stream': False,
+                    'cert': None}
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/requests/sessions.py", line 643, in send
+    614  def send(self, request, **kwargs):
+ (...)
+    639      # Start time (approximately) of the request
+    640      start = preferred_clock()
+    641  
+    642      # Send the request
+--> 643      r = adapter.send(request, **kwargs)
+    644  
+    ..................................................
+     self = <requests.sessions.Session object at 0x7f99a3577e80>
+     request = <PreparedRequest [GET]>
+     kwargs = {'timeout': None,
+               'verify': True,
+               'proxies': OrderedDict
+                          {},
+               'stream': False,
+               'cert': None}
+     start = 1640336013.6653502
+     adapter.send = <method 'HTTPAdapter.send' of <requests.adapters.HTTPAdapter object at 0x7f99a3507128> adapters.py:394>
+    ..................................................
+
+File "/usr/local/lib/python3.6/site-packages/requests/adapters.py", line 498, in send
+    394  def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+ (...)
+    494                  low_conn.close()
+    495                  raise
+    496  
+    497      except (ProtocolError, socket.error) as err:
+--> 498          raise ConnectionError(err, request=request)
+    499  
+    ..................................................
+     self = <requests.adapters.HTTPAdapter object at 0x7f99a3507128>
+     request = <PreparedRequest [GET]>
+     stream = False
+     timeout = <urllib3.util.timeout.Timeout object at 0x7f99adb302b0>
+     verify = True
+     cert = None
+     proxies = OrderedDict
+               {}
+     ProtocolError = <class 'urllib3.exceptions.ProtocolError'>
+     socket.error = <class 'OSError'>
+     ConnectionError = <class 'requests.exceptions.ConnectionError'>
+    ..................................................
+
+---- (full traceback above) ----
+File "/usr/local/lib/python3.6/site-packages/datahub/entrypoints.py", line 102, in main
+    sys.exit(datahub(standalone_mode=False, **kwargs))
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 829, in __call__
+    return self.main(*args, **kwargs)
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 782, in main
+    rv = self.invoke(ctx)
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 1259, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 1259, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 1066, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+File "/usr/local/lib64/python3.6/site-packages/click/core.py", line 610, in invoke
+    return callback(*args, **kwargs)
+File "/usr/local/lib/python3.6/site-packages/datahub/telemetry/telemetry.py", line 141, in wrapper
+    res = func(*args, **kwargs)
+File "/usr/local/lib/python3.6/site-packages/datahub/cli/docker.py", line 331, in ingest_sample_data
+    mce_json_download_response = requests.get(GITHUB_BOOTSTRAP_MCES_URL)
+File "/usr/local/lib/python3.6/site-packages/requests/api.py", line 76, in get
+    return request('get', url, params=params, **kwargs)
+File "/usr/local/lib/python3.6/site-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+File "/usr/local/lib/python3.6/site-packages/requests/sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+File "/usr/local/lib/python3.6/site-packages/requests/sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+File "/usr/local/lib/python3.6/site-packages/requests/adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+
+ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
