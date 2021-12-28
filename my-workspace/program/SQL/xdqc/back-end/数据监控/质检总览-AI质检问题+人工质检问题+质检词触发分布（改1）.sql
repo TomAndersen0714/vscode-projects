@@ -14,10 +14,11 @@ from (
         from ods.qc_question_detail_all
         WHERE date >= %d
             and date < %d
+            and platform = %s
             and shop_name in %s -- startDate, endDate, shopStr
             and (
                 `type` = 'ai' 
-                OR (`type` = 's_emotion' AND qc_id>='4') 
+                OR (`type` = 's_emotion') 
                 OR (`type` = 'c_emotion' AND qc_id>='4')
             )
         group by platform
@@ -31,9 +32,10 @@ from (
         from ods.qc_question_detail_all
         WHERE date >= %d
             and date < %d
+            and platform = %s
             and (
                 `type` = 'ai' 
-                OR (`type` = 's_emotion' AND qc_id>='4') 
+                OR (`type` = 's_emotion') 
                 OR (`type` = 'c_emotion' AND qc_id>='4')
             )
             and shop_name in %s -- startDate, endDate, shopStr
@@ -62,6 +64,7 @@ from (
         from ods.qc_question_detail_all
         WHERE date >= %d
             and date < %d
+            and platform = %s
             and shop_name in %s -- startDate, endDate, shopStr
             and `type` = 'manual'
         group by platform,
@@ -76,6 +79,7 @@ from (
         from ods.qc_question_detail_all
         WHERE date >= %d
             and date < %d
+            and platform = %s
             and `type` = 'manual'
             and shop_name in %s -- startDate, endDate, shopStr
         group by platform,
@@ -104,6 +108,7 @@ from (
         from ods.qc_words_detail_all
         WHERE date >= %d
             and date < %d
+            and platform = %s
             and shop_name in %s -- startDate, endDate, shopStr
         group by platform,
             word
@@ -114,6 +119,7 @@ from (
         from ods.qc_words_detail_all
         WHERE date >= %d
             and date < %d
+            and platform = %s
             and shop_name in %s -- startDate, endDate, shopStr
         group by platform
         order by words_count_all desc

@@ -1,45 +1,25 @@
-"dwd.xdqc_dialog_local",
-"ods.qc_detail_local",
-"ods.qc_question_detail_local",
-"ods.qc_read_mark_detail_local",
-"ods.qc_session_count_local",
-"ods.qc_statistical_department_local",
-"ods.qc_statistical_employee_local",
-"ods.qc_statistical_local",
-"ods.qc_words_detail_local",
-"ods.xdqc_abnormal_check_setting_local",
-"ods.xdqc_emotion_check_item_local",
-"ods.xdqc_excellent_check_setting_local",
-"ods.xdqc_tag_local",
-"ods.xdqc_tag_sub_category_local",
-"ods.xinghuan_account_local",
-"ods.xinghuan_case_detail_local",
-"ods.xinghuan_case_label_local",
-"ods.xinghuan_company_local",
-"ods.xinghuan_customize_rule_local",
-"ods.xinghuan_department_local",
-"ods.xinghuan_dialog_tag_score_local",
-"ods.xinghuan_employee_local",
-"ods.xinghuan_employee_snick_local",
-"ods.xinghuan_qc_abnormal_local",
-"ods.xinghuan_qc_norm_local",
-"ods.xinghuan_qc_norm_relate_local",
-"ods.xinghuan_qc_task_instance_local",
-"ods.xinghuan_qc_task_local",
-"tmp.xdqc_abnormal_check_setting_local",
-"tmp.xdqc_emotion_check_item_local",
-"tmp.xdqc_excellent_check_setting_local",
-"tmp.xdqc_tag_local",
-"tmp.xdqc_tag_sub_category_local",
-"tmp.xinghuan_account_local",
-"tmp.xinghuan_case_detail_local",
-"tmp.xinghuan_case_label_local",
-"tmp.xinghuan_company_local",
-"tmp.xinghuan_customize_rule_local",
-"tmp.xinghuan_department_local",
-"tmp.xinghuan_employee_local",
-"tmp.xinghuan_employee_snick_local",
-"tmp.xinghuan_qc_norm_local",
-"tmp.xinghuan_qc_norm_relate_local",
-"tmp.xinghuan_qc_task_local",
-"tmp.xinghuan_qc_task_instance_local"
+select employee_id,
+    employee_name,
+    sum(session_count) as total_count,
+    0 as total_check,
+    sum(ai_subtract_score) as abnormal_score,
+    sum(subtract_score_count) / sum(session_count) as abnormal_rate,
+    sum(ai_subtract_score) - sum(manual_subtract_score) - sum(rule_score) as ai_abnormal_score,
+    sum(manual_subtract_score) as human_abnormal_score,
+    0 as human_total_check,
+    0 as average_check,
+    sum(rule_score) AS user_rule_score,
+    round(
+        (
+            sum(session_count) * 100 + sum(ai_add_score) - sum(ai_subtract_score)
+        ) / sum(session_count),
+        2
+    ) AS avg_score
+from ods.qc_session_count_all
+where date >= 1640016000 and date < 1640102399
+    and shop_name in ['方太官方旗舰店']
+    and platform = 'tb'
+    and employee_name != ''
+group by employee_id,
+    employee_name
+order by avg_score desc

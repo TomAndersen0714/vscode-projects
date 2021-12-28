@@ -1,4 +1,5 @@
 -- 会话总量
+-- PS: 由于未分组子账号无法获取到department_id, 因此原逻辑中未分组子账号无法计入质检总览页面的会话总量统计中
 xh-mc/handler/data_monitor.go:445
 sqlBuilder.WriteString(fmt.Sprintf("%d and %d and shop_name in %s and department_id != '' ", startDate, endDate, shopStr))
 
@@ -37,9 +38,9 @@ func BuildQcSql(startDate, endDate int64, shopName []string) string {
 		"sum(qc_count) as count_all_info from  ods.qc_question_detail_all WHERE date >= "
 	sqlBuilder.WriteString(sqlPartOne)
 	sqlBuilder.WriteString(fmt.Sprintf("%d and date < %d and shop_name in %s ", startDate, endDate, shopStr))
-	sqlPartTwo := "and (`type` = 'ai' OR (`type` = 's_emotion' AND qc_id>='4') OR (`type` = 'c_emotion' AND qc_id>='4')) group by platform) as a left join (select platform,`type`, qc_id, qc_name, sum(qc_count) as count_info from ods.qc_question_detail_all WHERE date >= "
+	sqlPartTwo := "and (`type` = 'ai' OR (`type` = 's_emotion') OR (`type` = 'c_emotion' AND qc_id>='4')) group by platform) as a left join (select platform,`type`, qc_id, qc_name, sum(qc_count) as count_info from ods.qc_question_detail_all WHERE date >= "
 	sqlBuilder.WriteString(sqlPartTwo)
-	sqlBuilder.WriteString(fmt.Sprintf("%d and date < %d and (`type` = 'ai' OR (`type` = 's_emotion' AND qc_id>='4') OR (`type` = 'c_emotion' AND qc_id>='4')) and shop_name in %s ", startDate, endDate, shopStr))
+	sqlBuilder.WriteString(fmt.Sprintf("%d and date < %d and (`type` = 'ai' OR (`type` = 's_emotion') OR (`type` = 'c_emotion' AND qc_id>='4')) and shop_name in %s ", startDate, endDate, shopStr))
 	sqlPartThree := "group by platform,`type`,qc_id,qc_name order by count_info desc limit 10) as b on a.platform = b.platform order by qc_proportion desc limit 10 UNION ALL "
 	sqlBuilder.WriteString(sqlPartThree)
 
