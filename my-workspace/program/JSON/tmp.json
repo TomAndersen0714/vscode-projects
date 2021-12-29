@@ -1,50 +1,38 @@
 {
-    '_id': ObjectId('5f73e9c1684bf7000141363d'),
-    'create_time': datetime.datetime(2020, 9, 30, 2, 13, 21, 201000),
-    'update_time': datetime.datetime(2020, 9, 30, 2, 13, 21, 201000),
-    'company_id': ObjectId('5f73e9c1684bf70001413636'),
-    'username': '测试',
-    'status': 1,
-    'sex': 1,
-    'phone': '',
-    'superior_name': '',
-    'job_number': '',
-    'role_id': ObjectId('5f73e9c1684bf70001413638'),
-    'entry_time': 1601432001,
-    'data_permit': {
-        'shops': [{
-            'id': ObjectId('5bfe7a6a89bc4612f16586a5'),
-            'platform': 'tb',
-            'seller_nick': '杜可风按'
-        }, {
-            'id': ObjectId('5d08498698ef41001087dde8'),
-            'platform': 'tb',
-            'seller_nick': 'hjahdsa'
-        }, {
-            'id': ObjectId('5d5be95298ef41001222f790'),
-            'platform': 'tb',
-            'seller_nick': 'wangjq_1990'
-        }, {
-            'id': ObjectId('5e7dbfa6e4f3320016e9b7d1'),
-            'platform': 'jd',
-            'seller_nick': '智晓多谋生鲜专营店'
-        }, {
-            'id': ObjectId('5f1f97bdfbb9ba0017f73f18'),
-            'platform': 'tb',
-            'seller_nick': '阳光宅男820'
-        }, {
-            'id': ObjectId('5f8ff0c0a3967d00188dca48'),
-            'platform': 'tb',
-            'seller_nick': '木月瑞希尔'
-        }, {
-            'id': ObjectId('613ef1e1ec7097000e494123'),
-            'platform': 'tb',
-            'seller_nick': '邓锐zero'
-        }],
-        'snicks': [],
-        'group_desc': [],
-        'department_desc': [],
-        'check_shop': False,
-        'check_snick': False
+    '_id': ObjectId('5cf96b5e2af292ae4133f877'),
+    'date': 20190606,
+    'nick': '成都晓多科技',
+    'subnicks': ['成都晓多科技:pdd75528644468', '成都晓多科技:晓多测试zp'],
+    'reminder': {
+        'need_send_count': 0
+    },
+    'robot': {
+        'answer_auto_send_count': 21,
+        'send_mode_accept_percent': 11.11,
+        'config2_send_msg_count': 25,
+        'half_auto_mode_accept_percent': 0,
+        'config2_nopre_order_cnick_count': 2,
+        'auto_mode_accept_percent': 0,
+        'config2_valid_use_count': 24,
+        'valid_use_percent': 0,
+        'config2_cnick_count': 2,
+        'identify_count': 19,
+        'remind_mode_accept_percent': 0,
+        'send_mode_suggest_count': 17,
+        'send_mode_ask_count': 27,
+        'answer_suggest_count': 19,
+        'send_mode_accept_count': 3,
+        'answer_manual_adopt_count': 3,
+        'hybrid_mode_suggest_count': 2,
+        'hybrid_mode_ask_count': 3,
+        'config2_ask_count': 30,
+        'config2_valid_use_percent': 80.0,
+        'send_mode_auto_send_count': 21
+    },
+    'auto_learn': {},
+    'shop': {
+        'category_id': None,
+        'plugin_service_level': None,
+        'plugin_expire_time': None
     }
 }
