@@ -1,27 +1,80 @@
--- 集团中高等级实时告警(集团各等级告警实时分类统计)
-WITH ( SELECT toYYYYMMDD(today()) ) AS today
-SELECT
-    `level`, -- 告警等级
-    warning_type, -- 告警项描述
-    sum(is_finished = 'False') AS not_finished_cnt, -- 各告警项未处理总量
-    sum(1) AS warning_cnt, -- 各告警项总量
-    if(warning_cnt!=0, round((warning_cnt-not_finished_cnt)/warning_cnt*100,2), 0.00) AS warning_finished_ratio-- 各告警项完结率
-FROM xqc_ods.alert_all FINAL
-WHERE day=today
--- 已订阅店铺
-AND shop_id GLOBAL IN (
-    SELECT tenant_id AS shop_id
-    FROM xqc_dim.company_tenant
-    WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    -- AND platform = '{{ platform=jd }}'
-)
--- 权限隔离
-AND (
-        shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f }}')
-        OR
-        snick IN splitByChar(',','{{ snick_list=方太官方旗舰店:柚子 }}')
-    )
--- 筛选新版本告警
-AND `level` IN [1,2,3]
-GROUP BY `level`, warning_type
-ORDER BY `level` DESC, warning_type DESC
+select _id as id,
+    platform,
+    channel,
+    group,
+    date,
+    seller_nick,
+    cnick,
+    snick,
+    toString(begin_time) as begin_time_str,
+    toString(end_time) as end_time,
+    is_after_sale,
+    is_inside,
+    employee_name,
+    s_emotion_type,
+    s_emotion_count,
+    emotions,
+    abnormals_type,
+    abnormals_count,
+    excellents_type,
+    excellents_count,
+    qc_word_source,
+    qc_word_word,
+    qc_word_count,
+    qid,
+    mark,
+    mark_judge,
+    mark_score,
+    mark_score_add,
+    mark_ids,
+    last_mark_id,
+    human_check,
+    tag_score_stats_id,
+    tag_score_stats_score,
+    tag_score_add_stats_id,
+    tag_score_add_stats_score,
+    rule_stats_id,
+    rule_stats_score,
+    rule_stats_count,
+    rule_add_stats_id,
+    rule_add_stats_score,
+    rule_add_stats_count,
+    score,
+    score_add,
+    question_count,
+    answer_count,
+    toString(first_answer_time) as first_answer_time,
+    qa_time_sum,
+    qa_round_sum,
+    focus_goods_id,
+    is_remind,
+    task_list_id,
+    read_mark,
+    last_msg_id,
+    consulte_transfor_v2,
+    order_info_id,
+    order_info_status,
+    order_info_payment,
+    order_info_time,
+    intel_score,
+    remind_ntype,
+    toString(first_follow_up_time) as first_follow_up_time,
+    is_follow_up_remind,
+    emotion_detect_mode,
+    has_withdraw_robot_msg,
+    is_order_matched,
+    suspected_positive_emotion,
+    suspected_problem,
+    suspected_excellent,
+    has_after,
+    cnick_customize_rule,
+    toString(update_time) as update_time,
+    sign
+from dwd.xdqc_dialog_all
+where toYYYYMMDD(begin_time) between 20211101 and 20211129
+    and seller_nick in ['ww651f1b31e4bc10f2']
+    and platform = 'wx'
+    and snick in ['z.er']
+    and snick <> cnick
+order by begin_time desc
+limit 30 offset 0
