@@ -1,80 +1,30 @@
-select _id as id,
-    platform,
-    channel,
-    group,
-    date,
-    seller_nick,
-    cnick,
-    snick,
-    toString(begin_time) as begin_time_str,
-    toString(end_time) as end_time,
-    is_after_sale,
-    is_inside,
-    employee_name,
-    s_emotion_type,
-    s_emotion_count,
-    emotions,
-    abnormals_type,
-    abnormals_count,
-    excellents_type,
-    excellents_count,
-    qc_word_source,
-    qc_word_word,
-    qc_word_count,
-    qid,
-    mark,
-    mark_judge,
-    mark_score,
-    mark_score_add,
-    mark_ids,
-    last_mark_id,
-    human_check,
-    tag_score_stats_id,
-    tag_score_stats_score,
-    tag_score_add_stats_id,
-    tag_score_add_stats_score,
-    rule_stats_id,
-    rule_stats_score,
-    rule_stats_count,
-    rule_add_stats_id,
-    rule_add_stats_score,
-    rule_add_stats_count,
-    score,
-    score_add,
-    question_count,
-    answer_count,
-    toString(first_answer_time) as first_answer_time,
-    qa_time_sum,
-    qa_round_sum,
-    focus_goods_id,
-    is_remind,
-    task_list_id,
-    read_mark,
-    last_msg_id,
-    consulte_transfor_v2,
-    order_info_id,
-    order_info_status,
-    order_info_payment,
-    order_info_time,
-    intel_score,
-    remind_ntype,
-    toString(first_follow_up_time) as first_follow_up_time,
-    is_follow_up_remind,
-    emotion_detect_mode,
-    has_withdraw_robot_msg,
-    is_order_matched,
-    suspected_positive_emotion,
-    suspected_problem,
-    suspected_excellent,
-    has_after,
-    cnick_customize_rule,
-    toString(update_time) as update_time,
-    sign
-from dwd.xdqc_dialog_all
-where toYYYYMMDD(begin_time) between 20211101 and 20211129
-    and seller_nick in ['ww651f1b31e4bc10f2']
-    and platform = 'wx'
-    and snick in ['z.er']
-    and snick <> cnick
-order by begin_time desc
-limit 30 offset 0
+
+req := api.DefaultRequest(ctx).(*protocol.KefuHumanResultReq)
+s1 := "select shop_name,snick,department_id,total_score,total_score_add,toString(check_human) as check_human,name,tag_id,score,cal_op,tag_score from (" +
+	"select seller_nick,snick,department_id,mark_list as check_human,name,tag_id,score,cal_op,tag_score from " +
+	fmt.Sprintf("(select seller_nick,snick,department_id,arrayReduce('groupUniqArray',flatten(groupArray(mark_list))) as mark_list from ods.qc_statistical_all where date between %d and %d and employee_id = '%s' ", req.StartDate, req.EndDate, req.EmployeeId)
+if req.ShopName != "" {
+	s1 += fmt.Sprintf("and seller_nick = '%s'", req.ShopName)
+}
+
+s1 += " group by seller_nick,snick,department_id) as qc_statistical " +
+	"left join (" +
+	"select snick,name,tag_id,cal_op,score,sum(score) as tag_score from  ods.xinghuan_dialog_tag_score_all " +
+	fmt.Sprintf("where day between toInt32(toYYYYMMDD(toDate(%d))) and toInt32(toYYYYMMDD(toDate(%d))) ", req.StartDate, req.EndDate) +
+	"group by snick,name,tag_id,cal_op ,score" +
+	") as tag_score " +
+	"on qc_statistical.snick = tag_score.snick " +
+	") as score left join (select seller_nick as shop_name,snick,department_id,sum(mark_score) as total_score,sum(mark_score_add) as total_score_add " +
+	fmt.Sprintf("from ods.qc_statistical_all where employee_id = '%s' and `date` >= %d and `date` <= %d ", req.EmployeeId, req.StartDate, req.EndDate) +
+	"group by seller_nick,snick,department_id) as tag on score.snick = tag.snick and score.seller_nick = tag.shop_name and score.department_id = tag.department_id "
+
+if req.DepartmentId != "" {
+	departmentIds, _, err := service.GetSubDepartment(bson.ObjectIdHex(req.DepartmentId))
+	if err != nil {
+		logrus.Errorf("get sub department error %+v", err)
+		return ""
+	}
+	s1 += fmt.Sprintf("where has(%s, department_id) ", service.BuildSqlArrayById(departmentIds))
+}
+
+ return s1
