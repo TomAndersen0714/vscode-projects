@@ -2,7 +2,14 @@
 SELECT columns('time'),day
 FROM xqc_ods.message_all
 WHERE day = toYYYYMMDD(toDateTime64('{{date}}',3))
-AND time BETWEEN subtractHours(toDateTime64('{{date}}',3), 8) AND addHours(toDateTime64('{{date}}',3), 16)
+AND time NOT BETWEEN subtractHours(toDateTime64('{{date}}',3), 8) AND addHours(toDateTime64('{{date}}',3), 16)
+LIMIT 10
+
+-- 统计异常数据
+SELECT count(1)
+FROM xqc_ods.message_all
+WHERE day = toYYYYMMDD(toDateTime64('{{date}}',3))
+AND time NOT BETWEEN subtractHours(toDateTime64('{{date}}',3), 8) AND addHours(toDateTime64('{{date}}',3), 16)
 LIMIT 10
 
 -- 尝试备份已有数据 20210627~20211022, 按天来备份
