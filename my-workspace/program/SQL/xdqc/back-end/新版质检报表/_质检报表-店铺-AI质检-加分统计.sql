@@ -1,59 +1,44 @@
--- 质检报表-店铺
--- 统计维度: 子账号分组, 下钻维度: 会话
+-- 质检报表-店铺-分组-AI质检-加分行为触发次数
 SELECT
-    seller_nick AS `店铺`,
+    seller_nick AS `店铺`, 
     -- department_id,
     department_name AS `子账号分组`,
-    count(distinct snick) AS `客服人数`,
-    count(1) AS `总会话量`,
-    round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
-    `总会话量` AS `AI质检量`,
-    sum(arraySum(abnormals_count)!=0) AS `AI异常会话量`,
-    concat(
-        CAST(
-            round((`AI异常会话量` * 100 / `总会话量`), 2),
-            'String'
-        ),
-        '%'
-    ) AS `AI扣分会话比例`,
-    sum(arraySum(excellents_count)!=0) AS `AI加分会话量`,
-    round((0.9604 * `总会话量`) /(0.0025 * `总会话量` + 0.9604), 0) as `建议抽检量`,
-    sum(length(mark_ids)!=0) AS `人工抽检量`,
-    concat(
-        CAST(round((`人工抽检量` * 100 / `总会话量`), 2), 'String'),
-        '%'
-    ) as `抽检比例`,
-    sum(length(tag_score_stats_id)!=0) `人工质检扣分会话量`,
-    concat(
-        CAST(
-            round((`人工质检扣分会话量` * 100 / `总会话量`), 2),
-            'String'
-        ),
-        '%'
-    ) AS `人工扣分会话比例`,
-    sum(length(tag_score_add_stats_id)!=0) `人工质检加分会话量`
+    sumIf(excellent_cnt, excellent_type=1) AS `需求挖掘`,
+    sumIf(excellent_cnt, excellent_type=2) AS `商品细节解答`,
+    sumIf(excellent_cnt, excellent_type=3) AS `卖点传达`,
+    sumIf(excellent_cnt, excellent_type=4) AS `商品推荐`,
+    sumIf(excellent_cnt, excellent_type=5) AS `退换货理由修改`,
+    sumIf(excellent_cnt, excellent_type=6) AS `主动跟进`,
+    sumIf(excellent_cnt, excellent_type=7) AS `无货挽回`,
+    sumIf(excellent_cnt, excellent_type=8) AS `活动传达`,
+    sumIf(excellent_cnt, excellent_type=9) AS `店铺保障`,
+    sumIf(excellent_cnt, excellent_type=10) AS `催拍催付`,
+    sumIf(excellent_cnt, excellent_type=11) AS `核对地址`,
+    sumIf(excellent_cnt, excellent_type=12) AS `好评引导`,
+    sumIf(excellent_cnt, excellent_type=13) AS `优秀结束语`
 FROM (
     SELECT
         toInt32(toYYYYMMDD(begin_time)) AS day,
-        *
+        seller_nick,
+        snick,
+        excellent_type,
+        excellent_cnt
     FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    AND platform = '{{ platform=tb }}'
+    ARRAY JOIN
+        excellents_type AS excellent_type, 
+        excellents_count AS excellent_cnt
+    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
     AND snick IN (
-        -- 获取最新版本的维度数据(T+1)
+        -- 查询对应企业-平台的所有子账号, 不论其是否绑定员工
+        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
         SELECT distinct snick
         FROM ods.xinghuan_employee_snick_all
         WHERE day = toYYYYMMDD(yesterday())
-        AND platform = '{{ platform=tb }}'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 下拉框-子账号分组
-        AND (
-            '{{ depatment_ids= }}'=''
-            OR
-            department_id IN splitByChar(',','{{ depatment_ids= }}')
-        )
+        AND platform = '{{ platform }}'
+        AND company_id = '{{ company_id }}'
     )
-) AS dialog_info
+    AND excellent_cnt!=0
+) AS ai_abnormal_info
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT

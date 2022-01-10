@@ -5,39 +5,41 @@ SELECT
     -- department_id,
     department_name AS `子账号分组`,
     count(distinct snick) AS `客服人数`,
-    count(1) AS `总会话量`,
+    sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
     `总会话量` AS `AI质检量`,
-    sum(arraySum(abnormals_count)!=0) AS `AI异常会话量`,
+    sum(abnormal_dialog_cnt) AS `AI异常会话量`,
     concat(
-        CAST(
-            round((`AI异常会话量` * 100 / `总会话量`), 2),
-            'String'
-        ),
+        toString(round((`AI异常会话量` * 100 / `总会话量`), 2)),
         '%'
     ) AS `AI扣分会话比例`,
-    sum(arraySum(excellents_count)!=0) AS `AI加分会话量`,
+    sum(excellents_dialog_cnt) AS `AI加分会话量`,
     round((0.9604 * `总会话量`) /(0.0025 * `总会话量` + 0.9604), 0) as `建议抽检量`,
-    sum(length(mark_ids)!=0) AS `人工抽检量`,
+    sum(mark_dialog_cnt) AS `人工抽检量`,
     concat(
-        CAST(round((`人工抽检量` * 100 / `总会话量`), 2), 'String'),
+        toString(round((`人工抽检量` * 100 / `总会话量`), 2)),
         '%'
     ) as `抽检比例`,
-    sum(length(tag_score_stats_id)!=0) `人工质检扣分会话量`,
+    sum(tag_score_dialog_cnt) `人工质检扣分会话量`,
     concat(
-        CAST(
-            round((`人工质检扣分会话量` * 100 / `总会话量`), 2),
-            'String'
-        ),
+        toString(round((`人工质检扣分会话量` * 100 / `总会话量`), 2)),
         '%'
     ) AS `人工扣分会话比例`,
-    sum(length(tag_score_add_stats_id)!=0) `人工质检加分会话量`
+    sum(tag_score_add_dialog_cnt) `人工质检加分会话量`
 FROM (
     SELECT
-        toInt32(toYYYYMMDD(begin_time)) AS day,
-        *
+        seller_nick,
+        snick,
+        COUNT(1) AS dialog_cnt,
+        sum(score_add) AS score_add,
+        sum(score) AS score,
+        sum(arraySum(abnormals_count)!=0) AS abnormal_dialog_cnt,
+        sum(arraySum(excellents_count)!=0) AS excellents_dialog_cnt,
+        sum(length(mark_ids)!=0) AS mark_dialog_cnt,
+        sum(length(tag_score_stats_id)!=0) AS tag_score_dialog_cnt,
+        sum(length(tag_score_add_stats_id)!=0) AS tag_score_add_dialog_cnt
     FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     AND platform = '{{ platform=tb }}'
     AND snick IN (
         -- 获取最新版本的维度数据(T+1)
@@ -45,14 +47,15 @@ FROM (
         FROM ods.xinghuan_employee_snick_all
         WHERE day = toYYYYMMDD(yesterday())
         AND platform = '{{ platform=tb }}'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
         -- 下拉框-子账号分组
         AND (
-            '{{ depatment_ids }}'=''
+            '{{ depatment_ids= }}'=''
             OR
-            department_id IN splitByChar(',','{{ depatment_ids }}')
+            department_id IN splitByChar(',','{{ depatment_ids= }}')
         )
     )
+    GROUP BY seller_nick, snick
 ) AS dialog_info
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
@@ -64,7 +67,7 @@ GLOBAL LEFT JOIN (
         FROM ods.xinghuan_employee_snick_all
         WHERE day = toYYYYMMDD(yesterday())
         AND platform = '{{ platform=tb }}'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
     ) AS snick_info
     GLOBAL RIGHT JOIN (
         -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
@@ -102,14 +105,14 @@ GLOBAL LEFT JOIN (
                         parent_id AS parent_department_id
                     FROM ods.xinghuan_department_all
                     WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                     AND (
                         parent_id GLOBAL IN (
                             SELECT DISTINCT
                                 _id AS department_id
                             FROM ods.xinghuan_department_all
                             WHERE day = toYYYYMMDD(yesterday())
-                            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                         ) -- 清除子账号父分组被删除, 而子分组依旧存在的脏数据
                         OR 
                         parent_id = '' -- 保留顶级分组
@@ -122,7 +125,7 @@ GLOBAL LEFT JOIN (
                         parent_id AS parent_department_id
                     FROM ods.xinghuan_department_all
                     WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                 ) AS level_3
                 ON level_4.parent_department_id = level_3.department_id
             ) AS level_3_4
@@ -133,7 +136,7 @@ GLOBAL LEFT JOIN (
                     parent_id AS parent_department_id
                 FROM ods.xinghuan_department_all
                 WHERE day = toYYYYMMDD(yesterday())
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
             ) AS level_2
             ON level_3_4.parent_department_id = level_2.department_id
         ) AS level_2_3_4
@@ -144,7 +147,7 @@ GLOBAL LEFT JOIN (
                 parent_id AS parent_department_id
             FROM ods.xinghuan_department_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
         ) AS level_1
         ON level_2_3_4.parent_department_id = level_1.department_id
     ) AS department_info
