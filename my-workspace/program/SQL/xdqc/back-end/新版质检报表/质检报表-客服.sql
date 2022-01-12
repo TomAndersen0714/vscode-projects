@@ -93,7 +93,7 @@ FROM (
             sum(length(mark_ids)!=0) AS mark_dialog_cnt,
             sum(length(tag_score_stats_id)!=0) AS tag_score_dialog_cnt,
             sum(length(tag_score_add_stats_id)!=0) AS tag_score_add_dialog_cnt
-        FROM dwd.xdqc_dialog_all
+        FROM dwd.xdqc_dialog_all FINAL
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         AND platform = '{{ platform=tb }}'
         AND snick IN (
@@ -151,7 +151,7 @@ FROM (
                     sumIf(abnormal_cnt, abnormal_type=27) AS abnormal_type_27_cnt,
                     sumIf(abnormal_cnt, abnormal_type=28) AS abnormal_type_28_cnt,
                     sumIf(abnormal_cnt, abnormal_type=29) AS abnormal_type_29_cnt
-                FROM dwd.xdqc_dialog_all
+                FROM dwd.xdqc_dialog_all FINAL
                 ARRAY JOIN
                     abnormals_type AS abnormal_type, 
                     abnormals_count AS abnormal_cnt
@@ -193,7 +193,7 @@ FROM (
                     sumIf(excellent_cnt, excellent_type=11) AS excellent_type_11_cnt,
                     sumIf(excellent_cnt, excellent_type=12) AS excellent_type_12_cnt,
                     sumIf(excellent_cnt, excellent_type=13) AS excellent_type_13_cnt
-                FROM dwd.xdqc_dialog_all
+                FROM dwd.xdqc_dialog_all FINAL
                 ARRAY JOIN
                     excellents_type AS excellent_type, 
                     excellents_count AS excellent_cnt
@@ -235,7 +235,7 @@ FROM (
                     sumIf(c_emotion_count,c_emotion_type=7) AS c_emotion_type_7_cnt,
                     sumIf(c_emotion_count,c_emotion_type=8) AS c_emotion_type_8_cnt,
                     sumIf(c_emotion_count,c_emotion_type=9) AS c_emotion_type_9_cnt
-                FROM dwd.xdqc_dialog_all
+                FROM dwd.xdqc_dialog_all FINAL
                 ARRAY JOIN
                     c_emotion_type,
                     c_emotion_count
@@ -266,7 +266,7 @@ FROM (
                     seller_nick,
                     snick,
                     sumIf(s_emotion_count, s_emotion_type=8) AS s_emotion_type_8_cnt
-                FROM dwd.xdqc_dialog_all
+                FROM dwd.xdqc_dialog_all FINAL
                 ARRAY JOIN
                     s_emotion_type,
                     s_emotion_count

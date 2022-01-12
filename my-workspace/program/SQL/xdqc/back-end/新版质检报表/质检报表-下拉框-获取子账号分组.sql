@@ -1,4 +1,4 @@
--- 质检报表-平台-获取子账号分组
+-- 质检报表-下拉框-获取子账号分组
 SELECT DISTINCT
     concat(department_name,'//',department_id) AS department_name_id
 FROM (

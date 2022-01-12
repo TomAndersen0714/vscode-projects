@@ -94,7 +94,7 @@ FROM (
             sum(length(tag_score_stats_id)!=0) AS tag_score_dialog_cnt,
             sum(length(tag_score_add_stats_id)!=0) AS tag_score_add_dialog_cnt
         FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         AND platform = '{{ platform=tb }}'
         AND snick IN (
             -- 获取最新版本的维度数据(T+1)
@@ -105,10 +105,22 @@ FROM (
             AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
             -- 下拉框-子账号分组
             AND (
-                '{{ depatment_ids }}'=''
+                '{{ department_ids }}'=''
                 OR
-                department_id IN splitByChar(',','{{ depatment_ids }}')
+                department_id IN splitByChar(',','{{ department_ids }}')
             )
+        )
+        -- 下拉框-店铺
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号
+        AND snick IN (
+            '{{ snicks }}'=''
+            OR
+            snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY platform, seller_nick, snick
     ) AS dialog_info
@@ -155,7 +167,7 @@ FROM (
                 ARRAY JOIN
                     abnormals_type AS abnormal_type, 
                     abnormals_count AS abnormal_cnt
-                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                 AND snick IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
@@ -166,10 +178,22 @@ FROM (
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                     -- 下拉框-子账号分组
                     AND (
-                        '{{ depatment_ids }}'=''
+                        '{{ department_ids }}'=''
                         OR
-                        department_id IN splitByChar(',','{{ depatment_ids }}')
+                        department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                )
+                -- 下拉框-店铺
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND snick IN (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
                 )
                 AND abnormal_cnt!=0
                 GROUP BY platform, seller_nick, snick
@@ -197,7 +221,7 @@ FROM (
                 ARRAY JOIN
                     excellents_type AS excellent_type, 
                     excellents_count AS excellent_cnt
-                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                 AND snick IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
@@ -208,10 +232,22 @@ FROM (
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                     -- 下拉框-子账号分组
                     AND (
-                        '{{ depatment_ids }}'=''
+                        '{{ department_ids }}'=''
                         OR
-                        department_id IN splitByChar(',','{{ depatment_ids }}')
+                        department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                )
+                -- 下拉框-店铺
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND snick IN (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
                 )
                 AND excellent_cnt!=0
                 GROUP BY platform, seller_nick, snick
@@ -239,7 +275,7 @@ FROM (
                 ARRAY JOIN
                     c_emotion_type,
                     c_emotion_count
-                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                 AND platform = '{{ platform=tb }}'
                 AND snick IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
@@ -251,10 +287,22 @@ FROM (
                     AND platform = '{{ platform=tb }}'
                     -- 下拉框-子账号分组
                     AND (
-                        '{{ depatment_ids }}'=''
+                        '{{ department_ids }}'=''
                         OR
-                        department_id IN splitByChar(',','{{ depatment_ids }}')
+                        department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                )
+                -- 下拉框-店铺
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND snick IN (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
                 )
                 AND c_emotion_count!=0
                 GROUP BY platform, seller_nick, snick
@@ -270,7 +318,7 @@ FROM (
                 ARRAY JOIN
                     s_emotion_type,
                     s_emotion_count
-                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                 AND platform = '{{ platform=tb }}'
                 AND snick IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
@@ -282,10 +330,22 @@ FROM (
                     AND platform = '{{ platform=tb }}'
                     -- 下拉框-子账号分组
                     AND (
-                        '{{ depatment_ids }}'=''
+                        '{{ department_ids }}'=''
                         OR
-                        department_id IN splitByChar(',','{{ depatment_ids }}')
+                        department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                )
+                -- 下拉框-店铺
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND snick IN (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
                 )
                 AND s_emotion_count!=0
                 GROUP BY platform, seller_nick, snick
