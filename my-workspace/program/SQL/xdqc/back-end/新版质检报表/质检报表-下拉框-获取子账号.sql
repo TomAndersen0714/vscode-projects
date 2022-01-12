@@ -1,6 +1,6 @@
--- 质检报表-下拉框-获取店铺
+-- 质检报表-下拉框-获取子账号
 SELECT DISTINCT
-    seller_nick
+    snick
 FROM dwd.xdqc_dialog_all
 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
 AND platform = '{{ platform=tb }}'
@@ -30,10 +30,10 @@ AND snick IN (
         )
     )
 )
--- 下拉框-子账号
+-- 下拉框-店铺名
 AND (
-    '{{ snicks }}'=''
+    '{{ seller_nicks }}'=''
     OR
-    snick IN splitByChar(',','{{ snicks }}')
+    seller_nick IN splitByChar(',','{{ seller_nicks }}')
 )
-ORDER BY seller_nick
+ORDER BY snick

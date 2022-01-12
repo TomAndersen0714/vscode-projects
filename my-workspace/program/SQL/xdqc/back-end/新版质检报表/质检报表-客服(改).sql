@@ -1,5 +1,5 @@
--- 质检报表-店铺
--- 统计维度: 平台/店铺, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
+-- 质检报表-客服
+-- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -12,7 +12,8 @@ SELECT
     END AS `平台`,
     seller_nick AS `店铺`,
     department_name AS `子账号分组`,
-    count(distinct snick) AS `客服人数`,
+    snick AS `客服子账号`,
+    employee_name AS `客服姓名`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
     `总会话量` AS `AI质检量`,
@@ -108,6 +109,31 @@ FROM (
                 OR
                 department_id IN splitByChar(',','{{ department_ids }}')
             )
+            -- 下拉框-客服名称
+            AND employee_id IN (
+                SELECT distinct
+                    _id AS employee_id
+                FROM ods.xinghuan_employee_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                AND (
+                    '{{ usernames }}'=''
+                    OR
+                    username IN splitByChar(',','{{ usernames }}')
+                )
+            )
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号
+        AND (
+            '{{ snicks }}'=''
+            OR
+            snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY platform, seller_nick, snick
     ) AS dialog_info
@@ -169,8 +195,33 @@ FROM (
                         OR
                         department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                    -- 下拉框-客服名称
+                    AND employee_id IN (
+                        SELECT distinct
+                            _id AS employee_id
+                        FROM ods.xinghuan_employee_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND (
+                            '{{ usernames }}'=''
+                            OR
+                            username IN splitByChar(',','{{ usernames }}')
+                        )
+                    )
                 )
                 AND abnormal_cnt!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_abnormal_info
             GLOBAL FULL OUTER JOIN (
@@ -211,8 +262,33 @@ FROM (
                         OR
                         department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                    -- 下拉框-客服名称
+                    AND employee_id IN (
+                        SELECT distinct
+                            _id AS employee_id
+                        FROM ods.xinghuan_employee_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND (
+                            '{{ usernames }}'=''
+                            OR
+                            username IN splitByChar(',','{{ usernames }}')
+                        )
+                    )
                 )
                 AND excellent_cnt!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_excellent_info
             USING(platform, seller_nick, snick)
@@ -254,8 +330,33 @@ FROM (
                         OR
                         department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                    -- 下拉框-客服名称
+                    AND employee_id IN (
+                        SELECT distinct
+                            _id AS employee_id
+                        FROM ods.xinghuan_employee_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND (
+                            '{{ usernames }}'=''
+                            OR
+                            username IN splitByChar(',','{{ usernames }}')
+                        )
+                    )
                 )
                 AND c_emotion_count!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_c_emotion_info
             GLOBAL FULL OUTER JOIN(
@@ -285,8 +386,33 @@ FROM (
                         OR
                         department_id IN splitByChar(',','{{ department_ids }}')
                     )
+                    -- 下拉框-客服名称
+                    AND employee_id IN (
+                        SELECT distinct
+                            _id AS employee_id
+                        FROM ods.xinghuan_employee_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND (
+                            '{{ usernames }}'=''
+                            OR
+                            username IN splitByChar(',','{{ usernames }}')
+                        )
+                    )
                 )
                 AND s_emotion_count!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_s_emotion_info
             USING(platform, seller_nick, snick)
@@ -298,14 +424,38 @@ FROM (
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT
-        snick, department_id, department_name
+        snick, employee_name, department_id, department_name
     FROM (
-        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-        SELECT snick, department_id
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = '{{ platform=tb }}'
-        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        SELECT snick, employee_name, department_id
+        FROM (
+            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+            SELECT snick, department_id, employee_id
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = '{{ platform=tb }}'
+            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            -- 下拉框-客服名称
+            AND employee_id IN (
+                SELECT distinct
+                    _id AS employee_id
+                FROM ods.xinghuan_employee_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                AND (
+                    '{{ usernames }}'=''
+                    OR
+                    username IN splitByChar(',','{{ usernames }}')
+                )
+            )
+        ) AS snick_info
+        GLOBAL LEFT JOIN (
+            SELECT
+                _id AS employee_id, username AS employee_name
+            FROM ods.xinghuan_employee_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        )
+        USING(employee_id)
     ) AS snick_info
     GLOBAL RIGHT JOIN (
         -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
@@ -392,6 +542,14 @@ GLOBAL LEFT JOIN (
     USING (department_id)
 ) AS snick_department_map
 USING(snick)
-GROUP BY platform, seller_nick, department_id, department_name
+-- 下拉框-客服
+WHERE (
+    '{{ usernames }}'=''
+    OR
+    username IN splitByChar(',','{{ usernames }}')
+)
+GROUP BY platform, seller_nick, department_id, department_name, snick, employee_name
 HAVING department_id!='' -- 清除匹配不上历史分组的子账号
-ORDER BY platform, seller_nick, department_name
+ORDER BY platform, seller_nick, department_name, snick, employee_name
+
+
