@@ -13,7 +13,9 @@ SELECT
     count(distinct seller_nick) AS `店铺数`,
     count(distinct snick) AS `客服人数`,
     sum(dialog_cnt) AS `总会话量`,
-    round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
+    sum(ai_score) AS `AI扣分分值`,
+    sum(ai_score_add) AS `AI加分分值`,
+    round((`总会话量`*100 + `AI加分分值`- `AI扣分分值`)/`总会话量`,2) AS `AI质检平均分`,
     `总会话量` AS `AI质检量`,
     sum(abnormal_dialog_cnt) AS `AI异常会话量`,
     concat(toString(round((`AI异常会话量` * 100 / `总会话量`), 2)),'%') AS `AI扣分会话比例`,
@@ -84,8 +86,12 @@ FROM (
             seller_nick,
             snick,
             COUNT(1) AS dialog_cnt,
-            sum(score_add) AS score_add,
-            sum(score) AS score,
+            sum(mark_score) AS mark_score,
+            sum(mark_score_add) AS mark_score_add,
+            sum(arraySum(arrayMap((x,y)->x*y,rule_stats_score,rule_stats_count))) AS rule_score,
+            sum(arraySum(arrayMap((x,y)->x*y,rule_add_stats_score,rule_add_stats_count))) AS rule_score_add,
+            sum(score) - mark_score - rule_score AS ai_score,
+            sum(score_add) - mark_score_add - rule_score_add AS ai_score_add,
             sum(arraySum(abnormals_count)!=0) AS abnormal_dialog_cnt,
             sum(arraySum(excellents_count)!=0) AS excellents_dialog_cnt,
             sum(length(mark_ids)!=0) AS mark_dialog_cnt,
@@ -93,13 +99,13 @@ FROM (
             sum(length(tag_score_add_stats_id)!=0) AS tag_score_add_dialog_cnt
         FROM dwd.xdqc_dialog_all FINAL
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND platform = '{{ platform=tb }}'
+        AND platform = 'jd'
         AND snick IN (
             -- 获取最新版本的维度数据(T+1)
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND platform = '{{ platform=tb }}'
+            AND platform = 'jd'
             AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
         )
         GROUP BY platform, seller_nick, snick
@@ -154,7 +160,7 @@ FROM (
                     SELECT distinct snick
                     FROM ods.xinghuan_employee_snick_all
                     WHERE day = toYYYYMMDD(yesterday())
-                    AND platform = '{{ platform=tb }}'
+                    AND platform = 'jd'
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                 )
                 AND abnormal_cnt!=0
@@ -190,7 +196,7 @@ FROM (
                     SELECT distinct snick
                     FROM ods.xinghuan_employee_snick_all
                     WHERE day = toYYYYMMDD(yesterday())
-                    AND platform = '{{ platform=tb }}'
+                    AND platform = 'jd'
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                 )
                 AND excellent_cnt!=0
@@ -220,7 +226,7 @@ FROM (
                     c_emotion_type,
                     c_emotion_count
                 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-                AND platform = '{{ platform=tb }}'
+                AND platform = 'jd'
                 AND snick IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
@@ -228,7 +234,7 @@ FROM (
                     FROM ods.xinghuan_employee_snick_all
                     WHERE day = toYYYYMMDD(yesterday())
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
-                    AND platform = '{{ platform=tb }}'
+                    AND platform = 'jd'
                 )
                 AND c_emotion_count!=0
                 GROUP BY platform, seller_nick, snick
@@ -245,7 +251,7 @@ FROM (
                     s_emotion_type,
                     s_emotion_count
                 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-                AND platform = '{{ platform=tb }}'
+                AND platform = 'jd'
                 AND snick IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
@@ -253,7 +259,7 @@ FROM (
                     FROM ods.xinghuan_employee_snick_all
                     WHERE day = toYYYYMMDD(yesterday())
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
-                    AND platform = '{{ platform=tb }}'
+                    AND platform = 'jd'
                 )
                 AND s_emotion_count!=0
                 GROUP BY platform, seller_nick, snick
@@ -265,4 +271,3 @@ FROM (
     USING(platform, seller_nick, snick)
 ) AS ai_info
 GROUP BY platform
-ORDER BY platform

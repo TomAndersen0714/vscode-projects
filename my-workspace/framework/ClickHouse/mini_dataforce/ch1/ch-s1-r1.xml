@@ -20,10 +20,10 @@
                     <host>mini-bigdata-004</host>
                     <port>19000</port>
                 </replica>
-            <replica>
-                <host>v1mini-bigdata-002</host>
-                <port>29000</port>
-            </replica>
+                <replica>
+                    <host>v1mini-bigdata-002</host>
+                    <port>29000</port>
+                </replica>
             </shard>
 
             <!-- 数据分片2  -->
@@ -102,7 +102,7 @@
             <host>mini-bigdata-004</host>
             <port>2181</port>
         </node>
-        
+
         <node index="2">
             <host>v1mini-bigdata-002</host>
             <port>2181</port>
