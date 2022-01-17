@@ -1,0 +1,88 @@
+{
+    "Binds": ["/data1/ch-s1-r1/:/var/lib/clickhouse/data1", "/data4/ch-s1-r1/:/var/lib/clickhouse/data4", "/data0/ch-s1-r1/conf/:/etc/clickhouse-server/", "/data0/clickhouse/data/:/var/lib/clickhouse/", "/data0/ch-s1-r1/:/var/lib/clickhouse/data0", "/data2/ch-s1-r1/:/var/lib/clickhouse/data2", "/data3/ch-s1-r1/:/var/lib/clickhouse/data3", "/data5/ch-s1-r1/:/var/lib/clickhouse/data5", "/data6/ch-s1-r1/:/var/lib/clickhouse/data6", "/data7/ch-s1-r1/:/var/lib/clickhouse/data7", "/data7/ch-s1-r1/log/:/var/log/"],
+    "ContainerIDFile": "",
+    "LogConfig": {
+        "Type": "json-file",
+        "Config": {}
+    },
+    "NetworkMode": "default",
+    "PortBindings": {
+        "19000/tcp": [{
+            "HostIp": "",
+            "HostPort": "19000"
+        }],
+        "8123/tcp": [{
+            "HostIp": "",
+            "HostPort": "8123"
+        }],
+        "9008/tcp": [{
+            "HostIp": "",
+            "HostPort": "9008"
+        }]
+    },
+    "RestartPolicy": {
+        "Name": "on-failure",
+        "MaximumRetryCount": 3
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "CapAdd": null,
+    "CapDrop": null,
+    "Dns": [],
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": ["zjk-bigdata002:10.20.0.140", "zjk-bigdata006:10.20.2.28", "zjk-bigdata007:10.20.2.29", "zjk-bigdata008:10.20.133.149"],
+    "GroupAdd": null,
+    "IpcMode": "shareable",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": false,
+    "SecurityOpt": null,
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "ConsoleSize": [0, 0],
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 0,
+    "NanoCpus": 0,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": null,
+    "BlkioDeviceWriteBps": null,
+    "BlkioDeviceReadIOps": null,
+    "BlkioDeviceWriteIOps": null,
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DiskQuota": 0,
+    "KernelMemory": 0,
+    "MemoryReservation": 0,
+    "MemorySwap": 0,
+    "MemorySwappiness": null,
+    "OomKillDisable": false,
+    "PidsLimit": 0,
+    "Ulimits": [{
+        "Name": "nofile",
+        "Hard": 262144,
+        "Soft": 262144
+    }],
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": ["/proc/asound", "/proc/acpi", "/proc/kcore", "/proc/keys", "/proc/latency_stats", "/proc/timer_list", "/proc/timer_stats", "/proc/sched_debug", "/proc/scsi", "/sys/firmware"],
+    "ReadonlyPaths": ["/proc/bus", "/proc/fs", "/proc/irq", "/proc/sys", "/proc/sysrq-trigger"]
+}
