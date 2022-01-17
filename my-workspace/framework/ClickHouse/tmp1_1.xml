@@ -14,25 +14,100 @@
         <replica>cluster01-01-01</replica>
     </macros>
 
-    <!-- 集群配置 -->
-    <remote_servers>
+    <listen_host>::</listen_host>
+    <listen_host>0.0.0.0</listen_host>
+    <listen_try>1</listen_try>
+
+    <remote_servers incl="clickhouse_remote_servers">
         <cluster_3s_2r>
-            <!-- 数据分片1  -->
             <shard>
                 <internal_replication>true</internal_replication>
                 <replica>
-                    <host>pdd-bigdata-clickhouse01</host>
+                    <host>bigdata001</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>bigdata002</host>
                     <port>9000</port>
                 </replica>
             </shard>
         </cluster_3s_2r>
+
+        <!-- old configures -->
+        <!-- Test only shard config for testing distributed storage -->
+        <test_shard_localhost>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </test_shard_localhost>
+        <test_cluster_two_shards_localhost>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </test_cluster_two_shards_localhost>
+        <test_cluster_two_shards>
+            <shard>
+                <replica>
+                    <host>127.0.0.1</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+            <shard>
+                <replica>
+                    <host>127.0.0.2</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </test_cluster_two_shards>
+        <test_shard_localhost_secure>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>9440</port>
+                    <secure>1</secure>
+                </replica>
+            </shard>
+        </test_shard_localhost_secure>
+        <test_unavailable_shard>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+            <shard>
+                <replica>
+                    <host>localhost</host>
+                    <port>1</port>
+                </replica>
+            </shard>
+        </test_unavailable_shard>
     </remote_servers>
 
-    <!-- zk -->
+    <!-- ZooKeeper is used to store metadata about replicas, when using Replicated tables.
+                  Optional. If you don't use replicated tables, you could omit that.
+
+         See https://clickhouse.yandex/docs/en/table_engines/replication/
+      -->
     <zookeeper>
         <node>
-            <host>pdd-bigdata-clickhouse01</host>
-            <port>2181</port>
+            <host>bigdata001</host>
+            <port>2182</port>
         </node>
     </zookeeper>
 
@@ -40,7 +115,7 @@
     <storage_configuration>
         <disks>
             <data0>
-                <path>/var/lib/clickhouse/data0/</path>
+                <path>/var/data/clickhouse-server/storage/data0/</path>
                 <keep_free_space_bytes>1073741824</keep_free_space_bytes>
             </data0>
         </disks>
@@ -66,10 +141,6 @@
     </compression>
 
     <max_server_memory_usage_to_ram_ratio>0.8</max_server_memory_usage_to_ram_ratio>
-
-    <listen_host>::</listen_host>
-    <listen_host>0.0.0.0</listen_host>
-    <listen_try>1</listen_try>
 
     <logger>
         <!-- Possible levels: https://github.com/pocoproject/poco/blob/poco-1.9.4-release/Foundation/include/Poco/Logger.h#L105 -->
@@ -173,10 +244,10 @@
 
 
     <!-- Path to data directory, with trailing slash. -->
-    <path>/var/lib/clickhouse/</path>
+    <path>/var/data/clickhouse-server/data/</path>
 
     <!-- Path to temporary data for processing hard queries. -->
-    <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+    <tmp_path>/var/data/clickhouse-server/data/tmp/</tmp_path>
 
     <!-- Policy from the <storage_configuration> for the temporary files.
                   If not set <tmp_path> is used, otherwise <tmp_path> is ignored.
@@ -190,10 +261,10 @@
     <!-- <tmp_policy>tmp</tmp_policy> -->
 
     <!-- Directory with user provided files that are accessible by 'file' table function. -->
-    <user_files_path>/var/lib/clickhouse/user_files/</user_files_path>
+    <user_files_path>/var/data/clickhouse-server/data/user_files/</user_files_path>
 
     <!-- Path to folder where users and roles created by SQL commands are stored. -->
-    <access_control_path>/var/lib/clickhouse/access/</access_control_path>
+    <access_control_path>/var/data/clickhouse-server/data/access/</access_control_path>
 
     <!-- Path to configuration file with users, access rights, profiles of settings, quotas. -->
     <users_config>users.xml</users_config>
@@ -232,72 +303,6 @@
     -->
     <mlock_executable>false</mlock_executable>
 
-    <!-- Configuration of clusters that could be used in Distributed tables.
-                  https://clickhouse.tech/docs/en/operations/table_engines/distributed/
-      -->
-    <remote_servers incl="clickhouse_remote_servers">
-        <!-- Test only shard config for testing distributed storage -->
-        <test_shard_localhost>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-        </test_shard_localhost>
-        <test_cluster_two_shards_localhost>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-        </test_cluster_two_shards_localhost>
-        <test_cluster_two_shards>
-            <shard>
-                <replica>
-                    <host>127.0.0.1</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-            <shard>
-                <replica>
-                    <host>127.0.0.2</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-        </test_cluster_two_shards>
-        <test_shard_localhost_secure>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>9440</port>
-                    <secure>1</secure>
-                </replica>
-            </shard>
-        </test_shard_localhost_secure>
-        <test_unavailable_shard>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>1</port>
-                </replica>
-            </shard>
-        </test_unavailable_shard>
-    </remote_servers>
-
     <!-- The list of hosts allowed to use in URL-related storage engines and table functions.
                  If this section is not present in configuration, all hosts are allowed.
     -->
@@ -321,22 +326,6 @@
                   By default, path to file with substitutions is /etc/metrika.xml. It could be changed in config in 'include_from' element.
          Values for substitutions are specified in /yandex/name_of_substitution elements in that file.
       -->
-
-    <!-- ZooKeeper is used to store metadata about replicas, when using Replicated tables.
-                  Optional. If you don't use replicated tables, you could omit that.
-
-         See https://clickhouse.yandex/docs/en/table_engines/replication/
-      -->
-
-    <zookeeper incl="zookeeper-servers" optional="true" />
-
-    <!-- Substitutions for parameters of replicated tables.
-                   Optional. If you don't use replicated tables, you could omit that.
-
-         See https://clickhouse.yandex/docs/en/table_engines/replication/#creating-replicated-tables
-      -->
-    <macros incl="macros" optional="true" />
-
 
     <!-- Reloading interval for embedded dictionaries, in seconds. Default: 3600. -->
     <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
@@ -545,7 +534,7 @@
     <!-- Directory in <clickhouse-path> containing schema files for various input formats.
                   The directory will be created if it doesn't exist.
       -->
-    <format_schema_path>/var/lib/clickhouse/format_schemas/</format_schema_path>
+    <format_schema_path>/var/data/clickhouse-server/data/format_schemas/</format_schema_path>
 
     <!-- Uncomment to use query masking rules.
                  name - name for the rule (optional)
