@@ -1,30 +1,88 @@
-
-req := api.DefaultRequest(ctx).(*protocol.KefuHumanResultReq)
-s1 := "select shop_name,snick,department_id,total_score,total_score_add,toString(check_human) as check_human,name,tag_id,score,cal_op,tag_score from (" +
-	"select seller_nick,snick,department_id,mark_list as check_human,name,tag_id,score,cal_op,tag_score from " +
-	fmt.Sprintf("(select seller_nick,snick,department_id,arrayReduce('groupUniqArray',flatten(groupArray(mark_list))) as mark_list from ods.qc_statistical_all where date between %d and %d and employee_id = '%s' ", req.StartDate, req.EndDate, req.EmployeeId)
-if req.ShopName != "" {
-	s1 += fmt.Sprintf("and seller_nick = '%s'", req.ShopName)
-}
-
-s1 += " group by seller_nick,snick,department_id) as qc_statistical " +
-	"left join (" +
-	"select snick,name,tag_id,cal_op,score,sum(score) as tag_score from  ods.xinghuan_dialog_tag_score_all " +
-	fmt.Sprintf("where day between toInt32(toYYYYMMDD(toDate(%d))) and toInt32(toYYYYMMDD(toDate(%d))) ", req.StartDate, req.EndDate) +
-	"group by snick,name,tag_id,cal_op ,score" +
-	") as tag_score " +
-	"on qc_statistical.snick = tag_score.snick " +
-	") as score left join (select seller_nick as shop_name,snick,department_id,sum(mark_score) as total_score,sum(mark_score_add) as total_score_add " +
-	fmt.Sprintf("from ods.qc_statistical_all where employee_id = '%s' and `date` >= %d and `date` <= %d ", req.EmployeeId, req.StartDate, req.EndDate) +
-	"group by seller_nick,snick,department_id) as tag on score.snick = tag.snick and score.seller_nick = tag.shop_name and score.department_id = tag.department_id "
-
-if req.DepartmentId != "" {
-	departmentIds, _, err := service.GetSubDepartment(bson.ObjectIdHex(req.DepartmentId))
-	if err != nil {
-		logrus.Errorf("get sub department error %+v", err)
-		return ""
-	}
-	s1 += fmt.Sprintf("where has(%s, department_id) ", service.BuildSqlArrayById(departmentIds))
-}
-
- return s1
+CREATE TABLE ods.xdqc_dialog_local
+(
+    `_id` String, 
+    `last_mark_id` String, 
+    `task_list_id` String, 
+    `last_msg_id` String, 
+    `platform` String, 
+    `channel` String, 
+    `cnick` String, 
+    `snick` String, 
+    `seller_nick` String, 
+    `mark` String, 
+    `employee_name` String, 
+    `focus_goods_id` String, 
+    `group` String, 
+    `mark_judge` Int32, 
+    `mark_score` Int32, 
+    `mark_score_add` Int32, 
+    `score` Int32, 
+    `score_add` Int32, 
+    `qa_time_sum` Int64, 
+    `qa_round_sum` Int32, 
+    `emotion_detect_mode` Int32, 
+    `consulte_transfor_v2` Int32, 
+    `intel_score` Int32, 
+    `remind_ntype` Int32, 
+    `date` Int32, 
+    `first_answer_msg_type` Int32, 
+    `answer_count` UInt64, 
+    `question_count` UInt64, 
+    `first_answer_time` DateTime64(3), 
+    `is_after_sale` UInt8, 
+    `is_inside` UInt8, 
+    `human_check` UInt8, 
+    `has_withdraw_robot_msg` UInt8, 
+    `is_remind` UInt8, 
+    `is_order_matched` UInt8, 
+    `suspected_positive_emotion` UInt8, 
+    `is_follow_up_remind` UInt8, 
+    `suspected_problem` UInt8, 
+    `suspected_excellent` UInt8, 
+    `has_after` UInt8, 
+    `begin_time` DateTime64(3), 
+    `update_time` DateTime('Asia/Shanghai'), 
+    `end_time` DateTime64(3), 
+    `first_follow_up_time` DateTime64(3), 
+    `mark_ids` Array(String), 
+    `read_mark` Array(String), 
+    `cnick_customize_rule` Array(String), 
+    `emotions` Array(String), 
+    `qid` Array(Int64), 
+    `tag_score_stats.id` Array(String), 
+    `tag_score_stats.score` Array(Int32), 
+    `tag_score_add_stats.id` Array(String), 
+    `tag_score_add_stats.score` Array(Int32), 
+    `rule_stats.id` Array(String), 
+    `rule_stats.score` Array(Int32), 
+    `rule_stats.count` Array(UInt32), 
+    `rule_add_stats.id` Array(String), 
+    `rule_add_stats.score` Array(Int32), 
+    `rule_add_stats.count` Array(UInt32), 
+    `s_emotion.type` Array(UInt16), 
+    `s_emotion.count` Array(UInt32), 
+    `c_emotion.type` Array(UInt16), 
+    `c_emotion.count` Array(UInt32), 
+    `abnormals.type` Array(UInt16), 
+    `abnormals.count` Array(UInt32), 
+    `excellents.type` Array(UInt16), 
+    `excellents.count` Array(UInt32), 
+    `qc_word.source` Array(UInt8), 
+    `qc_word.word` Array(String), 
+    `qc_word.count` Array(UInt32), 
+    `order_info.id` Array(String), 
+    `order_info.status` Array(String), 
+    `order_info.payment` Array(Float32), 
+    `order_info.time` Array(UInt64), 
+    `wx_rule_stats.id` Array(String), 
+    `wx_rule_stats.score` Array(Int32), 
+    `wx_rule_stats.count` Array(UInt32), 
+    `wx_rule_add_stats.id` Array(String), 
+    `wx_rule_add_stats.score` Array(Int32), 
+    `wx_rule_add_stats.count` Array(UInt32)
+)
+ENGINE = ReplicatedReplacingMergeTree('/clickhouse/ods/tables/{layer}_{shard}/xdqc_dialog_local', '{replica}', update_time)
+PARTITION BY toYYYYMMDD(begin_time)
+PRIMARY KEY seller_nick
+ORDER BY (seller_nick, _id)
+SETTINGS storage_policy = 'rr', index_granularity = 8192

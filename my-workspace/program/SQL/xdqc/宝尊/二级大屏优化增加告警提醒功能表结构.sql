@@ -2,6 +2,8 @@
 CREATE TABLE xqc_ods.alert_remind_local ON CLUSTER cluster_3s_2r
 (
     `id` String,
+    `source` Int64,
+    `round` Int64,
     `platform` String,
     `shop_id` String,
     `shop_external_id` String,
@@ -11,7 +13,7 @@ CREATE TABLE xqc_ods.alert_remind_local ON CLUSTER cluster_3s_2r
     `day` Int64,
     `notify_type` Int64,
     `alert_id` String,
-    `level ` Int64,
+    `level` Int64,
     `begin_time` String,
     `end_time` String
 )
@@ -27,21 +29,5 @@ ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'alert_remind_local', rand())
 
 -- Buffer表
 CREATE TABLE buffer.xqc_ods_alert_remind_buffer
-AS xqc_ods.alert_remind_all
-ENGINE = Buffer('xqc_ods', 'alert_remind_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)
-
-
--- 表结构变更
-ALTER TABLE xqc_ods.alert_remind_local ON CLUSTER cluster_3s_2r
-ADD COLUMN `round` Int64 AFTER `id`,
-ADD COLUMN `source` Int64 AFTER `id`
-
-ALTER TABLE xqc_ods.alert_remind_all ON CLUSTER cluster_3s_2r
-ADD COLUMN `round` Int64 AFTER `id`,
-ADD COLUMN `source` Int64 AFTER `id`
-
-DROP TABLE buffer.xqc_ods_alert_buffer ON CLUSTER cluster_3s_2r
-
-CREATE TABLE buffer.xqc_ods_alert_remind_buffer ON CLUSTER cluster_3s_2r
 AS xqc_ods.alert_remind_all
 ENGINE = Buffer('xqc_ods', 'alert_remind_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)
