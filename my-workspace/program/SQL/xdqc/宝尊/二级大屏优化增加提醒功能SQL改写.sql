@@ -19,7 +19,17 @@ SELECT
     )) AS warning_duration,
     finish_time,
     is_finished,
-    if(notify_time)
+    if(notify_time!='', 'True', 'False') AS is_notified,
+    notify_time,
+    if(
+        notify_time!='',
+        if(
+            finish_time!='',
+            toString((parseDateTimeBestEffort(notify_time)-parseDateTimeBestEffort(finish_time))/60),
+            toString((now()-parseDateTimeBestEffort(finish_time))/60)
+        ),
+        ''
+    ) AS notify_duration
 FROM (
         SELECT
             shop_info.company_id AS company_id,
