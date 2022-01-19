@@ -1,31 +1,22 @@
-SELECT
-    shop_info.company_id AS company_id,
-    shop_info.bg_id AS bg_id,
-    bg_info.department_name AS BG,
-    shop_info.bu_id AS bu_id,
-    bu_info.department_name AS BU,
-    shop_info.department_id AS shop_id,
-    shop_info.department_name AS shop_name
-FROM (
-    SELECT
-        parent_department_path[1] AS bg_id,
-        parent_department_path[2] AS bu_id,
-        parent_department_path,
-        company_id,
-        department_id,
-        department_name
-    FROM xqc_dim.group_all
-    WHERE is_shop = 'True'
-) AS shop_info
-GLOBAL LEFT JOIN (
-    SELECT department_id , department_name
-    FROM xqc_dim.group_all
-    WHERE is_shop = 'False'
-) AS bg_info
-ON shop_info.bg_id = bg_info.department_id
-GLOBAL LEFT JOIN (
-    SELECT department_id , department_name
-    FROM xqc_dim.group_all
-    WHERE is_shop = 'False'
-) AS bu_info
-ON shop_info.bu_id = bu_info.department_id
+{ 
+    'alert_id': '4e7635ca6bb3ef385c14d4b09b339a0e',
+    'alert_time': '2022-01-18 10:25:16',
+    'customer': 'jd_6d4572a4bd7a2',
+    'day': 20220116,
+    'employee': '宋松丽',
+    'id': '61e3b88fc9dd366a2cc71b13',
+    'level': 3,
+    'notify_type': 1,
+    'platform': 'jd',
+    'resp_code': 50000,
+    'resp_msg': 'internal error',
+    'round': 1,
+    'seller_nick': 'OPPLE集成家居官方旗舰店',
+    'shop_external_id': 'JD001',
+    'shop_id': '617a1a7da08ae900109dfaea',
+    'shop_name': 'OPPLE集成家居官方旗舰店',
+    'source': 1,
+    'sub_nick': 'OPPLE集成家居官方旗舰店:欧普集成家居_63s',
+    'time': '2022-01-16 14:17:54',
+    'warning_type': '对客服态度不满' 
+}

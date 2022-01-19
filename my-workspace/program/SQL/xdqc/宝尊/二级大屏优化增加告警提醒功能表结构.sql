@@ -23,11 +23,11 @@ ORDER BY alert_id
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 -- 分布式表
-CREATE TABLE xqc_ods.alert_remind_all
+CREATE TABLE xqc_ods.alert_remind_all ON CLUSTER cluster_3s_2r
 AS xqc_ods.alert_remind_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_ods', 'alert_remind_local', rand())
 
 -- Buffer表
-CREATE TABLE buffer.xqc_ods_alert_remind_buffer
+CREATE TABLE buffer.xqc_ods_alert_remind_buffer ON CLUSTER cluster_3s_2r
 AS xqc_ods.alert_remind_all
 ENGINE = Buffer('xqc_ods', 'alert_remind_all', 16, 5, 10, 81920, 409600, 16777216, 67108864)
