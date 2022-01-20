@@ -25,8 +25,8 @@ SELECT
         notify_time!='',
         if(
             finish_time!='',
-            toString((parseDateTimeBestEffort(notify_time)-parseDateTimeBestEffort(finish_time))/60),
-            toString((now()-parseDateTimeBestEffort(finish_time))/60)
+            toString(round((parseDateTimeBestEffort(if(notify_time!='',notify_time,toString(now())))-parseDateTimeBestEffort(if(finish_time!='',finish_time,toString(now()))))/60)),
+            toString(round((now()-parseDateTimeBestEffort(if(notify_time!='',notify_time,toString(now()))))/60))
         ),
         ''
     ) AS notify_duration
@@ -62,7 +62,7 @@ FROM (
             WHERE is_shop = 'False'
         ) AS bu_info
         ON shop_info.bu_id = bu_info.department_id
-        WHERE %s
+        WHERE company_id = '6131e6554524490001fc6825'
 )
 GLOBAL INNER JOIN(
     SELECT *
@@ -70,7 +70,7 @@ GLOBAL INNER JOIN(
         SELECT
             alert_id, time AS notify_time
         FROM xqc_ods.alert_remind_all
-        WHERE shop_id IN [%s] -- strings.Join(allowedShopIds, ",")
+        WHERE shop_id IN %s -- strings.Join(allowedShopIds, ",")
     ) AS alert_remind
     GLOBAL RIGHT JOIN (
         SELECT id AS alert_id, *
@@ -81,3 +81,4 @@ GLOBAL INNER JOIN(
 
 ) AS alert_info
 USING shop_id
+WHERE is_notified = %s

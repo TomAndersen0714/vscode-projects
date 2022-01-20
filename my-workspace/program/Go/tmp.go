@@ -38,10 +38,22 @@ FROM (
 )
 GLOBAL INNER JOIN(
     SELECT *
-    FROM xqc_ods.alert_all FINAL
-    WHERE %s
+    FROM (
+        SELECT
+            alert_id, time AS notify_time
+        FROM xqc_ods.alert_remind_all
+        WHERE shop_id IN %s
+    ) AS alert_remind
+    GLOBAL RIGHT JOIN (
+        SELECT id AS alert_id, *
+        FROM xqc_ods.alert_all FINAL
+        WHERE %s
+    ) AS alert_info
+    USING(alert_id)
+
 ) AS alert_info
 USING shop_id
+WHERE is_notified = %s
 `
 
 	selectInfo := `
@@ -64,7 +76,18 @@ USING shop_id
         round((now() - parseDateTimeBestEffort(time))/60)
     )) AS warning_duration,
     finish_time,
-    is_finished
+    is_finished,
+    if(notify_time!='', 'True', 'False') AS is_notified,
+    notify_time,
+    if(
+        notify_time!='',
+        if(
+            finish_time!='',
+            toString(round((parseDateTimeBestEffort(if(notify_time!='',notify_time,toString(now())))-parseDateTimeBestEffort(if(finish_time!='',finish_time,toString(now()))))/60)),
+            toString(round((now()-parseDateTimeBestEffort(if(notify_time!='',notify_time,toString(now()))))/60))
+        ),
+        ''
+    ) AS notify_duration
 `
 	if count {
 		selectInfo = "count(1) as count"
@@ -89,7 +112,7 @@ USING shop_id
 	//condition2 := buildGetAlertInfoListSqlCondition2(req, allowedShopIds, allowedSnicks)
 	condition2 := buildGetAlertInfoListSqlCondition2(req, allowedShopIds, allowedSnicks)
 
-	sql := fmt.Sprintf(base, selectInfo, condition1, condition2)
+	sql := fmt.Sprintf(base, selectInfo, condition1, condition3, condition2)
 	if count {
 		return sql, nil
 	}

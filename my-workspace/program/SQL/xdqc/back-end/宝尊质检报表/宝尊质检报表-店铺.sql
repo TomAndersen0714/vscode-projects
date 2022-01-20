@@ -1,4 +1,6 @@
 -- 宝尊质检报表-店铺
+
+-- 基础表
 xqc_ods.alert_all FINAL
 xqc_ods.dialog_all
 xqc_ods.alert_remind_all
