@@ -1,19 +1,14 @@
 <?xml version="1.0"?>
 <yandex>
-
-    <http_port>8124</http_port>
     <tcp_port>29000</tcp_port>
-    <interserver_http_port>9008</interserver_http_port>
+    <http_port>8124</http_port>
+    <interserver_http_port>9009</interserver_http_port>
 
     <macros>
         <layer>01</layer>
         <shard>03</shard>
-        <replica>cluster01-03-2</replica>
+        <replica>cluster01-03-01</replica>
     </macros>
-
-    <!-- Listen wildcard address to allow accepting connections from other containers and host network. -->
-    <listen_host>0.0.0.0</listen_host>
-    <listen_try>1</listen_try>
 
     <!-- 集群配置 -->
     <remote_servers>
@@ -22,36 +17,37 @@
             <shard>
                 <internal_replication>true</internal_replication>
                 <replica>
-                    <host>cdh0</host>
+                    <host>zjk-bigdata006</host>
                     <port>19000</port>
                 </replica>
                 <replica>
-                    <host>cdh1</host>
+                    <host>zjk-bigdata007</host>
                     <port>29000</port>
                 </replica>
             </shard>
+
             <!-- 数据分片2  -->
             <shard>
                 <internal_replication>true</internal_replication>
                 <replica>
-                    <host>cdh1</host>
+                    <host>zjk-bigdata007</host>
                     <port>19000</port>
                 </replica>
                 <replica>
-                    <host>cdh2</host>
+                    <host>zjk-bigdata008</host>
                     <port>29000</port>
                 </replica>
-
             </shard>
+
             <!-- 数据分片3  -->
             <shard>
                 <internal_replication>true</internal_replication>
                 <replica>
-                    <host>cdh2</host>
+                    <host>zjk-bigdata008</host>
                     <port>19000</port>
                 </replica>
                 <replica>
-                    <host>cdh0</host>
+                    <host>zjk-bigdata006</host>
                     <port>29000</port>
                 </replica>
 
@@ -59,7 +55,7 @@
         </cluster_3s_2r>
     </remote_servers>
 
-    <!-- storage policy -->
+    <!-- 存储策略 -->
     <storage_configuration>
         <disks>
             <data0>
@@ -74,38 +70,62 @@
                 <path>/var/lib/clickhouse/data2/</path>
                 <keep_free_space_bytes>1073741824</keep_free_space_bytes>
             </data2>
+            <data3>
+                <path>/var/lib/clickhouse/data3/</path>
+                <keep_free_space_bytes>1073741824</keep_free_space_bytes>
+            </data3>
+            <data4>
+                <path>/var/lib/clickhouse/data4/</path>
+                <keep_free_space_bytes>1073741824</keep_free_space_bytes>
+            </data4>
+            <data5>
+                <path>/var/lib/clickhouse/data5/</path>
+                <keep_free_space_bytes>1073741824</keep_free_space_bytes>
+            </data5>
+            <data6>
+                <path>/var/lib/clickhouse/data6/</path>
+                <keep_free_space_bytes>1073741824</keep_free_space_bytes>
+            </data6>
+            <data7>
+                <path>/var/lib/clickhouse/data7/</path>
+                <keep_free_space_bytes>1073741824</keep_free_space_bytes>
+            </data7>
         </disks>
 
         <policies>
-            <default_policy>
+            <rr>
                 <volumes>
                     <single>
                         <disk>data0</disk>
                         <disk>data1</disk>
                         <disk>data2</disk>
+                        <disk>data3</disk>
+                        <disk>data4</disk>
+                        <disk>data5</disk>
+                        <disk>data6</disk>
+                        <disk>data7</disk>
                     </single>
                 </volumes>
-            </default_policy>
+            </rr>
         </policies>
     </storage_configuration>
 
-    <!-- ZK  -->
+    <!-- zk -->
     <zookeeper>
         <node index="1">
-            <host>cdh0</host>
+            <host>zjk-bigdata002</host>
             <port>2181</port>
         </node>
 
         <node index="2">
-            <host>cdh1</host>
+            <host>zjk-bigdata006</host>
             <port>2181</port>
         </node>
 
         <node index="3">
-            <host>cdh2</host>
+            <host>zjk-bigdata007</host>
             <port>2181</port>
         </node>
-
     </zookeeper>
 
     <!-- 数据压缩算法  -->
@@ -117,9 +137,10 @@
         </case>
     </compression>
 
-    <networks>
-        <ip>::/0</ip>
-    </networks>
+    <!-- Listen wildcard address to allow accepting connections from other containers and host network. -->
+    <!--listen_host>::</listen_host-->
+    <listen_host>0.0.0.0</listen_host>
+    <listen_try>1</listen_try>
 
     <logger>
         <level>trace</level>
@@ -128,6 +149,7 @@
         <size>1000M</size>
         <count>10</count>
     </logger>
+
 
     <max_connections>4096</max_connections>
     <keep_alive_timeout>3</keep_alive_timeout>
@@ -142,8 +164,13 @@
     <users_config>users.xml</users_config>
     <default_profile>default</default_profile>
     <default_database>default</default_database>
+    <dictionaries_config>*_dictionary.xml</dictionaries_config>
+
+
     <timezone>Asia/Shanghai</timezone>
     <mlock_executable>true</mlock_executable>
+
+
     <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
     <max_session_timeout>3600</max_session_timeout>
     <default_session_timeout>60</default_session_timeout>
@@ -155,6 +182,7 @@
         <partition_by>toYYYYMM(event_date)</partition_by>
         <flush_interval_milliseconds>7500</flush_interval_milliseconds>
     </query_log>
+
     <trace_log>
         <database>system</database>
         <table>trace_log</table>
@@ -162,21 +190,18 @@
         <partition_by>toYYYYMM(event_date)</partition_by>
         <flush_interval_milliseconds>7500</flush_interval_milliseconds>
     </trace_log>
+
     <query_thread_log>
         <database>system</database>
         <table>query_thread_log</table>
         <partition_by>toYYYYMM(event_date)</partition_by>
         <flush_interval_milliseconds>7500</flush_interval_milliseconds>
     </query_thread_log>
-    <dictionaries_config>*_dictionary.xml</dictionaries_config>
 
 
     <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
     </distributed_ddl>
-
-
     <format_schema_path>/var/lib/clickhouse/format_schemas/</format_schema_path>
-
 
 </yandex>

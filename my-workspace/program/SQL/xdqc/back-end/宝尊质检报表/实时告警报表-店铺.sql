@@ -78,7 +78,7 @@ GROUP BY day, shop_id
 SELECT
     day,
     shop_id,
-    COUNT(1) AS alert_cnt, -- 总告警次数
+    COUNT(1) AS alert_cnt, -- 告警总量
     COUNT(DISTINCT dialog_id) AS alert_dialog_cnt, -- 告警会话量
     SUM(level=3) AS level_3_alert_cnt, -- 高级告警量
     SUM(level=2) AS level_2_alert_cnt, -- 中级告警量
@@ -157,7 +157,7 @@ FROM (
         SELECT
             day,
             shop_id,
-            COUNT(1) AS alert_cnt, -- 总告警次数
+            COUNT(1) AS alert_cnt, -- 告警总量
             COUNT(DISTINCT dialog_id) AS alert_dialog_cnt, -- 告警会话量
             SUM(level=3) AS level_3_alert_cnt, -- 高级告警量
             SUM(level=2) AS level_2_alert_cnt, -- 中级告警量
@@ -252,7 +252,7 @@ FROM (
         SELECT
             day,
             shop_id,
-            COUNT(1) AS alert_cnt, -- 总告警次数
+            COUNT(1) AS alert_cnt, -- 告警总量
             COUNT(DISTINCT dialog_id) AS alert_dialog_cnt, -- 告警会话量
             SUM(level=3) AS level_3_alert_cnt, -- 高级告警量
             SUM(level=2) AS level_2_alert_cnt, -- 中级告警量

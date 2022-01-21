@@ -112,7 +112,7 @@ WHERE is_notified = %s
 	//condition2 := buildGetAlertInfoListSqlCondition2(req, allowedShopIds, allowedSnicks)
 	condition2 := buildGetAlertInfoListSqlCondition2(req, allowedShopIds, allowedSnicks)
 
-	sql := fmt.Sprintf(base, selectInfo, condition1, condition3, condition2)
+	sql := fmt.Sprintf(base, selectInfo, condition1, condition2)
 	if count {
 		return sql, nil
 	}
