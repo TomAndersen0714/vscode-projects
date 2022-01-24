@@ -112,7 +112,7 @@ AND shop_id IN (
     FROM xqc_dim.company_tenant
     WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
 )
-GROUP BY day,snick
+GROUP BY day, snick
 
 SELECT
     day,
@@ -156,7 +156,7 @@ FROM (
         FROM xqc_dim.company_tenant
         WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
     )
-    GROUP BY day,snick
+    GROUP BY day, snick
 ) AS dialog_info
 GLOBAL FULL OUTER JOIN (
     SELECT
@@ -174,7 +174,7 @@ GLOBAL FULL OUTER JOIN (
         FROM xqc_dim.company_tenant
         WHERE company_id = '{{company_id=6131e6554524490001fc6825}}'
     )
-    GROUP BY day,snick
+    GROUP BY day, snick
 ) AS alert_info
 USING(snick)
 
@@ -229,7 +229,7 @@ GLOBAL FULL OUTER JOIN (
             FROM xqc_dim.company_tenant
             WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
         )
-        GROUP BY day,snick
+        GROUP BY day, snick
     ) AS dialog_info
     GLOBAL FULL OUTER JOIN (
         SELECT
@@ -247,7 +247,7 @@ GLOBAL FULL OUTER JOIN (
             FROM xqc_dim.company_tenant
             WHERE company_id = '{{company_id=6131e6554524490001fc6825}}'
         )
-        GROUP BY day,snick
+        GROUP BY day, snick
     ) AS alert_info
     USING(snick)
 ) AS snick_stat
@@ -259,7 +259,17 @@ SELECT
     day AS `日期`, 
     bg_name AS `BG`, 
     bu_name AS `BU`, 
-    shop_id, 
+    -- shop_id,
+    CASE
+        WHEN platform='tb' THEN '淘宝'
+        WHEN platform='jd' THEN '京东'
+        WHEN platform='ks' THEN '快手'
+        WHEN platform='dy' THEN '抖音'
+        WHEN platform='pdd' THEN '拼多多'
+        WHEN platform='open' THEN '开放平台'
+        WHEN platform='~' THEN ''
+        ELSE platform
+    END AS `平台`,
     shop_name AS `店铺`,
     employee_name AS `客服`, 
     superior_name AS `主管`,
@@ -275,17 +285,18 @@ SELECT
 FROM (
     SELECT
         day,
-        bg_name, bu_name, shop_id, shop_name
+        bg_name, bu_name, platform, shop_id, shop_name
     FROM (
         SELECT
-            bg_name, bu_name, shop_id, shop_name
+            bg_name, bu_name, platform, shop_id, shop_name
         FROM (
             SELECT DISTINCT
-                bg_id, bu_id, bu_name, shop_id, shop_name
+                bg_id, bu_id, bu_name, platform, shop_id, shop_name
             FROM (
                 SELECT DISTINCT
                     parent_department_path[1] AS bg_id,
                     parent_department_path[2] AS bu_id,
+                    platform,
                     department_id AS shop_id,
                     department_name AS shop_name
                 FROM xqc_dim.group_all
@@ -341,6 +352,13 @@ FROM (
             range(toUInt32(toDate('{{ day.start=week_ago }}')), toUInt32(toDate('{{ day.end=yesterday }}') + 1), 1))
         ) AS day
     ) AS day
+    WHERE 
+    -- 权限隔离-shop_id
+    (
+        '{{shop_id_list}}'=''
+        OR
+        shop_id IN splitByChar(',','{{shop_id_list}}')
+    )
     ORDER BY day,bg_name,bu_name,shop_name
 ) AS bg_bu_info
 GLOBAL LEFT JOIN (
@@ -368,20 +386,9 @@ GLOBAL LEFT JOIN (
             AND company_id = '{{ company_id=6131e6554524490001fc6825 }}'
         ) AS employee_info
         USING(employee_id)
-        WHERE
-        -- 权限隔离-shop_id
-        (
-            '{{shop_id_list}}'=''
-            OR
-            shop_id IN splitByChar(',','{{shop_id_list}}')
-        )
-        -- 权限隔离-snick
-        AND (
-            '{{snick_list}}'=''
-            OR
-            snick IN splitByChar(',','{{snick_list}}')
-        )
+
     ) AS dim_info
+    -- 仅展示发生了会话的子账号
     GLOBAL RIGHT JOIN (
         SELECT
             day,
@@ -404,7 +411,7 @@ GLOBAL LEFT JOIN (
                 FROM xqc_dim.company_tenant
                 WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
             )
-            GROUP BY day,snick
+            GROUP BY day, snick
         ) AS dialog_info
         GLOBAL FULL OUTER JOIN (
             SELECT
@@ -422,12 +429,19 @@ GLOBAL LEFT JOIN (
                 FROM xqc_dim.company_tenant
                 WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
             )
-            GROUP BY day,snick
+            GROUP BY day, snick
         ) AS alert_info
-        USING(day,snick)
+        USING(day, snick)
+        WHERE 
+        -- 权限隔离-snick
+        (
+            '{{snick_list}}'=''
+            OR
+            snick IN splitByChar(',','{{snick_list}}')
+        )
     ) AS snick_stat
     USING(snick)
 ) AS shop_snick_stat
 USING(day, shop_id)
-GROUP BY day, bg_name, bu_name, shop_id, shop_name, employee_name, superior_name
-ORDER BY day, bg_name, bu_name, shop_name, employee_name, superior_name
+GROUP BY day, bg_name, bu_name, platform, shop_id, shop_name, employee_name, superior_name
+ORDER BY day, bg_name, bu_name, platform, shop_name, employee_name, superior_name

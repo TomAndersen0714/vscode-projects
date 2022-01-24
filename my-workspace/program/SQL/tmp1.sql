@@ -1,61 +1,90 @@
-SELECT DISTINCT question AS `行业场景`,
-    count AS `咨询量`,
-    dim.subcategory_all.name AS `分类`,
-    qid
-FROM (
-        SELECT sq.question AS question,
-            shop_stat_question.count AS count,
-            sq.qid AS qid,
-            sq.subcategory_id AS subcategory_id
-        FROM (
-                SELECT question_oid AS question_id,
-                    sum(ask_count) AS count,
-                    question
-                FROM app_mp.jd_robot_shop_stat_by_question
-                WHERE shop_oid = '{{ shop_id=61839cb5f393ab0018592ca3 }}'
-                    AND question_type = 1
-                    AND day BETWEEN toYYYYMMDD(
-                        parseDateTimeBestEffort('{{ day.start }}')
-                    ) AND toYYYYMMDD(
-                        parseDateTimeBestEffort('{{ day.end }}')
-                    )
-                    AND question_oid in (
-                        SELECT _id AS question_oid
-                        FROM dim.question_b_v2
-                        WHERE if(
-                                (
-                                    '{{ subcategory_id }}' != '全部'
-                                    AND '{{ subcategory_id }}' != ''
-                                ),
-                                subcategory_id = '{{ subcategory_id }}',
-                                1
-                            )
-                            AND if(
-                                '{{ question }}' != '',
-                                question LIKE '%{{ question }}%',
-                                1
-                            )
-                            AND if(
-                                (
-                                    '{{ third_category_id }}' != '全部'
-                                    AND '{{ third_category_id }}' != ''
-                                ),
-                                third_category_id = '{{ third_category_id }}',
-                                1
-                            )
-                            AND if(
-                                (
-                                    '{{ fourth_category_id }}' != '全部'
-                                    AND '{{ fourth_category_id }}' != ''
-                                ),
-                                fourth_category_id = '{{ fourth_category_id }}',
-                                1
-                            )
-                    )
-                GROUP BY question_id,
-                    question
-            ) AS shop_stat_question
-            LEFT JOIN dim.question_b_v2 AS sq ON shop_stat_question.question_id = sq._id
-    ) AS b
-    LEFT JOIN dim.subcategory_all ON b.subcategory_id = dim.subcategory_all._id
-ORDER BY `咨询量` DESC
+WITH x0 AS
+  (SELECT platform,
+          seller_nick,
+          shop_id,
+          `level`,
+          count(1) AS warning_count,
+          '2022-01-17 00:00:00' AS begin_time,
+          '2022-01-23 23:59:59' AS end_time
+   FROM xqc_ods.alert_all FINAL
+   WHERE `day` >= 20220117
+     AND `day` <= 20220123
+     AND `time` >= '2022-01-17 00:00:00'
+     AND `time` <= '2022-01-23 23:59:59'
+     AND shop_id IN ('5bfe7a6a89bc4612f16586a5',
+                     '5f1f97bdfbb9ba0017f73f18',
+                     '5f74643b6868e200013e6d46',
+                     '5f8ff0c0a3967d00188dca48',
+                     '613ef1e1ec7097000e494123',
+                     '61c16f73e8e6fc3cd46906a4')
+     AND is_finished = 'False'
+     AND `level` IN (1)
+   GROUP BY platform,
+            seller_nick,
+            shop_id,
+            `level`),
+     x1 AS
+  (SELECT shop_id,
+          `level`,
+          resp_code
+   FROM xqc_ods.alert_remind_all
+   WHERE `day` >= 20220124
+     AND `day` <= 20220124
+     AND `time` >= '2022-01-24 09:00:00'
+     AND `time` <= '2022-01-24 15:48:44'
+     AND shop_id IN ('5bfe7a6a89bc4612f16586a5',
+                     '5f1f97bdfbb9ba0017f73f18',
+                     '5f74643b6868e200013e6d46',
+                     '5f8ff0c0a3967d00188dca48',
+                     '613ef1e1ec7097000e494123',
+                     '61c16f73e8e6fc3cd46906a4')
+     AND notify_type = 2),
+     x2 AS
+  (SELECT shop_id,
+          `level`
+   FROM x1
+   GROUP BY shop_id,
+            `level`),
+     x3 AS
+  (SELECT shop_id,
+          `level`,
+          count(1) AS success
+   FROM x1
+   WHERE resp_code = 0
+   GROUP BY shop_id,
+            `level`),
+     x4 AS
+  (SELECT shop_id,
+          `level`,
+          count(1) AS fail
+   FROM x1
+   WHERE resp_code != 0
+   GROUP BY shop_id,
+            `level`),
+     x5 AS
+  (SELECT x2.shop_id AS shop_id,
+          x2.`level` AS `level`,
+          success,
+          fail
+   FROM x2 GLOBAL
+   LEFT JOIN x3 ON x2.shop_id = x3.shop_id
+   AND x2.`level` = x3.`level` GLOBAL
+   LEFT JOIN x4 ON x2.shop_id = x4.shop_id
+   AND x2.`level` = x4.`level`),
+     x6 AS
+  (SELECT platform,
+          seller_nick,
+          shop_id,
+          `level`,
+          warning_count,
+          begin_time,
+          end_time,
+          success,
+          fail
+   FROM x0 GLOBAL
+   LEFT JOIN x5 ON x0.shop_id = x5.shop_id
+   AND x0.`level` = x5.`level`)
+SELECT x6.*,
+       shop_info.department_name AS shop_name
+FROM x6 GLOBAL
+LEFT JOIN xqc_dim.group_all AS shop_info ON x6.shop_id = shop_info.department_id
