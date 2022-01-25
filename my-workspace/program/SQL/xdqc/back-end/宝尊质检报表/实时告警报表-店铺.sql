@@ -304,8 +304,8 @@ USING(day, shop_id)
 -- 宝尊质检报表-店铺
 SELECT
     day AS `日期`, 
-    if(bg_name='~','',bg_name) AS BG,
-    if(bu_name='~','',bu_name) AS BU,
+    if(bg_name='~','---',bg_name) AS BG,
+    if(bu_name='~','---',bu_name) AS BU,
     -- shop_id,
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -314,7 +314,7 @@ SELECT
         WHEN platform='dy' THEN '抖音'
         WHEN platform='pdd' THEN '拼多多'
         WHEN platform='open' THEN '开放平台'
-        WHEN platform='~' THEN ''
+        WHEN platform='~' THEN '---'
         ELSE platform
     END AS `平台`,
     if(shop_name='~','汇总',shop_name) AS `店铺`,
@@ -400,8 +400,14 @@ FROM (
                 ) AS bu_info
                 USING(bg_id, bu_id)
                 WHERE 
-                -- 下拉框-BG
+                -- 权限隔离-shop_id
                 (
+                    '{{shop_id_list}}'=''
+                    OR
+                    shop_id IN splitByChar(',','{{shop_id_list}}')
+                )
+                -- 下拉框-BG
+                AND (
                     '{{ bg_ids }}'='' 
                     OR
                     bg_id IN splitByChar(',','{{ bg_ids }}')
@@ -602,9 +608,15 @@ FROM (
                         AND is_shop = 'False'
                     ) AS bu_info
                     USING(bg_id, bu_id)
-                    WHERE 
-                    -- 下拉框-BG
+                    WHERE
+                    -- 权限隔离-shop_id
                     (
+                        '{{shop_id_list}}'=''
+                        OR
+                        shop_id IN splitByChar(',','{{shop_id_list}}')
+                    )
+                    -- 下拉框-BG
+                    AND (
                         '{{ bg_ids }}'='' 
                         OR
                         bg_id IN splitByChar(',','{{ bg_ids }}')
@@ -721,12 +733,5 @@ FROM (
         GROUP BY day
     ) AS day_stat_info
 ) AS stat_info
-WHERE
--- 权限隔离-shop_id
-(
-    '{{shop_id_list}}'=''
-    OR
-    shop_id IN splitByChar(',','{{shop_id_list}}')
-)
-ORDER BY day, bg_name, bu_name, shop_name
+ORDER BY day, bg_name DESC, bu_name DESC, shop_name DESC
 
