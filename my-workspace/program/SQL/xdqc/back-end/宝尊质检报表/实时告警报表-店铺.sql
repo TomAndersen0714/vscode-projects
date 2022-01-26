@@ -304,8 +304,8 @@ USING(day, shop_id)
 -- 宝尊质检报表-店铺
 SELECT
     day AS `日期`, 
-    if(bg_name='~','---',bg_name) AS BG,
-    if(bu_name='~','---',bu_name) AS BU,
+    if(bg_name='Z','---',bg_name) AS BG,
+    if(bu_name='Z','---',bu_name) AS BU,
     -- shop_id,
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -314,10 +314,10 @@ SELECT
         WHEN platform='dy' THEN '抖音'
         WHEN platform='pdd' THEN '拼多多'
         WHEN platform='open' THEN '开放平台'
-        WHEN platform='~' THEN '---'
+        WHEN platform='Z' THEN '---'
         ELSE platform
     END AS `平台`,
-    if(shop_name='~','汇总',shop_name) AS `店铺`,
+    if(shop_name='Z','汇总',shop_name) AS `店铺`,
     dialog_cnt AS `会话总量`,
     snick_cnt AS `子账号数量`,
     alert_cnt AS `告警总量`,
@@ -337,7 +337,7 @@ SELECT
     level_2_finished_alert_pct AS `中级告警完结率`,
     level_1_finished_alert_pct AS `初级告警完结率`,
     finished_alert_pct AS `告警完结率`,
-    alert_elapsed_min_time_avg AS `告警平均完结时长`,
+    alert_elapsed_min_time_avg AS `告警平均完结时长(min)`,
     alert_dialog_pct AS `告警会话比例`,
     dialog_remind_cnt_avg AS `会话平均提醒次数`
 FROM (
@@ -526,7 +526,7 @@ FROM (
 
     -- 按天汇总
     SELECT
-        day, '~' AS bg_name, '~' AS bu_name, '~' AS platform, '~' AS shop_id, '~' AS shop_name,
+        day, 'Z' AS bg_name, 'Z' AS bu_name, 'Z' AS platform, 'Z' AS shop_id, 'Z' AS shop_name,
         dialog_cnt_sum AS dialog_cnt, -- 会话总量
         snick_cnt_sum AS snick_cnt, -- 子账号数量
         alert_cnt_sum AS alert_cnt, -- 告警总量
@@ -733,5 +733,5 @@ FROM (
         GROUP BY day
     ) AS day_stat_info
 ) AS stat_info
-ORDER BY day, bg_name DESC, bu_name DESC, shop_name DESC
+ORDER BY day ASC, bg_name ASC COLLATE 'zh_Hans_CN', bu_name ASC COLLATE 'zh_Hans_CN', shop_name ASC COLLATE 'zh_Hans_CN'
 

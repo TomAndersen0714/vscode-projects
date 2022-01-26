@@ -1,8 +1,11 @@
 -- 宝尊质检报表-店铺
 SELECT
-    day AS `日期`, 
-    if(bg_name='~','',bg_name) AS BG,
-    if(bu_name='~','',bu_name) AS BU,
+    day AS `日期`,
+    bg_name,
+    bu_name,
+    shop_name,
+    if(bg_name='Z','---',bg_name) AS BG,
+    if(bu_name='Z','---',bu_name) AS BU,
     -- shop_id,
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -11,10 +14,10 @@ SELECT
         WHEN platform='dy' THEN '抖音'
         WHEN platform='pdd' THEN '拼多多'
         WHEN platform='open' THEN '开放平台'
-        WHEN platform='~' THEN ''
+        WHEN platform='Z' THEN '---'
         ELSE platform
     END AS `平台`,
-    if(shop_name='~','汇总',shop_name) AS `店铺`,
+    if(shop_name='Z','汇总',shop_name) AS `店铺`,
     dialog_cnt AS `会话总量`,
     snick_cnt AS `子账号数量`,
     alert_cnt AS `告警总量`,
@@ -126,13 +129,6 @@ FROM (
                 AND is_shop = 'False'
             ) AS bg_info
             USING(bg_id)
-            WHERE
-            -- 权限隔离-shop_id
-            (
-                '5bfe7a6a89bc4612f16586a5,5d08498698ef41001087dde8,5d5be95298ef41001222f790,5e7dbfa6e4f3320016e9b7d1,5f1f97bdfbb9ba0017f73f18,5f8ff0c0a3967d00188dca48,613ef1e1ec7097000e494123,61e12db7e098e2391b3b3458,61e65f45a355956a2ad1721e,61e7d11ae8817de81f2522f6,61efabe3541816dd05649d61,61efaef7541816dd0564a233'=''
-                OR
-                shop_id IN splitByChar(',','5bfe7a6a89bc4612f16586a5,5d08498698ef41001087dde8,5d5be95298ef41001222f790,5e7dbfa6e4f3320016e9b7d1,5f1f97bdfbb9ba0017f73f18,5f8ff0c0a3967d00188dca48,613ef1e1ec7097000e494123,61e12db7e098e2391b3b3458,61e65f45a355956a2ad1721e,61e7d11ae8817de81f2522f6,61efabe3541816dd05649d61,61efaef7541816dd0564a233')
-            )
         ) AS dim_info
         GLOBAL CROSS JOIN (
             SELECT
@@ -224,7 +220,7 @@ FROM (
 
     -- 按天汇总
     SELECT
-        day, '~' AS bg_name, '~' AS bu_name, '~' AS platform, '~' AS shop_id, '~' AS shop_name,
+        day, 'Z' AS bg_name, 'Z' AS bu_name, 'Z' AS platform, 'Z' AS shop_id, 'Z' AS shop_name,
         dialog_cnt_sum AS dialog_cnt, -- 会话总量
         snick_cnt_sum AS snick_cnt, -- 子账号数量
         alert_cnt_sum AS alert_cnt, -- 告警总量
@@ -336,13 +332,6 @@ FROM (
                     AND is_shop = 'False'
                 ) AS bg_info
                 USING(bg_id)
-                WHERE
-                -- 权限隔离-shop_id
-                (
-                    '5bfe7a6a89bc4612f16586a5,5d08498698ef41001087dde8,5d5be95298ef41001222f790,5e7dbfa6e4f3320016e9b7d1,5f1f97bdfbb9ba0017f73f18,5f8ff0c0a3967d00188dca48,613ef1e1ec7097000e494123,61e12db7e098e2391b3b3458,61e65f45a355956a2ad1721e,61e7d11ae8817de81f2522f6,61efabe3541816dd05649d61,61efaef7541816dd0564a233'=''
-                    OR
-                    shop_id IN splitByChar(',','5bfe7a6a89bc4612f16586a5,5d08498698ef41001087dde8,5d5be95298ef41001222f790,5e7dbfa6e4f3320016e9b7d1,5f1f97bdfbb9ba0017f73f18,5f8ff0c0a3967d00188dca48,613ef1e1ec7097000e494123,61e12db7e098e2391b3b3458,61e65f45a355956a2ad1721e,61e7d11ae8817de81f2522f6,61efabe3541816dd05649d61,61efaef7541816dd0564a233')
-                )
             ) AS dim_info
             GLOBAL CROSS JOIN (
                 SELECT
@@ -432,4 +421,4 @@ FROM (
         GROUP BY day
     ) AS day_stat_info
 ) AS stat_info
-ORDER BY day, bg_name, bu_name, shop_name-- trace:cd2606c420baff6f48d3b39ef3cd3f1d backend=CLICK_HOUSE stepSize=1000 actionType=0 timeStamp=1643100251 isManual=true","time":"2022-01-25T16:44:11.663+08:00","trace":"cd2606c420baff6f48d3b39ef3cd3f1d","ts":1643100251663}
+ORDER BY day, bg_name, bu_name, shop_name COLLATE 'zh_Hans_CN'
