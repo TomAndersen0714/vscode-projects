@@ -10,6 +10,12 @@
         <replica>cluster01-01-01</replica>
     </macros>
 
+    <!-- Replicated表的默认 zoo_path 参数 -->
+    <!-- <default_replica_path>/clickhouse/tables/{uuid}/{shard}</default_replica_path> -->
+    <default_replica_path>/clickhouse/{database}/tables/{layer}_{shard}/{table}</default_replica_path>
+    <!-- Replicated表的默认 replica_name 参数 -->
+    <default_replica_name>{replica}</default_replica_name>
+
     <!-- 集群配置 -->
     <remote_servers>
         <cluster_3s_2r>
