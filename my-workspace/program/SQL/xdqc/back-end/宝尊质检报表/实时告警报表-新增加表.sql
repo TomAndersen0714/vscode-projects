@@ -3,32 +3,32 @@ xqc.company -> ods.xinghuan_company_all
 
 
 -- xqc.shop -> ods.xinghuan_company_all
-ALTER TABLE tmp.xinghuan_company_local ON CLUSTER cluster_3s_2r 
-DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
+-- ALTER TABLE tmp.xinghuan_company_local ON CLUSTER cluster_3s_2r 
+-- DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
 
 ALTER TABLE tmp.xinghuan_company_local ON CLUSTER cluster_3s_2r
 ADD COLUMN `default_platform` String AFTER `url`,
 ADD COLUMN `platforms` Array(String) AFTER `default_platform`,
 ADD COLUMN `pri_center_id` String AFTER `platforms`
 
-ALTER TABLE tmp.xinghuan_company_all ON CLUSTER cluster_3s_2r 
-DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
+-- ALTER TABLE tmp.xinghuan_company_all ON CLUSTER cluster_3s_2r 
+-- DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
 
 ALTER TABLE tmp.xinghuan_company_all ON CLUSTER cluster_3s_2r
 ADD COLUMN `default_platform` String AFTER `url`,
 ADD COLUMN `platforms` Array(String) AFTER `default_platform`,
 ADD COLUMN `pri_center_id` String AFTER `platforms`
 
-ALTER TABLE ods.xinghuan_company_local ON CLUSTER cluster_3s_2r 
-DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
+-- ALTER TABLE ods.xinghuan_company_local ON CLUSTER cluster_3s_2r 
+-- DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
 
 ALTER TABLE ods.xinghuan_company_local ON CLUSTER cluster_3s_2r
 ADD COLUMN `default_platform` String AFTER `url`, 
 ADD COLUMN `platforms` Array(String) AFTER `default_platform`,
 ADD COLUMN `pri_center_id` String AFTER `platforms`
 
-ALTER TABLE ods.xinghuan_company_all ON CLUSTER cluster_3s_2r 
-DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
+-- ALTER TABLE ods.xinghuan_company_all ON CLUSTER cluster_3s_2r 
+-- DROP COLUMN `default_platform`, DROP COLUMN `platforms`, DROP COLUMN `pri_center_id`
 
 ALTER TABLE ods.xinghuan_company_all ON CLUSTER cluster_3s_2r
 ADD COLUMN `default_platform` String AFTER `url`, 
