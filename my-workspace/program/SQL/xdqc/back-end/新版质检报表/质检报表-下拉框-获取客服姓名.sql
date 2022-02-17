@@ -22,7 +22,7 @@ AND _id IN (
         snick IN splitByChar(',','{{ snicks }}')
     )
     -- 最近发生聊天的子账号
-    AND snick IN (
+    AND snick GLOBAL IN (
         SELECT DISTINCT
             snick
         FROM dwd.xdqc_dialog_all
@@ -41,7 +41,7 @@ AND _id IN (
             snick IN splitByChar(',','{{ snicks }}')
         )
         -- 当前企业对应的子账号
-        AND snick IN (
+        AND snick GLOBAL IN (
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())

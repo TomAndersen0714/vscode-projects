@@ -112,35 +112,6 @@
         </node>
     </zookeeper>
 
-    <!-- Policy from the <storage_configuration> for the temporary files.
-                  If not set <tmp_path> is used, otherwise <tmp_path> is ignored.
-
-         Notes:
-         - move_factor              is ignored
-         - keep_free_space_bytes    is ignored
-         - max_data_part_size_bytes is ignored
-         - you must have exactly one volume in that policy
-    -->
-    <!-- <tmp_policy>tmp</tmp_policy> -->
-    <storage_configuration>
-        <disks>
-            <data0>
-                <path>/var/lib/clickhouse/data0/</path>
-                <keep_free_space_bytes>1073741824</keep_free_space_bytes>
-            </data0>
-        </disks>
-
-        <policies>
-            <rr>
-                <volumes>
-                    <single>
-                        <disk>data0</disk>
-                    </single>
-                </volumes>
-            </rr>
-        </policies>
-    </storage_configuration>
-
     <logger>
         <!-- Possible levels: https://github.com/pocoproject/poco/blob/poco-1.9.4-release/Foundation/include/Poco/Logger.h#L105 -->
         <level>trace</level>
@@ -152,6 +123,7 @@
     </logger>
     <!--display_name>production</display_name-->    <!-- It is the name that will be shown in the client -->
 
+    <max_server_memory_usage_to_ram_ratio>0.8</max_server_memory_usage_to_ram_ratio>
     <!-- For HTTPS and SSL over native protocol. -->
     <!--
              <https_port>8443</https_port>
@@ -239,7 +211,7 @@
 
     <!-- On memory constrained environments you may have to set this to value larger than 1.
                -->
-    <max_server_memory_usage_to_ram_ratio>0.8</max_server_memory_usage_to_ram_ratio>
+    <max_server_memory_usage_to_ram_ratio>0.9</max_server_memory_usage_to_ram_ratio>
 
     <!-- Simple server-wide memory profiler. Collect a stack trace at every peak allocation step (in bytes).
                   Data will be stored in system.trace_log table with query_id = empty string.
@@ -270,6 +242,17 @@
 
     <!-- Path to temporary data for processing hard queries. -->
     <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+
+    <!-- Policy from the <storage_configuration> for the temporary files.
+                  If not set <tmp_path> is used, otherwise <tmp_path> is ignored.
+
+         Notes:
+         - move_factor              is ignored
+         - keep_free_space_bytes    is ignored
+         - max_data_part_size_bytes is ignored
+         - you must have exactly one volume in that policy
+    -->
+    <!-- <tmp_policy>tmp</tmp_policy> -->
 
     <!-- Directory with user provided files that are accessible by 'file' table function. -->
     <user_files_path>/var/lib/clickhouse/user_files/</user_files_path>
@@ -637,3 +620,4 @@
     <!-- Uncomment to disable ClickHouse internal DNS caching. -->
     <!-- <disable_internal_dns_cache>1</disable_internal_dns_cache> -->
 </yandex>
+

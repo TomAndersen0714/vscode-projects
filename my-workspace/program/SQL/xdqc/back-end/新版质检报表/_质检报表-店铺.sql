@@ -39,7 +39,7 @@ FROM (
     FROM dwd.xdqc_dialog_all
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     AND platform = '{{ platform=tb }}'
-    AND snick IN (
+    AND snick GLOBAL IN (
         -- 获取最新版本的维度数据(T+1)
         SELECT distinct snick
         FROM ods.xinghuan_employee_snick_all

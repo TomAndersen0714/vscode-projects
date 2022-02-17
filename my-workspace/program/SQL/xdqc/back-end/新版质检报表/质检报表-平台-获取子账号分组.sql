@@ -7,7 +7,7 @@ FROM (
     FROM dwd.xdqc_dialog_all
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     AND platform = '{{ platform=tb }}'
-    AND snick IN (
+    AND snick GLOBAL IN (
         SELECT distinct snick
         FROM ods.xinghuan_employee_snick_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

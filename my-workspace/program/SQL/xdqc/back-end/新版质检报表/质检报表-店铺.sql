@@ -121,7 +121,7 @@ FROM (
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         AND platform = 'tb'
-        AND snick IN (
+        AND snick GLOBAL IN (
             -- 获取最新版本的维度数据(T+1)
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
@@ -181,7 +181,7 @@ FROM (
                     abnormals_type AS abnormal_type, 
                     abnormals_count AS abnormal_cnt
                 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-                AND snick IN (
+                AND snick GLOBAL IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
                     SELECT distinct snick
@@ -223,7 +223,7 @@ FROM (
                     excellents_type AS excellent_type, 
                     excellents_count AS excellent_cnt
                 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-                AND snick IN (
+                AND snick GLOBAL IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
                     SELECT distinct snick
@@ -266,7 +266,7 @@ FROM (
                     c_emotion_count
                 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                 AND platform = 'tb'
-                AND snick IN (
+                AND snick GLOBAL IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
                     SELECT distinct snick
@@ -297,7 +297,7 @@ FROM (
                     s_emotion_count
                 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                 AND platform = 'tb'
-                AND snick IN (
+                AND snick GLOBAL IN (
                     -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
                     -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
                     SELECT distinct snick

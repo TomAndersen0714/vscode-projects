@@ -1,0 +1,11 @@
+#!/bin/bash
+docker run -d \
+    --name=ch-s1-r1 \
+    --hostname=dy-bigdata-clickhouse-ch-s1-r1 \
+    --ulimit nofile=262144:262144 \
+    -v /data0/clickhouse/conf/:/etc/clickhouse-server/ \
+    -v /data0/clickhouse/data:/var/lib/clickhouse \
+    -v /data0/clickhouse/logs/:/var/log/clickhouse-server/ \
+    --network=host \
+    --restart=always \
+    registry.cn-zhangjiakou.aliyuncs.com/xiaoduoai/yandex/clickhouse-server:20.4

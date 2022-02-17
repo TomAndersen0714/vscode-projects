@@ -43,7 +43,7 @@ FROM (
         abnormals_type AS abnormal_type, 
         abnormals_count AS abnormal_cnt
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-    AND snick IN (
+    AND snick GLOBAL IN (
         -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
         -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
         SELECT distinct snick

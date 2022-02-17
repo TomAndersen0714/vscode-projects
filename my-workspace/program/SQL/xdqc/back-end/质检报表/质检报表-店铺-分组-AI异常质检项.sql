@@ -47,7 +47,7 @@ FROM (
             abnormals_count
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-        AND snick IN (
+        AND snick GLOBAL IN (
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(today()-1)

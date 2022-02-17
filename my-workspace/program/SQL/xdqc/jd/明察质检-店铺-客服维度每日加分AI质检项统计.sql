@@ -35,7 +35,7 @@ FROM (
                 excellent -- 加分AI质检项类型
             FROM xqc_ods.message_all
             WHERE day BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-            AND snick IN (
+            AND snick GLOBAL IN (
                 SELECT distinct snick
                 FROM ods.xinghuan_employee_snick_all
                 WHERE day BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))

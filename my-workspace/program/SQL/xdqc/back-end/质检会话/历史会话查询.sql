@@ -3,7 +3,7 @@ select
     count(1) as count -- 会话总量
 from dwd.xdqc_dialog_all
 where seller_nick in %s -- param.SellerNicks
-    and snick in %s -- param.SNick 
+    AND snick GLOBAL IN %s -- param.SNick 
     and cnick = '%s'
     and score > 0 -- and score = 0
     and length(mark_ids) > 0 -- and length(mark_ids)=0
@@ -86,7 +86,7 @@ select
     sign
 from dwd.xdqc_dialog_all
 where seller_nick in %s -- param.SellerNicks
-and snick in %s -- param.SNick 
+AND snick GLOBAL IN %s -- param.SNick 
 and cnick = '%s'
 and score > 0 -- and score = 0
 and length(mark_ids) > 0 -- and length(mark_ids)=0
