@@ -35,13 +35,13 @@
 
 // xdqc.customize_rule: 质检标准-自定义质检规则表(旧)
 {
-    '_id': ObjectId('5f169fba76eb0a0001b198d4'),
-    'create_time': datetime.datetime(2020, 7, 21, 7, 56, 42, 310000),
-    'update_time': datetime.datetime(2020, 10, 9, 12, 9, 10, 906000),
+    '_id': ObjectId('5f180028ef91020001c02bfb'),
+    'create_time': datetime.datetime(2020, 7, 22, 9, 0, 24, 106000),
+    'update_time': datetime.datetime(2020, 9, 30, 9, 22, 3, 364000),
     'name': '营销开始语缺失',
-    'platform': 'tb',
-    'channel': 'tb',
-    'seller_nick': '杜可风按',
+    'platform': 'jd',
+    'channel': 'jd',
+    'seller_nick': '智晓多谋生鲜专营店',
     'group': '售前客服组',
     'cal_op': 1,
     'score': 16,

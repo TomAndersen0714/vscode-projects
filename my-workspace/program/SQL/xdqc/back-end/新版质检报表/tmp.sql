@@ -1,71 +1,81 @@
--- 平台/店铺/子账号维度-人工质检结果
-SELECT *
-FROM (
-    -- 人工质检-子账号维度扣分质检项触发次数统计
-    SELECT
-        platform,
-        seller_nick,
-        snick,
-        groupArray(tag_score_label_id) AS tag_score_label_ids
-        groupArray(tag_score_label_sum) AS tag_score_label_cnts
-    FROM (
-        SELECT
-            platform,
-            seller_nick,
-            snick,
-            tag_score_label_id,
-            sum(tag_score_label_cnt) AS tag_score_label_sum
-        FROM dwd.xdqc_dialog_all
-        ARRAY JOIN
-            tag_score_id AS tag_score_label_id, 
-            tag_score_count AS tag_score_label_cnt
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
-        )
-        AND tag_score_id!=[]
-        GROUP BY platform, seller_nick, snick, tag_score_label_id
-    ) AS tag_score_label_stat
-    GROUP BY platform, seller_nick, snick
-) AS tag_score_info
-GLOBAL FULL OUTER JOIN (
-    -- 人工质检-子账号维度加分质检项触发次数统计
-    SELECT
-        platform,
-        seller_nick,
-        snick,
-        groupArray(tag_score_add_stats_label_id) AS tag_score_add_stats_label_ids
-        groupArray(tag_score_add_stats_label_sum) AS tag_score_add_stats_label_cnts
-    FROM (
-        SELECT
-            platform,
-            seller_nick,
-            snick,
-            tag_score_add_stats_label_id,
-            sum(tag_score_add_stats_label_cnt) AS tag_score_add_stats_label_sum
-        FROM dwd.xdqc_dialog_all
-        ARRAY JOIN
-            tag_score_add_stats_id AS tag_score_add_stats_label_id, 
-            tag_score_add_stats_count AS tag_score_add_stats_label_cnt
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
-        )
-        AND tag_score_add_stats_id!=[]
-        GROUP BY platform, seller_nick, snick, tag_score_add_stats_label_id
-    ) AS tag_score_add_stats_label_stat
-    GROUP BY platform, seller_nick, snick
-) AS tag_score_add_info
-USING(platform, seller_nick, snick)
+select _id,
+    platform,
+    channel,
+    `group`,
+    `date`,
+    seller_nick,
+    cnick,
+    snick,
+    begin_time,
+    end_time,
+    is_after_sale,
+    is_inside,
+    employee_name,
+    s_emotion.type,
+    s_emotion.count,
+    c_emotion.type,
+    c_emotion.count,
+    emotions,
+    abnormals.type,
+    abnormals.count,
+    excellents.type,
+    excellents.count,
+    qc_word.source,
+    qc_word.word,
+    qc_word.count,
+    qid,
+    mark,
+    mark_judge,
+    mark_score,
+    mark_score_add,
+    mark_ids,
+    last_mark_id,
+    human_check,
+    tag_score_stats.id,
+    tag_score_stats.score,
+    tag_score_add_stats.id,
+    tag_score_add_stats.score,
+    rule_stats.id,
+    rule_stats.score,
+    rule_stats.count,
+    rule_add_stats.id,
+    rule_add_stats.score,
+    rule_add_stats.count,
+    score,
+    score_add,
+    question_count,
+    answer_count,
+    first_answer_time,
+    qa_time_sum,
+    qa_round_sum,
+    focus_goods_id,
+    is_remind,
+    task_list_id,
+    read_mark,
+    last_msg_id,
+    consulte_transfor_v2,
+    order_info.id,
+    order_info.status,
+    order_info.payment,
+    order_info.time,
+    intel_score,
+    remind_ntype,
+    first_follow_up_time,
+    is_follow_up_remind,
+    emotion_detect_mode,
+    has_withdraw_robot_msg,
+    is_order_matched,
+    suspected_positive_emotion,
+    suspected_problem,
+    suspected_excellent,
+    has_after,
+    cnick_customize_rule,
+    update_time,
+    1,
+    wx_rule_stats.id,
+    wx_rule_stats.score,
+    wx_rule_stats.count,
+    wx_rule_add_stats.id,
+    wx_rule_add_stats.score,
+    wx_rule_add_stats.count
+from ods.xdqc_dialog_update_all
