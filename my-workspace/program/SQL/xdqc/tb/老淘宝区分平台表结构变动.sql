@@ -5,9 +5,9 @@ ALTER TABLE ods.xinghuan_dialog_tag_score_local ON CLUSTER cluster_3s_2r ADD COL
 ALTER TABLE ods.xinghuan_dialog_tag_score_all ON CLUSTER cluster_3s_2r ADD COLUMN platform String FIRST
 
 -- PS: FIRST指令在v20.6及之后才支持:https://clickhouse.com/docs/en/whats-new/changelog/2020/#new-feature_6
--- 对于之前的ClickHouse, 可以尝试通过 MODIFY COLUMN 修改首列的位置
-ALTER TABLE ods.xinghuan_dialog_tag_score_local ON CLUSTER cluster_3s_2r MODIFY COLUMN platform AFTER seller_nick
-ALTER TABLE ods.xinghuan_dialog_tag_score_all ON CLUSTER cluster_3s_2r MODIFY COLUMN platform AFTER seller_nick
+-- 对于之前的ClickHouse, 无法控制列的顺序, 因此对于这种情况, 建议如果数据量不大的话, 备份+重建表格
+-- https://github.com/ClickHouse/ClickHouse/blob/v20.4.2.9-stable/docs/en/sql_reference/statements/alter.md#alter_add-column
+
 -- 手动设置默认值
 ALTER TABLE ods.xinghuan_dialog_tag_score_local ON CLUSTER cluster_3s_2r UPDATE platform='tb' WHERE 1=1
 
@@ -22,3 +22,5 @@ ALTER TABLE ods.qc_statistical_department_local ON CLUSTER cluster_3s_2r ADD COL
 ALTER TABLE ods.qc_statistical_department_all ON CLUSTER cluster_3s_2r ADD COLUMN platform String AFTER company_id
 -- 手动设置默认值
 ALTER TABLE ods.qc_statistical_department_local ON CLUSTER cluster_3s_2r UPDATE platform='tb' WHERE 1=1
+
+-- PS: 修改表结构和修改任务必须同步进行
