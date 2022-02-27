@@ -80,7 +80,7 @@ ADD COLUMN tag_score_add_stats_mm Array(UInt8) AFTER `tag_score_add_stats_md`
 
 
 -- ks平台ClickHouse还未升级到多盘和zk分布式形式, 无法直接对齐
-PS: 已经上zk, 并且升级到了多盘，可以开始正常作业
+PS: 已经上zk, 并且升级到了多盘, 可以开始正常作业
 
 
 -- tb/dy/pdd/mini/ks 平台自定义质检表是旧版, 需要切换到新版, 并增加对应字段
