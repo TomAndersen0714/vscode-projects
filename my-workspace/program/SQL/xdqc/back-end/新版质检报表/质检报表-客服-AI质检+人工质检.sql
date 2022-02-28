@@ -1,5 +1,5 @@
--- 质检报表-平台
--- 统计维度: 平台, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
+-- 质检报表-客服
+-- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -10,8 +10,10 @@ SELECT
         WHEN platform='open' THEN '开放平台'
         ELSE platform
     END AS `平台`,
-    count(distinct seller_nick) AS `店铺数`,
-    count(distinct snick) AS `客服人数`,
+    seller_nick AS `店铺`,
+    department_name AS `子账号分组`,
+    snick AS `客服子账号`,
+    employee_name AS `客服姓名`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
     -- AI质检
@@ -96,7 +98,6 @@ SELECT
 FROM (
     SELECT *
     FROM (
-        -- 质检报表总览-子账号维度统计
         SELECT
             platform,
             seller_nick,
@@ -127,11 +128,28 @@ FROM (
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
             AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            -- 下拉框-子账号分组
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号
+        AND (
+            '{{ snicks }}'=''
+            OR
+            snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY platform, seller_nick, snick
     ) AS dialog_info
     GLOBAL FULL OUTER JOIN (
-        -- AI质检结果
         SELECT *
         FROM (
             SELECT *
@@ -183,8 +201,26 @@ FROM (
                     WHERE day = toYYYYMMDD(yesterday())
                     AND platform = 'tb'
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    -- 下拉框-子账号分组
+                    AND (
+                        '{{ department_ids }}'=''
+                        OR
+                        department_id IN splitByChar(',','{{ department_ids }}')
+                    )
                 )
                 AND abnormal_cnt!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_abnormal_info
             GLOBAL FULL OUTER JOIN (
@@ -219,8 +255,26 @@ FROM (
                     WHERE day = toYYYYMMDD(yesterday())
                     AND platform = 'tb'
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    -- 下拉框-子账号分组
+                    AND (
+                        '{{ department_ids }}'=''
+                        OR
+                        department_id IN splitByChar(',','{{ department_ids }}')
+                    )
                 )
                 AND excellent_cnt!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_excellent_info
             USING(platform, seller_nick, snick)
@@ -256,8 +310,26 @@ FROM (
                     WHERE day = toYYYYMMDD(yesterday())
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                     AND platform = 'tb'
+                    -- 下拉框-子账号分组
+                    AND (
+                        '{{ department_ids }}'=''
+                        OR
+                        department_id IN splitByChar(',','{{ department_ids }}')
+                    )
                 )
                 AND c_emotion_count!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_c_emotion_info
             GLOBAL FULL OUTER JOIN(
@@ -281,8 +353,26 @@ FROM (
                     WHERE day = toYYYYMMDD(yesterday())
                     AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
                     AND platform = 'tb'
+                    -- 下拉框-子账号分组
+                    AND (
+                        '{{ department_ids }}'=''
+                        OR
+                        department_id IN splitByChar(',','{{ department_ids }}')
+                    )
                 )
                 AND s_emotion_count!=0
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS ai_s_emotion_info
             USING(platform, seller_nick, snick)
@@ -291,4 +381,120 @@ FROM (
     ) AS ai_check_info
     USING(platform, seller_nick, snick)
 ) AS ai_info
-GROUP BY platform
+GLOBAL LEFT JOIN (
+    -- 获取最新版本的维度数据(T+1)
+    SELECT
+        snick, employee_name, department_id, department_name
+    FROM (
+        SELECT snick, employee_name, department_id
+        FROM (
+            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+            SELECT snick, department_id, employee_id
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        ) AS snick_info
+        GLOBAL LEFT JOIN (
+            SELECT
+                _id AS employee_id, username AS employee_name
+            FROM ods.xinghuan_employee_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        ) AS employee_info
+        USING(employee_id)
+    ) AS snick_info
+    GLOBAL RIGHT JOIN (
+        -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
+        -- parent_department_id全为空,则代表树层次遍历完毕
+        SELECT
+            level_1.parent_department_id AS parent_department_id,
+            level_2_3_4.department_id AS department_id,
+            if(
+                level_1.department_id!='', 
+                concat(level_1.department_name,'-',level_2_3_4.department_name),
+                level_2_3_4.department_name
+            ) AS department_name
+        FROM (
+            SELECT
+                level_2.parent_department_id AS parent_department_id,
+                level_3_4.department_id AS department_id,
+                if(
+                    level_2.department_id!='', 
+                    concat(level_2.department_name,'-',level_3_4.department_name),
+                    level_3_4.department_name
+                ) AS department_name
+            FROM (
+                SELECT
+                    level_3.parent_department_id AS parent_department_id,
+                    level_4.department_id AS department_id,
+                    if(
+                        level_3.department_id!='', 
+                        concat(level_3.department_name,'-',level_4.department_name),
+                        level_4.department_name
+                    ) AS department_name
+                FROM (
+                    SELECT 
+                        _id AS department_id,
+                        name AS department_name,
+                        parent_id AS parent_department_id
+                    FROM ods.xinghuan_department_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    AND (
+                        parent_id GLOBAL IN (
+                            SELECT DISTINCT
+                                _id AS department_id
+                            FROM ods.xinghuan_department_all
+                            WHERE day = toYYYYMMDD(yesterday())
+                            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        ) -- 清除子账号父分组被删除, 而子分组依旧存在的脏数据
+                        OR 
+                        parent_id = '' -- 保留顶级分组
+                    )
+                ) AS level_4
+                GLOBAL LEFT JOIN (
+                    SELECT 
+                        _id AS department_id,
+                        name AS department_name,
+                        parent_id AS parent_department_id
+                    FROM ods.xinghuan_department_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                ) AS level_3
+                ON level_4.parent_department_id = level_3.department_id
+            ) AS level_3_4
+            GLOBAL LEFT JOIN (
+                SELECT 
+                    _id AS department_id,
+                    name AS department_name,
+                    parent_id AS parent_department_id
+                FROM ods.xinghuan_department_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            ) AS level_2
+            ON level_3_4.parent_department_id = level_2.department_id
+        ) AS level_2_3_4
+        GLOBAL LEFT JOIN (
+            SELECT 
+                _id AS department_id,
+                name AS department_name,
+                parent_id AS parent_department_id
+            FROM ods.xinghuan_department_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        ) AS level_1
+        ON level_2_3_4.parent_department_id = level_1.department_id
+    ) AS department_info
+    USING (department_id)
+) AS snick_department_map
+USING(snick)
+-- 下拉框-客服名称
+WHERE (
+    '{{ usernames }}'=''
+    OR
+    employee_name IN splitByChar(',','{{ usernames }}')
+)
+GROUP BY platform, seller_nick, department_id, department_name, snick, employee_name
+HAVING department_id!='' -- 清除匹配不上历史分组的子账号
+ORDER BY platform, seller_nick, department_name, snick, employee_name

@@ -158,6 +158,18 @@ ALTER TABLE ods.qc_statistical_department_all ADD COLUMN platform String AFTER `
 ALTER TABLE ods.qc_statistical_department_all UPDATE platform='jd' WHERE 1=1
 
 /*
+ods.qc_detail_all
+*/
+ALTER TABLE ods.qc_detail_all 
+ADD COLUMN rule_stats_id Array(String) AFTER `tag_score_add_stats_score`,
+ADD COLUMN rule_stats_score Array(Int32) AFTER `rule_stats_id`,
+ADD COLUMN rule_stats_count Array(Int32) AFTER `rule_stats_score`,
+ADD COLUMN rule_add_stats_id Array(String) AFTER `rule_stats_count`,
+ADD COLUMN rule_add_stats_score Array(Int32) AFTER `rule_add_stats_id`,
+ADD COLUMN rule_add_stats_count Array(Int32) AFTER `rule_add_stats_score`
+
+
+/*
 buffer.xdqc_dialog_buffer
 ods.xdqc_dialog_all
 buffer.xdqc_dialog_update_buffer

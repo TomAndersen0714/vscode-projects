@@ -1,18 +1,28 @@
-select _id, platform, channel, `group`, `date`, seller_nick, cnick, snick, begin_time, end_time,
-    is_after_sale, is_inside, employee_name, 
-    s_emotion.type, s_emotion.count, c_emotion.type, c_emotion.count, emotions,
-    abnormals.type, abnormals.count, excellents.type, excellents.count,
-    qc_word.source, qc_word.word, qc_word.count, qid, 
-    mark, mark_judge, mark_score, mark_score_add, mark_ids, last_mark_id, human_check,
-    tag_score_stats.id, tag_score_stats.score, tag_score_stats.count, tag_score_stats.md, tag_score_stats.mm,
-    tag_score_add_stats.id, tag_score_add_stats.score, tag_score_add_stats.count, tag_score_add_stats.md, tag_score_add_stats.mm,
-    rule_stats.id, rule_stats.score, rule_stats.count, rule_add_stats.id, rule_add_stats.score, rule_add_stats.count,
-    score, score_add, question_count, answer_count, first_answer_time, qa_time_sum, qa_round_sum, focus_goods_id,
-    is_remind, task_list_id, read_mark, last_msg_id, consulte_transfor_v2,
-    order_info.id, order_info.status, order_info.payment, order_info.time, intel_score, remind_ntype, first_follow_up_time,
-    is_follow_up_remind, emotion_detect_mode, has_withdraw_robot_msg, is_order_matched, suspected_positive_emotion,
-    suspected_problem, suspected_excellent, has_after, cnick_customize_rule, update_time,
-    1,
-    wx_rule_stats.id, wx_rule_stats.score, wx_rule_stats.count, 
-    wx_rule_add_stats.id, wx_rule_add_stats.score, wx_rule_add_stats.count
-from ods.xdqc_dialog_update_all
+-- 自定义质检-平台维度扣分质检项触发次数统计
+SELECT
+    platform,
+    rule_add_stats_tag_id AS tag_id,
+    sum(rule_add_stats_tag_count) AS tag_cnt
+FROM dwd.xdqc_dialog_all
+ARRAY JOIN
+    rule_add_stats_id AS rule_add_stats_tag_id,
+    rule_add_stats_count AS rule_add_stats_tag_count
+WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+AND snick GLOBAL IN (
+    -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+    -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+    SELECT distinct snick
+    FROM ods.xinghuan_employee_snick_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND platform = 'tb'
+    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+    -- 下拉框-子账号分组
+    AND (
+        '{{ department_ids }}'=''
+        OR
+        department_id IN splitByChar(',','{{ department_ids }}')
+    )
+)
+-- 清除没有打标的数据, 减小计算量
+AND rule_add_stats_id!=[]
+GROUP BY platform, rule_add_stats_tag_id
