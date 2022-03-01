@@ -1,6 +1,6 @@
 -- 总体会话概况-今日会话总量+昨日会话总量+近30天会话总量+日环比+月环比
 
--- 欧普照明 company_id = 61602afd297bb79b69c06118
+-- 欧普照明 company_id = 5f747ba42c90fd0001254404
 -- 欧普照明官方旗舰店 platform = 'tb' AND shop_id = '615faf72b0c5f1001957c249'
 WITH 
 ( SELECT toYYYYMMDD(today()) ) AS today,
@@ -14,7 +14,7 @@ WITH
     AND shop_id GLOBAL IN (
         SELECT tenant_id AS shop_id
         FROM xqc_dim.company_tenant
-        WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         AND platform = '{{ platform=tb }}'
     )
 
@@ -28,7 +28,7 @@ WITH
     AND shop_id GLOBAL IN (
         SELECT tenant_id AS shop_id
         FROM xqc_dim.company_tenant
-        WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         AND platform = '{{ platform=tb }}'
     )
     -- 前一天同时刻(小时)

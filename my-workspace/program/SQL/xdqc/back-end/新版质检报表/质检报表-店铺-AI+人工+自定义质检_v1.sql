@@ -11,9 +11,9 @@ SELECT
         ELSE platform
     END AS `平台`,
     seller_nick AS `店铺`,
+    department_id,
     department_name AS `子账号分组`,
-    snick AS `客服子账号`,
-    employee_name AS `客服姓名`,
+    count(distinct snick) AS `客服人数`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
     -- AI质检
@@ -566,25 +566,14 @@ FROM (
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT
-        snick, employee_name, department_id, department_name
+        snick, department_id, department_name
     FROM (
-        SELECT snick, employee_name, department_id
-        FROM (
-            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-            SELECT snick, department_id, employee_id
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS snick_info
-        GLOBAL LEFT JOIN (
-            SELECT
-                _id AS employee_id, username AS employee_name
-            FROM ods.xinghuan_employee_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS employee_info
-        USING(employee_id)
+        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+        SELECT snick, department_id
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND platform = 'tb'
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     ) AS snick_info
     GLOBAL RIGHT JOIN (
         -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
@@ -671,12 +660,6 @@ GLOBAL LEFT JOIN (
     USING (department_id)
 ) AS snick_department_map
 USING(snick)
--- 下拉框-客服名称
-WHERE (
-    '{{ usernames }}'=''
-    OR
-    employee_name IN splitByChar(',','{{ usernames }}')
-)
-GROUP BY platform, seller_nick, department_id, department_name, snick, employee_name
+GROUP BY platform, seller_nick, department_id, department_name
 HAVING department_id!='' -- 清除匹配不上历史分组的子账号
-ORDER BY platform, seller_nick, department_name, snick, employee_name
+ORDER BY platform, seller_nick, department_name

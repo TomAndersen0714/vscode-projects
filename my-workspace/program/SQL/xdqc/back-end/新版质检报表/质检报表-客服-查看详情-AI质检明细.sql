@@ -1,6 +1,9 @@
 -- 质检报表-客服-查看详情-AI质检明细
 -- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
+    dialog_id,
+    toYYYYMMDD(begin_time) AS dialog_day,
+    dialog_day AS `日期`,
     CASE
         WHEN platform='tb' THEN '淘宝'
         WHEN platform='jd' THEN '京东'
@@ -15,8 +18,8 @@ SELECT
     snick AS `客服子账号`,
     cnick AS `顾客姓名`,
     employee_name AS `客服姓名`,
-    dialog_id,
-    toYYYYMMDD(begin_time) AS dialog_day,
+    
+    -- AI质检-扣分质检项触发次数统计
     abnormal_type_1_cnt AS `非客服结束会话`,
     abnormal_type_2_cnt AS `漏跟进`,
     abnormal_type_3_cnt AS `快捷短语重复`,
@@ -46,6 +49,8 @@ SELECT
     abnormal_type_27_cnt AS `顾客怀疑假货`,
     abnormal_type_28_cnt AS `客服态度消极敷衍`,
     abnormal_type_29_cnt AS `售后不满意`,
+
+    -- AI质检-加分质检项触发次数统计
     excellent_type_1_cnt AS `需求挖掘`,
     excellent_type_2_cnt AS `商品细节解答`,
     excellent_type_3_cnt AS `卖点传达`,
@@ -59,6 +64,8 @@ SELECT
     excellent_type_11_cnt AS `核对地址`,
     excellent_type_12_cnt AS `好评引导`,
     excellent_type_13_cnt AS `优秀结束语`,
+
+    -- AI质检-顾客情绪质检项触发次数统计
     c_emotion_type_1_cnt AS `满意`,
     c_emotion_type_2_cnt AS `感激`,
     c_emotion_type_3_cnt AS `期待`,
@@ -68,8 +75,11 @@ SELECT
     c_emotion_type_7_cnt AS `其他不满意`,
     c_emotion_type_8_cnt AS `顾客骂人`,
     c_emotion_type_9_cnt AS `对收货少件不满`,
+
+    -- AI质检-客服情绪质检项触发次数统计
     s_emotion_type_8_cnt AS `客服骂人`
 FROM (
+    -- AI质检结果-会话维度质检项触发次数统计
     SELECT
         platform,
         seller_nick,
@@ -138,7 +148,7 @@ FROM (
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     )
     -- 排除AI质检未命中标签的会话
     AND (arraySum(abnormals_count)+arraySum(excellents_count)+arraySum(c_emotion_count)+arraySum(s_emotion_count))!=0
@@ -154,7 +164,7 @@ FROM (
             OR
             snick IN splitByChar(',','{{ snicks=null }}')
     )
-) AS dialog_ai_check_info
+) AS stat_ai_check_info
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT
@@ -167,14 +177,14 @@ GLOBAL LEFT JOIN (
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS snick_info
         GLOBAL LEFT JOIN (
             SELECT
                 _id AS employee_id, username AS employee_name
             FROM ods.xinghuan_employee_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS employee_info
         USING(employee_id)
     ) AS snick_info
@@ -214,14 +224,14 @@ GLOBAL LEFT JOIN (
                         parent_id AS parent_department_id
                     FROM ods.xinghuan_department_all
                     WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     AND (
                         parent_id GLOBAL IN (
                             SELECT DISTINCT
                                 _id AS department_id
                             FROM ods.xinghuan_department_all
                             WHERE day = toYYYYMMDD(yesterday())
-                            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                         ) -- 清除子账号父分组被删除, 而子分组依旧存在的脏数据
                         OR 
                         parent_id = '' -- 保留顶级分组
@@ -234,7 +244,7 @@ GLOBAL LEFT JOIN (
                         parent_id AS parent_department_id
                     FROM ods.xinghuan_department_all
                     WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 ) AS level_3
                 ON level_4.parent_department_id = level_3.department_id
             ) AS level_3_4
@@ -245,7 +255,7 @@ GLOBAL LEFT JOIN (
                     parent_id AS parent_department_id
                 FROM ods.xinghuan_department_all
                 WHERE day = toYYYYMMDD(yesterday())
-                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             ) AS level_2
             ON level_3_4.parent_department_id = level_2.department_id
         ) AS level_2_3_4
@@ -256,7 +266,7 @@ GLOBAL LEFT JOIN (
                 parent_id AS parent_department_id
             FROM ods.xinghuan_department_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS level_1
         ON level_2_3_4.parent_department_id = level_1.department_id
     ) AS department_info

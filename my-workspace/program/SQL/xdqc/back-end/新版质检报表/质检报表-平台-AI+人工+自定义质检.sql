@@ -1,7 +1,7 @@
 -- 质检报表-平台
 -- 统计维度: 平台, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 -- PS: 人工质检和自定义质检, 也可以从子账号维度聚合使用groupArray, 后续可以继续
--- 使用sumMap(flatten(groupArray(keys)), flatten(groupArray(values)))+group by按需向上卷积
+-- 使用sumMap(key_arr_column), flatten(value_arr_column))+group by按需向上卷积
 
 SELECT
     CASE
@@ -138,7 +138,7 @@ FROM (
                 FROM ods.xinghuan_employee_snick_all
                 WHERE day = toYYYYMMDD(yesterday())
                 AND platform = 'tb'
-                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             )
             GROUP BY platform, seller_nick, snick
         ) AS stat_info
@@ -195,7 +195,7 @@ FROM (
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = toYYYYMMDD(yesterday())
                         AND platform = 'tb'
-                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     )
                     AND abnormal_cnt!=0
                     GROUP BY platform, seller_nick, snick
@@ -231,7 +231,7 @@ FROM (
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = toYYYYMMDD(yesterday())
                         AND platform = 'tb'
-                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     )
                     AND excellent_cnt!=0
                     GROUP BY platform, seller_nick, snick
@@ -268,7 +268,7 @@ FROM (
                         SELECT distinct snick
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = toYYYYMMDD(yesterday())
-                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                         AND platform = 'tb'
                     )
                     AND c_emotion_count!=0
@@ -293,7 +293,7 @@ FROM (
                         SELECT distinct snick
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = toYYYYMMDD(yesterday())
-                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                         AND platform = 'tb'
                     )
                     AND s_emotion_count!=0
@@ -350,7 +350,7 @@ GLOBAL FULL OUTER JOIN (
                     FROM ods.xinghuan_employee_snick_all
                     WHERE day = toYYYYMMDD(yesterday())
                     AND platform = 'tb'
-                    AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     -- 下拉框-子账号分组
                     AND (
                         '{{ department_ids }}'=''
@@ -401,7 +401,7 @@ GLOBAL FULL OUTER JOIN (
                         FROM ods.xinghuan_employee_snick_all
                         WHERE day = toYYYYMMDD(yesterday())
                         AND platform = 'tb'
-                        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                         -- 下拉框-子账号分组
                         AND (
                             '{{ department_ids }}'=''
@@ -428,7 +428,7 @@ GLOBAL FULL OUTER JOIN (
             FROM ods.xdqc_tag_all
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS human_check_tag_info
         USING(tag_id)
         GROUP BY platform
@@ -457,7 +457,7 @@ GLOBAL FULL OUTER JOIN (
                 FROM ods.xinghuan_employee_snick_all
                 WHERE day = toYYYYMMDD(yesterday())
                 AND platform = 'tb'
-                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 -- 下拉框-子账号分组
                 AND (
                     '{{ department_ids }}'=''
@@ -488,7 +488,7 @@ GLOBAL FULL OUTER JOIN (
                 FROM ods.xinghuan_employee_snick_all
                 WHERE day = toYYYYMMDD(yesterday())
                 AND platform = 'tb'
-                AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 -- 下拉框-子账号分组
                 AND (
                     '{{ department_ids }}'=''
@@ -507,7 +507,7 @@ GLOBAL FULL OUTER JOIN (
             FROM ods.xinghuan_customize_rule_all
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS customize_tag_info
         USING(tag_id)
         GROUP BY platform

@@ -12,5 +12,5 @@ SELECT
     ) AS `标题`
 FROM ods.xinghuan_company_all
 WHERE day = toYYYYMMDD(yesterday())
-AND _id = '{{ company_id=61602afd297bb79b69c06118 }}'
+AND _id = '{{ company_id=5f747ba42c90fd0001254404 }}'
 LIMIT 1

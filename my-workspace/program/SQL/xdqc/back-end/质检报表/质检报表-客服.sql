@@ -5,7 +5,7 @@ from(
             arrayReduce('groupUniqArray', flatten(groupArray(mark_list))) as mark_list
         from ods.qc_statistical_employee_all
         where date>=1640707200 AND date<=1640793599
-        and company_id = '61602afd297bb79b69c06118'
+        and company_id = '5f747ba42c90fd0001254404'
         and employee_id = '6180e523905445c2b9b90730'
         group by employee_id,
             employee_name,
@@ -64,7 +64,7 @@ from(
             arrayReduce('groupUniqArray', flatten(groupArray(mark_list))) as mark_list
         from ods.qc_statistical_employee_all
         where date >= 1635609600 AND date <= 1636214399
-            and company_id = '61602afd297bb79b69c06118'
+            and company_id = '5f747ba42c90fd0001254404'
             and employee_id = '6180e523905445c2b9b90730'
         group by employee_id,
             employee_name,
@@ -80,7 +80,7 @@ from(
             ) / sum(session_count) AS avg_score
         FROM ods.qc_session_count_all
         where date >= 1635609600 AND date <= 1636214399
-            and company_id = '61602afd297bb79b69c06118'
+            and company_id = '5f747ba42c90fd0001254404'
             and employee_id = '6180e523905445c2b9b90730'
         GROUP BY company_id,
             employee_id,

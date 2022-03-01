@@ -23,7 +23,7 @@ FROM (
         AND shop_id GLOBAL IN (
             SELECT tenant_id AS shop_id
             FROM xqc_dim.company_tenant
-            WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             AND platform = '{{ platform=tb }}'
         )
         GROUP BY day
@@ -63,7 +63,7 @@ GLOBAL LEFT JOIN (
         AND shop_id GLOBAL IN (
             SELECT tenant_id AS shop_id
             FROM xqc_dim.company_tenant
-            WHERE company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             AND platform = '{{ platform=tb }}'
         )
         GROUP BY day

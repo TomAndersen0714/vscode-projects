@@ -40,7 +40,7 @@ SELECT
     sum(rule_add_dialog_cnt) AS `自定义加分会话量`,
     sum(rule_score_add) AS `自定义加分分值`,
     concat(toString(round((`自定义加分会话量` * 100 / `总会话量`), 2)),'%') AS `自定义加分会话比例`,
-    -- AI质检项
+    -- AI质检结果
     sum(abnormal_type_1_cnt) AS `非客服结束会话`,
     sum(abnormal_type_2_cnt) AS `漏跟进`,
     sum(abnormal_type_3_cnt) AS `快捷短语重复`,

@@ -14,12 +14,12 @@ AND snick GLOBAL IN (
                 _id AS employee_id, username
             FROM ods.xinghuan_employee_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS employee_info
         USING(employee_id)
         WHERE day = toYYYYMMDD(yesterday())
         AND platform = '{{ platform=tb }}'
-        AND company_id = '{{ company_id=61602afd297bb79b69c06118 }}'
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         -- 下拉框-子账号分组id
         AND (
             '{{ depatment_ids }}'=''

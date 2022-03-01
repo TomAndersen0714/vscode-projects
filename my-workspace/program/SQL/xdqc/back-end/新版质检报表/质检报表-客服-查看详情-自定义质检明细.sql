@@ -1,6 +1,9 @@
 -- 质检报表-客服-查看详情-自定义质检明细
 -- 统计维度: 平台/店铺/子账号/会话, 下钻维度路径: 日期/平台/店铺/子账号分组/子账号/会话
 SELECT
+    dialog_id,
+    dialog_day,
+    dialog_day AS `日期`,
     CASE
         WHEN platform='tb' THEN '淘宝'
         WHEN platform='jd' THEN '京东'
@@ -15,8 +18,6 @@ SELECT
     snick AS `客服子账号`,
     cnick AS `顾客姓名`,
     employee_name AS `客服姓名`,
-    dialog_id,
-    dialog_day,
 
     -- 自定义质检结果
     arrayStringConcat(customize_check_tag_name_arr,'$$') AS `自定义质检标签`,
@@ -56,15 +57,21 @@ FROM (
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 下拉框-子账号分组
-            AND (
-                '{{ department_ids }}'=''
-                OR
-                department_id IN splitByChar(',','{{ department_ids }}')
-            )
         )
         -- 清除没有打标的数据, 减小计算量
         AND rule_stats_id!=[]
+        -- 下拉框-店铺名
+        AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号
+        AND (
+                '{{ snicks=null }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks=null }}')
+        )
         GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id, tag_id
 
         UNION ALL
@@ -92,18 +99,25 @@ FROM (
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 下拉框-子账号分组
-            AND (
-                '{{ department_ids }}'=''
-                OR
-                department_id IN splitByChar(',','{{ department_ids }}')
-            )
         )
         -- 清除没有打标的数据, 减小计算量
         AND rule_add_stats_id!=[]
+        -- 下拉框-店铺名
+        AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号
+        AND (
+                '{{ snicks=null }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks=null }}')
+        )
         GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id, tag_id
     ) AS customize_check_stat
     GLOBAL LEFT JOIN (
+        -- 自定义质检标签维度表
         SELECT
             _id AS tag_id,
             name AS tag_name
