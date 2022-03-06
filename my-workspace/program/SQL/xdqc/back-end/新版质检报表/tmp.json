@@ -1,70 +1,26 @@
-// xqc.customize_setting: 质检标准-自定义质检规则表(新)
 {
-    '_id': ObjectId('5f918b735e0448000130621c'),
-    'create_time': datetime.datetime(2020, 10, 22, 13, 38, 59, 889000),
-    'update_time': datetime.datetime(2020, 10, 22, 13, 38, 59, 889000),
-    'company_id': ObjectId('5f747ba42c90fd0001254404'),
+    '_id': ObjectId('61f74ba7370ee30001a965a4'),
+    'iscardmsg': False,
+    'create_time': datetime.datetime(2022, 1, 31, 2, 38, 31, 435000),
+    'update_time': datetime.datetime(2022, 1, 31, 2, 38, 31, 435000),
+    'dialog_id': ObjectId('61f74ba4c9ba100001fe94d8'),
     'platform': 'tb',
-    'qc_norm_id': ObjectId('5f918b73d8a5eb0001fc679d'),
-    'name': '营销开始语缺失',
-    'cal_op': 1,
-    'score': 10,
-    'check_step': 0,
-    'check_sale_status': [1],
-    'check_rs': True,
-    'seller_reply_content': {
-        'keyword': ['亲，欢迎光临', '近期活动推荐'],
-        'length': {
-            'gte': 0,
-            'lte': 0
-        },
-        'logic': 1
-    },
-    'buyer_content': {
-        'keyword': [],
-        'length': {
-            'gte': 0,
-            'lte': 0
-        },
-        'logic': 0
-    },
-    'buyer_type': 'content',
-    'status': 0,
-    'qid': 0
-}
-
-// xdqc.customize_rule: 质检标准-自定义质检规则表(旧)
-{
-    '_id': ObjectId('5f180028ef91020001c02bfb'),
-    'create_time': datetime.datetime(2020, 7, 22, 9, 0, 24, 106000),
-    'update_time': datetime.datetime(2020, 9, 30, 9, 22, 3, 364000),
-    'name': '营销开始语缺失',
-    'platform': 'jd',
-    'channel': 'jd',
-    'seller_nick': '智晓多谋生鲜专营店',
-    'group': '售前客服组',
-    'cal_op': 1,
-    'score': 16,
-    'check_step': 0,
-    'check_sale_status': [1],
-    'check_rs': True,
-    'seller_reply_content': {
-        'logic': 1,
-        'keyword': ['亲，欢迎光临', '近期活动推荐'],
-        'length': {
-            'gte': 0.0,
-            'lte': 0.0
-        }
-    },
-    'buyer_content': {
-        'logic': 0,
-        'keyword': [],
-        'length': {
-            'gte': 0.0,
-            'lte': 0.0
-        }
-    },
-    'buyer_type': '',
-    'status': 1,
-    'qid': 0
+    'channel': 'tb',
+    'cnick': 'yjmsnh',
+    'snick': '希尔顿灯具旗舰店:小福',
+    'seller_nick': '希尔顿灯具旗舰店',
+    'source': 1,
+    'content': '亲亲，您好！欢迎来到全网铜灯销量第1品牌【希尔顿灯饰】，我是您的资深软装顾问- 小福！\u200b\u200b',
+    'time': datetime.datetime(2022, 1, 31, 2, 38, 31, 402000),
+    'algo_emotion': 0,
+    'abnormal_model': 0,
+    'excellent_model': 0,
+    'abnormal_scroe': [],
+    'excellent_score': [],
+    'suspected_abnormals': [],
+    'auto_send': True,
+    'is_transfer': False,
+    'ms_msg_time': 0,
+    'tags': [],
+    'mark': ''
 }

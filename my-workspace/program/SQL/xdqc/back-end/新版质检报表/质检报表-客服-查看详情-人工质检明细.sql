@@ -16,7 +16,7 @@ SELECT
     seller_nick AS `店铺`,
     department_name AS `子账号分组`,
     snick AS `客服子账号`,
-    cnick AS `顾客姓名`,
+    cnick AS `顾客名称`,
     employee_name AS `客服姓名`,
 
     -- 人工质检结果

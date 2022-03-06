@@ -1,7 +1,7 @@
 -- 质检报表-平台
 -- 统计维度: 平台, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 -- PS: 人工质检和自定义质检, 也可以从子账号维度聚合使用groupArray, 后续可以继续
--- 使用sumMap(key_arr_column), flatten(value_arr_column))+group by按需向上卷积
+-- 使用sumMap(key_arr_column,value_arr_column)+group by按需向上卷积
 
 SELECT
     CASE

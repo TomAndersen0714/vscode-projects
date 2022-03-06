@@ -1,4 +1,4 @@
--- 质检报表-客服-查看详情-自定义质检明细
+-- 质检报表-客服-查看详情-人工质检明细
 -- 统计维度: 平台/店铺/子账号/会话, 下钻维度路径: 日期/平台/店铺/子账号分组/子账号/会话
 SELECT
     dialog_id,
@@ -19,11 +19,11 @@ SELECT
     cnick AS `顾客名称`,
     employee_name AS `客服姓名`,
 
-    -- 自定义质检结果
-    arrayStringConcat(customize_check_tag_name_arr,'$$') AS `自定义质检标签`,
-    arrayStringConcat(customize_check_tag_cnt_arr,'$$') AS `自定义质检触发次数`
+    -- 人工质检结果
+    arrayStringConcat(human_check_tag_name_arr,'$$') AS `人工质检标签`,
+    arrayStringConcat(human_check_tag_cnt_arr,'$$') AS `人工质检触发次数`
 FROM (
-    -- 自定义质检结果-子账号维度
+    -- 人工质检结果-会话维度质检项触发次数统计
     SELECT
         dialog_day,
         platform,
@@ -31,104 +31,142 @@ FROM (
         snick,
         cnick,
         dialog_id,
-        arrayMap(x->toString(x),groupArray(tag_name)) AS customize_check_tag_name_arr,
-        arrayMap(x->toString(x),groupArray(tag_cnt)) AS customize_check_tag_cnt_arr
+        arrayMap(x->toString(x), groupArray(tag_name)) AS human_check_tag_name_arr,
+        arrayMap(x->toString(x), groupArray(tag_cnt)) AS human_check_tag_cnt_arr
     FROM (
-        -- 自定义质检-会话维度扣分质检项触发次数统计
+        -- 人工质检-会话维度扣分标签触发次数统计
         SELECT
-            toYYYYMMDD(begin_time) AS dialog_day,
+            dialog_day,
             platform,
             seller_nick,
             snick,
             cnick,
-            _id AS dialog_id,
-            rule_stats_tag_id AS tag_id,
-            sum(rule_stats_tag_count) AS tag_cnt
-        FROM dwd.xdqc_dialog_all
-        ARRAY JOIN
-            rule_stats_id AS rule_stats_tag_id,
-            rule_stats_count AS rule_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        )
-        -- 清除没有打标的数据, 减小计算量
-        AND rule_stats_id!=[]
-        -- 下拉框-店铺名
-        AND (
-                '{{ seller_nicks }}'=''
-                OR
-                seller_nick IN splitByChar(',','{{ seller_nicks }}')
-        )
-        -- 下拉框-子账号
-        AND (
-                '{{ snicks=null }}'=''
-                OR
+            dialog_id,
+            tag_id,
+            sum(tag_score_stat_count + tag_score_stat_md) AS tag_cnt
+        FROM (
+            -- 针对字段缺失的历史数据进行转换, 使其数据为0, 保证语法正确
+            SELECT
+                toYYYYMMDD(begin_time) AS dialog_day,
+                platform,
+                seller_nick,
+                snick,
+                cnick,
+                _id AS dialog_id,
+                tag_score_stats_id AS tag_score_stats_id,
+                -- 缺失历史数据直接为0, 对齐数组长度
+                if(
+                    length(tag_score_stats_count)!=length(tag_score_stats_id),
+                    arrayResize([0],length(tag_score_stats_id),0),
+                    tag_score_stats_count
+                ) AS tag_score_stats_count,
+                if(
+                    length(tag_score_stats_md)!=length(tag_score_stats_id),
+                    arrayResize([0],length(tag_score_stats_id),0),
+                    tag_score_stats_md
+                ) AS tag_score_stats_md
+            FROM dwd.xdqc_dialog_all
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            AND snick GLOBAL IN (
+                -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                SELECT distinct snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND platform = 'tb'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            )
+            -- 清除没有打标的数据, 减小计算量
+            AND tag_score_stats_id!=[]
+            -- 如果有usernames, 则通过最后的usernames语句过滤, 否则则使用snicks过滤
+            AND (
+                '{{ usernames }}'!=' '
+                OR 
                 snick IN splitByChar(',','{{ snicks=null }}')
-        )
+            )
+        ) AS transformed_dialog_info
+        ARRAY JOIN
+            tag_score_stats_id AS tag_id,
+            tag_score_stats_count AS tag_score_stat_count,
+            tag_score_stats_md AS tag_score_stat_md
+        -- 清除空数据
+        WHERE tag_score_stats_id!=[]
         GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id, tag_id
-
+        
         UNION ALL
-
-        -- 自定义质检-会话维度加分质检项触发次数统计
+        
+        -- 人工质检-会话维度加分标签触发次数统计
         SELECT
-            toYYYYMMDD(begin_time) AS dialog_day,
+            dialog_day,
             platform,
             seller_nick,
             snick,
             cnick,
-            _id AS dialog_id,
-            rule_add_stats_tag_id AS tag_id,
-            sum(rule_add_stats_tag_count) AS tag_cnt
-        FROM dwd.xdqc_dialog_all
-        ARRAY JOIN
-            rule_add_stats_id AS rule_add_stats_tag_id,
-            rule_add_stats_count AS rule_add_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        )
-        -- 清除没有打标的数据, 减小计算量
-        AND rule_add_stats_id!=[]
-        -- 下拉框-店铺名
-        AND (
-                '{{ seller_nicks }}'=''
-                OR
-                seller_nick IN splitByChar(',','{{ seller_nicks }}')
-        )
-        -- 下拉框-子账号
-        AND (
-                '{{ snicks=null }}'=''
-                OR
+            dialog_id,
+            tag_id,
+            sum(tag_score_add_stat_count + tag_score_add_stat_md) AS tag_cnt
+        FROM (
+            -- 针对字段缺失的历史数据进行转换, 使其数据为0, 保证语法正确
+            SELECT
+                toYYYYMMDD(begin_time) AS dialog_day,
+                platform,
+                seller_nick,
+                snick,
+                cnick,
+                _id AS dialog_id,
+                tag_score_add_stats_id AS tag_score_add_stats_id,
+                -- 缺失历史数据直接为0, 对齐数组长度
+                if(
+                    length(tag_score_add_stats_count)!=length(tag_score_add_stats_id),
+                    arrayResize([0],length(tag_score_add_stats_id),0),
+                    tag_score_add_stats_count
+                ) AS tag_score_add_stats_count,
+                if(
+                    length(tag_score_add_stats_md)!=length(tag_score_add_stats_id),
+                    arrayResize([0],length(tag_score_add_stats_id),0),
+                    tag_score_add_stats_md
+                ) AS tag_score_add_stats_md
+            FROM dwd.xdqc_dialog_all
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            AND snick GLOBAL IN (
+                -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                SELECT distinct snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND platform = 'tb'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            )
+            -- 清除没有打标的数据, 减小计算量
+            AND tag_score_add_stats_id!=[]
+            -- 如果有usernames, 则通过最后的usernames语句过滤, 否则则使用snicks过滤
+            AND (
+                '{{ usernames }}'!=' '
+                OR 
                 snick IN splitByChar(',','{{ snicks=null }}')
-        )
+            )
+        ) AS transformed_dialog_info
+        ARRAY JOIN
+            tag_score_add_stats_id AS tag_id,
+            tag_score_add_stats_count AS tag_score_add_stat_count,
+            tag_score_add_stats_md AS tag_score_add_stat_md
+        -- 清除空数据
+        WHERE tag_score_add_stats_id!=[]
         GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id, tag_id
-    ) AS customize_check_stat
+    ) AS human_check_tag_info
     GLOBAL LEFT JOIN (
-        -- 自定义质检标签维度表
+        -- 人工质检标签维度表
         SELECT
             _id AS tag_id,
             name AS tag_name
-        FROM ods.xinghuan_customize_rule_all
+        FROM ods.xdqc_tag_all
         WHERE day = toYYYYMMDD(yesterday())
         AND platform = 'tb'
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS customize_tag_info
+    ) AS human_tag_info
     USING(tag_id)
     GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id
-) AS customize_check_info
+) AS stat_ai_check_info
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT

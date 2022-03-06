@@ -1,7 +1,5 @@
 -- 质检报表-平台
 -- 统计维度: 平台, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
--- PS: 人工质检和自定义质检, 也可以从子账号维度聚合使用groupArray, 后续可以继续
--- 使用sumMap(key_arr_column), flatten(value_arr_column))+group by按需向上卷积
 -- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果
 SELECT
     CASE
@@ -123,8 +121,8 @@ FROM (
                     sum(score_add) AS score_add,
                     sum(mark_score) AS mark_score,
                     sum(mark_score_add) AS mark_score_add,
-                    sum(arraySum(arrayMap((x,y)->x*y,rule_stats_score,rule_stats_count))) AS rule_score,
-                    sum(arraySum(arrayMap((x,y)->x*y,rule_add_stats_score,rule_add_stats_count))) AS rule_score_add,
+                    sum(arraySum(rule_stats_score)) AS rule_score,
+                    sum(arraySum(rule_add_stats_score)) AS rule_score_add,
                     score - mark_score - rule_score AS ai_score,
                     score_add - mark_score_add - rule_score_add AS ai_score_add,
                     sum(arraySum(abnormals_count)!=0) AS abnormal_dialog_cnt,
