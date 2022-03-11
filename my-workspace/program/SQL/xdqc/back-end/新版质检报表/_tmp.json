@@ -1,10 +1,4 @@
 {
-    "content": "The health test result for IMPALAD_SCM_HEALTH has become bad: This role's process is starting. This role is supposed to be started.",
-    "testName": "IMPALAD_SCM_HEALTH",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_BAD",
-    "severity": "CRITICAL",
-    "suppressed": false
-}, {
     "content": "The health test result for IMPALAD_CONNECTIVITY has become good: This Impala Daemon is connected to its StateStore.",
     "testName": "IMPALAD_CONNECTIVITY",
     "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
@@ -29,13 +23,19 @@
     "severity": "INFORMATIONAL",
     "suppressed": false
 }, {
+    "content": "The health test result for IMPALAD_SCM_HEALTH has become good: This role's status is as expected. The role is started.",
+    "testName": "IMPALAD_SCM_HEALTH",
+    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
+    "severity": "INFORMATIONAL",
+    "suppressed": false
+}, {
     "content": "The health test result for IMPALAD_UNEXPECTED_EXITS has become good: This role encountered 0 unexpected exit(s) in the previous 5 minute(s).",
     "testName": "IMPALAD_UNEXPECTED_EXITS",
     "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
     "severity": "INFORMATIONAL",
     "suppressed": false
 }, {
-    "content": "The health test result for IMPALAD_FILE_DESCRIPTOR has become good: Open file descriptors: 1,085. File descriptor limit: 32,768. Percentage in use: 3.31%.",
+    "content": "The health test result for IMPALAD_FILE_DESCRIPTOR has become good: Open file descriptors: 1,094. File descriptor limit: 32,768. Percentage in use: 3.34%.",
     "testName": "IMPALAD_FILE_DESCRIPTOR",
     "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
     "severity": "INFORMATIONAL",
@@ -65,13 +65,13 @@
     "severity": "INFORMATIONAL",
     "suppressed": false
 }, {
-    "content": "The health test result for IMPALAD_WEB_METRIC_COLLECTION has become good: The web server of this role is responding with metrics. The most recent collection took 6 millisecond(s).",
+    "content": "The health test result for IMPALAD_WEB_METRIC_COLLECTION has become good: The web server of this role is responding with metrics. The most recent collection took 9 millisecond(s).",
     "testName": "IMPALAD_WEB_METRIC_COLLECTION",
     "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
     "severity": "INFORMATIONAL",
     "suppressed": false
 }, {
-    "content": "The health test result for IMPALAD_PAUSE_DURATION has become good: Average time spent paused was 9 millisecond(s) (0.02%) per minute over the previous 5 minute(s).",
+    "content": "The health test result for IMPALAD_PAUSE_DURATION has become good: Average time spent paused was 8 millisecond(s) (0.01%) per minute over the previous 5 minute(s).",
     "testName": "IMPALAD_PAUSE_DURATION",
     "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
     "severity": "INFORMATIONAL",
