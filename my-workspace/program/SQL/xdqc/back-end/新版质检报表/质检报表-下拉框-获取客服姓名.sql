@@ -1,4 +1,4 @@
--- 质检报表-下拉框-获取客户姓名
+-- 质检报表-下拉框-获取客服姓名
 SELECT DISTINCT username
 FROM ods.xinghuan_employee_all
 WHERE day = toYYYYMMDD(yesterday())

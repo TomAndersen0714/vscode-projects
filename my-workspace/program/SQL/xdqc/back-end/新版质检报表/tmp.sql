@@ -1,87 +1,164 @@
-WITH t1 AS (
-    SELECT split_part(snick, ':', 1) AS seller_nick,
-        cnick,
-        DAY,
-        create_time,
-        uuid() AS sample_id
-    FROM dwd.mini_xdrs_log
-    WHERE act = 'recv_msg'
-        AND platform = "tb"
-        AND DAY >= 20220228
-        AND DAY <= 20220306
-        AND act not in ('statistics_send_msg', '')
-        AND split_part(snick, ':', 1) IN ("cntaobao准星网游专营店")
-        AND cast(question_b_qid AS INTEGER) >= 0
-),
-t2 AS (
-    SELECT *,
-        row_number() OVER (
-            ORDER BY sample_id
-        ) AS rank_id
-    FROM t1
-),
-t3 AS (
-    SELECT *
-    FROM t2
-    WHERE rank_id % 19 = 4
-),
-x1 AS (
-    SELECT split_part(snick, ':', 1) AS seller_nick,
-        cnick,
-        category,
-        act,
-        msg,
-        remind_answer,
-        cast(msg_time AS String) AS msg_time,
-        question_b_qid,
-        question_b_proba,
-        MODE,
-        DAY,
-        create_time,
-        is_robot_answer,
-        plat_goods_id,
-        current_sale_stage
-    FROM dwd.mini_xdrs_log
-    WHERE platform = "tb"
-        AND DAY >= 20220228
-        AND DAY <= 20220306
-        AND act not in ('statistics_send_msg', '')
-        AND split_part(snick, ':', 1) IN ("cntaobao准星网游专营店")
-),
-x2 AS (
-    SELECT x1.*,
-        t3.sample_id,
-        if(
-            x1.create_time = t3.create_time
-            AND x1.act = 'recv_msg',
-            1,
-            0
-        ) AS flag
-    FROM x1
-        RIGHT JOIN [shuffle] t3 ON x1.seller_nick = t3.seller_nick
-        AND x1.cnick = t3.cnick
-)
-INSERT overwrite xd_tmp.algorithm_sample_data_all PARTITION (mission_id = 'bb8bfa1b90fd955a3c0e915d3f2be2ef')
-SELECT x2.seller_nick,
-    x2.cnick,
-    x2.category,
-    x2.act,
-    x2.msg,
-    x2.remind_answer,
-    x2.msg_time,
-    x2.question_b_qid,
-    x2.question_b_proba,
-    x2.MODE,
-    x2.DAY,
-    x2.create_time,
-    x2.sample_id,
-    x2.flag,
-    xd_data.question_b.question,
-    x2.is_robot_answer,
-    x2.plat_goods_id,
-    x2.current_sale_stage
-FROM x2
-    LEFT JOIN [shuffle] xd_data.question_b ON cast(split_part(x2.question_b_qid, '.', 1) AS integer) = cast(
-        split_part(xd_data.question_b.qid, '.', 1) AS integer
-    );
--- trace:b27fca6b88be64f154b382a57f3114a2
+        INSERT INTO ods.qc_session_count_all
+        SELECT toDate('{ds}') AS `date` ,
+            a.platform, 
+            a.company_id, 
+            a.company_name, 
+            a.department_id, 
+            a.department_name, 
+            a.employee_id, 
+            a.employee_name,
+            a.`group`,
+            a.shop_name,
+            a.snick,
+            a.session_count,
+            a.add_score_count,
+            a.subtract_score_count,
+            a.manual_qc_count,
+            a.ai_abnormal_count,
+            a.manual_abnormal_count,
+            a.ai_add_score,
+            a.manual_add_score,
+            a.ai_subtract_score,
+            a.manual_subtract_score,
+            a.ai_add_score_count,
+            a.manual_add_score_count,
+            a.ai_subtract_score_count,
+            a.manual_subtract_score_count,
+            a.rule_score_count,
+            a.rule_score,
+            a.rule_add_score_count,
+            a.rule_add_score,
+            length(b.dialog_array),
+            b.dialog_array
+        FROM (
+            SELECT 
+                session_info.`date`,
+                session_info.platform AS platform,
+                dim_info.company_id AS  company_id,
+                '' AS company_name,
+                dim_info.department_id AS department_id,
+                dim_info.department_name AS department_name,
+                dim_info.employee_id AS employee_id,
+                dim_info.employee_name AS employee_name,
+                session_info.group AS group,
+                session_info.shop_name AS shop_name,
+                session_info.snick AS snick,
+                session_info.session_count AS session_count,
+                session_info.add_score_count AS add_score_count,
+                session_info.subtract_score_count AS subtract_score_count,
+                session_info.manual_qc_count AS manual_qc_count,
+                session_info.ai_abnormal_count AS ai_abnormal_count,
+                session_info.manual_abnormal_count AS manual_abnormal_count,
+                session_info.ai_add_score AS ai_add_score,
+                session_info.manual_add_score AS manual_add_score,
+                session_info.ai_subtract_score AS ai_subtract_score,
+                session_info.manual_subtract_score AS manual_subtract_score,
+                session_info.ai_add_score_count AS ai_add_score_count,
+                session_info.manual_add_score_count AS manual_add_score_count,
+                session_info.ai_subtract_score_count AS ai_subtract_score_count,
+                session_info.manual_subtract_score_count AS manual_subtract_score_count,
+                session_info.rule_score_count AS rule_score_count,
+                session_info.rule_score AS rule_score,
+                session_info.rule_add_score_count AS rule_add_score_count,
+                session_info.rule_add_score AS rule_add_score
+            FROM (
+                SELECT `date`,
+                    platform,
+                    `group`,
+                    seller_nick AS shop_name ,
+                    snick,
+                    count(1) AS session_count,
+                    sum(if(score_add > 0 or mark_score_add > 0 or rule_add_score_info > 0,1,0)) AS add_score_count,
+                    sum(if(score > 0 or mark_score > 0 or rule_score_info > 0,1,0)) AS subtract_score_count,
+                    sum(if(length(mark_ids) != 0,1,0)) AS  manual_qc_count,
+                    sum(if(arraySum(abnormals_count)>0,1,0)) AS ai_abnormal_count,
+                    sum(if(length(tag_score_stats_id) > 0,1,0)) AS manual_abnormal_count,
+                    sum(score_add) AS ai_add_score,
+                    sum(mark_score_add) AS manual_add_score,
+                    sum(score) AS ai_subtract_score , 
+                    sum(mark_score) AS manual_subtract_score,
+                    sum(if(score_add > 0,1,0)) AS ai_add_score_count,
+                    sum(if(mark_score_add > 0,1,0)) AS manual_add_score_count,
+                    sum(if(score > 0,1,0)) AS ai_subtract_score_count , 
+                    sum(if(mark_score > 0,1,0)) AS manual_subtract_score_count,
+                    sum (if(rule_score_info>0,1,0 )) AS rule_score_count,
+                    sum (rule_score_info) AS rule_score,
+                    sum (if(rule_add_score_info>0,1,0 )) AS rule_add_score_count,
+                    sum (rule_add_score_info) AS rule_add_score
+                FROM (
+                    SELECT `date`,
+                        platform,
+                        `group`,
+                        seller_nick,
+                        seller_nick AS shop_name ,
+                        snick,
+                        _id,
+                        score,
+                        score_add,
+                        mark_score,
+                        mark_score_add,
+                        mark_ids,
+                        abnormals_count,
+                        tag_score_stats_id,
+                        negate(arraySum(arrayFilter(x->x<0, xrule_stats_score))) AS xrule_score_info,
+                        arraySum(arrayFilter(x->x>0, xrule_stats_score)) AS xrule_add_score_info,
+                        arraySum(rule_stats_score) + xrule_score_info AS rule_score_info,
+                        arraySum(rule_add_stats_score) + xrule_add_score_info AS rule_add_score_info
+                    FROM dwd.xdqc_dialog_all
+                    WHERE toYYYYMMDD(begin_time) = {ds_nodash}
+                ) AS rule_info 
+                GROUP BY date, platform, seller_nick, group, snick
+            ) AS session_info
+            GLOBAL LEFT JOIN (
+                SELECT a.company_id AS company_id,
+                    b.platform,
+                    a._id AS department_id,
+                    a.name AS department_name,
+                    b.employee_id AS employee_id,
+                    b.employee_name AS employee_name,
+                    b.snick AS snick
+                FROM (
+                    SELECT * 
+                    FROM ods.xinghuan_department_all
+                    WHERE day = {ds_nodash}
+                ) AS a 
+                GLOBAL RIGHT JOIN (
+                    SELECT a._id AS employee_id,
+                        b.platform,
+                        b.department_id AS department_id,
+                        a.username AS employee_name,
+                        b.snick AS snick
+                    FROM (
+                        SELECT * 
+                        FROM ods.xinghuan_employee_all
+                        WHERE  day = {ds_nodash} 
+                    ) AS a 
+                    GLOBAL RIGHT JOIN ( 
+                        SELECT * 
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = {ds_nodash} 
+                        AND platform ='tb'
+                    ) AS b 
+                    ON a._id = b.employee_id
+                ) AS b 
+                ON a._id = b.department_id
+                ) AS dim_info
+            ON session_info.platform = dim_info.platform
+            AND session_info.snick = dim_info.snick 
+        ) AS a 
+        GLOBAL LEFT JOIN (
+            SELECT
+                day,
+                platform,
+                shop_name,
+                snick,
+                groupArray(dialog_id) AS dialog_array
+            FROM ods.xinghuan_qc_abnormal_all 
+            WHERE row_number < 4 
+            AND day = {ds_nodash}
+            GROUP BY day, platform, shop_name, snick
+        ) AS b 
+        ON a.date = b.day
+        AND a.platform = b.platform
+        AND a.shop_name =b.shop_name
+        AND a.snick = b.snick

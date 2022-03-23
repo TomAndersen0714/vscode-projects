@@ -14,6 +14,7 @@ SELECT
     department_name AS `子账号分组`,
     snick AS `客服子账号`,
     employee_name AS `客服姓名`,
+    superior_name AS `上级姓名`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
     -- AI质检

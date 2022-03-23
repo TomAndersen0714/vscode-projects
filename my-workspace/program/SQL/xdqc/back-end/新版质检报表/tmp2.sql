@@ -1,33 +1,17 @@
--- 
-select *
-from table t1
-where 1 > (
-    select count(*)
-    from table t2
-    where t1.departmeny_id = t2.department_id
-    and t1.salary > t2.salary
+CREATE TABLE tmp.hxcpoc_local ON CLUSTER cluster_3s_2r
+(
+    `snick` String,
+    `cnick` String,
+    `order_id` String,
+    `goods_id` String
 )
+ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+)
+ORDER BY (`snick`,`cnick`)
+SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
--- 
-select employee_id
-from table t1
-left join (
-    select department_id,
-        max(salary) as maxSal
-    from table
-    group by department_id
-) t2 
-on t1.department_id = t2.department_id
-where t1.salary = t2.maxSal;
-
--- rank
-select employee_id
-from (
-    select employee_id,
-        rank() over (
-            partition by department_id
-            order by salary desc
-        ) as r
-    from table
-) t
-where r = 1
+CREATE TABLE tmp.hxcpoc_all ON CLUSTER cluster_3s_2r
+AS tmp.hxcpoc_local
+ENGINE = Distributed('cluster_3s_2r', 'tmp', 'hxcpoc_local', rand())

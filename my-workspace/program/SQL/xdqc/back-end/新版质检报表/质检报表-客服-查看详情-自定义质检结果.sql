@@ -14,6 +14,7 @@ SELECT
     department_name AS `子账号分组`,
     snick AS `客服子账号`,
     employee_name AS `客服姓名`,
+    superior_name AS `上级姓名`,
     
     -- 自定义质检结果
     sumMap(customize_check_tag_name_arr, customize_check_tag_cnt_arr) AS customize_check_tag_cnt_kvs,
@@ -29,7 +30,7 @@ FROM (
         groupArray(tag_name) AS customize_check_tag_name_arr,
         groupArray(tag_cnt) AS customize_check_tag_cnt_arr
     FROM (
-        -- 自定义质检-平台维度扣分质检项触发次数统计
+        -- 自定义质检-子账号维度扣分质检项触发次数统计
         SELECT
             platform,
             seller_nick,
@@ -65,8 +66,10 @@ FROM (
                 snick IN splitByChar(',','{{ snicks=null }}')
         )
         GROUP BY platform, seller_nick, snick, rule_stats_tag_id
+
         UNION ALL
-        -- 自定义质检-平台维度加分质检项触发次数统计
+
+        -- 自定义质检-子账号维度加分质检项触发次数统计
         SELECT
             platform,
             seller_nick,
@@ -119,9 +122,9 @@ FROM (
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT
-        snick, employee_name, department_id, department_name
+        snick, employee_name, superior_name, department_id, department_name
     FROM (
-        SELECT snick, employee_name, department_id
+        SELECT snick, employee_name, superior_name, department_id
         FROM (
             -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
             SELECT snick, department_id, employee_id
@@ -132,7 +135,7 @@ GLOBAL LEFT JOIN (
         ) AS snick_info
         GLOBAL LEFT JOIN (
             SELECT
-                _id AS employee_id, username AS employee_name
+                _id AS employee_id, username AS employee_name, superior_name
             FROM ods.xinghuan_employee_all
             WHERE day = toYYYYMMDD(yesterday())
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
@@ -230,6 +233,6 @@ WHERE (
     OR
     employee_name IN splitByChar(',','{{ usernames }}')
 )
-GROUP BY platform, seller_nick, department_id, department_name, snick, employee_name
+GROUP BY platform, seller_nick, department_id, department_name, snick, employee_name, superior_name
 HAVING department_id!='' -- 清除匹配不上历史分组的子账号
 ORDER BY platform, seller_nick, department_name, snick, employee_name

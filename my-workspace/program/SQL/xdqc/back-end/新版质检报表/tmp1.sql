@@ -1,135 +1,188 @@
-INSERT INTO dwd.xdqc_dialog_all
-VALUES(
-    '62185102125f8600010b54b0', 
-    'tb', 
-    'tb', 
-    '企业默认分组', 
-    '20220225', 
-    '木月瑞希尔',
-    '邓锐zero', 
-    '木月瑞希尔:chq',
-    parseDateTimeBestEffort('2022-02-25T03:46:10.131Z'),
-    parseDateTimeBestEffort('2022-02-25T03:46:11.936Z'),
-    0, 
-    0, 
-    '', 
-    [8], 
-    [0], 
-    [1,2,3,4,5,6,7,8,9,10], 
-    [0,0,0,0,0,0,0,0,0,0],
-    [],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13,14], 
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [], 
-    [], 
-    [],
-    [],
-    '',
-    0, 0, 0,
-    ['621774ca56abebefaba8f582'], 
-    '621774ca56abebefaba8f582',
-    0,
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    22,
-    0,
-    5,
-    0,
-    0,
-    0,
-    0,
-    '',
-    0,
-    '',
-    [],
-    '62185103545ea700013d78d0',
-    1,
-    [],
-    [],
-    [],
-    [],
-    0,
-    '0',
-    parseDateTimeBestEffort('0001-01-01T00:00:00Z'),
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    [],
-    parseDateTimeBestEffort('2022-02-25T09:54:53.350Z'),
-    1,
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-)
-
-INSERT INTO ods.xinghuan_employee_snick_all
-VALUES(
-    '613587c7f27b67657030fd08',
-    parseDateTimeBestEffort('2021-09-01T11:41:10.880Z'),
-    parseDateTimeBestEffort('2021-09-01T11:41:10.880Z'),
-    '',
-    '612c53cb7250e1e5140faded',
-    '614d8dce8ecd3f93ac3a63f7',
-    '木月瑞希尔:chq',
-    'tb',
-    '5f8ff0c0a3967d00188dca48',
-    '61df8d786251b00459564510',
-    toYYYYMMDD(yesterday())
-)
-
--- xqc.snick
-{
-    "_id" : ObjectId(""),
-    "create_time" : ISODate("2021-09-01T11:41:10.880Z"),
-    "update_time" : ISODate("2021-09-01T11:41:10.880Z"),
-    "company_id" : ObjectId("612c53cb7250e1e5140faded"),
-    "mp_shop_id" : ObjectId("5f8ff0c0a3967d00188dca48"),
-    "platform" : "tb",
-    "seller_nick" : "木月瑞希尔",
-    "department_id" : ObjectId("61df8d786251b00459564510"),
-    "employee_id" : ObjectId("614d8dce8ecd3f93ac3a63f7"),
-    "snick" : "木月瑞希尔:chq",
-    "status" : 0,
-    "new" : false
-}
-
-
-
-
-
-INSERT INTO ods.xinghuan_department_all
-VALUES(
-    '61df8d786251b00459564510',
-    parseDateTimeBestEffort('2022-01-13T02:24:56.932Z'),
-    parseDateTimeBestEffort('2022-01-13T02:24:56.932Z'),
-    '612c53cb7250e1e5140faded',
-    '测试售后组',
-    '',
-    '',
-    'True',
-    toYYYYMMDD(yesterday())
-)
+        INSERT INTO ods.qc_session_count_all
+        SELECT toDate('{ds}') AS `date` ,
+            a.platform, 
+            a.company_id, 
+            a.company_name, 
+            a.department_id, 
+            a.department_name, 
+            a.employee_id, 
+            a.employee_name,
+            a.`group`,
+            a.shop_name,
+            a.snick,
+            a.session_count,
+            a.add_score_count,
+            a.subtract_score_count,
+            a.manual_qc_count,
+            a.ai_abnormal_count,
+            a.manual_abnormal_count,
+            a.ai_add_score,
+            a.manual_add_score,
+            a.ai_subtract_score,
+            a.manual_subtract_score,
+            a.ai_add_score_count,
+            a.manual_add_score_count,
+            a.ai_subtract_score_count,
+            a.manual_subtract_score_count,
+            a.rule_score_count,
+            a.rule_score,
+            a.rule_add_score_count,
+            a.rule_add_score,
+            length(b.dialog_array),
+            b.dialog_array
+        FROM (
+            SELECT 
+                session_info.`date`,
+                session_info.platform AS platform,
+                dim_info.company_id AS  company_id,
+                '' AS company_name,
+                dim_info.department_id AS department_id,
+                dim_info.department_name AS department_name,
+                dim_info.employee_id AS employee_id,
+                dim_info.employee_name AS employee_name,
+                session_info.group AS group,
+                session_info.shop_name AS shop_name,
+                session_info.snick AS snick,
+                session_info.session_count AS session_count,
+                session_info.add_score_count AS add_score_count,
+                session_info.subtract_score_count AS subtract_score_count,
+                session_info.manual_qc_count AS manual_qc_count,
+                session_info.ai_abnormal_count AS ai_abnormal_count,
+                session_info.manual_abnormal_count AS manual_abnormal_count,
+                session_info.ai_add_score AS ai_add_score,
+                session_info.manual_add_score AS manual_add_score,
+                session_info.ai_subtract_score AS ai_subtract_score,
+                session_info.manual_subtract_score AS manual_subtract_score,
+                session_info.ai_add_score_count AS ai_add_score_count,
+                session_info.manual_add_score_count AS manual_add_score_count,
+                session_info.ai_subtract_score_count AS ai_subtract_score_count,
+                session_info.manual_subtract_score_count AS manual_subtract_score_count,
+                session_info.rule_score_count AS rule_score_count,
+                session_info.rule_score AS rule_score,
+                session_info.rule_add_score_count AS rule_add_score_count,
+                session_info.rule_add_score AS rule_add_score
+            FROM (
+                SELECT `date`,
+                    platform,
+                    `group`,
+                    seller_nick AS shop_name ,
+                    snick,
+                    count(1) AS session_count,
+                    sum(if(score_add > 0 or mark_score_add > 0 or rule_add_score_info > 0,1,0)) AS add_score_count,
+                    sum(if(score > 0 or mark_score > 0 or rule_score_info > 0,1,0)) AS subtract_score_count,
+                    sum(if(length(mark_ids) != 0,1,0)) AS  manual_qc_count,
+                    sum(if(arraySum(abnormals_count)>0,1,0)) AS ai_abnormal_count,
+                    sum(if(length(tag_score_stats_id) > 0,1,0)) AS manual_abnormal_count,
+                    sum(score_add) AS ai_add_score,
+                    sum(mark_score_add) AS manual_add_score,
+                    sum(score) AS ai_subtract_score , 
+                    sum(mark_score) AS manual_subtract_score,
+                    sum(if(score_add > 0,1,0)) AS ai_add_score_count,
+                    sum(if(mark_score_add > 0,1,0)) AS manual_add_score_count,
+                    sum(if(score > 0,1,0)) AS ai_subtract_score_count , 
+                    sum(if(mark_score > 0,1,0)) AS manual_subtract_score_count,
+                    sum (if(rule_score_info>0,1,0 )) AS rule_score_count,
+                    sum (rule_score_info) AS rule_score,
+                    sum (if(rule_add_score_info>0,1,0 )) AS rule_add_score_count,
+                    sum (rule_add_score_info) AS rule_add_score
+                FROM (
+                    SELECT dialog_info.*, 
+                        rule_score_info
+                    FROM (
+                        SELECT `date`,
+                            platform,
+                            `group`,
+                            seller_nick,
+                            seller_nick AS shop_name ,
+                            snick,
+                            _id,
+                            score,
+                            score_add,
+                            mark_score,
+                            mark_score_add,
+                            mark_ids,
+                            abnormals_count,
+                            tag_score_stats_id
+                        FROM dwd.xdqc_dialog_all
+                        WHERE toYYYYMMDD(begin_time) = {ds_nodash} 
+                    ) AS dialog_info
+                    LEFT JOIN (
+                        SELECT
+                            _id,
+                            sum(score) AS rule_score_info
+                        FROM dwd.xdqc_dialog_all
+                        ARRAY JOIN 
+                            rule_stats_score AS score,
+                            rule_stats_count AS count
+                        WHERE toYYYYMMDD(begin_time) = {ds_nodash}
+                        GROUP BY _id
+                    ) AS rule 
+                    USING(_id) 
+                ) AS rule_info 
+                LEFT JOIN (
+                    SELECT
+                        _id,
+                        sum(score) AS rule_add_score_info
+                    FROM dwd.xdqc_dialog_all
+                    ARRAY JOIN
+                        rule_add_stats_score AS score,
+                        rule_add_stats_count AS count
+                    WHERE toYYYYMMDD(begin_time) = {ds_nodash}
+                    GROUP BY _id
+                ) rule_add  
+                USING(_id)
+                GROUP BY date, platform, seller_nick, group, snick
+            ) AS session_info
+            GLOBAL LEFT JOIN (
+                SELECT a.company_id AS company_id,
+                    b.platform,
+                    a._id AS department_id,
+                    a.name AS department_name,
+                    b.employee_id AS employee_id,
+                    b.employee_name AS employee_name,
+                    b.snick AS snick
+                FROM (
+                    SELECT * 
+                    FROM ods.xinghuan_department_all
+                    WHERE day = {ds_nodash}
+                ) AS a 
+                GLOBAL RIGHT JOIN (
+                    SELECT a._id AS employee_id,
+                        b.platform,
+                        b.department_id AS department_id,
+                        a.username AS employee_name,
+                        b.snick AS snick
+                    FROM (
+                            SELECT * 
+                            FROM ods.xinghuan_employee_all
+                            WHERE day = {ds_nodash} 
+                    ) AS a 
+                    GLOBAL RIGHT JOIN ( 
+                        SELECT * 
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = {ds_nodash} 
+                        AND platform ='pdd'
+                    ) AS b 
+                    ON a._id = b.employee_id
+                ) AS b 
+                ON a._id = b.department_id
+                ) AS dim_info
+            ON session_info.platform = dim_info.platform
+            AND session_info.snick = dim_info.snick 
+        ) AS a 
+        GLOBAL LEFT JOIN (
+            SELECT
+                day,
+                platform,
+                shop_name,
+                snick,
+                groupArray(dialog_id) AS dialog_array
+            FROM ods.xinghuan_qc_abnormal_all 
+            WHERE row_number < 4 
+            AND day = {ds_nodash}
+            GROUP BY day, platform, shop_name, snick
+        ) AS b 
+        ON a.date = b.day
+        AND a.platform = b.platform
+        AND a.shop_name =b.shop_name
+        AND a.snick = b.snick

@@ -1,91 +1,277 @@
 {
-    "content": "The health test result for IMPALAD_SCM_HEALTH has become bad: This role's process is starting. This role is supposed to be started.",
-    "testName": "IMPALAD_SCM_HEALTH",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_BAD",
-    "severity": "CRITICAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_CONNECTIVITY has become good: This Impala Daemon is connected to its StateStore.",
-    "testName": "IMPALAD_CONNECTIVITY",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_READY_STATUS has become good: The Impala Daemon is ready to process queries.",
-    "testName": "IMPALAD_READY_STATUS",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_QUERY_MONITORING_STATUS has become good: There are 0 error(s) seen monitoring executing queries, and 0 errors(s) seen monitoring completed queries for this role in the previous 5 minute(s).",
-    "testName": "IMPALAD_QUERY_MONITORING_STATUS",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_FRONTEND_CONNECTIONS has become good: There are 0 (Beeswax pool) 12 (Hive Server 2 pool) active client connections, each pool has a configured maximum of 256.",
-    "testName": "IMPALAD_FRONTEND_CONNECTIONS",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_UNEXPECTED_EXITS has become good: This role encountered 0 unexpected exit(s) in the previous 5 minute(s).",
-    "testName": "IMPALAD_UNEXPECTED_EXITS",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_FILE_DESCRIPTOR has become good: Open file descriptors: 1,085. File descriptor limit: 32,768. Percentage in use: 3.31%.",
-    "testName": "IMPALAD_FILE_DESCRIPTOR",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_SWAP_MEMORY_USAGE has become good: 0 B of swap memory is being used by this role's process.",
-    "testName": "IMPALAD_SWAP_MEMORY_USAGE",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_LOG_DIRECTORY_FREE_SPACE has become good: This role's Log Directory (/data0/var/log/impalad) is on a filesystem with more than 10.0 GiB of its space free.",
-    "testName": "IMPALAD_LOG_DIRECTORY_FREE_SPACE",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_HEAP_DUMP_DIRECTORY_FREE_SPACE has become good: This role's Heap Dump Directory (/data1/tmp) is on a filesystem with more than 10.0 GiB of its space free.",
-    "testName": "IMPALAD_HEAP_DUMP_DIRECTORY_FREE_SPACE",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_HOST_HEALTH has become good: The health of this role's host is good.",
-    "testName": "IMPALAD_HOST_HEALTH",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_WEB_METRIC_COLLECTION has become good: The web server of this role is responding with metrics. The most recent collection took 6 millisecond(s).",
-    "testName": "IMPALAD_WEB_METRIC_COLLECTION",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_PAUSE_DURATION has become good: Average time spent paused was 9 millisecond(s) (0.02%) per minute over the previous 5 minute(s).",
-    "testName": "IMPALAD_PAUSE_DURATION",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_SCRATCH_DIRECTORIES_FREE_SPACE has become good: This role's Impala Daemon Scratch Directories (/data0/impala/impalad) are on a filesystem with more than 10.0 GiB of its space free.",
-    "testName": "IMPALAD_SCRATCH_DIRECTORIES_FREE_SPACE",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_GOOD",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
-}, {
-    "content": "The health test result for IMPALAD_MEMORY_RSS_HEALTH has become disabled: Test disabled by user: Test of whether the role has too large a resident set size.",
-    "testName": "IMPALAD_MEMORY_RSS_HEALTH",
-    "eventCode": "EV_ROLE_HEALTH_CHECK_DISABLED",
-    "severity": "INFORMATIONAL",
-    "suppressed": false
+  _id: ObjectId("622d337c7061e90001a5da45"),
+  create_time: ISODate("2022-03-12T23:57:48.132Z"),
+  update_time: ISODate("2022-03-21T08:40:03.202Z"),
+  platform: 'tb',
+  channel: 'tb',
+  cnick: 'tb4456762565',
+  snick: '欧普照明官方旗舰店:57s',
+  seller_nick: '欧普照明官方旗舰店',
+  begin_time: ISODate("2022-03-12T23:57:48.116Z"),
+  end_time: ISODate("2022-03-13T00:38:20.956Z"),
+  is_after_sale: false,
+  is_inside: false,
+  s_emotion: [{
+    type: 8,
+    count: 0
+  }],
+  c_emotion: [{
+      type: 1,
+      count: 0
+    },
+    {
+      type: 2,
+      count: 1
+    },
+    {
+      type: 3,
+      count: 0
+    },
+    {
+      type: 4,
+      count: 0
+    },
+    {
+      type: 5,
+      count: 0
+    },
+    {
+      type: 6,
+      count: 0
+    },
+    {
+      type: 7,
+      count: 0
+    },
+    {
+      type: 8,
+      count: 0
+    },
+    {
+      type: 9,
+      count: 0
+    },
+    {
+      type: 10,
+      count: 0
+    }
+  ],
+  emotions: ['c2'],
+  abnormals: [{
+      type: 1,
+      count: 0
+    }, {
+      type: 2,
+      count: 0
+    },
+    {
+      type: 3,
+      count: 0
+    }, {
+      type: 4,
+      count: 0
+    },
+    {
+      type: 5,
+      count: 0
+    }, {
+      type: 6,
+      count: 0
+    },
+    {
+      type: 7,
+      count: 0
+    }, {
+      type: 8,
+      count: 0
+    },
+    {
+      type: 9,
+      count: 0
+    }, {
+      type: 10,
+      count: 0
+    },
+    {
+      type: 11,
+      count: 0
+    }, {
+      type: 12,
+      count: 0
+    },
+    {
+      type: 13,
+      count: 0
+    }, {
+      type: 14,
+      count: 0
+    },
+    {
+      type: 15,
+      count: 0
+    }, {
+      type: 16,
+      count: 0
+    },
+    {
+      type: 17,
+      count: 0
+    }, {
+      type: 18,
+      count: 0
+    },
+    {
+      type: 19,
+      count: 0
+    }, {
+      type: 20,
+      count: 0
+    },
+    {
+      type: 21,
+      count: 0
+    }, {
+      type: 22,
+      count: 0
+    },
+    {
+      type: 23,
+      count: 0
+    }, {
+      type: 24,
+      count: 0
+    },
+    {
+      type: 25,
+      count: 0
+    }, {
+      type: 26,
+      count: 0
+    },
+    {
+      type: 27,
+      count: 0
+    }, {
+      type: 28,
+      count: 0
+    },
+    {
+      type: 29,
+      count: 0
+    }
+  ],
+  excellents: [{
+      type: 1,
+      count: 0
+    },
+    {
+      type: 2,
+      count: 0
+    },
+    {
+      type: 3,
+      count: 0
+    },
+    {
+      type: 4,
+      count: 0
+    },
+    {
+      type: 5,
+      count: 0
+    },
+    {
+      type: 6,
+      count: 0
+    },
+    {
+      type: 7,
+      count: 0
+    },
+    {
+      type: 8,
+      count: 0
+    },
+    {
+      type: 9,
+      count: 0
+    },
+    {
+      type: 10,
+      count: 0
+    },
+    {
+      type: 11,
+      count: 0
+    },
+    {
+      type: 12,
+      count: 0
+    },
+    {
+      type: 13,
+      count: 0
+    },
+    {
+      type: 14,
+      count: 0
+    }
+  ],
+  qc_word: [],
+  score: 0,
+  score_add: 0,
+  mark_judge: 0,
+  mark_score: 0,
+  mark_score_add: 0,
+  mark: '',
+  suspected_problem: false,
+  not_send_rules: {
+    ac: {
+      '6183bcec54157d3ef3868dde': true
+    },
+    cb: {
+      '618387fd54157d3ef3868dc7': true
+    }
+  },
+  answer_count: Long("3"),
+  question_count: Long("3"),
+  first_answer_time: 1647129475,
+  qa_time_sum: 25,
+  qa_round_sum: 3,
+  focus_goods_id: '656350505892',
+  group: '企业默认分组',
+  has_withdraw_robot_msg: false,
+  is_remind: false,
+  is_order_matched: true,
+  emotion_detect_mode: 2,
+  consulte_transfor_v2: 2,
+  intel_score: 0,
+  suspected_positive_emotion: false,
+  is_follow_up_remind: false,
+  remind_ntype: 0,
+  first_follow_up_time: ISODate("0001-01-01T00:00:00.000Z"),
+  date: 20220313,
+  cnick_customize_rule: [
+    ObjectId("6183a53c54157d3ef3868dd7"),
+    ObjectId("6182524154157d3ef3868da0")
+  ],
+  qc_task_flag: 0,
+  qid: [
+    Long("207850077"),
+    Long("0"),
+    Long("207850070"),
+    Long("207850074")
+  ],
+  last_msg_id: ObjectId("622d3cfce9b28e0001f4adc5"),
+  order_info: {
+    order_id: '1514881203563895368',
+    status: 'succeeded',
+    payment: 129,
+    order_time: Long("1647131965")
+  },
+  rule_stats: [{
+    id: ObjectId("618387fd54157d3ef3868dc7"),
+    count: 1,
+    score: 0
+  }]
 }

@@ -14,6 +14,7 @@ SELECT
     department_name AS `子账号分组`,
     snick AS `客服子账号`,
     employee_name AS `客服姓名`,
+    superior_name AS `上级姓名`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
     -- 质检结果总览-AI质检
@@ -599,7 +600,7 @@ FROM (
             groupArray(tag_name) AS customize_check_tag_name_arr,
             groupArray(tag_cnt) AS customize_check_tag_cnt_arr
         FROM (
-            -- 自定义质检-平台维度扣分质检项触发次数统计
+            -- 自定义质检-子账号维度扣分质检项触发次数统计
             SELECT
                 platform,
                 seller_nick,
@@ -648,7 +649,7 @@ FROM (
 
             GROUP BY platform, seller_nick, snick, rule_stats_tag_id
             UNION ALL
-            -- 自定义质检-平台维度加分质检项触发次数统计
+            -- 自定义质检-子账号维度加分质检项触发次数统计
             SELECT
                 platform,
                 seller_nick,

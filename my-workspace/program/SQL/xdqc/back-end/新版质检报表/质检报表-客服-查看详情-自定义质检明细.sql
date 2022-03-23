@@ -18,6 +18,7 @@ SELECT
     snick AS `客服子账号`,
     cnick AS `顾客名称`,
     employee_name AS `客服姓名`,
+    superior_name AS `上级姓名`,
 
     -- 自定义质检结果
     arrayStringConcat(customize_check_tag_name_arr,'$$') AS `自定义质检标签`,
@@ -132,9 +133,9 @@ FROM (
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT
-        snick, employee_name, department_id, department_name
+        snick, employee_name, superior_name, department_id, department_name
     FROM (
-        SELECT snick, employee_name, department_id
+        SELECT snick, employee_name, superior_name, department_id
         FROM (
             -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
             SELECT snick, department_id, employee_id
@@ -145,7 +146,7 @@ GLOBAL LEFT JOIN (
         ) AS snick_info
         GLOBAL LEFT JOIN (
             SELECT
-                _id AS employee_id, username AS employee_name
+                _id AS employee_id, username AS employee_name, superior_name
             FROM ods.xinghuan_employee_all
             WHERE day = toYYYYMMDD(yesterday())
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'

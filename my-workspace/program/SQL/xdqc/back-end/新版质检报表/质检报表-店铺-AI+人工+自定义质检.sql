@@ -1,6 +1,5 @@
--- 质检报表-平台
--- 统计维度: 平台, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
--- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果
+-- 质检报表-店铺
+-- 统计维度: 平台/店铺, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -11,8 +10,9 @@ SELECT
         WHEN platform='open' THEN '开放平台'
         ELSE platform
     END AS `平台`,
-    -- 质检结果总览
-    count(distinct seller_nick) AS `店铺数`,
+    seller_nick AS `店铺`,
+    department_id,
+    department_name AS `子账号分组`,
     count(distinct snick) AS `客服人数`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
@@ -28,6 +28,7 @@ SELECT
     round((0.9604 * `总会话量`) /(0.0025 * `总会话量` + 0.9604), 0) as `建议抽检量`,
     sum(mark_dialog_cnt) AS `人工抽检量`,
     concat(toString(round((`人工抽检量` * 100 / `总会话量`), 2)),'%') as `抽检比例`,
+
     sum(tag_score_dialog_cnt) AS `人工扣分会话量`,
     sum(mark_score) AS `人工扣分分值`,
     concat(toString(round((`人工扣分会话量` * 100 / `总会话量`), 2)),'%') AS `人工扣分会话比例`,
@@ -41,7 +42,6 @@ SELECT
     sum(rule_add_dialog_cnt) AS `自定义加分会话量`,
     sum(rule_score_add) AS `自定义加分分值`,
     concat(toString(round((`自定义加分会话量` * 100 / `总会话量`), 2)),'%') AS `自定义加分会话比例`,
-    
     -- AI质检结果
     sum(abnormal_type_1_cnt) AS `非客服结束会话`,
     sum(abnormal_type_2_cnt) AS `漏跟进`,
@@ -95,7 +95,7 @@ SELECT
     sum(c_emotion_type_8_cnt) AS `顾客骂人`,
     sum(c_emotion_type_9_cnt) AS `对收货少件不满`,
     sum(s_emotion_type_8_cnt) AS `客服骂人`,
-
+   
     -- 人工质检结果
     sumMap(human_check_tag_name_arr, human_check_tag_cnt_arr) AS human_check_tag_cnt_kvs,
     arrayStringConcat(arrayMap(x->toString(x),human_check_tag_cnt_kvs.1),'$$') AS `人工质检标签`,
@@ -105,13 +105,18 @@ SELECT
     sumMap(customize_check_tag_name_arr, customize_check_tag_cnt_arr) AS customize_check_tag_cnt_kvs,
     arrayStringConcat(arrayMap(x->toString(x),customize_check_tag_cnt_kvs.1),'$$') AS `自定义质检标签`,
     arrayStringConcat(arrayMap(x->toString(x),customize_check_tag_cnt_kvs.2),'$$') AS `自定义质检触发次数`
+
 FROM (
+    -- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果-子账号维度
     SELECT *
     FROM (
-        -- 质检结果总览+AI质检结果
+        -- 质检结果总览+AI质检结果+人工质检结果-子账号维度
         SELECT *
         FROM (
-                -- 质检结果总览-子账号维度统计
+            -- 质检结果总览+AI质检结果-子账号维度
+            SELECT *
+            FROM (
+                -- 质检结果总览-子账号维度
                 SELECT
                     platform,
                     seller_nick,
@@ -142,14 +147,20 @@ FROM (
                     WHERE day = toYYYYMMDD(yesterday())
                     AND platform = 'tb'
                     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    -- 下拉框-子账号分组
+                    AND (
+                        '{{ department_ids }}'=''
+                        OR
+                        department_id IN splitByChar(',','{{ department_ids }}')
+                    )
                 )
                 GROUP BY platform, seller_nick, snick
-        ) AS stat_info
-        GLOBAL FULL OUTER JOIN (
-                -- AI质检结果
+            ) AS stat_info
+            GLOBAL FULL OUTER JOIN (
+                -- AI质检结果-子账号维度
                 SELECT *
                 FROM (
-                    -- AI质检-子账号维度加分扣分行为质检结果
+                    -- AI质检-子账号维度加分扣分质检项触发次数统计
                     SELECT *
                     FROM (
                         -- AI质检-子账号维度扣分质检项触发次数统计
@@ -199,6 +210,12 @@ FROM (
                             WHERE day = toYYYYMMDD(yesterday())
                             AND platform = 'tb'
                             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                            -- 下拉框-子账号分组
+                            AND (
+                                '{{ department_ids }}'=''
+                                OR
+                                department_id IN splitByChar(',','{{ department_ids }}')
+                            )
                         )
                         AND abnormal_cnt!=0
                         GROUP BY platform, seller_nick, snick
@@ -235,6 +252,12 @@ FROM (
                             WHERE day = toYYYYMMDD(yesterday())
                             AND platform = 'tb'
                             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                            -- 下拉框-子账号分组
+                            AND (
+                                '{{ department_ids }}'=''
+                                OR
+                                department_id IN splitByChar(',','{{ department_ids }}')
+                            )
                         )
                         AND excellent_cnt!=0
                         GROUP BY platform, seller_nick, snick
@@ -242,7 +265,7 @@ FROM (
                     USING(platform, seller_nick, snick)
                 ) AS ai_abnormal_excellent_info
                 GLOBAL FULL OUTER JOIN (
-                    -- AI质检-子账号维度情绪质检结果
+                    -- AI质检-子账号维度情绪质检项触发次数统计
                     SELECT *
                     FROM (
                         -- AI质检-子账号维度顾客情绪质检项触发次数统计
@@ -273,6 +296,12 @@ FROM (
                             WHERE day = toYYYYMMDD(yesterday())
                             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                             AND platform = 'tb'
+                            -- 下拉框-子账号分组
+                            AND (
+                                '{{ department_ids }}'=''
+                                OR
+                                department_id IN splitByChar(',','{{ department_ids }}')
+                            )
                         )
                         AND c_emotion_count!=0
                         GROUP BY platform, seller_nick, snick
@@ -298,6 +327,12 @@ FROM (
                             WHERE day = toYYYYMMDD(yesterday())
                             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                             AND platform = 'tb'
+                            -- 下拉框-子账号分组
+                            AND (
+                                '{{ department_ids }}'=''
+                                OR
+                                department_id IN splitByChar(',','{{ department_ids }}')
+                            )
                         )
                         AND s_emotion_count!=0
                         GROUP BY platform, seller_nick, snick
@@ -305,18 +340,19 @@ FROM (
                     USING(platform, seller_nick, snick)
                 ) AS ai_emotion_info
                 USING(platform, seller_nick, snick)
-        ) AS ai_check_info
-        USING(platform, seller_nick, snick)
-    ) AS dialog_stat_ai_check_info
-    GLOBAL FULL OUTER JOIN (
-        -- 人工质检结果
-        SELECT
-            platform,
-            seller_nick,
-            snick,
-            groupArray(tag_name) AS human_check_tag_name_arr,
-            groupArray(tag_cnt) AS human_check_tag_cnt_arr
-        FROM (
+            ) AS ai_check_info
+            USING(platform, seller_nick, snick)
+        ) AS stat_ai_check_info
+        -- 人工质检结果-子账号维度
+        GLOBAL FULL OUTER JOIN (
+            -- 人工质检结果
+            SELECT
+                platform,
+                seller_nick,
+                snick,
+                groupArray(tag_name) AS human_check_tag_name_arr,
+                groupArray(tag_cnt) AS human_check_tag_cnt_arr
+            FROM (
                 -- 人工质检-子账号维度扣分标签触发次数统计
                 SELECT
                     platform,
@@ -424,8 +460,8 @@ FROM (
                 -- 清除空数据
                 WHERE tag_score_add_stats_id!=[]
                 GROUP BY platform, seller_nick, snick, tag_id
-        ) AS human_check_tag_info
-        GLOBAL LEFT JOIN (
+            ) AS human_check_tag_info
+            GLOBAL LEFT JOIN (
                 -- 人工质检标签维度表
                 SELECT
                     _id AS tag_id,
@@ -434,94 +470,198 @@ FROM (
                 WHERE day = toYYYYMMDD(yesterday())
                 AND platform = 'tb'
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS human_tag_info
+            ) AS human_tag_info
+            USING(tag_id)
+            GROUP BY platform, seller_nick, snick
+        ) AS human_check_info
+        USING(platform, seller_nick, snick)
+    ) AS stat_ai_human_check_info
+    
+    GLOBAL FULL OUTER JOIN (
+        -- 自定义质检结果-子账号维度
+        SELECT
+            platform,
+            seller_nick,
+            snick,
+            groupArray(tag_name) AS customize_check_tag_name_arr,
+            groupArray(tag_cnt) AS customize_check_tag_cnt_arr
+        FROM (
+            -- 自定义质检-子账号维度扣分质检项触发次数统计
+            SELECT
+                platform,
+                seller_nick,
+                snick,
+                rule_stats_tag_id AS tag_id,
+                sum(rule_stats_tag_count) AS tag_cnt
+            FROM dwd.xdqc_dialog_all
+            ARRAY JOIN
+                rule_stats_id AS rule_stats_tag_id,
+                rule_stats_count AS rule_stats_tag_count
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            AND snick GLOBAL IN (
+                -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                SELECT distinct snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND platform = 'tb'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 下拉框-子账号分组
+                AND (
+                    '{{ department_ids }}'=''
+                    OR
+                    department_id IN splitByChar(',','{{ department_ids }}')
+                )
+            )
+            -- 清除没有打标的数据, 减小计算量
+            AND rule_stats_id!=[]
+            GROUP BY platform, seller_nick, snick, rule_stats_tag_id
+            
+            UNION ALL
+            
+            -- 自定义质检-子账号维度加分质检项触发次数统计
+            SELECT
+                platform,
+                seller_nick,
+                snick,
+                rule_add_stats_tag_id AS tag_id,
+                sum(rule_add_stats_tag_count) AS tag_cnt
+            FROM dwd.xdqc_dialog_all
+            ARRAY JOIN
+                rule_add_stats_id AS rule_add_stats_tag_id,
+                rule_add_stats_count AS rule_add_stats_tag_count
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            AND snick GLOBAL IN (
+                -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                SELECT distinct snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND platform = 'tb'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 下拉框-子账号分组
+                AND (
+                    '{{ department_ids }}'=''
+                    OR
+                    department_id IN splitByChar(',','{{ department_ids }}')
+                )
+            )
+            -- 清除没有打标的数据, 减小计算量
+            AND rule_add_stats_id!=[]
+            GROUP BY platform, seller_nick, snick, rule_add_stats_tag_id
+        ) AS customize_check_stat
+        GLOBAL LEFT JOIN (
+            SELECT
+                _id AS tag_id,
+                name AS tag_name
+            FROM ods.xinghuan_customize_rule_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        ) AS customize_tag_info
         USING(tag_id)
         GROUP BY platform, seller_nick, snick
-    ) AS human_check_info
+    ) AS customize_check_info
     USING(platform, seller_nick, snick)
-) AS dialog_stat_ai_human_check_info
-GLOBAL FULL OUTER JOIN (
-    -- 自定义质检结果
+
+) AS stat_ai_human_customize_check_info
+GLOBAL LEFT JOIN (
+    -- 获取最新版本的维度数据(T+1)
     SELECT
-        platform,
-        seller_nick,
-        snick,
-        groupArray(tag_name) AS customize_check_tag_name_arr,
-        groupArray(tag_cnt) AS customize_check_tag_cnt_arr
+        snick, department_id, department_name
     FROM (
-        -- 自定义质检-平台维度扣分质检项触发次数统计
-        SELECT
-            platform,
-            seller_nick,
-            snick,
-            rule_stats_tag_id AS tag_id,
-            sum(rule_stats_tag_count) AS tag_cnt
-        FROM dwd.xdqc_dialog_all
-        ARRAY JOIN
-            rule_stats_id AS rule_stats_tag_id,
-            rule_stats_count AS rule_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 下拉框-子账号分组
-            AND (
-                '{{ department_ids }}'=''
-                OR
-                department_id IN splitByChar(',','{{ department_ids }}')
-            )
-        )
-        -- 清除没有打标的数据, 减小计算量
-        AND rule_stats_id!=[]
-        GROUP BY platform, seller_nick, snick, rule_stats_tag_id
-        UNION ALL
-        -- 自定义质检-平台维度加分质检项触发次数统计
-        SELECT
-            platform,
-            seller_nick,
-            snick,
-            rule_add_stats_tag_id AS tag_id,
-            sum(rule_add_stats_tag_count) AS tag_cnt
-        FROM dwd.xdqc_dialog_all
-        ARRAY JOIN
-            rule_add_stats_id AS rule_add_stats_tag_id,
-            rule_add_stats_count AS rule_add_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 下拉框-子账号分组
-            AND (
-                '{{ department_ids }}'=''
-                OR
-                department_id IN splitByChar(',','{{ department_ids }}')
-            )
-        )
-        -- 清除没有打标的数据, 减小计算量
-        AND rule_add_stats_id!=[]
-        GROUP BY platform, seller_nick, snick, rule_add_stats_tag_id
-    ) AS customize_check_stat
-    GLOBAL LEFT JOIN (
-        SELECT
-            _id AS tag_id,
-            name AS tag_name
-        FROM ods.xinghuan_customize_rule_all
+        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+        SELECT snick, department_id
+        FROM ods.xinghuan_employee_snick_all
         WHERE day = toYYYYMMDD(yesterday())
         AND platform = 'tb'
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS customize_tag_info
-    USING(tag_id)
-    GROUP BY platform, seller_nick, snick
-) AS customize_check_info
-USING(platform, seller_nick, snick)
-GROUP BY platform
+    ) AS snick_info
+    GLOBAL RIGHT JOIN (
+        -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
+        -- parent_department_id全为空,则代表树层次遍历完毕
+        SELECT
+            level_1.parent_department_id AS parent_department_id,
+            level_2_3_4.department_id AS department_id,
+            if(
+                level_1.department_id!='', 
+                concat(level_1.department_name,'-',level_2_3_4.department_name),
+                level_2_3_4.department_name
+            ) AS department_name
+        FROM (
+            SELECT
+                level_2.parent_department_id AS parent_department_id,
+                level_3_4.department_id AS department_id,
+                if(
+                    level_2.department_id!='', 
+                    concat(level_2.department_name,'-',level_3_4.department_name),
+                    level_3_4.department_name
+                ) AS department_name
+            FROM (
+                SELECT
+                    level_3.parent_department_id AS parent_department_id,
+                    level_4.department_id AS department_id,
+                    if(
+                        level_3.department_id!='', 
+                        concat(level_3.department_name,'-',level_4.department_name),
+                        level_4.department_name
+                    ) AS department_name
+                FROM (
+                    SELECT 
+                        _id AS department_id,
+                        name AS department_name,
+                        parent_id AS parent_department_id
+                    FROM ods.xinghuan_department_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    AND (
+                        parent_id GLOBAL IN (
+                            SELECT DISTINCT
+                                _id AS department_id
+                            FROM ods.xinghuan_department_all
+                            WHERE day = toYYYYMMDD(yesterday())
+                            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                        ) -- 清除子账号父分组被删除, 而子分组依旧存在的脏数据
+                        OR 
+                        parent_id = '' -- 保留顶级分组
+                    )
+                ) AS level_4
+                GLOBAL LEFT JOIN (
+                    SELECT 
+                        _id AS department_id,
+                        name AS department_name,
+                        parent_id AS parent_department_id
+                    FROM ods.xinghuan_department_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                ) AS level_3
+                ON level_4.parent_department_id = level_3.department_id
+            ) AS level_3_4
+            GLOBAL LEFT JOIN (
+                SELECT 
+                    _id AS department_id,
+                    name AS department_name,
+                    parent_id AS parent_department_id
+                FROM ods.xinghuan_department_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            ) AS level_2
+            ON level_3_4.parent_department_id = level_2.department_id
+        ) AS level_2_3_4
+        GLOBAL LEFT JOIN (
+            SELECT 
+                _id AS department_id,
+                name AS department_name,
+                parent_id AS parent_department_id
+            FROM ods.xinghuan_department_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        ) AS level_1
+        ON level_2_3_4.parent_department_id = level_1.department_id
+    ) AS department_info
+    USING (department_id)
+) AS snick_department_map
+USING(snick)
+GROUP BY platform, seller_nick, department_id, department_name
+HAVING department_id!='' -- 清除匹配不上历史分组的子账号
+ORDER BY platform, seller_nick, department_name

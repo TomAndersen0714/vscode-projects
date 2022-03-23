@@ -1,5 +1,5 @@
--- 质检报表-店铺
--- 统计维度: 平台/店铺, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
+-- 质检报表-客服
+-- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     CASE
         WHEN platform='tb' THEN '淘宝'
@@ -11,12 +11,13 @@ SELECT
         ELSE platform
     END AS `平台`,
     seller_nick AS `店铺`,
-    department_id,
     department_name AS `子账号分组`,
-    count(distinct snick) AS `客服人数`,
+    snick AS `客服子账号`,
+    employee_name AS `客服姓名`,
+    superior_name AS `上级姓名`,
     sum(dialog_cnt) AS `总会话量`,
     round((`总会话量`*100 + sum(score_add)- sum(score))/`总会话量`,2) AS `平均分`,
-    -- AI质检
+    -- 质检结果总览-AI质检
     `总会话量` AS `AI质检量`,
     sum(abnormal_dialog_cnt) AS `AI异常会话量`,
     sum(ai_score) AS `AI扣分分值`,
@@ -24,7 +25,7 @@ SELECT
     sum(excellents_dialog_cnt) AS `AI加分会话量`,
     sum(ai_score_add) AS `AI加分分值`,
     concat(toString(round((`AI加分会话量` * 100 / `总会话量`), 2)),'%') AS `AI加分会话比例`,
-    -- 人工质检
+    -- 质检结果总览-人工质检
     round((0.9604 * `总会话量`) /(0.0025 * `总会话量` + 0.9604), 0) as `建议抽检量`,
     sum(mark_dialog_cnt) AS `人工抽检量`,
     concat(toString(round((`人工抽检量` * 100 / `总会话量`), 2)),'%') as `抽检比例`,
@@ -35,7 +36,7 @@ SELECT
     sum(tag_score_add_dialog_cnt) `人工加分会话量`,
     sum(mark_score_add) AS `人工加分分值`,
     concat(toString(round((`人工加分会话量` * 100 / `总会话量`), 2)),'%') AS `人工加分会话比例`,
-    -- 自定义质检
+    -- 质检结果总览-自定义质检
     sum(rule_dialog_cnt) AS `自定义扣分会话量`,
     sum(rule_score) AS `自定义扣分分值`,
     concat(toString(round((`自定义扣分会话量` * 100 / `总会话量`), 2)),'%') AS `自定义扣分会话比例`,
@@ -154,6 +155,18 @@ FROM (
                         department_id IN splitByChar(',','{{ department_ids }}')
                     )
                 )
+                -- 下拉框-店铺名
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                )
+                -- 下拉框-子账号
+                AND (
+                    '{{ snicks }}'=''
+                    OR
+                    snick IN splitByChar(',','{{ snicks }}')
+                )
                 GROUP BY platform, seller_nick, snick
             ) AS stat_info
             GLOBAL FULL OUTER JOIN (
@@ -218,6 +231,18 @@ FROM (
                             )
                         )
                         AND abnormal_cnt!=0
+                        -- 下拉框-店铺名
+                        AND (
+                            '{{ seller_nicks }}'=''
+                            OR
+                            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
                         GROUP BY platform, seller_nick, snick
                     ) AS ai_abnormal_info
                     GLOBAL FULL OUTER JOIN (
@@ -260,6 +285,18 @@ FROM (
                             )
                         )
                         AND excellent_cnt!=0
+                        -- 下拉框-店铺名
+                        AND (
+                            '{{ seller_nicks }}'=''
+                            OR
+                            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
                         GROUP BY platform, seller_nick, snick
                     ) AS ai_excellent_info
                     USING(platform, seller_nick, snick)
@@ -304,6 +341,18 @@ FROM (
                             )
                         )
                         AND c_emotion_count!=0
+                        -- 下拉框-店铺名
+                        AND (
+                            '{{ seller_nicks }}'=''
+                            OR
+                            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
                         GROUP BY platform, seller_nick, snick
                     ) AS ai_c_emotion_info
                     GLOBAL FULL OUTER JOIN(
@@ -343,9 +392,8 @@ FROM (
             ) AS ai_check_info
             USING(platform, seller_nick, snick)
         ) AS stat_ai_check_info
-        -- 人工质检结果-子账号维度
         GLOBAL FULL OUTER JOIN (
-            -- 人工质检结果
+            -- 人工质检结果-子账号维度
             SELECT
                 platform,
                 seller_nick,
@@ -397,6 +445,18 @@ FROM (
                     )
                     -- 清除没有打标的数据, 减小计算量
                     AND tag_score_stats_id!=[]
+                    -- 下拉框-店铺名
+                    AND (
+                        '{{ seller_nicks }}'=''
+                        OR
+                        seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    )
+                    -- 下拉框-子账号
+                    AND (
+                        '{{ snicks }}'=''
+                        OR
+                        snick IN splitByChar(',','{{ snicks }}')
+                    )
                 ) AS transformed_dialog_info
                 ARRAY JOIN
                     tag_score_stats_id AS tag_id,
@@ -452,6 +512,18 @@ FROM (
                     )
                     -- 清除没有打标的数据, 减小计算量
                     AND tag_score_add_stats_id!=[]
+                    -- 下拉框-店铺名
+                    AND (
+                        '{{ seller_nicks }}'=''
+                        OR
+                        seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    )
+                    -- 下拉框-子账号
+                    AND (
+                        '{{ snicks }}'=''
+                        OR
+                        snick IN splitByChar(',','{{ snicks }}')
+                    )
                 ) AS transformed_dialog_info
                 ARRAY JOIN
                     tag_score_add_stats_id AS tag_id,
@@ -486,7 +558,7 @@ FROM (
             groupArray(tag_name) AS customize_check_tag_name_arr,
             groupArray(tag_cnt) AS customize_check_tag_cnt_arr
         FROM (
-            -- 自定义质检-平台维度扣分质检项触发次数统计
+            -- 自定义质检-子账号维度扣分质检项触发次数统计
             SELECT
                 platform,
                 seller_nick,
@@ -515,9 +587,23 @@ FROM (
             )
             -- 清除没有打标的数据, 减小计算量
             AND rule_stats_id!=[]
+            -- 下拉框-店铺名
+            AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',','{{ seller_nicks }}')
+            )
+            -- 下拉框-子账号
+            AND (
+                '{{ snicks }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks }}')
+            )
             GROUP BY platform, seller_nick, snick, rule_stats_tag_id
+
             UNION ALL
-            -- 自定义质检-平台维度加分质检项触发次数统计
+            
+            -- 自定义质检-子账号维度加分质检项触发次数统计
             SELECT
                 platform,
                 seller_nick,
@@ -546,6 +632,18 @@ FROM (
             )
             -- 清除没有打标的数据, 减小计算量
             AND rule_add_stats_id!=[]
+            -- 下拉框-店铺名
+            AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',','{{ seller_nicks }}')
+            )
+            -- 下拉框-子账号
+            AND (
+                '{{ snicks }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks }}')
+            )
             GROUP BY platform, seller_nick, snick, rule_add_stats_tag_id
         ) AS customize_check_stat
         GLOBAL LEFT JOIN (
@@ -566,14 +664,25 @@ FROM (
 GLOBAL LEFT JOIN (
     -- 获取最新版本的维度数据(T+1)
     SELECT
-        snick, department_id, department_name
+        snick, employee_name, superior_name, department_id, department_name
     FROM (
-        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-        SELECT snick, department_id
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        SELECT snick, employee_name, superior_name, department_id
+        FROM (
+            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+            SELECT snick, department_id, employee_id
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        ) AS snick_info
+        GLOBAL LEFT JOIN (
+            SELECT
+                _id AS employee_id, username AS employee_name, superior_name
+            FROM ods.xinghuan_employee_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        ) AS employee_info
+        USING(employee_id)
     ) AS snick_info
     GLOBAL RIGHT JOIN (
         -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
@@ -660,6 +769,12 @@ GLOBAL LEFT JOIN (
     USING (department_id)
 ) AS snick_department_map
 USING(snick)
-GROUP BY platform, seller_nick, department_id, department_name
+-- 下拉框-客服名称
+WHERE (
+    '{{ usernames }}'=''
+    OR
+    employee_name IN splitByChar(',','{{ usernames }}')
+)
+GROUP BY platform, seller_nick, department_id, department_name, snick, employee_name, superior_name
 HAVING department_id!='' -- 清除匹配不上历史分组的子账号
-ORDER BY platform, seller_nick, department_name
+ORDER BY platform, seller_nick, department_name, snick, employee_name
