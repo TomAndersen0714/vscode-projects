@@ -164,3 +164,15 @@ ON a.date = b.day
 AND a.platform = b.platform
 AND a.shop_name =b.shop_name
 AND a.snick = b.snick
+
+
+-- 字符串替换
+                        negate(arraySum(arrayFilter(x->x<0, xrule_stats_score))) AS xrule_score_info,
+                        arraySum(arrayFilter(x->x>0, xrule_stats_score)) AS xrule_add_score_info,
+                        arraySum(rule_stats_score) + xrule_score_info AS rule_score_info,
+                        arraySum(rule_add_stats_score) + xrule_add_score_info AS rule_add_score_info
+
+                        negate(arraySum(arrayFilter(x->x<0, xrule_stats_score)) + arraySum(arrayFilter(x->x<0, top_xrules_score))) AS xrule_score_info,
+                        arraySum(arrayFilter(x->x>0, xrule_stats_score)) + arraySum(arrayFilter(x->x>0, top_xrules_score)) AS xrule_add_score_info,
+                        arraySum(rule_stats_score) + xrule_score_info AS rule_score_info,
+                        arraySum(rule_add_stats_score) + xrule_add_score_info AS rule_add_score_info

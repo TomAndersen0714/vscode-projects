@@ -1,12 +1,17 @@
--- 客户满意度评价-统计-评价满意度每日统计
+-- 客户满意度评价-统计-评价满意度统计
 SELECT
-    eval_code,
-    day,
-    cnt
+    CASE
+        WHEN eval_code=0 THEN '非常满意'
+        WHEN eval_code=1 THEN '满意'
+        WHEN eval_code=2 THEN '一般'
+        WHEN eval_code=3 THEN '不满意'
+        WHEN eval_code=4 THEN '非常不满意'
+        ELSE '其他'
+    END AS `评价等级`,
+    cnt AS `评价次数`
 FROM (
     SELECT
         eval_code,
-        day,
         SUM(1) AS cnt 
     FROM (
         SELECT
@@ -16,6 +21,8 @@ FROM (
             eval_code
         FROM ods.kefu_eval_detail_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+        -- 过滤买家已评价记录
+        AND eval_time != ''
         -- 下拉框-店铺
         AND (
             '{{ seller_nicks }}'=''
@@ -60,27 +67,6 @@ FROM (
             )
         )
     ) AS eval_daily_info
-    GROUP BY eval_code,day
+    GROUP BY eval_code
 ) AS eval_daily_stat_info
-GLOBAL RIGHT JOIN (
-    -- 设定X轴锚点
-    SELECT day, eval_code
-    FROM (
-        SELECT arrayJoin(
-            arrayMap(
-                x->toYYYYMMDD(toDate(x)),
-                range(toUInt32(toDate('{{ day.start=week_ago }}')), toUInt32(toDate('{{ day.end=today }}') + 1), 1)
-            )
-        ) AS day
-    ) AS time_axis
-    GLOBAL CROSS JOIN (
-        SELECT DISTINCT eval_code
-        FROM ods.kefu_eval_detail_all
-        WHERE day BETWEEN toYYYYMMDD(parseDateTimeBestEffort('{{ day.start=week_ago }}')) AND toYYYYMMDD(parseDateTimeBestEffort('{{ day.end=today }}'))
-        AND replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') IN splitByChar(',',replaceAll('{{ seller_nick }}', '星环#', ''))
-        AND eval_time != ''
-        AND if('{{ snick }}' != '',  replaceOne(eval_sender,'cntaobao','') LIKE '%{{ snick }}%', 1)
-    ) AS distinct_eval_code
-) AS day_eval_code_axis
-USING(day, eval_code)
-ORDER BY day, eval_code ASC
+ORDER BY eval_code ASC
