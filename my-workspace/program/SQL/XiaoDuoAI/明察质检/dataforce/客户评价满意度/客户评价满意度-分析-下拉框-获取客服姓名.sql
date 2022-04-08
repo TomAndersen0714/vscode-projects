@@ -1,4 +1,4 @@
--- 客户评价满意度-分析-下拉框-获取客服姓名
+-- 客户评价满意度-分析-下拉框-获取客服姓名ID
 SELECT DISTINCT 
     username AS `客服姓名`
 FROM ods.xinghuan_employee_all
@@ -12,9 +12,9 @@ AND _id IN (
     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     -- 下拉框-子账号分组id
     AND (
-        '{{ depatment_ids }}'=''
+        '{{ department_ids }}'=''
         OR
-        department_id IN splitByChar(',','{{ depatment_ids }}')
+        department_id IN splitByChar(',','{{ department_ids }}')
     )
     -- 被评价过的子账号
     AND snick IN (

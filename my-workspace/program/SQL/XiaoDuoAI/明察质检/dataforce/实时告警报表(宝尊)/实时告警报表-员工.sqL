@@ -106,7 +106,7 @@ SELECT
     snick, 
     COUNT(1) AS dialog_cnt -- 会话量
 FROM xqc_ods.dialog_all
-WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
 AND shop_id IN (
     SELECT DISTINCT tenant_id
     FROM xqc_dim.company_tenant
@@ -150,7 +150,7 @@ FROM (
         snick, 
         COUNT(1) AS dialog_cnt -- 会话量
     FROM xqc_ods.dialog_all
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
     AND shop_id IN (
         SELECT DISTINCT tenant_id
         FROM xqc_dim.company_tenant
@@ -223,7 +223,7 @@ GLOBAL FULL OUTER JOIN (
             snick, 
             COUNT(1) AS dialog_cnt -- 会话量
         FROM xqc_ods.dialog_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
         AND shop_id IN (
             SELECT DISTINCT tenant_id
             FROM xqc_dim.company_tenant
@@ -405,7 +405,7 @@ GLOBAL LEFT JOIN (
                 snick, 
                 COUNT(1) AS dialog_cnt -- 会话量
             FROM xqc_ods.dialog_all
-            WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
             AND shop_id IN (
                 SELECT DISTINCT tenant_id
                 FROM xqc_dim.company_tenant
@@ -423,7 +423,7 @@ GLOBAL LEFT JOIN (
                 SUM(level=2) AS level_2_alert_cnt, -- 中级告警量
                 SUM(level=1) AS level_1_alert_cnt -- 初级告警量
             FROM xqc_ods.alert_all
-            WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
             AND shop_id IN (
                 SELECT DISTINCT tenant_id
                 FROM xqc_dim.company_tenant

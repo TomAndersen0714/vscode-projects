@@ -1,6 +1,6 @@
--- 客户评价满意度-下拉框-获取客服姓名
+-- 客户评价满意度-分析-下拉框-获取客服姓名ID
 SELECT DISTINCT 
-    username AS `客服姓名`
+    CONCAT(username, '//', _id) AS `客服姓名ID`
 FROM ods.xinghuan_employee_all
 WHERE day = toYYYYMMDD(yesterday())
 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'

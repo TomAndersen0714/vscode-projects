@@ -8,6 +8,7 @@ SELECT
     dialog_cnt AS `总会话量`,
     eval_sum AS `总评价量`,
     satisfy_pct AS `满意率`,
+    CONCAT(toString(satisfy_pct),'%') AS `满意率%`,
     eval_code_0_cnt AS `非常满意`,
     eval_code_1_cnt AS `满意`,
     eval_code_2_cnt AS `一般`,
@@ -92,12 +93,6 @@ FROM (
                 OR
                 seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
             )
-            -- 下拉框-评价等级
-            AND (
-                '{{ eval_codes }}'=''
-                OR
-                toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
-            )
             AND snick IN (
                 -- 当前企业对应的子账号
                 SELECT DISTINCT snick
@@ -117,17 +112,11 @@ FROM (
                     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     -- 下拉框-子账号分组id
                     AND (
-                        '{{ depatment_ids }}'=''
+                        '{{ department_ids }}'=''
                         OR
-                        department_id IN splitByChar(',','{{ depatment_ids }}')
+                        department_id IN splitByChar(',','{{ department_ids }}')
                     )
                 ) AS snick_employee_info
-                -- -- 下拉框-客服姓名
-                -- WHERE (
-                --     '{{ usernames }}'=''
-                --     OR
-                --     username IN splitByChar(',','{{ usernames }}')
-                -- )
             )
         ) AS satisfy_info
         GROUP BY seller_nick, snick
@@ -154,10 +143,4 @@ GLOBAL LEFT JOIN (
     USING(employee_id)
 ) AS employee_info
 USING(snick)
--- -- 下拉框-客服姓名
--- WHERE (
---     '{{ usernames }}'=''
---     OR
---     employee_name IN splitByChar(',','{{ usernames }}')
--- )
 ORDER BY satisfy_pct

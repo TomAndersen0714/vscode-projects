@@ -1,10 +1,13 @@
--- 客户评价满意度-统计-评价满意率统计
-SELECT
-    COUNT(1) AS eval_sum,
-    SUM(eval_code < 2) AS satisfy,
-    eval_sum - satisfy AS unsatisfy,
-    CONCAT(toString(if(eval_sum!=0, round(satisfy/eval_sum*100,2), 0.00)),'%') AS `满意率`,
-    CONCAT(toString(if(eval_sum!=0, round(unsatisfy/eval_sum*100,2), 0.00)),'%') AS `不满意率`
+-- 客户评价满意度-分析-下拉框-获取评价等级
+SELECT DISTINCT
+    CASE
+        WHEN eval_code=0 THEN '非常满意//0'
+        WHEN eval_code=1 THEN '满意//1'
+        WHEN eval_code=2 THEN '一般//2'
+        WHEN eval_code=3 THEN '不满意//3'
+        WHEN eval_code=4 THEN '非常不满意//4'
+        ELSE CONCAT('其他','//',toString(eval_code))
+    END AS `评价等级`
 FROM (
     SELECT
         replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
@@ -19,12 +22,6 @@ FROM (
         '{{ seller_nicks }}'=''
         OR
         seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
-    )
-    -- 下拉框-评价等级
-    AND (
-        '{{ eval_codes }}'=''
-        OR
-        toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
     )
     AND snick IN (
         -- 当前企业对应的子账号
@@ -57,4 +54,5 @@ FROM (
             username IN splitByChar(',','{{ usernames }}')
         )
     )
-) AS satisfy_info
+) AS eval_info
+ORDER BY eval_code ASC

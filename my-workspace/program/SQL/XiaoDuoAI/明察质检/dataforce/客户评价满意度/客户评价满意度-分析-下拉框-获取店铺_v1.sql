@@ -1,6 +1,6 @@
--- 客户评价满意度-下拉框-获取店铺
+-- 客户评价满意度-分析-下拉框-获取店铺
 SELECT DISTINCT
-    seller_nick
+    seller_nick AS `店铺`
 FROM (
     SELECT
         replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
@@ -21,7 +21,7 @@ WHERE snick IN (
     -- 当前企业对应的子账号
     SELECT DISTINCT snick
     FROM (
-        SELECT distinct snick, username
+        SELECT distinct snick, employee_id, username
         FROM ods.xinghuan_employee_snick_all AS snick_info
         GLOBAL LEFT JOIN (
             SELECT distinct
@@ -41,11 +41,11 @@ WHERE snick IN (
             department_id IN splitByChar(',','{{ department_ids }}')
         )
     ) AS snick_employee_info
-    -- 下拉框-客服姓名
+    -- 下拉框-客服ID
     WHERE (
-        '{{ usernames }}'=''
+        '{{ employee_ids }}'=''
         OR
-        username IN splitByChar(',','{{ usernames }}')
+        employee_id IN splitByChar(',','{{ employee_ids }}')
     )
 )
 ORDER BY seller_nick

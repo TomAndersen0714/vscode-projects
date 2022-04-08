@@ -43,9 +43,9 @@ FROM (
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 下拉框-子账号分组id
             AND (
-                '{{ depatment_ids }}'=''
+                '{{ department_ids }}'=''
                 OR
-                department_id IN splitByChar(',','{{ depatment_ids }}')
+                department_id IN splitByChar(',','{{ department_ids }}')
             )
         ) AS snick_employee_info
         -- 下拉框-客服姓名
