@@ -1,5 +1,5 @@
-
-
+-- 1. 获取随机样本
+-- 查询指定店铺的所有消息
 WITH x1 AS (
     SELECT split_part(snick, ':', 1) AS seller_nick,
         cnick,
@@ -25,7 +25,7 @@ WITH x1 AS (
         AND split_part(snick, ':', 1) IN ("cntaobao安久酒类专营店")
 ),
 x2 AS (
-    
+    -- 计算每条消息的随机排序id
     SELECT
         *,
         row_number() OVER (
@@ -34,7 +34,7 @@ x2 AS (
     FROM x1
 )
 INSERT overwrite test.algorithm_sample_data_all PARTITION (mission_id = '1737cf74480551f1bd93dffac1188ef8')
-
+-- 关联商品信息, falg代表其消息是否是需要采样的买家问题
 SELECT x2.seller_nick,
     x2.cnick,
     x2.category,
@@ -48,7 +48,7 @@ SELECT x2.seller_nick,
     x2.DAY,
     x2.create_time,
     x2.sample_id,
-    if(x2.act = 'recv_msg' AND x2.rank_id % 1 = 0 AND (question_b_qid IN (3,290000634)), 1, 0) AS flag,
+    if(x2.act = 'recv_msg' AND x2.rank_id % 1 = 0, 1, 0) AS flag,
     xd_data.question_b.question,
     x2.is_robot_answer,
     x2.plat_goods_id,
@@ -59,8 +59,8 @@ FROM x2
     );
 
 
-
 -- 2. 统计
+-- 计算每条消息, 在其对应会话中的序号
 WITH t AS (
     SELECT *,
         row_number() over (
@@ -72,6 +72,7 @@ WITH t AS (
     WHERE mission_id = '1737cf74480551f1bd93dffac1188ef8'
 ),
 t1 AS (
+    -- 筛选出买家问题, 并且符合抽样条件的消息记录
     SELECT snick,
         cnick,
         sample_id,
@@ -93,7 +94,8 @@ res as (
 select *
 from res
 where dr <= 560;
+-- trace:0d4a91ce3c3244d0252afa30f8933c24
 
-
-
+-- 3. 删除样本数据
 alter table test.algorithm_sample_data_all drop partition (mission_id='1737cf74480551f1bd93dffac1188ef8');
+-- trace:6974e3d73d210767dcfb48dd9068e69f

@@ -22,9 +22,10 @@ SELECT
         WHEN source=2 THEN '系统邀评'
         ELSE '其他'
     END AS `评价来源`,
-    formatDateTime(parseDateTimeBestEffort(toString(day)),'%Y-%m-%d') AS `会话日期` 
+    if(source!=1,send_time,'') AS `邀评时间`,
+    formatDateTime(parseDateTimeBestEffort(toString(day)),'%Y-%m-%d') AS `邀评日期` 
 FROM ods.kefu_eval_detail_all
-WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
 -- 过滤买家已评价记录
 AND eval_time != ''
 -- 下拉框-评价等级

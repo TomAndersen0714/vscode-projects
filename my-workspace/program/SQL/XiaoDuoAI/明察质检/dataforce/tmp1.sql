@@ -1,66 +1,65 @@
--- 客户评价满意度-分析-评价列表
-SELECT
-    replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-    replaceOne(eval_sender,'cntaobao','') AS snick,
-    replaceOne(eval_recer,'cntaobao','') AS cnick,
-    seller_nick AS `店铺`,
-    CASE
-        WHEN eval_code=0 THEN '非常满意'
-        WHEN eval_code=1 THEN '满意'
-        WHEN eval_code=2 THEN '一般'
-        WHEN eval_code=3 THEN '不满意'
-        WHEN eval_code=4 THEN '非常不满意'
-        ELSE '其他'
-    END AS `最后一次评价结果`,
-    snick AS `客服子账号`,
-    cnick AS `顾客名称`,
-    eval_time AS `最后一次评价时间`,
-    send_time,
-    CASE
-        WHEN source=0 THEN '客服邀评'
-        WHEN source=1 THEN '消费者自主评价'
-        WHEN source=2 THEN '系统邀评'
-        ELSE '其他'
-    END AS `评价来源`,
-    formatDateTime(parseDateTimeBestEffort(toString(day)),'%Y-%m-%d') AS `会话日期` 
-FROM ods.kefu_eval_detail_all
-WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
--- 过滤买家已评价记录
-AND eval_time != ''
--- 下拉框-店铺
-AND (
-    '{{ seller_nicks }}'=''
-    OR
-    seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
-)
-AND snick IN (
-    -- 当前企业对应的子账号
-    SELECT DISTINCT snick
-    FROM (
-        SELECT distinct snick, username
-        FROM ods.xinghuan_employee_snick_all AS snick_info
-        GLOBAL LEFT JOIN (
-            SELECT distinct
-                _id AS employee_id, username
-            FROM ods.xinghuan_employee_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS employee_info
-        USING(employee_id)
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 下拉框-子账号分组id
-        AND (
-            '{{ department_ids }}'=''
-            OR
-            department_id IN splitByChar(',','{{ department_ids }}')
-        )
-    ) AS snick_employee_info
-    -- 下拉框-客服姓名
-    WHERE (
-        '{{ usernames }}'=''
-        OR
-        username IN splitByChar(',','{{ usernames }}')
-    )
-)
+WITH t1 AS
+  (SELECT split_part(snick, ':', 1) AS seller_nick,
+          cnick,
+          DAY,
+          create_time,
+          uuid() AS sample_id
+   FROM dwd.mini_xdrs_log
+   WHERE act='recv_msg'
+     AND %s),
+     t2 AS
+  (SELECT *,
+          row_number() OVER (
+                             ORDER BY sample_id) AS rank_id
+   FROM t1),
+ t3 AS
+  (SELECT *
+   FROM t2
+   WHERE rank_id %% %d = %d ),
+ x1 AS
+  (SELECT split_part(snick, ':', 1) AS seller_nick,
+          cnick,
+          category,
+          act,
+          msg,
+          remind_answer,
+          cast(msg_time AS String) AS msg_time,
+          question_b_qid,
+          question_b_proba,
+          MODE,
+          DAY,
+          create_time,
+          is_robot_answer,
+		  plat_goods_id,
+		  current_sale_stage
+   FROM dwd.mini_xdrs_log
+   WHERE %s), 
+ x2 AS
+  (SELECT x1.*,
+          t3.sample_id,
+          if(x1.create_time = t3.create_time
+             AND x1.act = 'recv_msg',1,0) AS flag
+   FROM x1
+  RIGHT JOIN [shuffle] t3 ON x1.seller_nick = t3.seller_nick
+   AND x1.cnick = t3.cnick)
+INSERT overwrite xd_tmp.algorithm_sample_data_all PARTITION (mission_id='%s')
+SELECT x2.seller_nick,
+       x2.cnick,
+       x2.category,
+       x2.act,
+       x2.msg,
+       x2.remind_answer,
+       x2.msg_time,
+       x2.question_b_qid,
+       x2.question_b_proba,
+       x2.MODE,
+       x2.DAY,
+       x2.create_time,
+       x2.sample_id,
+       x2.flag,
+       xd_data.question_b.question,
+       x2.is_robot_answer,
+	   x2.plat_goods_id,
+	   x2.current_sale_stage
+FROM x2
+LEFT JOIN [shuffle] xd_data.question_b ON cast(split_part(x2.question_b_qid, '.', 1) AS integer) = cast(split_part(xd_data.question_b.qid, '.', 1) AS integer);
