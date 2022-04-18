@@ -1,0 +1,26 @@
+-- 新实时告警-店铺告警-告警总量
+SELECT
+    COUNT(1) AS `告警总量`,
+    COUNT(DISTINCT dialog_id) AS `告警会话量`
+FROM xqc_ods.alert_all FINAL
+WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
+    AND toYYYYMMDD(toDate('{{ day.end=today }}'))
+    -- 已订阅店铺
+AND shop_id GLOBAL IN (
+    SELECT tenant_id AS shop_id
+    FROM xqc_dim.company_tenant
+    WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+    AND platform = '{{ platform=tb }}'
+)
+AND (
+    -- 权限隔离
+        shop_id IN splitByChar(',','{{ shop_id_list=5bfe7a6a89bc4612f16586a5,5e7dbfa6e4f3320016e9b7d1 }}')
+        OR
+        snick IN splitByChar(',','{{ snick_list=null }}')
+    )
+-- 过滤新版标准
+AND level IN [1,2,3]
+-- 下拉框筛选
+AND platform = '{{ platform=tb }}'
+AND seller_nick='{{ shop_name=null }}'
+

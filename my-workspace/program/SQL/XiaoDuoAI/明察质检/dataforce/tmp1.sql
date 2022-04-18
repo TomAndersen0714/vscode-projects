@@ -1,65 +1,54 @@
-WITH t1 AS
-  (SELECT split_part(snick, ':', 1) AS seller_nick,
-          cnick,
-          DAY,
-          create_time,
-          uuid() AS sample_id
-   FROM dwd.mini_xdrs_log
-   WHERE act='recv_msg'
-     AND %s),
-     t2 AS
-  (SELECT *,
-          row_number() OVER (
-                             ORDER BY sample_id) AS rank_id
-   FROM t1),
- t3 AS
-  (SELECT *
-   FROM t2
-   WHERE rank_id %% %d = %d ),
- x1 AS
-  (SELECT split_part(snick, ':', 1) AS seller_nick,
-          cnick,
-          category,
-          act,
-          msg,
-          remind_answer,
-          cast(msg_time AS String) AS msg_time,
-          question_b_qid,
-          question_b_proba,
-          MODE,
-          DAY,
-          create_time,
-          is_robot_answer,
-		  plat_goods_id,
-		  current_sale_stage
-   FROM dwd.mini_xdrs_log
-   WHERE %s), 
- x2 AS
-  (SELECT x1.*,
-          t3.sample_id,
-          if(x1.create_time = t3.create_time
-             AND x1.act = 'recv_msg',1,0) AS flag
-   FROM x1
-  RIGHT JOIN [shuffle] t3 ON x1.seller_nick = t3.seller_nick
-   AND x1.cnick = t3.cnick)
-INSERT overwrite xd_tmp.algorithm_sample_data_all PARTITION (mission_id='%s')
-SELECT x2.seller_nick,
-       x2.cnick,
-       x2.category,
-       x2.act,
-       x2.msg,
-       x2.remind_answer,
-       x2.msg_time,
-       x2.question_b_qid,
-       x2.question_b_proba,
-       x2.MODE,
-       x2.DAY,
-       x2.create_time,
-       x2.sample_id,
-       x2.flag,
-       xd_data.question_b.question,
-       x2.is_robot_answer,
-	   x2.plat_goods_id,
-	   x2.current_sale_stage
-FROM x2
-LEFT JOIN [shuffle] xd_data.question_b ON cast(split_part(x2.question_b_qid, '.', 1) AS integer) = cast(split_part(xd_data.question_b.qid, '.', 1) AS integer);
+select toDate(parseDateTimeBestEffort(toString(`day`))) as `时间`,
+  shop_id,
+  snk_group_name,
+  recv_pv as `接收问题数`,
+  idfy_pv as `识别问题数`,
+  auto_reply_pv + click_answer_reply_pv as `回复问题数`,
+  round(IF(recv_pv = 0, 0, idfy_pv / recv_pv) * 100, 2) AS `识别率`,
+  round(
+    IF(
+      recv_pv = 0,
+      0,
+      (auto_reply_pv + click_answer_reply_pv) / recv_pv
+    ) * 100,
+    2
+  ) AS `应答率`,
+  buyer_start_session as `买家发起会话`,
+  snk_start_session as `客服发起会话`
+from (
+    select day,
+      shop_id,
+      snk_group_name,
+      recv_pv,
+      idfy_pv,
+      auto_reply_pv,
+      click_answer_reply_pv,
+      buyer_start_session,
+      snk_start_session
+    from app_mp.subnick_group_receive_all
+    where shop_id = '{{ shop_id=5cac112e98ef4100118a9c9f }}'
+      and day BETWEEN toYYYYMMDD(
+        parseDateTimeBestEffort('{{ day.start=week_ago }}')
+      ) AND toYYYYMMDD(
+        parseDateTimeBestEffort('{{ day.end=yesterday }}')
+      )
+    union all
+    select day,
+      shop_id,
+      '全部' as snk_group_name,
+      recv_pv,
+      idfy_pv,
+      auto_reply_pv,
+      click_answer_reply_pv,
+      buyer_start_session,
+      snk_start_session
+    from app_mp.shop_receive_v2_all
+    where shop_id = '{{ shop_id=5cac112e98ef4100118a9c9f }}'
+      and day BETWEEN toYYYYMMDD(
+        parseDateTimeBestEffort('{{ day.start=week_ago }}')
+      ) AND toYYYYMMDD(
+        parseDateTimeBestEffort('{{ day.end=yesterday }}')
+      )
+  )
+where snk_group_name in splitByChar(',', '{{ snk_group_name=全部 }}')
+order by `时间` asc

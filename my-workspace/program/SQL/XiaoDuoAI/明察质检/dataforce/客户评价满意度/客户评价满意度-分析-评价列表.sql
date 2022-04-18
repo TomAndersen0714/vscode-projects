@@ -3,6 +3,7 @@ SELECT
     replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
     replaceOne(eval_sender,'cntaobao','') AS snick,
     replaceOne(eval_recer,'cntaobao','') AS cnick,
+    eval_code,
     seller_nick AS `店铺`,
     CASE
         WHEN eval_code=0 THEN '非常满意'

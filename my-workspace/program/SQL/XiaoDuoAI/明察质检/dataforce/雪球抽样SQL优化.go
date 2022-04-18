@@ -4,6 +4,7 @@ func (u *MiNiDialogManager) CreateSamples(startDay, endDay, platform string, gro
 	sql := `WITH x1 AS (
     SELECT platform,
         split_part(snick, ':', 1) AS seller_nick,
+        snick,
         cnick,
         category,
         act,
@@ -56,7 +57,7 @@ LEFT JOIN [shuffle] xd_data.question_b ON cast(split_part(x2.question_b_qid, '.'
 	query := u.createQuery(startDay, endDay, platform, groupList, shopList, qidList, filterRule, 0, 0)
 	queryAll := u.createQuery(startDay, endDay, platform, groupList, shopList, nil, false, 0, 0)
 	missionID := utils.ToMD5(fmt.Sprintf("%s %d", query, bucketSize))
-	sql = fmt.Sprintf(sql, queryAll, bucketSize, rand.Intn(int(bucketSize)), query, missionID)
+	sql = fmt.Sprintf(sql, queryAll, missionID, bucketSize, rand.Intn(int(bucketSize)), query)
 	log.Infof("CreateSamples sql: %v", sql)
 
 	_, err, errCode := bdClient.PutBigData(

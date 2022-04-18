@@ -1,277 +1,443 @@
 {
-  _id: ObjectId("622d337c7061e90001a5da45"),
-  create_time: ISODate("2022-03-12T23:57:48.132Z"),
-  update_time: ISODate("2022-03-21T08:40:03.202Z"),
-  platform: 'tb',
-  channel: 'tb',
-  cnick: 'tb4456762565',
-  snick: '欧普照明官方旗舰店:57s',
-  seller_nick: '欧普照明官方旗舰店',
-  begin_time: ISODate("2022-03-12T23:57:48.116Z"),
-  end_time: ISODate("2022-03-13T00:38:20.956Z"),
-  is_after_sale: false,
-  is_inside: false,
-  s_emotion: [{
-    type: 8,
-    count: 0
-  }],
-  c_emotion: [{
-      type: 1,
-      count: 0
-    },
-    {
-      type: 2,
-      count: 1
-    },
-    {
-      type: 3,
-      count: 0
-    },
-    {
-      type: 4,
-      count: 0
-    },
-    {
-      type: 5,
-      count: 0
-    },
-    {
-      type: 6,
-      count: 0
-    },
-    {
-      type: 7,
-      count: 0
-    },
-    {
-      type: 8,
-      count: 0
-    },
-    {
-      type: 9,
-      count: 0
-    },
-    {
-      type: 10,
-      count: 0
-    }
-  ],
-  emotions: ['c2'],
-  abnormals: [{
-      type: 1,
-      count: 0
-    }, {
-      type: 2,
-      count: 0
-    },
-    {
-      type: 3,
-      count: 0
-    }, {
-      type: 4,
-      count: 0
-    },
-    {
-      type: 5,
-      count: 0
-    }, {
-      type: 6,
-      count: 0
-    },
-    {
-      type: 7,
-      count: 0
-    }, {
-      type: 8,
-      count: 0
-    },
-    {
-      type: 9,
-      count: 0
-    }, {
-      type: 10,
-      count: 0
-    },
-    {
-      type: 11,
-      count: 0
-    }, {
-      type: 12,
-      count: 0
-    },
-    {
-      type: 13,
-      count: 0
-    }, {
-      type: 14,
-      count: 0
-    },
-    {
-      type: 15,
-      count: 0
-    }, {
-      type: 16,
-      count: 0
-    },
-    {
-      type: 17,
-      count: 0
-    }, {
-      type: 18,
-      count: 0
-    },
-    {
-      type: 19,
-      count: 0
-    }, {
-      type: 20,
-      count: 0
-    },
-    {
-      type: 21,
-      count: 0
-    }, {
-      type: 22,
-      count: 0
-    },
-    {
-      type: 23,
-      count: 0
-    }, {
-      type: 24,
-      count: 0
-    },
-    {
-      type: 25,
-      count: 0
-    }, {
-      type: 26,
-      count: 0
-    },
-    {
-      type: 27,
-      count: 0
-    }, {
-      type: 28,
-      count: 0
-    },
-    {
-      type: 29,
-      count: 0
-    }
-  ],
-  excellents: [{
-      type: 1,
-      count: 0
-    },
-    {
-      type: 2,
-      count: 0
-    },
-    {
-      type: 3,
-      count: 0
-    },
-    {
-      type: 4,
-      count: 0
-    },
-    {
-      type: 5,
-      count: 0
-    },
-    {
-      type: 6,
-      count: 0
-    },
-    {
-      type: 7,
-      count: 0
-    },
-    {
-      type: 8,
-      count: 0
-    },
-    {
-      type: 9,
-      count: 0
-    },
-    {
-      type: 10,
-      count: 0
-    },
-    {
-      type: 11,
-      count: 0
-    },
-    {
-      type: 12,
-      count: 0
-    },
-    {
-      type: 13,
-      count: 0
-    },
-    {
-      type: 14,
-      count: 0
-    }
-  ],
-  qc_word: [],
-  score: 0,
-  score_add: 0,
-  mark_judge: 0,
-  mark_score: 0,
-  mark_score_add: 0,
-  mark: '',
-  suspected_problem: false,
-  not_send_rules: {
-    ac: {
-      '6183bcec54157d3ef3868dde': true
-    },
-    cb: {
-      '618387fd54157d3ef3868dc7': true
-    }
+  "histograms": {
+    "histograms": [{
+        "displayName": "持续时间",
+        "attributeName": "query_duration",
+        "type": "NUMERIC",
+        "groupingUnits": {
+          "numerators": ["ms"],
+          "denominators": []
+        },
+        "summingDisplayName": null,
+        "summingUnits": null,
+        "binScale": "LINEAR",
+        "scaleValue": 20.0,
+        "bins": [{
+          "filterExpression": "query_duration < 20.0",
+          "value": 1.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 0.0,
+          "endPointExclusive": 20.0
+        }, {
+          "filterExpression": "query_duration >= 20.0 AND query_duration < 40.0",
+          "value": 0.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 20.0,
+          "endPointExclusive": 40.0
+        }, {
+          "filterExpression": "query_duration >= 40.0 AND query_duration < 60.0",
+          "value": 0.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 40.0,
+          "endPointExclusive": 60.0
+        }, {
+          "filterExpression": "query_duration >= 60.0 AND query_duration < 80.0",
+          "value": 0.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 60.0,
+          "endPointExclusive": 80.0
+        }, {
+          "filterExpression": "query_duration >= 80.0 AND query_duration < 100.0",
+          "value": 0.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 80.0,
+          "endPointExclusive": 100.0
+        }, {
+          "filterExpression": "query_duration >= 100.0",
+          "value": 1.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 100.0,
+          "endPointExclusive": 120.0
+        }],
+        "rawNumericValues": [],
+        "rawStringValues": {},
+        "topValues": [{
+          "linkName": "ba43be5c4175b967:50a5a96e00000000",
+          "linkCategory": "IMPALA_QUERY",
+          "displayName": "ba43be5c4175b967:50a5a96e00000000",
+          "value": 104.0
+        }, {
+          "linkName": "b143a8bda4353394:2f315c8c00000000",
+          "linkCategory": "IMPALA_QUERY",
+          "displayName": "b143a8bda4353394:2f315c8c00000000",
+          "value": 1.0
+        }],
+        "bottomValues": [{
+          "linkName": "b143a8bda4353394:2f315c8c00000000",
+          "linkCategory": "IMPALA_QUERY",
+          "displayName": "b143a8bda4353394:2f315c8c00000000",
+          "value": 1.0
+        }, {
+          "linkName": "ba43be5c4175b967:50a5a96e00000000",
+          "linkCategory": "IMPALA_QUERY",
+          "displayName": "ba43be5c4175b967:50a5a96e00000000",
+          "value": 104.0
+        }],
+        "tsquery": null,
+        "streamTsquery": null,
+        "rollupUsed": null,
+        "statistics": {
+          "count": 2,
+          "sum": 105.0,
+          "mean": 52.5,
+          "secondMoment": 5304.5
+        },
+        "pipelineType": null,
+        "startTimeUsed": null,
+        "endTimeUsed": null
+      },
+      {
+        "displayName": "用户",
+        "attributeName": "user",
+        "type": "STRING",
+        "groupingUnits": null,
+        "summingDisplayName": null,
+        "summingUnits": null,
+        "binScale": null,
+        "scaleValue": null,
+        "bins": [{
+          "filterExpression": "user = \"redash\"",
+          "value": 2.0,
+          "label": "redash",
+          "internalLabel": "redash",
+          "startPointInclusive": null,
+          "endPointExclusive": null
+        }],
+        "rawNumericValues": [],
+        "rawStringValues": {},
+        "topValues": [],
+        "bottomValues": [],
+        "tsquery": null,
+        "streamTsquery": null,
+        "rollupUsed": null,
+        "statistics": null,
+        "pipelineType": null,
+        "startTimeUsed": null,
+        "endTimeUsed": null
+      },
+      {
+        "displayName": "累积内存使用峰值",
+        "attributeName": "memory_aggregate_peak",
+        "type": "NUMERIC",
+        "groupingUnits": {
+          "numerators": ["bytes"],
+          "denominators": []
+        },
+        "summingDisplayName": null,
+        "summingUnits": null,
+        "binScale": "LINEAR",
+        "scaleValue": 1.0,
+        "bins": [{
+          "filterExpression": "",
+          "value": 0.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 0.0,
+          "endPointExclusive": 0.0
+        }],
+        "rawNumericValues": [],
+        "rawStringValues": {},
+        "topValues": [],
+        "bottomValues": [],
+        "tsquery": null,
+        "streamTsquery": null,
+        "rollupUsed": null,
+        "statistics": {
+          "count": 0,
+          "sum": "NaN",
+          "mean": "NaN",
+          "secondMoment": "NaN"
+        },
+        "pipelineType": null,
+        "startTimeUsed": null,
+        "endTimeUsed": null
+      },
+      {
+        "displayName": "线程：CPU 时间",
+        "attributeName": "thread_cpu_time",
+        "type": "NUMERIC",
+        "groupingUnits": {
+          "numerators": ["ms"],
+          "denominators": []
+        },
+        "summingDisplayName": null,
+        "summingUnits": null,
+        "binScale": "LINEAR",
+        "scaleValue": 1.0,
+        "bins": [{
+          "filterExpression": "",
+          "value": 1.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 0.0,
+          "endPointExclusive": 0.0
+        }],
+        "rawNumericValues": [],
+        "rawStringValues": {},
+        "topValues": [{
+          "linkName": "ba43be5c4175b967:50a5a96e00000000",
+          "linkCategory": "IMPALA_QUERY",
+          "displayName": "ba43be5c4175b967:50a5a96e00000000",
+          "value": 0.0
+        }],
+        "bottomValues": [{
+          "linkName": "ba43be5c4175b967:50a5a96e00000000",
+          "linkCategory": "IMPALA_QUERY",
+          "displayName": "ba43be5c4175b967:50a5a96e00000000",
+          "value": 0.0
+        }],
+        "tsquery": null,
+        "streamTsquery": null,
+        "rollupUsed": null,
+        "statistics": {
+          "count": 1,
+          "sum": 0.0,
+          "mean": 0.0,
+          "secondMoment": 0.0
+        },
+        "pipelineType": null,
+        "startTimeUsed": null,
+        "endTimeUsed": null
+      },
+      {
+        "displayName": "读取的 HDFS 字节",
+        "attributeName": "hdfs_bytes_read",
+        "type": "NUMERIC",
+        "groupingUnits": {
+          "numerators": ["bytes"],
+          "denominators": []
+        },
+        "summingDisplayName": null,
+        "summingUnits": null,
+        "binScale": "LINEAR",
+        "scaleValue": 1.0,
+        "bins": [{
+          "filterExpression": "",
+          "value": 0.0,
+          "label": null,
+          "internalLabel": null,
+          "startPointInclusive": 0.0,
+          "endPointExclusive": 0.0
+        }],
+        "rawNumericValues": [],
+        "rawStringValues": {},
+        "topValues": [],
+        "bottomValues": [],
+        "tsquery": null,
+        "streamTsquery": null,
+        "rollupUsed": null,
+        "statistics": {
+          "count": 0,
+          "sum": "NaN",
+          "mean": "NaN",
+          "secondMoment": "NaN"
+        },
+        "pipelineType": null,
+        "startTimeUsed": null,
+        "endTimeUsed": null
+      }
+    ]
   },
-  answer_count: Long("3"),
-  question_count: Long("3"),
-  first_answer_time: 1647129475,
-  qa_time_sum: 25,
-  qa_round_sum: 3,
-  focus_goods_id: '656350505892',
-  group: '企业默认分组',
-  has_withdraw_robot_msg: false,
-  is_remind: false,
-  is_order_matched: true,
-  emotion_detect_mode: 2,
-  consulte_transfor_v2: 2,
-  intel_score: 0,
-  suspected_positive_emotion: false,
-  is_follow_up_remind: false,
-  remind_ntype: 0,
-  first_follow_up_time: ISODate("0001-01-01T00:00:00.000Z"),
-  date: 20220313,
-  cnick_customize_rule: [
-    ObjectId("6183a53c54157d3ef3868dd7"),
-    ObjectId("6182524154157d3ef3868da0")
+  "items": [{
+      "externalLinks": [],
+      "appLinks": [{
+        "text": "用户的 Impala 查询",
+        "target": "user = \"redash\""
+      }, {
+        "text": "相同 YARN 池中的查询",
+        "target": "pool = \"root.redash\""
+      }],
+      "frontendHostName": "znzjk-134220-test-mini-bigdata-clickhouse",
+      "frontendHostURL": "/cmf/hardware/hosts/1/status",
+      "queryState": "FINISHED",
+      "runtimeProfileAvailable": true,
+      "syntheticAttributes": {
+        "thread_cpu_time_percentage": "100",
+        "thread_network_receive_wait_time": "0",
+        "thread_cpu_time": "0",
+        "memory_spilled": "0",
+        "query_status": "OK",
+        "thread_network_receive_wait_time_percentage": "0",
+        "oom": "false",
+        "num_backends": "1",
+        "planning_wait_time_percentage": "0",
+        "admission_wait": "0",
+        "connected_user": "redash",
+        "stats_missing": "false",
+        "planning_wait_time": "0",
+        "client_fetch_wait_time_percentage": "88",
+        "memory_per_node_peak_node": "znzjk-134220-test-mini-bigdata-clickhouse:22000",
+        "session_type": "BEESWAX",
+        "estimated_per_node_peak_memory": "10485760",
+        "client_fetch_wait_time": "92",
+        "file_formats": "",
+        "admission_result": "Admitted immediately",
+        "pool": "root.redash",
+        "session_id": "5048f88e9bc0ec8b:1c5cd3cbc0a11687",
+        "stats_corrupt": "false",
+        "thread_total_time": "0",
+        "thread_network_send_wait_time_percentage": "0",
+        "impala_version": "impalad version 3.2.0-cdh6.3.1 RELEASE (build 3d5de689e9b9cfde0c01e1c64f4b4e830cee69c3)",
+        "network_address": "172.18.0.4:43970",
+        "thread_storage_wait_time_percentage": "0",
+        "memory_per_node_peak": "12288.0",
+        "thread_network_send_wait_time": "0",
+        "num_fragments": "1",
+        "thread_storage_wait_time": "0"
+      },
+      "frontEndHostId": "f8c5c4a5-3277-4bf5-bd5f-01279719d19f",
+      "executing": false,
+      "isFailed": false,
+      "cancelable": false,
+      "isCanceled": false,
+      "queryType": "QUERY",
+      "rowsProduced": 1,
+      "defaultDatabase": "ods",
+      "queryId": "ba43be5c4175b967:50a5a96e00000000",
+      "endTime": {
+        "millis": 1649987901609,
+        "chronology": {
+          "zone": {
+            "fixed": true,
+            "id": "UTC"
+          }
+        },
+        "zone": {
+          "fixed": true,
+          "id": "UTC"
+        },
+        "afterNow": false,
+        "beforeNow": true,
+        "equalNow": false
+      },
+      "id": "ba43be5c4175b967:50a5a96e00000000",
+      "pool": "root.redash",
+      "startTime": {
+        "millis": 1649987901505,
+        "chronology": {
+          "zone": {
+            "fixed": true,
+            "id": "UTC"
+          }
+        },
+        "zone": {
+          "fixed": true,
+          "id": "UTC"
+        },
+        "afterNow": false,
+        "beforeNow": true,
+        "equalNow": false
+      },
+      "duration": {
+        "standardDays": 0,
+        "standardHours": 0,
+        "standardMinutes": 0,
+        "standardSeconds": 0,
+        "millis": 104
+      },
+      "user": "redash",
+      "statement": "/* Username: chengcheng@xiaoduotech.com, Task ID: 1c30a5cf-0ae2-4e4b-b6bd-02a4dc45f918, Scheduled: False, Query Hash: f6bf37efedbc0a2dfffc1caf5088d86e, Queue: queries, Query ID: adhoc */ SELECT 1",
+      "completed": true,
+      "workType": "IMPALA_QUERY",
+      "serviceName": "impala"
+    },
+    {
+      "externalLinks": [],
+      "appLinks": [{
+        "text": "用户的 Impala 查询",
+        "target": "user = \"redash\""
+      }],
+      "frontendHostName": "znzjk-134220-test-mini-bigdata-clickhouse",
+      "frontendHostURL": "/cmf/hardware/hosts/1/status",
+      "queryState": "FINISHED",
+      "runtimeProfileAvailable": true,
+      "syntheticAttributes": {
+        "client_fetch_wait_time": "1",
+        "file_formats": "",
+        "query_status": "OK",
+        "admission_result": "Unknown",
+        "session_id": "5048f88e9bc0ec8b:1c5cd3cbc0a11687",
+        "stats_corrupt": "false",
+        "oom": "false",
+        "ddl_type": "USE",
+        "planning_wait_time_percentage": "100",
+        "connected_user": "redash",
+        "impala_version": "impalad version 3.2.0-cdh6.3.1 RELEASE (build 3d5de689e9b9cfde0c01e1c64f4b4e830cee69c3)",
+        "stats_missing": "false",
+        "planning_wait_time": "1",
+        "client_fetch_wait_time_percentage": "100",
+        "network_address": "172.18.0.4:43970",
+        "session_type": "BEESWAX"
+      },
+      "frontEndHostId": "f8c5c4a5-3277-4bf5-bd5f-01279719d19f",
+      "executing": false,
+      "isFailed": false,
+      "cancelable": false,
+      "isCanceled": false,
+      "queryType": "DDL",
+      "rowsProduced": null,
+      "defaultDatabase": "default",
+      "queryId": "b143a8bda4353394:2f315c8c00000000",
+      "endTime": {
+        "millis": 1649987901503,
+        "chronology": {
+          "zone": {
+            "fixed": true,
+            "id": "UTC"
+          }
+        },
+        "zone": {
+          "fixed": true,
+          "id": "UTC"
+        },
+        "afterNow": false,
+        "beforeNow": true,
+        "equalNow": false
+      },
+      "id": "b143a8bda4353394:2f315c8c00000000",
+      "pool": null,
+      "startTime": {
+        "millis": 1649987901502,
+        "chronology": {
+          "zone": {
+            "fixed": true,
+            "id": "UTC"
+          }
+        },
+        "zone": {
+          "fixed": true,
+          "id": "UTC"
+        },
+        "afterNow": false,
+        "beforeNow": true,
+        "equalNow": false
+      },
+      "duration": {
+        "standardDays": 0,
+        "standardHours": 0,
+        "standardMinutes": 0,
+        "standardSeconds": 0,
+        "millis": 1
+      },
+      "user": "redash",
+      "statement": "USE ods",
+      "completed": true,
+      "workType": "IMPALA_QUERY",
+      "serviceName": "impala"
+    }
   ],
-  qc_task_flag: 0,
-  qid: [
-    Long("207850077"),
-    Long("0"),
-    Long("207850070"),
-    Long("207850074")
-  ],
-  last_msg_id: ObjectId("622d3cfce9b28e0001f4adc5"),
-  order_info: {
-    order_id: '1514881203563895368',
-    status: 'succeeded',
-    payment: 129,
-    order_time: Long("1647131965")
-  },
-  rule_stats: [{
-    id: ObjectId("618387fd54157d3ef3868dc7"),
-    count: 1,
-    score: 0
-  }]
+  "errors": [],
+  "warnings": [],
+  "hasNext": false,
+  "skipped": 0,
+  "encodedContinuationInfo": null,
+  "nextEndTime": null,
+  "scanned": 2,
+  "scanTimeMs": 1
 }
