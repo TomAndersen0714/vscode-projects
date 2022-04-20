@@ -1,0 +1,4 @@
+INSERT INTO TABLE ods.kefu_eval_detail_all VALUES ('cntaobao木月瑞希尔:花楹',3,'cntaobao刘海龙acer','cntaobao木月瑞希尔:花楹','2022-04-18 17:45:10','2022-04-18 17:45:10',1,20220418)
+INSERT INTO TABLE ods.kefu_eval_detail_all VALUES ('cntaobao木月瑞希尔:苏木',0,'cntaobao邓锐zero','cntaobao木月瑞希尔:苏木','2022-04-18 19:37:10','2022-04-18 19:37:10',1,20220418)
+INSERT INTO TABLE ods.xinghuan_employee_snick_all(company_id, platform, snick, day) VALUES ('612c53cb7250e1e5140faded','tb','木月瑞希尔:花楹', toYYYYMMDD(yesterday()))
+INSERT INTO TABLE ods.xinghuan_employee_snick_all(company_id, platform, snick, day) VALUES ('612c53cb7250e1e5140faded','tb','木月瑞希尔:苏木', toYYYYMMDD(yesterday()))

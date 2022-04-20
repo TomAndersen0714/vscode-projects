@@ -1,0 +1,1 @@
+k exec -it svc/pulsar-cluster01-slb -- bin/pulsar-client produce "persistent://statistics/kefu_eval/detail" --messages '{"user_nick":"cntaobao邓锐zero","eval_code":4,"eval_recer":"cntaobao姓瑶","eval_sender":"cntaobao邓锐zero","eval_time":"2022-04-16 01:36:10.567556","send_time":"2022-04-16 01:35:10.567556","source":1,"day":20220416}' -s '\n'

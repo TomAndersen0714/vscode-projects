@@ -1,121 +1,24 @@
--- 1. 抽样
-WITH t1 AS (
-    SELECT split_part(snick, ':', 1) AS seller_nick,
-        cnick,
-        DAY,
-        create_time,
-        uuid() AS sample_id
-    FROM dwd.mini_xdrs_log
-    WHERE act = 'recv_msg'
-        AND platform = "tb"
-        AND DAY >= 20220401
-        AND DAY <= 20220401
-        AND act not in ('statistics_send_msg', '')
-        AND split_part(snick, ':', 1) IN ("cntaobao安久酒类专营店")
-),
-t2 AS (
-        SELECT *,
-        row_number() OVER (
-            ORDER BY sample_id
-        ) AS rank_id
-    FROM t1
-),
-t3 AS (
-        SELECT *
-    FROM t2
-    WHERE rank_id % 1 = 0
-),
-x1 AS (
-    SELECT split_part(snick, ':', 1) AS seller_nick,
-        cnick,
-        category,
-        act,
-        msg,
-        remind_answer,
-        cast(msg_time AS String) AS msg_time,
-        question_b_qid,
-        question_b_proba,
-        MODE,
-        DAY,
-        create_time,
-        is_robot_answer,
-        plat_goods_id,
-        current_sale_stage
-    FROM dwd.mini_xdrs_log
-    WHERE platform = "tb"
-        AND DAY >= 20220401
-        AND DAY <= 20220401
-        AND act not in ('statistics_send_msg', '')
-        AND split_part(snick, ':', 1) IN ("cntaobao安久酒类专营店")
-),
-x2 AS (
-    SELECT x1.*,
-        t3.sample_id,
-        if(
-            x1.create_time = t3.create_time
-            AND x1.act = 'recv_msg',
-            1,
-            0
-        ) AS flag
-    FROM x1
-        RIGHT JOIN [shuffle] t3 ON x1.seller_nick = t3.seller_nick
-        AND x1.cnick = t3.cnick
-)
-INSERT overwrite test.algorithm_sample_data_all PARTITION (mission_id = '1737cf74480551f1bd93dffac1188ef9')
-SELECT x2.seller_nick,
-    x2.cnick,
-    x2.category,
-    x2.act,
-    x2.msg,
-    x2.remind_answer,
-    x2.msg_time,
-    x2.question_b_qid,
-    x2.question_b_proba,
-    x2.MODE,
-    x2.DAY,
-    x2.create_time,
-    x2.sample_id,
-    x2.flag,
-    xd_data.question_b.question,
-    x2.is_robot_answer,
-    x2.plat_goods_id,
-    x2.current_sale_stage
-FROM x2
-    LEFT JOIN [shuffle] xd_data.question_b ON cast(split_part(x2.question_b_qid, '.', 1) AS integer) = cast(
-        split_part(xd_data.question_b.qid, '.', 1) AS integer
-    );
-
--- 2. 统计
-WITH t AS (
-    SELECT *,
-        row_number() over (
-            partition by snick,
-            cnick
-            order by create_time
-        ) as time_rank
-    FROM test.algorithm_sample_data_all
-    WHERE mission_id = '1737cf74480551f1bd93dffac1188ef9'
-),
-t1 AS (
-    SELECT snick,
-        cnick,
-        sample_id,
-        create_time,
-        time_rank
-    FROM t
-    WHERE flag = 1
-),
-res as (
-    SELECT t.*,
-        dense_rank() over (
-            order by t1.sample_id
-        ) as dr
-    FROM t1
-        left JOIN [SHUFFLE] t on t1.snick = t.snick
-        and t1.cnick = t.cnick
-        and t.time_rank between t1.time_rank - 0 and t1.time_rank + 0
-        )
-select *
-from res
-where dr <= 560;
--- trace:6974e3d73d210767dcfb48dd9068e69f
+SELECT
+    shop_question_stat.question AS question_name,
+    shop_question_stat.count AS count,
+    toInt64OrZero(question_info.qid) AS qid,
+    shop_question_stat.question_id AS question_id
+FROM (
+    SELECT question,
+        question_id,
+        sum(recv_count) AS count
+    FROM dws.shop_snick_question_stat_all
+    WHERE day BETWEEN 20220320 AND 20220419
+        AND shop_id = '5e7dbfa6e4f3320016e9b7d1'
+        AND question_type = 'question_b'
+    GROUP BY question,
+        question_id
+) AS shop_question_stat
+GLOBAL LEFT JOIN
+    dim.question_b_v2_all AS question_info
+ON shop_question_stat.question_id = question_info._id
+WHERE qid != 0
+    AND if(0 != 0, qid = 0, 1)
+    AND if('' != '', question_name LIKE '%%', 1)
+ORDER BY count DESC
+LIMIT 20
