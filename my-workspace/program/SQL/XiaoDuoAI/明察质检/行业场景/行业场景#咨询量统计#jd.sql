@@ -17,7 +17,7 @@ FROM (
             AND day BETWEEN toYYYYMMDD(parseDateTimeBestEffort('{{ day.start=month_ago }}')) AND toYYYYMMDD(parseDateTimeBestEffort('{{ day.end=yesterday }}'))
             AND question_oid GLOBAL in
             (
-                SELECT _id AS question_oid FROM dim.question_b_v2
+                SELECT _id AS question_oid FROM dim.question_b_v2_all
                 WHERE
                     -- if(('{{ subcategory_id }}' != '全部' AND '{{ subcategory_id }}' != ''), subcategory_id = '{{ subcategory_id }}', subcategory_id IN (
                     --     SELECT subcategory_id FROM dim.category_subcategory_all
@@ -38,7 +38,7 @@ FROM (
             )
         GROUP BY question_id, question
         ) AS shop_stat_question
-    GLOBAL LEFT JOIN dim.question_b_v2 AS sq ON shop_stat_question.question_id = sq._id
+    GLOBAL LEFT JOIN dim.question_b_v2_all AS sq ON shop_stat_question.question_id = sq._id
 ) AS b
 GLOBAL LEFT JOIN dim.subcategory_all ON b.subcategory_id = dim.subcategory_all._id    
 ORDER BY `咨询量` DESC

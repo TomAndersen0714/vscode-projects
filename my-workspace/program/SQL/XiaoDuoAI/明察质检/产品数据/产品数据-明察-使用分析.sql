@@ -1,4 +1,5 @@
 -- 产品数据-明察-XQC使用分析
+-- 淘宝: clickhouse
 WITH t1 AS (
     SELECT company_id AS _id,
         count(1) AS shop_cnt

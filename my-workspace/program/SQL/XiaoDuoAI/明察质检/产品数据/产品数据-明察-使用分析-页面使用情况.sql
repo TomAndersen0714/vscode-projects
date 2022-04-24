@@ -1,4 +1,5 @@
 -- 产品数据-明察-页面使用情况
+-- 淘宝: impala
 WITH t1 AS (
     SELECT DISTINCT url,
         marked_content
