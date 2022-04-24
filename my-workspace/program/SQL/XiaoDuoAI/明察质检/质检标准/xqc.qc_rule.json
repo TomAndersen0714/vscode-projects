@@ -1,0 +1,30 @@
+{
+	"_id" : ObjectId("60389dea3c9a010001d8d04a"),
+	"create_time" : ISODate("2021-02-26T07:06:18.553Z"),
+	"update_time" : ISODate("2022-04-14T03:14:21.911Z"),
+	"company_id" : ObjectId("5f73e9c1684bf70001413636"),
+	"platform" : "tb",
+	"qc_norm_id" : ObjectId("60389dea72a70d0001eb934c"),
+	"qc_norm_group_id" : ObjectId("6245ff832e61eef7f95b48d5"),
+	"template_id" : ObjectId("6245ff832e61eef7f95b48e1"),
+	"name" : "满意",
+	"seller_nick" : "",
+	"rule_category" : 1,
+	"rule_type" : 3,
+	"settings" : {
+		"category_name" : "顾客正面情绪",
+		"algo_type" : 1,
+		"type" : "c1",
+		"source" : 0
+	},
+	"check" : true,
+	"check_target" : 1,
+	"alert_level" : 0,
+	"notify_way" : 2,
+	"notify_target" : 3,
+	"score" : -2,
+	"threshold" : 0,
+	"special_settings" : null,
+	"status" : 1,
+	"update_account" : ObjectId("5f73e9c1684bf7000141363d")
+}

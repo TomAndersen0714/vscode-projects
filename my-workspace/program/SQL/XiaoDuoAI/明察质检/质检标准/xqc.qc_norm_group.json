@@ -1,0 +1,10 @@
+{
+	"_id" : ObjectId("6245ff832e61eef7f95b48a5"),
+	"create_time" : ISODate("0001-01-01T00:00:00Z"),
+	"update_time" : ISODate("0001-01-01T00:00:00Z"),
+	"company_id" : ObjectId("5f73e9c1684bf70001413636"),
+	"platform" : "",
+	"qc_norm_id" : ObjectId("61efa979541816dd05649b02"),
+	"name" : "未分组-AI",
+	"parent_id" : ObjectId("61efa979541816dd05649b02")
+}
