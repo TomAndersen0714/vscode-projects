@@ -40,7 +40,7 @@ FROM (
     SELECT *
     FROM dwd.xdqc_dialog_all
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-    AND platform = '{{platfrom}}'
+    AND platform = '{{platform}}'
     AND snick GLOBAL IN (
         SELECT distinct snick
         FROM ods.xinghuan_employee_snick_all
@@ -72,7 +72,7 @@ GLOBAL LEFT JOIN (
             department_id
         FROM ods.xinghuan_employee_snick_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{date_range.start}}')) AND toYYYYMMDD(toDate('{{date_range.end}}'))
-        AND platform = '{{platfrom}}'
+        AND platform = '{{platform}}'
     ) AS snick_info
     USING department_id
 )

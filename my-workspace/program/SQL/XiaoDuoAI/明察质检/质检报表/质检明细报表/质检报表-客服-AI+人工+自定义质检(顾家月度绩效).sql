@@ -88,7 +88,9 @@ CREATE TABLE tmp.xqc_qc_report_snick_all ON CLUSTER cluster_3s_2r
 AS tmp.xqc_qc_report_snick_local
 ENGINE = Distributed('cluster_3s_2r', 'tmp', 'xqc_qc_report_snick_local', rand())
 
+
 -- 写入数据
+-- 淘宝, 3月份数据
 INSERT INTO tmp.xqc_qc_report_snick_all
 -- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果-子账号维度
 SELECT *
@@ -627,6 +629,8 @@ GLOBAL FULL OUTER JOIN (
     GROUP BY day, platform, seller_nick, snick
 ) AS customize_check_info
 USING(day, platform, seller_nick, snick)
+
+
 
 -- 质检报表-客服-AI+人工+自定义质检(顾家月度绩效)
 -- 质检报表-客服

@@ -1,0 +1,9 @@
+{
+    '_id': ObjectId('5f7481840c6b0e00016302e7'),
+    'create_time': datetime.datetime(2020, 9, 30, 13, 0, 52, 674000),
+    'update_time': datetime.datetime(2020, 9, 30, 13, 1, 18, 253000),
+    'company_id': ObjectId('5f73e9c1684bf70001413636'),
+    'name': '京东售后组1',
+    'parent_id': ObjectId('5f7481840c6b0e00016302e7'),
+    'is_edit': True
+}

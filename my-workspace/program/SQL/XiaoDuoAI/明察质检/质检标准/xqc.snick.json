@@ -1,0 +1,14 @@
+{
+    '_id': ObjectId('5f8135d0760eb300011a2377'),
+    'create_time': datetime.datetime(2020, 10, 10, 4, 17, 20, 505000),
+    'update_time': datetime.datetime(2020, 10, 10, 4, 17, 20, 505000),
+    'company_id': ObjectId('5f747ba42c90fd0001254404'),
+    'mp_shop_id': ObjectId('5cac112e98ef4100118a9c9f'),
+    'platform': 'tb',
+    'seller_nick': '方太官方旗舰店',
+    'department_id': ObjectId('5f81267dde07a80001cb2ab5'),
+    'employee_id': ObjectId('5f8129e1de07a80001cb2aba'),
+    'snick': '方太官方旗舰店:饺子',
+    'status': 1,
+    'new': False
+}

@@ -5,20 +5,20 @@ WITH
 ( SELECT toYYYYMMDD(yesterday()) ) AS yesterday
 SELECT -- BG部门维度聚合统计
     bg_name,
-    sum(snick_today_dialog_cnt) AS bg_today_dialog_cnt, -- BG当天当前的会话总量
-    sum(snick_yesterday_dialog_cnt) AS bg_yesterday_dialog_cnt, -- BG昨天同时刻的会话总量
+    sum(if(isNull(snick_today_dialog_cnt),0,snick_today_dialog_cnt)) AS bg_today_dialog_cnt, -- BG当天当前的会话总量
+    sum(if(isNull(snick_yesterday_dialog_cnt),0,snick_yesterday_dialog_cnt)) AS bg_yesterday_dialog_cnt, -- BG昨天同时刻的会话总量
     if(
         bg_yesterday_dialog_cnt!=0, round(sum(diff_dialog_cnt)/bg_yesterday_dialog_cnt*100,1), 0.0
     ) AS bg_dialog_relative_ratio, -- BG会话总量日环比(秒级)
-    sum(snick_today_level_1_cnt) AS bg_today_level_1_cnt, -- BG当天当前初级告警总量 -- BG告警分布
-    sum(snick_today_level_2_cnt) AS bg_today_level_2_cnt, -- BG当天当前中级告警总量 -- BG告警分布
-    sum(snick_today_level_3_cnt) AS bg_today_level_3_cnt, -- BG当天当前高级告警总量 -- BG告警分布
+    sum(if(isNull(snick_today_level_1_cnt),0,snick_today_level_1_cnt)) AS bg_today_level_1_cnt, -- BG当天当前初级告警总量 -- BG告警分布
+    sum(if(isNull(snick_today_level_2_cnt),0,snick_today_level_2_cnt)) AS bg_today_level_2_cnt, -- BG当天当前中级告警总量 -- BG告警分布
+    sum(if(isNull(snick_today_level_3_cnt),0,snick_today_level_3_cnt)) AS bg_today_level_3_cnt, -- BG当天当前高级告警总量 -- BG告警分布
     (bg_today_level_1_cnt+bg_today_level_2_cnt+bg_today_level_3_cnt) AS bg_today_warning_cnt, -- BG当天当前告警总量
     if(
         bg_today_dialog_cnt!=0, round((bg_today_level_2_cnt+bg_today_level_3_cnt)/bg_today_dialog_cnt*100,1), 0.0
     ) AS bg_level_2_3_ratio, -- BG当天当前中高级告警比例
-    sum(snick_today_level_2_finished_cnt) AS bg_today_level_2_finished_cnt, -- BG当天当前已完结中级告警总量
-    sum(snick_today_level_3_finished_cnt) AS bg_today_level_3_finished_cnt, -- BG当天当前已完结高级告警总量
+    sum(if(isNull(snick_today_level_2_finished_cnt),0,snick_today_level_2_finished_cnt)) AS bg_today_level_2_finished_cnt, -- BG当天当前已完结中级告警总量
+    sum(if(isNull(snick_today_level_3_finished_cnt),0,snick_today_level_3_finished_cnt)) AS bg_today_level_3_finished_cnt, -- BG当天当前已完结高级告警总量
     if(
         bg_today_level_2_cnt!=0, round(bg_today_level_2_finished_cnt/bg_today_level_2_cnt*100,1), 0.0
     ) AS bg_level_2_finished_ratio, -- BG当天当前中级告警完结率
