@@ -1,4 +1,5 @@
-DROP TABLE tmp.qc_rule_local ON CLUSTER cluster_3s_2r NO DELAY
+-- tmp.qc_rule_local
+-- DROP TABLE tmp.qc_rule_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE tmp.qc_rule_local ON CLUSTER cluster_3s_2r
 (
     `_id` String,
@@ -35,14 +36,14 @@ SETTINGS storage_policy = 'rr', index_granularity = 8192
 
 
 -- tmp.qc_rule_all
-DROP TABLE tmp.qc_rule_all ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE tmp.qc_rule_all ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE tmp.qc_rule_all ON CLUSTER cluster_3s_2r
 AS tmp.qc_rule_local
 ENGINE = Distributed('cluster_3s_2r', 'tmp', 'qc_rule_local', rand())
 
 
 -- xqc_dim.qc_rule_local
-DROP TABLE xqc_dim.qc_rule_local ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE xqc_dim.qc_rule_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE xqc_dim.qc_rule_local ON CLUSTER cluster_3s_2r
 (
     `_id` String,
@@ -75,13 +76,13 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY day
+PARTITION BY `day`
 ORDER BY (company_id, platform, seller_nick)
 SETTINGS storage_policy = 'rr', index_granularity = 8192
 
 
 -- xqc_dim.qc_rule_all
-DROP TABLE xqc_dim.qc_rule_all ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE xqc_dim.qc_rule_all ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE xqc_dim.qc_rule_all ON CLUSTER cluster_3s_2r
 AS xqc_dim.qc_rule_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'qc_rule_local', rand())

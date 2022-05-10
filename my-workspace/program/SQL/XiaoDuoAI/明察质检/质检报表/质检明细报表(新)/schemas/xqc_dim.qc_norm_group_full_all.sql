@@ -1,5 +1,6 @@
-DROP TABLE xqc_dim.qc_norm_group_path_local ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE xqc_dim.qc_norm_group_path_local ON CLUSTER cluster_3s_2r
+-- xqc_dim.qc_norm_group_full_local
+-- DROP TABLE xqc_dim.qc_norm_group_full_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE xqc_dim.qc_norm_group_full_local ON CLUSTER cluster_3s_2r
 (
     `_id` String,
     `create_time` String,
@@ -21,15 +22,15 @@ PARTITION BY day
 ORDER BY (company_id, platform)
 SETTINGS storage_policy = 'rr', index_granularity = 8192
 
-
-DROP TABLE xqc_dim.qc_norm_group_path_all ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE xqc_dim.qc_norm_group_path_all ON CLUSTER cluster_3s_2r
-AS xqc_dim.qc_norm_group_path_local
-ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'qc_norm_group_path_local', rand())
+-- xqc_dim.qc_norm_group_full_all
+-- DROP TABLE xqc_dim.qc_norm_group_full_all ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE xqc_dim.qc_norm_group_full_all ON CLUSTER cluster_3s_2r
+AS xqc_dim.qc_norm_group_full_local
+ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'qc_norm_group_full_local', rand())
 
 
 -- PS: 此处需要JOIN 3次来获取子账号分组的完整路径, 因为子账号分组树高为4
-INSERT INTO xqc_dim.qc_norm_group_path_all
+INSERT INTO xqc_dim.qc_norm_group_full_all
 SELECT
     -- parent_group_id全为空, 即当前树型结构层次遍历完毕
     level_2_3_4._id AS _id,

@@ -1,0 +1,258 @@
+{
+  _id: ObjectId("627622ddab4d1c0001613d10"),
+  create_time: ISODate("2022-05-07T07:42:21.784Z"),
+  update_time: ISODate("2022-05-07T18:49:10.570Z"),
+  platform: 'tb',
+  channel: 'tb',
+  cnick: 'tb423265458940',
+  snick: '木月瑞希尔:苏木',
+  seller_nick: '木月瑞希尔',
+  begin_time: ISODate("2022-05-07T07:42:20.576Z"),
+  end_time: ISODate("2022-05-07T10:08:34.787Z"),
+  is_after_sale: false,
+  is_inside: false,
+  s_emotion: [ { type: 8, count: 0 } ],
+  c_emotion: [
+    { type: 1, count: 0 },
+    { type: 2, count: 0 },
+    { type: 3, count: 0 },
+    { type: 4, count: 0 },
+    { type: 5, count: 0 },
+    { type: 6, count: 0 },
+    { type: 7, count: 0 },
+    { type: 8, count: 7 },
+    { type: 9, count: 0 },
+    { type: 10, count: 0 }
+  ],
+  emotions: [ 'c8' ],
+  abnormals: [
+    { type: 1, count: 1 },  { type: 2, count: 0 },
+    { type: 3, count: 15 }, { type: 4, count: 0 },
+    { type: 5, count: 0 },  { type: 6, count: 0 },
+    { type: 7, count: 0 },  { type: 8, count: 0 },
+    { type: 9, count: 0 },  { type: 10, count: 0 },
+    { type: 11, count: 0 }, { type: 12, count: 0 },
+    { type: 13, count: 0 }, { type: 14, count: 0 },
+    { type: 15, count: 0 }, { type: 16, count: 0 },
+    { type: 17, count: 1 }, { type: 18, count: 0 },
+    { type: 19, count: 0 }, { type: 20, count: 0 },
+    { type: 21, count: 0 }, { type: 22, count: 0 },
+    { type: 23, count: 0 }, { type: 24, count: 0 },
+    { type: 25, count: 0 }, { type: 26, count: 0 },
+    { type: 27, count: 0 }, { type: 28, count: 0 },
+    { type: 29, count: 0 }
+  ],
+  excellents: [
+    { type: 1, count: 0 },
+    { type: 2, count: 0 },
+    { type: 3, count: 0 },
+    { type: 4, count: 0 },
+    { type: 5, count: 0 },
+    { type: 6, count: 0 },
+    { type: 7, count: 0 },
+    { type: 8, count: 0 },
+    { type: 9, count: 0 },
+    { type: 10, count: 0 },
+    { type: 11, count: 0 },
+    { type: 12, count: 0 },
+    { type: 13, count: 0 },
+    { type: 14, count: 0 }
+  ],
+  qc_word: [
+    { source: 1, word: '1', count: 57, is_robot: 1 },
+    { source: 1, word: '2', count: 34, is_robot: 1 }
+  ],
+  score: 274,
+  score_add: 2,
+  mark_judge: 29,
+  mark_score: 10,
+  mark_score_add: 0,
+  mark: '',
+  suspected_problem: false,
+  xrule_stats: [
+    {
+      id: ObjectId("625e7714a67281e36537cd35"),
+      count: 1,
+      score: 2,
+      anchor_id: '627622ddf568b50001e79db4'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62763d7b27814700014d089e'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62763e1277d1110001a0ae09'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627622ecd0b6f80001781566'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627623ed4736ee0001153be6'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627624dfd0b6f8000178e81b'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '6276245cd0b6f8000178b4d6'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62762400a2671600015ea3c9'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627622dfc99c8a00015fff4b'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627622ec77d11100019706ef'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62763d7b788a980001a41af6'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627623d24736ee00011535a1'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62762338a2671600015e575b'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '6276240b305117000116902b'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627624d21234040001a240cd'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627623a2788a98000199db4f'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627622fb30511700011633c8'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62763e0e3051170001225e8a'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627624051234040001a1f2ef'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '62763e0cf54bd60001f71328'
+    },
+    {
+      id: ObjectId("62624786430890ac5f3dbf20"),
+      count: 1,
+      score: 0,
+      anchor_id: '627622ddf568b50001e79db4'
+    }
+  ],
+  top_xrules: [
+    {
+      id: ObjectId("6245ab24b9caa9fa615a49dd"),
+      count: 1,
+      score: 0,
+      anchor_id: '62764523a2671600016a7e9e'
+    }
+  ],
+  not_send_rules: { ac: {}, cb: {} },
+  cnick_customize_rule: [],
+  answer_count: Long("21"),
+  question_count: Long("15"),
+  first_answer_time: 1651909340,
+  qa_time_sum: 20,
+  qa_round_sum: 13,
+  focus_goods_id: '645275696711',
+  satisfy_level: '',
+  satisfy_records: [],
+  group: '企业默认分组',
+  has_withdraw_robot_msg: false,
+  is_remind: false,
+  is_order_matched: false,
+  emotion_detect_mode: 1,
+  consulte_transfor_v2: 1,
+  intel_score: 30,
+  suspected_positive_emotion: false,
+  is_follow_up_remind: false,
+  remind_ntype: 0,
+  first_follow_up_time: ISODate("0001-01-01T00:00:00.000Z"),
+  date: 20220507,
+  qc_task_flag: 1,
+  sec_after_cache: {},
+  qid: [ Long("0"), Long("-10") ],
+  last_msg_id: ObjectId("62764523a2671600016a7e9e"),
+  rule_stats: [],
+  last_mark_id: ObjectId("5f73e9c1684bf7000141363e"),
+  mark_ids: [ ObjectId("5f73e9c1684bf7000141363e") ],
+  mark_time: ISODate("2022-05-07T18:49:10.569Z"),
+  tag_score_add_stats: [
+    {
+      id: ObjectId("61555f7c297bb79b69c060e4"),
+      score: 0,
+      md: false,
+      mm: true,
+      count: 1,
+      name: ''
+    }
+  ],
+  tag_score_stats: [
+    {
+      id: ObjectId("60389dea3c9a010001d8d054"),
+      score: 10,
+      md: false,
+      mm: true,
+      count: 1,
+      name: ''
+    }
+  ]
+}

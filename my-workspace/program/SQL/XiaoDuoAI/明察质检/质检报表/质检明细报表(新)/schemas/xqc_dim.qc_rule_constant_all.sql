@@ -5,8 +5,14 @@
 'ai_excellent',
 'ai_s_emotion',
 'ai_c_emotion',
-'manual',
-'custom'
+'manual_subtract',
+'manual_add',
+'custom_subtract',
+'custom_add',
+'custom_message',
+'custom_dialog'
+
+
 -- qc_rule_id: 
 1~29, 100
 -- qc_rule_group_name: 
@@ -16,7 +22,7 @@
 
 
 -- xqc_dim.qc_rule_constant_local
-DROP TABLE xqc_dim.qc_rule_constant_local ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE xqc_dim.qc_rule_constant_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE xqc_dim.qc_rule_constant_local ON CLUSTER cluster_3s_2r
 (
     `qc_rule_type` String,
@@ -30,12 +36,13 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
+PARTITION BY `day`
 ORDER BY (qc_rule_type, qc_rule_id)
 SETTINGS storage_policy = 'rr', index_granularity = 8192
 
 
 -- xqc_dim.qc_rule_constant_all
-DROP TABLE xqc_dim.qc_rule_constant_all ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE xqc_dim.qc_rule_constant_all ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE xqc_dim.qc_rule_constant_all ON CLUSTER cluster_3s_2r
 AS xqc_dim.qc_rule_constant_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'qc_rule_constant_local', rand())

@@ -31,7 +31,7 @@ FROM (
         score_add,
         mark_score,
         mark_score_add,
-        arraySum(rule_stats_score) + negate(arraySum(arrayFilter(x->x<0, xrule_stats_score)) + arraySum(arrayFilter(x->x<0, top_xrules))) AS rule_score,
+        arraySum(rule_stats_score) + negate(arraySum(arrayFilter(x->x<0, xrule_stats_score)) + negate(arraySum(arrayFilter(x->x<0, top_xrules)))) AS rule_score,
         arraySum(rule_add_stats_score) + arraySum(arrayFilter(x->x>0, xrule_stats_score)) + arraySum(arrayFilter(x->x>0, top_xrules)) AS rule_score_add,
         score - mark_score - rule_score AS ai_score,
         score_add - mark_score_add - rule_score_add AS ai_score_add,
