@@ -1,5 +1,4 @@
 -- 客户评价满意度-分析-质检项触发次数分布-AI质检
--- AI质检结果-子账号维度
 SELECT
     tag_name AS `质检标签`,
     sum(tag_cnt) AS `触发次数`
@@ -43,39 +42,123 @@ FROM (
             ELSE '其他'
         END AS tag_name,
         sum(abnormal_cnt) AS tag_cnt
-    FROM dwd.xdqc_dialog_all
+    FROM (
+        SELECT
+            platform,
+            seller_nick,
+            snick,
+            if(order_info_status[1]='','unorder',order_info_status[1]) AS order_status,
+            abnormals_type,
+            abnormals_count
+        FROM dwd.xdqc_dialog_all
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_}}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND channel = 'tb' AND platform = 'tb'
+        AND seller_nick GLOBAL IN (
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        )
+        AND snick GLOBAL IN (
+            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 下拉框-子账号分组
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
+            -- 下拉框-子账号
+            AND (
+                '{{ snicks }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks }}')
+            )
+            -- 下拉框-客服姓名ID
+            AND (
+                '{{ employee_ids }}'=''
+                OR
+                employee_id IN splitByChar(',','{{ employee_ids }}')
+            )
+        )
+        AND (toYYYYMMDD(begin_time),snick,cnick) GLOBAL IN (
+                -- 查询已有评价的子账号
+                SELECT DISTINCT
+                    toUInt32(day), snick, cnick
+                FROM (
+                    SELECT
+                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(eval_recer,'cntaobao','') AS cnick,
+                        eval_code,
+                        day
+                    FROM ods.kefu_eval_detail_all
+                    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+                    -- 过滤买家已评价记录
+                    AND eval_time != ''
+                    -- 下拉框-评价等级
+                    AND (
+                        '{{ eval_codes }}'=''
+                        OR
+                        toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
+                    )
+                    -- 下拉框-店铺名
+                    AND (
+                        '{{ seller_nicks }}'=''
+                        OR
+                        seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    )
+                    AND snick IN (
+                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND platform = 'tb'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                        -- 下拉框-子账号分组
+                        AND (
+                            '{{ department_ids }}'=''
+                            OR
+                            department_id IN splitByChar(',','{{ department_ids }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
+                        -- 下拉框-客服姓名ID
+                        AND (
+                            '{{ employee_ids }}'=''
+                            OR
+                            employee_id IN splitByChar(',','{{ employee_ids }}')
+                        )
+                    )
+                ) AS eval_info
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-订单状态
+        AND (
+            '{{ order_statuses }}'=''
+            OR
+            order_status IN splitByChar(',','{{ order_statuses }}')
+        )
+    ) AS dialog_ai_abnormal_info
     ARRAY JOIN
         abnormals_type AS abnormal_type, 
         abnormals_count AS abnormal_cnt
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    AND snick GLOBAL IN (
-        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-        SELECT distinct snick
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 下拉框-子账号分组
-        AND (
-            '{{ department_ids }}'=''
-            OR
-            department_id IN splitByChar(',','{{ department_ids }}')
-        )
-    )
-    AND abnormal_cnt!=0
-    -- 下拉框-店铺名
-    AND (
-        '{{ seller_nicks }}'=''
-        OR
-        seller_nick IN splitByChar(',','{{ seller_nicks }}')
-    )
-    -- 下拉框-子账号
-    AND (
-        '{{ snicks }}'=''
-        OR
-        snick IN splitByChar(',','{{ snicks }}')
-    )
+    WHERE abnormal_cnt!=0
     GROUP BY platform, seller_nick, snick, abnormal_type
     
     UNION ALL
@@ -102,39 +185,123 @@ FROM (
             ELSE '其他'
         END AS tag_name,
         sum(excellent_cnt) AS tag_cnt
-    FROM dwd.xdqc_dialog_all
+    FROM (
+        SELECT
+            platform,
+            seller_nick,
+            snick,
+            if(order_info_status[1]='','unorder',order_info_status[1]) AS order_status,
+            excellents_type,
+            excellents_count
+        FROM dwd.xdqc_dialog_all
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_}}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND channel = 'tb' AND platform = 'tb'
+        AND seller_nick GLOBAL IN (
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        )
+        AND snick GLOBAL IN (
+            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 下拉框-子账号分组
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
+            -- 下拉框-子账号
+            AND (
+                '{{ snicks }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks }}')
+            )
+            -- 下拉框-客服姓名ID
+            AND (
+                '{{ employee_ids }}'=''
+                OR
+                employee_id IN splitByChar(',','{{ employee_ids }}')
+            )
+        )
+        AND (toYYYYMMDD(begin_time),snick,cnick) GLOBAL IN (
+                -- 查询已有评价的子账号
+                SELECT DISTINCT
+                    toUInt32(day), snick, cnick
+                FROM (
+                    SELECT
+                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(eval_recer,'cntaobao','') AS cnick,
+                        eval_code,
+                        day
+                    FROM ods.kefu_eval_detail_all
+                    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+                    -- 过滤买家已评价记录
+                    AND eval_time != ''
+                    -- 下拉框-评价等级
+                    AND (
+                        '{{ eval_codes }}'=''
+                        OR
+                        toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
+                    )
+                    -- 下拉框-店铺名
+                    AND (
+                        '{{ seller_nicks }}'=''
+                        OR
+                        seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    )
+                    AND snick IN (
+                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND platform = 'tb'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                        -- 下拉框-子账号分组
+                        AND (
+                            '{{ department_ids }}'=''
+                            OR
+                            department_id IN splitByChar(',','{{ department_ids }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
+                        -- 下拉框-客服姓名ID
+                        AND (
+                            '{{ employee_ids }}'=''
+                            OR
+                            employee_id IN splitByChar(',','{{ employee_ids }}')
+                        )
+                    )
+                ) AS eval_info
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-订单状态
+        AND (
+            '{{ order_statuses }}'=''
+            OR
+            order_status IN splitByChar(',','{{ order_statuses }}')
+        )
+    ) AS dialog_ai_excellent_info
     ARRAY JOIN
         excellents_type AS excellent_type, 
         excellents_count AS excellent_cnt
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    AND snick GLOBAL IN (
-        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-        SELECT distinct snick
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 下拉框-子账号分组
-        AND (
-            '{{ department_ids }}'=''
-            OR
-            department_id IN splitByChar(',','{{ department_ids }}')
-        )
-    )
-    AND excellent_cnt!=0
-    -- 下拉框-店铺名
-    AND (
-        '{{ seller_nicks }}'=''
-        OR
-        seller_nick IN splitByChar(',','{{ seller_nicks }}')
-    )
-    -- 下拉框-子账号
-    AND (
-        '{{ snicks }}'=''
-        OR
-        snick IN splitByChar(',','{{ snicks }}')
-    )
+    WHERE excellent_cnt!=0
     GROUP BY platform, seller_nick, snick, excellent_type
 
     UNION ALL
@@ -157,40 +324,123 @@ FROM (
             ELSE '其他'
         END AS tag_name,
         sum(c_emotion_count) AS tag_cnt
-    FROM dwd.xdqc_dialog_all
+    FROM (
+        SELECT
+            platform,
+            seller_nick,
+            snick,
+            if(order_info_status[1]='','unorder',order_info_status[1]) AS order_status,
+            c_emotion_type,
+            c_emotion_count
+        FROM dwd.xdqc_dialog_all
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_}}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND channel = 'tb' AND platform = 'tb'
+        AND seller_nick GLOBAL IN (
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        )
+        AND snick GLOBAL IN (
+            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 下拉框-子账号分组
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
+            -- 下拉框-子账号
+            AND (
+                '{{ snicks }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks }}')
+            )
+            -- 下拉框-客服姓名ID
+            AND (
+                '{{ employee_ids }}'=''
+                OR
+                employee_id IN splitByChar(',','{{ employee_ids }}')
+            )
+        )
+        AND (toYYYYMMDD(begin_time),snick,cnick) GLOBAL IN (
+                -- 查询已有评价的子账号
+                SELECT DISTINCT
+                    toUInt32(day), snick, cnick
+                FROM (
+                    SELECT
+                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(eval_recer,'cntaobao','') AS cnick,
+                        eval_code,
+                        day
+                    FROM ods.kefu_eval_detail_all
+                    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+                    -- 过滤买家已评价记录
+                    AND eval_time != ''
+                    -- 下拉框-评价等级
+                    AND (
+                        '{{ eval_codes }}'=''
+                        OR
+                        toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
+                    )
+                    -- 下拉框-店铺名
+                    AND (
+                        '{{ seller_nicks }}'=''
+                        OR
+                        seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    )
+                    AND snick IN (
+                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND platform = 'tb'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                        -- 下拉框-子账号分组
+                        AND (
+                            '{{ department_ids }}'=''
+                            OR
+                            department_id IN splitByChar(',','{{ department_ids }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
+                        -- 下拉框-客服姓名ID
+                        AND (
+                            '{{ employee_ids }}'=''
+                            OR
+                            employee_id IN splitByChar(',','{{ employee_ids }}')
+                        )
+                    )
+                ) AS eval_info
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-订单状态
+        AND (
+            '{{ order_statuses }}'=''
+            OR
+            order_status IN splitByChar(',','{{ order_statuses }}')
+        )
+    ) AS dialog_ai_c_emotion_info
     ARRAY JOIN
         c_emotion_type,
         c_emotion_count
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    AND platform = 'tb'
-    AND snick GLOBAL IN (
-        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-        SELECT distinct snick
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        AND platform = 'tb'
-        -- 下拉框-子账号分组
-        AND (
-            '{{ department_ids }}'=''
-            OR
-            department_id IN splitByChar(',','{{ department_ids }}')
-        )
-    )
-    AND c_emotion_count!=0
-    -- 下拉框-店铺名
-    AND (
-        '{{ seller_nicks }}'=''
-        OR
-        seller_nick IN splitByChar(',','{{ seller_nicks }}')
-    )
-    -- 下拉框-子账号
-    AND (
-        '{{ snicks }}'=''
-        OR
-        snick IN splitByChar(',','{{ snicks }}')
-    )
+    WHERE c_emotion_count!=0
     GROUP BY platform, seller_nick, snick, c_emotion_type
 
     UNION ALL
@@ -205,68 +455,124 @@ FROM (
             ELSE '其他'
         END AS tag_name,
         sum(s_emotion_count) AS tag_cnt
-    FROM dwd.xdqc_dialog_all
+    FROM (
+        SELECT
+            platform,
+            seller_nick,
+            snick,
+            if(order_info_status[1]='','unorder',order_info_status[1]) AS order_status,
+            s_emotion_type,
+            s_emotion_count
+        FROM dwd.xdqc_dialog_all
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_}}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND channel = 'tb' AND platform = 'tb'
+        AND seller_nick GLOBAL IN (
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        )
+        AND snick GLOBAL IN (
+            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 下拉框-子账号分组
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
+            -- 下拉框-子账号
+            AND (
+                '{{ snicks }}'=''
+                OR
+                snick IN splitByChar(',','{{ snicks }}')
+            )
+            -- 下拉框-客服姓名ID
+            AND (
+                '{{ employee_ids }}'=''
+                OR
+                employee_id IN splitByChar(',','{{ employee_ids }}')
+            )
+        )
+        AND (toYYYYMMDD(begin_time),snick,cnick) GLOBAL IN (
+                -- 查询已有评价的子账号
+                SELECT DISTINCT
+                    toUInt32(day), snick, cnick
+                FROM (
+                    SELECT
+                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(eval_recer,'cntaobao','') AS cnick,
+                        eval_code,
+                        day
+                    FROM ods.kefu_eval_detail_all
+                    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+                    -- 过滤买家已评价记录
+                    AND eval_time != ''
+                    -- 下拉框-评价等级
+                    AND (
+                        '{{ eval_codes }}'=''
+                        OR
+                        toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
+                    )
+                    -- 下拉框-店铺名
+                    AND (
+                        '{{ seller_nicks }}'=''
+                        OR
+                        seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    )
+                    AND snick IN (
+                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND platform = 'tb'
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                        -- 下拉框-子账号分组
+                        AND (
+                            '{{ department_ids }}'=''
+                            OR
+                            department_id IN splitByChar(',','{{ department_ids }}')
+                        )
+                        -- 下拉框-子账号
+                        AND (
+                            '{{ snicks }}'=''
+                            OR
+                            snick IN splitByChar(',','{{ snicks }}')
+                        )
+                        -- 下拉框-客服姓名ID
+                        AND (
+                            '{{ employee_ids }}'=''
+                            OR
+                            employee_id IN splitByChar(',','{{ employee_ids }}')
+                        )
+                    )
+                ) AS eval_info
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        -- 下拉框-订单状态
+        AND (
+            '{{ order_statuses }}'=''
+            OR
+            order_status IN splitByChar(',','{{ order_statuses }}')
+        )
+    ) AS dialog_ai_s_emotion_info
     ARRAY JOIN
         s_emotion_type,
         s_emotion_count
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    AND platform = 'tb'
-    AND snick GLOBAL IN (
-        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-        SELECT distinct snick
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        AND platform = 'tb'
-        -- 下拉框-子账号分组
-        AND (
-            '{{ department_ids }}'=''
-            OR
-            department_id IN splitByChar(',','{{ department_ids }}')
-        )
-    )
-    AND s_emotion_count!=0
-    -- 下拉框-店铺名
-    AND (
-        '{{ seller_nicks }}'=''
-        OR
-        seller_nick IN splitByChar(',','{{ seller_nicks }}')
-    )
-    -- 下拉框-子账号
-    AND (
-        '{{ snicks }}'=''
-        OR
-        snick IN splitByChar(',','{{ snicks }}')
-    )
+    WHERE s_emotion_count!=0
     GROUP BY platform, seller_nick, snick, s_emotion_type
 ) AS tag_stat_info
-GLOBAL LEFT JOIN (
-    -- 获取最新版本的维度数据(T+1)
-    SELECT snick, employee_name
-    FROM (
-        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-        SELECT snick, employee_id
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS snick_info
-    GLOBAL LEFT JOIN (
-        SELECT
-            _id AS employee_id, username AS employee_name
-        FROM ods.xinghuan_employee_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS employee_info
-    USING(employee_id)
-) AS snick_info
-USING(snick)
--- 下拉框-客服姓名
-WHERE (
-    '{{ usernames }}'=''
-    OR
-    employee_name IN splitByChar(',','{{ usernames }}')
-)
 GROUP BY tag_name
 ORDER BY `触发次数` DESC

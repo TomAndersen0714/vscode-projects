@@ -40,7 +40,14 @@ FROM (
             COUNT(1) AS dialog_cnt
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND platform = 'tb'
+        AND channel = 'tb' AND platform = 'tb'
+        AND seller_nick GLOBAL IN (
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        )
         AND snick GLOBAL IN (
             -- 获取最新版本的维度数据(T+1)
             SELECT distinct snick

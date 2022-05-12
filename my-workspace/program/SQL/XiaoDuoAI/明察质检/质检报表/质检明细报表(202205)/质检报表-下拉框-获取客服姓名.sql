@@ -25,8 +25,8 @@ AND _id IN (
     AND snick GLOBAL IN (
         SELECT DISTINCT
             snick
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        FROM xqc_dws.snick_stat_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         AND platform = 'tb'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺

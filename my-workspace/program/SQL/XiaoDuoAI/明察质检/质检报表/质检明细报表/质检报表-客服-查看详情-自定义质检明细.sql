@@ -57,7 +57,7 @@ FROM (
             FROM xqc_dim.xqc_shop_all
             WHERE day=toYYYYMMDD(yesterday())
             AND platform = 'tb'
-            AND company_id = '{{ company_id=614d86d84eed94e6fc980b1c }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
         AND snick GLOBAL IN (
             -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
@@ -108,7 +108,7 @@ FROM (
             FROM xqc_dim.xqc_shop_all
             WHERE day=toYYYYMMDD(yesterday())
             AND platform = 'tb'
-            AND company_id = '{{ company_id=614d86d84eed94e6fc980b1c }}'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
         AND snick GLOBAL IN (
             -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工

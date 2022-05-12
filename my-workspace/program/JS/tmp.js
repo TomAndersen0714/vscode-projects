@@ -1,59 +1,24 @@
-import template from './schema-browser.html';
-
-function SchemaBrowserCtrl($rootScope, $scope) {
-  'ngInject';
-
-  this.showTable = (table) => {
-    table.collapsed = !table.collapsed;
-    $scope.$broadcast('vsRepeatTrigger');
-  };
-
-  this.getSize = (table) => {
-    let size = 22;
-
-    if (!table.collapsed) {
-      size += 18 * table.columns.length;
-    }
-
-    return size;
-  };
-
-  this.isEmpty = function isEmpty() {
-    return this.schema === undefined || this.schema.length === 0;
-  };
-
-  this.itemSelected = ($event, hierarchy) => {
-    $rootScope.$broadcast('query-editor.command', 'paste', hierarchy.join('.'));
-    $event.preventDefault();
-    $event.stopPropagation();
-  };
-
-  this.splitFilter = (filter) => {
-    filter = filter.replace(/ {2}/g, ' ');
-    if (filter.includes(' ')) {
-      const splitTheFilter = filter.split(' ');
-      this.schemaFilterObject = { name: splitTheFilter[0], columns: splitTheFilter[1] };
-      this.schemaFilterColumn = splitTheFilter[1];
-    } else {
-      this.schemaFilterObject = filter;
-      this.schemaFilterColumn = '';
-    }
-  };
-
-  this.onRefresh = () => {
-  };
-}
-
-const SchemaBrowser = {
-  bindings: {
-    schema: '<',
-  },
-  controller: SchemaBrowserCtrl,
-  template,
+var url = "https://coolapi.coolcollege.cn/enterprise-api/v2/1456280502347632708/users/1829102005948387328/studies/1837029349853892608/courses/1837030365768847360/resources/1837023407863107584/save_progress";
+var params = {
+  access_token: "137d9bb17be64728b726f7bbd2a8acb7",
+  progress: 99,
+  recent_start: 1259,
+  tempTime: 1652268296000
 };
 
-export default function init(ngModule) {
-  ngModule.component('schemaBrowser', SchemaBrowser);
-}
-
-init.init = true;
+var xhr = new XMLHttpRequest();
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-Type", "application/json");
+// xhr.onload = function (e) {
+//   if (xhr.readyState === 4) {
+//     if (xhr.status === 200) {
+//       console.log(xhr.responseText);
+//     } else {
+//       console.error(xhr.statusText);
+//     }
+//   }
+// };
+// xhr.onerror = function (e) {
+//   console.error(xhr.statusText);
+// };
+xhr.send(JSON.stringify(params));

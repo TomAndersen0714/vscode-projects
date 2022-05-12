@@ -1,1 +1,146 @@
-'非客服结束会话','漏跟进','快捷短语重复','生硬拒绝','欠缺安抚','答非所问','单字回复','单句响应慢','产品不熟悉','活动不熟悉','内部回复慢','回复严重超时','撤回人工消息','单表情回复','异常撤回','转接前未有效回复','超时未回复','顾客撤回','前后回复矛盾','撤回机器人消息','第三方投诉或曝光','顾客提及投诉或举报','差评或要挟差评','反问/质疑顾客','违禁词','客服冷漠讥讽','顾客怀疑假货','客服态度消极敷衍','售后不满意','需求挖掘','商品细节解答','卖点传达','商品推荐','退换货理由修改','主动跟进','无货挽回','活动传达','店铺保障','催拍催付','核对地址','好评引导','优秀结束语','满意','感激','期待','对客服态度不满','对发货物流不满','对产品不满','其他不满意','顾客骂人','对收货少件不满','客服骂人'
+-- 客户评价满意度-分析-客服满意率分布
+SELECT
+    CONCAT('{{ day.start=week_ago }}',' - ','{{ day.end=yesterday }}') AS `时间`,
+    platform AS `平台`,
+    seller_nick AS `店铺`,
+    snick AS `子账号`,
+    employee_name AS `客服`,
+    dialog_cnt AS `总会话量`,
+    eval_sum AS `总评价量`,
+    satisfy_pct AS `满意率`,
+    CONCAT(toString(satisfy_pct),'%') AS `满意率%`,
+    eval_code_0_cnt AS `非常满意`,
+    eval_code_1_cnt AS `满意`,
+    eval_code_2_cnt AS `一般`,
+    source_1_code_3_eval_cnt AS `不满意(主动评价)`,
+    source_0_2_code_3_eval_cnt AS `不满意(邀评)`,
+    source_1_code_4_eval_cnt AS `非常不满意(主动评价)`,
+    source_0_2_code_4_eval_cnt AS `非常不满意(邀评)`
+FROM (
+    SELECT
+        platform,
+        seller_nick,
+        snick,
+        dialog_cnt,
+        eval_sum,
+        satisfy_pct,
+        eval_code_0_cnt,
+        eval_code_1_cnt,
+        eval_code_2_cnt,
+        source_1_code_3_eval_cnt,
+        source_0_2_code_3_eval_cnt,
+        source_1_code_4_eval_cnt,
+        source_0_2_code_4_eval_cnt
+    FROM (
+        -- 客服维度-会话量统计
+        SELECT
+            platform,
+            seller_nick,
+            snick,
+            COUNT(1) AS dialog_cnt
+        FROM dwd.xdqc_dialog_all
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND platform = 'tb'
+        AND snick GLOBAL IN (
+            -- 获取最新版本的维度数据(T+1)
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = 'tb'
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 下拉框-子账号分组
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
+        )
+        -- 下拉框-店铺名
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+        )
+        GROUP BY platform, seller_nick, snick
+    ) AS snick_dialog_stat_info
+    GLOBAL LEFT JOIN (
+        -- 客服满意率统计
+        SELECT
+            seller_nick,
+            snick,
+            COUNT(1) AS eval_sum,
+            SUM(eval_code=0) AS eval_code_0_cnt,
+            SUM(eval_code=1) AS eval_code_1_cnt,
+            SUM(eval_code=2) AS eval_code_2_cnt,
+            SUM(source=1 AND eval_code=3) AS source_1_code_3_eval_cnt,
+            SUM((source=0 OR source=2) AND eval_code=3) AS source_0_2_code_3_eval_cnt,
+            SUM(source=1 AND eval_code=4) AS source_1_code_4_eval_cnt,
+            SUM((source=0 OR source=2) AND eval_code=4) AS source_0_2_code_4_eval_cnt,
+            if(eval_sum!=0, round((eval_code_0_cnt + eval_code_1_cnt)/eval_sum*100,2), 0.00) AS satisfy_pct
+        FROM (
+            SELECT
+                replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                replaceOne(eval_sender,'cntaobao','') AS snick,
+                eval_code,
+                source
+            FROM ods.kefu_eval_detail_all
+            WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            -- 过滤买家已评价记录
+            AND eval_time != ''
+            -- 下拉框-店铺
+            AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
+            )
+            AND snick IN (
+                -- 当前企业对应的子账号
+                SELECT DISTINCT snick
+                FROM (
+                    SELECT distinct snick, username
+                    FROM ods.xinghuan_employee_snick_all AS snick_info
+                    GLOBAL LEFT JOIN (
+                        SELECT distinct
+                            _id AS employee_id, username
+                        FROM ods.xinghuan_employee_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    ) AS employee_info
+                    USING(employee_id)
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND platform = 'tb'
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    -- 下拉框-子账号分组id
+                    AND (
+                        '{{ department_ids }}'=''
+                        OR
+                        department_id IN splitByChar(',','{{ department_ids }}')
+                    )
+                ) AS snick_employee_info
+            )
+        ) AS satisfy_info
+        GROUP BY seller_nick, snick
+    ) AS snick_satisfy_stat_info
+    USING(seller_nick, snick)
+) AS snick_stat_info
+GLOBAL LEFT JOIN (
+    SELECT snick, employee_name
+    FROM (
+        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+        SELECT snick, employee_id
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND platform = 'tb'
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    ) AS snick_info
+    GLOBAL LEFT JOIN (
+        SELECT
+            _id AS employee_id, username AS employee_name
+        FROM ods.xinghuan_employee_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    ) AS employee_info
+    USING(employee_id)
+) AS employee_info
+USING(snick)
+ORDER BY satisfy_pct

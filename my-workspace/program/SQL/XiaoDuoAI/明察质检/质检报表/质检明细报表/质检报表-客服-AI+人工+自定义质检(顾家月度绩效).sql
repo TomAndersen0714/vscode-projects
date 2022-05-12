@@ -93,7 +93,7 @@ ENGINE = Distributed('cluster_3s_2r', 'tmp', 'xqc_qc_report_snick_local', rand()
 -- 写入数据
 -- 京东, 5月份数据
 ALTER TABLE tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r
-DELETE WHERE day BETWEEN 20220401 AND 20220505 SETTINGS mutations_sync = 2
+DELETE WHERE day BETWEEN 20220501 AND 20220510 SETTINGS mutations_sync = 2
 
 INSERT INTO tmp.xqc_qc_report_snick_all
 -- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果-子账号维度
