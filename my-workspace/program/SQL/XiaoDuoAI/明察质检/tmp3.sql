@@ -1,142 +1,53 @@
+
 SELECT
-    day,
-    platform,
-    seller_nick,
-    snick,
-    dim_tag.tag_group_id AS tag_group_id,
-    dim_tag.tag_group_name AS tag_group_name,
-    tag_type,
-    tag_id,
-    dim_tag.tag_name AS tag_name,
-    tag_cnt_sum,
-    tag_score_sum
+    count(1) as count
 FROM (
-    SELECT
-        day,
-        platform,
-        seller_nick,
-        snick,
-        tag_type,
-        tag_id,
-        SUM(tag_cnt + if(tag_md>0, 1, 0)) AS tag_cnt_sum,
-        -- 同一个ID分数可能发生变化, 以实际打标为准
-        SUM(tag_score*(tag_cnt + if(tag_md>0, 1, 0))) AS tag_score_sum
+            SELECT
+            shop_info.company_id AS company_id,
+            shop_info.bg_id AS bg_id,
+            bg_info.department_name AS BG,
+            shop_info.bu_id AS bu_id,
+            bu_info.department_name AS BU,
+            shop_info.department_id AS shop_id,
+            shop_info.department_name AS shop_name
+        FROM (
+                SELECT
+                parent_department_path[1] AS bg_id,
+                parent_department_path[2] AS bu_id,
+                parent_department_path,
+                company_id,
+                department_id,
+                department_name
+            FROM xqc_dim.group_all
+            WHERE is_shop = 'True'
+        ) AS shop_info
+        GLOBAL LEFT JOIN (
+                SELECT department_id , department_name
+            FROM xqc_dim.group_all
+            WHERE is_shop = 'False'
+        ) AS bg_info
+        ON shop_info.bg_id = bg_info.department_id
+        GLOBAL LEFT JOIN (
+                SELECT department_id , department_name
+            FROM xqc_dim.group_all
+            WHERE is_shop = 'False'
+        ) AS bu_info
+        ON shop_info.bu_id = bu_info.department_id
+        WHERE company_id = '6131e6554524490001fc6825'
+)
+GLOBAL INNER JOIN(
+        SELECT *
     FROM (
-        -- 人工质检项-加分项
-        SELECT
-            toYYYYMMDD(begin_time) AS day,
-            platform,
-            seller_nick,
-            snick,
-            'manual_subtract' AS tag_type,
-            tag_score_stats_id AS tag_ids,
-            tag_score_stats_count AS tag_cnts,
-            tag_score_stats_score AS tag_scores,
-            -- 是否打标在会话上
-            if(
-                tag_score_stats_md=[],
-                arrayResize([0], length(tag_score_stats_id)),
-                tag_score_stats_md
-            ) AS tag_mds
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220401 AND 20220430
-        AND tag_score_stats_id != []
-        AND platform = 'jd'
-        AND seller_nick GLOBAL IN (
-            -- 查询对应企业-平台的店铺
-            SELECT DISTINCT seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day=toYYYYMMDD(yesterday())
-            AND platform = 'jd'
-            AND company_id = '6234209693e6cbff31d6c118'
-        )
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'jd'
-            AND company_id = '6234209693e6cbff31d6c118'
-        )
-
-        -- 人工质检项-扣分项
-        UNION ALL
-        SELECT
-            toYYYYMMDD(begin_time) AS day,
-            platform,
-            seller_nick,
-            snick,
-            'manual_add' AS tag_type,
-            tag_score_add_stats_id AS tag_ids,
-            tag_score_add_stats_count AS tag_cnts,
-            tag_score_add_stats_score AS tag_scores,
-            -- 是否打标在会话上
-            if(
-                tag_score_add_stats_md=[],
-                arrayResize([0], length(tag_score_add_stats_id)),
-                tag_score_add_stats_md
-            ) AS tag_mds
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220401 AND 20220430
-        AND tag_score_add_stats_id != []
-        AND platform = 'jd'
-        AND seller_nick GLOBAL IN (
-            -- 查询对应企业-平台的店铺
-            SELECT DISTINCT seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day=toYYYYMMDD(yesterday())
-            AND platform = 'jd'
-            AND company_id = '6234209693e6cbff31d6c118'
-        )
-        AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
-            SELECT distinct snick
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'jd'
-            AND company_id = '6234209693e6cbff31d6c118'
-        )
-
-    ) AS ods_manual_tag
-    ARRAY JOIN
-        tag_ids AS tag_id,
-        tag_mds AS tag_md,
-        tag_cnts AS tag_cnt,
-        tag_scores AS tag_score
-    -- 排除空数据
-    WHERE (tag_cnt!=0 OR tag_md>0)
-    GROUP BY
-        day,
-        platform,
-        seller_nick,
-        snick,
-        tag_type,
-        tag_id
-) AS ods_manual_tag_stat
-GLOBAL LEFT JOIN (
-    SELECT
-        *
-    FROM (
-        -- 查询人工质检项
-        SELECT
-            _id AS tag_id,
-            name AS tag_name,
-            qc_norm_group_id AS tag_group_id
-        FROM xqc_dim.qc_rule_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND rule_category = 2
-    ) AS dim_tag
-    GLOBAL LEFT JOIN (
-        -- 关联质检项分组
-        -- PS: 已删除的分组无法获取
-        SELECT
-            _id AS tag_group_id,
-            full_name AS tag_group_name
-        FROM xqc_dim.qc_norm_group_full_all
-        WHERE day = toYYYYMMDD(yesterday())
-    ) AS dim_tag_group
-    USING(tag_group_id)
-) AS dim_tag
-USING(tag_id)
+            SELECT
+            alert_id, time AS notify_time
+        FROM xqc_ods.alert_remind_all
+        WHERE shop_id IN ['61d6a38716bbc36cb34dfd4c','61d6a38716bbc36cb34dfd56','61d6a38716bbc36cb34dfd52','61c193262ba76f001d769b90','5f3cd79bb7fba70017c854bb','61de9efadba7c00020cfd5f5','61dd56c1df229d00176cdce8','6170ddb2abefdb000c773b0a','616d2b651ffab50014d6f922','6172894009841b000fafffc9','61ee6acf09f2f12c5f2f1852','61ee6acf09f2f12c5f2f182a','61ee6acf09f2f12c5f2f1839','616d49b11ffab50016d6fa49','616fccff269ebf000e1b88b0','616e207da08ae900109dcf33','616e1b70abefdb0010773a23','616d282d1ffab50012d6f485','61d6a38716bbc36cb34dfd48','61d6a38716bbc36cb34dfd58','61ee6acf09f2f12c5f2f1843','61d6a38716bbc36cb34dfd4a','61d6a38716bbc36cb34dfd4e','61e5018858da510015331810','61e5044057e4bb0013e7c8f2','61e504cc90454f001656481e','61e50a34614e070018f45a8e','616face4a08ae9000e9dd0a9','616f7c6d09841b000eaff41e','61c94f4f6383be001deb8e21','61ee6acf09f2f12c5f2f1834','61d6a38716bbc36cb34dfd46','61d6a38716bbc36cb34dfd50','61d6a38716bbc36cb34dfd54','61ee6acf09f2f12c5f2f1848','61ee6acf09f2f12c5f2f184d','61ee6acf09f2f12c5f2f182f','61ee6acf09f2f12c5f2f183e','6139c3c96ebd17000e94b5b5','6139e720fb530f0010c19481','613af5f56ebd17000f942ca2','6131c3766ebd17000a93c0cd','627b9d832ea7ee00179fc09d','614ae633fb530f0010c1b33f','5cd268e42bf9a8000f9301d7','614c21b16ebd170010947761','6139c118e16787000fb8a1cf','618ca3649416a3001c5f413d'] and resp_code = 0
+    ) AS alert_remind
+    GLOBAL RIGHT JOIN (
+        SELECT id AS alert_id, *
+    FROM xqc_ods.alert_all FINAL
+    WHERE day BETWEEN 20220513 AND 20220513 AND (shop_id IN 
+    ) AS alert_info
+    USING(alert_id)
+) AS alert_info
+USING shop_id

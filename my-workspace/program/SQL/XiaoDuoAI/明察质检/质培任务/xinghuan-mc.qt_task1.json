@@ -1,0 +1,29 @@
+{
+  _id: ObjectId("61f0bc2146298b00017e331e"),
+  create_time: ISODate("2022-01-26T03:12:33.794Z"), // 创建日期
+  update_time: ISODate("2022-01-26T03:12:33.794Z"), // 更新日期
+  task_id: '202201260001', // 任务ID
+  type: 1, // 任务类型: 1-辅导任务, 2-培训任务
+  title: '1/26-标准风压问题', // "任务标题"
+  first_label: ObjectId("6018d9f772a70d0001eb7b7f"), // 场景标签-一级标签: 培训跟进
+  second_label: ObjectId("601ce3bf72a70d0001eb7d71"), // 场景标签-二级标签: 培训建议
+  relate_staff: [ ObjectId("606bcc452cf2ae00013012ee") ], // 涉及人员: 刘芮宾
+  handler: ObjectId("5f851f559651ae00016970ce"), // 处理人: 应志安
+  cc_staff: [],
+  expected_finish_time: Long("1643212799"),  // 预计完成时间
+  real_finish_time: Long("0"),  // 实际完成日期
+  problem: '<p>客服答不上标准风压的问题</p>',  // 问题描述
+  dialog_ids: [ ObjectId("61ef448caa02d20001435f61") ],
+  status: 1, // 状态: 1-处理中, 2-已处理, 3-暂不处理, 4-已解决, 5-未解决, 6-已撤回
+  creator: ObjectId("5f85766f9651ae00016972db"), // 创建人: 岑欣
+  attachment: [], // 附件
+  record: '',
+  refuse_reason: '',
+  refuse_num: 0,
+  hold_reason: '',
+  close_reason: '',
+  platform: 'jd',
+  expire_notify_num: 1,
+  company_id: ObjectId("5f747ba42c90fd0001254404"),
+  remark_info: []
+}

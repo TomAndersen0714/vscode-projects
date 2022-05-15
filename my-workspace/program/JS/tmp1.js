@@ -30,6 +30,7 @@ od.forEach(d => {
     }
 })
 titles = titles.concat(Object.keys(keys))
+console.log(titles)
 
 od.forEach((d) => {
 
