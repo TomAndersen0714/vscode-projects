@@ -85,9 +85,9 @@ FROM (
             )
             -- 下拉框-子账号
             AND (
-                    '{{ snicks=null }}'=''
+                    '{{ snicks }}'=''
                     OR
-                    snick IN splitByChar(',','{{ snicks=null }}')
+                    snick IN splitByChar(',','{{ snicks }}')
             )
         ) AS transformed_dialog_info
         ARRAY JOIN
@@ -155,9 +155,9 @@ FROM (
             )
             -- 下拉框-子账号
             AND (
-                    '{{ snicks=null }}'=''
+                    '{{ snicks }}'=''
                     OR
-                    snick IN splitByChar(',','{{ snicks=null }}')
+                    snick IN splitByChar(',','{{ snicks }}')
             )
         ) AS transformed_dialog_info
         ARRAY JOIN

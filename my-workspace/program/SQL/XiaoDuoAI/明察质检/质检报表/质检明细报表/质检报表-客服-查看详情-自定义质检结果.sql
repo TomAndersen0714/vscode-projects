@@ -70,9 +70,9 @@ FROM (
         )
         -- 下拉框-子账号
         AND (
-                '{{ snicks=null }}'=''
+                '{{ snicks }}'=''
                 OR
-                snick IN splitByChar(',','{{ snicks=null }}')
+                snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY platform, seller_nick, snick, rule_stats_tag_id
 
@@ -118,9 +118,9 @@ FROM (
         )
         -- 下拉框-子账号
         AND (
-                '{{ snicks=null }}'=''
+                '{{ snicks }}'=''
                 OR
-                snick IN splitByChar(',','{{ snicks=null }}')
+                snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY platform, seller_nick, snick, rule_add_stats_tag_id
     ) AS customize_check_stat

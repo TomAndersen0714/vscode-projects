@@ -170,9 +170,9 @@ FROM (
     )
     -- 下拉框-子账号
     AND (
-            '{{ snicks=null }}'=''
+            '{{ snicks }}'=''
             OR
-            snick IN splitByChar(',','{{ snicks=null }}')
+            snick IN splitByChar(',','{{ snicks }}')
     )
 ) AS stat_ai_check_info
 GLOBAL LEFT JOIN (

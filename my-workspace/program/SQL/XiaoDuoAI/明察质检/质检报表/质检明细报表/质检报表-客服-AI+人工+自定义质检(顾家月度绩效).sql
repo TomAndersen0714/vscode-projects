@@ -1005,7 +1005,7 @@ GLOBAL LEFT JOIN (
     USING (department_id)
 ) AS snick_department_map
 USING(snick)
--- 下拉框-客服名称
+-- 下拉框-客服姓名
 WHERE (
     '{{ usernames }}'=''
     OR

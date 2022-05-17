@@ -37,7 +37,7 @@ FROM (
             platform, seller_nick, snick, tag_type, tag_id, tag_name,
             sum(tag_cnt_sum) AS tag_cnt_sum
         FROM xqc_dws.tag_stat_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=yesterday }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         AND platform = 'tb'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺

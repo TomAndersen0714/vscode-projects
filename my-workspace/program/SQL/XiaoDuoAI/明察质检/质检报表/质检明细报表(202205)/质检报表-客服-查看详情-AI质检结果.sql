@@ -1,4 +1,4 @@
--- 质检报表-客服-查看详情-人工质检结果
+-- 质检报表-客服-查看详情-AI质检结果
 -- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     CASE
@@ -16,28 +16,27 @@ SELECT
     employee_name AS `客服姓名`,
     superior_name AS `上级姓名`,
 
-    -- 人工质检结果
-    arrayStringConcat(arrayMap(x->toString(x), manual_tag_names),'$$') AS `人工质检标签`,
-    arrayStringConcat(arrayMap(x->toString(x), manual_tag_cnts),'$$') AS `人工质检触发次数`
-
+    -- AI质检结果
+    arrayStringConcat(arrayMap(x->toString(x), ai_tag_names),'$$') AS `AI质检标签`,
+    arrayStringConcat(arrayMap(x->toString(x), ai_tag_cnts),'$$') AS `AI质检触发次数`
 FROM (
     --质检结果明细-子账号维度
     -- PS: 此处应该先进行预聚合, 减小中间结果的数组长度
     SELECT
         platform, seller_nick, snick,
-        -- 人工质检
+        -- AI质检
         groupArrayIf(
-            tag_name, tag_type IN ['manual_subtract', 'manual_add']
-        ) AS manual_tag_names,
+            tag_name, tag_type IN ['ai_abnormal', 'ai_excellent', 'ai_s_emotion', 'ai_c_emotion']
+        ) AS ai_tag_names,
         groupArrayIf(
-            tag_cnt_sum, tag_type IN ['manual_subtract', 'manual_add']
-        ) AS manual_tag_cnts
+            tag_cnt_sum, tag_type IN ['ai_abnormal', 'ai_excellent', 'ai_s_emotion', 'ai_c_emotion']
+        ) AS ai_tag_cnts
     FROM (
         SELECT
             platform, seller_nick, snick, tag_type, tag_id, tag_name,
             sum(tag_cnt_sum) AS tag_cnt_sum
         FROM xqc_dws.tag_stat_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=yesterday }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         AND platform = 'tb'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺
@@ -76,7 +75,7 @@ FROM (
         GROUP BY platform, seller_nick, snick, tag_type, tag_id, tag_name
     ) AS dws_tag_stat
     GROUP BY platform, seller_nick, snick
-) AS manual_check_info
+) AS ai_check_info
 GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息
     SELECT

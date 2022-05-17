@@ -233,7 +233,7 @@ GLOBAL LEFT JOIN (
     USING (department_id)
 ) AS dim_snick_department
 USING(snick)
--- 下拉框-客服名称
+-- 下拉框-客服姓名
 WHERE (
     '{{ usernames }}'=''
     OR

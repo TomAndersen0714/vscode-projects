@@ -78,9 +78,9 @@ FROM (
         )
         -- 下拉框-子账号
         AND (
-                '{{ snicks=null }}'=''
+                '{{ snicks }}'=''
                 OR
-                snick IN splitByChar(',','{{ snicks=null }}')
+                snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id, tag_id
 
@@ -129,9 +129,9 @@ FROM (
         )
         -- 下拉框-子账号
         AND (
-                '{{ snicks=null }}'=''
+                '{{ snicks }}'=''
                 OR
-                snick IN splitByChar(',','{{ snicks=null }}')
+                snick IN splitByChar(',','{{ snicks }}')
         )
         GROUP BY dialog_day, platform, seller_nick, snick, cnick, dialog_id, tag_id
     ) AS customize_check_stat
