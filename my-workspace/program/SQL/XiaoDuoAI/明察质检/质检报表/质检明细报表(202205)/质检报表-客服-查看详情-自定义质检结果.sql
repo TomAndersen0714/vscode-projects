@@ -1,4 +1,4 @@
--- 质检报表-客服-查看详情-AI质检结果
+-- 质检报表-客服-查看详情-自定义质检结果
 -- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     CASE
@@ -16,21 +16,22 @@ SELECT
     employee_name AS `客服姓名`,
     superior_name AS `上级姓名`,
 
-    -- AI质检结果
-    arrayStringConcat(arrayMap(x->toString(x), ai_tag_names),'$$') AS `AI质检标签`,
-    arrayStringConcat(arrayMap(x->toString(x), ai_tag_cnts),'$$') AS `AI质检触发次数`
+    -- 自定义质检结果
+    arrayStringConcat(arrayMap(x->toString(x), custom_tag_names),'$$') AS `自定义质检标签`,
+    arrayStringConcat(arrayMap(x->toString(x), custom_tag_cnts),'$$') AS `自定义质检触发次数`
+
 FROM (
     --质检结果明细-子账号维度
     -- PS: 此处应该先进行预聚合, 减小中间结果的数组长度
     SELECT
         platform, seller_nick, snick,
-        -- AI质检
+        -- 自定义质检
         groupArrayIf(
-            tag_name, tag_type IN ['ai_abnormal', 'ai_excellent', 'ai_s_emotion', 'ai_c_emotion']
-        ) AS ai_tag_names,
+            tag_name, tag_type IN ['custom_subtract', 'custom_add', 'custom_message', 'custom_dialog']
+        ) AS custom_tag_names,
         groupArrayIf(
-            tag_cnt_sum, tag_type IN ['ai_abnormal', 'ai_excellent', 'ai_s_emotion', 'ai_c_emotion']
-        ) AS ai_tag_cnts
+            tag_cnt_sum, tag_type IN ['custom_subtract', 'custom_add', 'custom_message', 'custom_dialog']
+        ) AS custom_tag_cnts
     FROM (
         SELECT
             platform, seller_nick, snick, tag_type, tag_id, tag_name,
@@ -75,7 +76,7 @@ FROM (
         GROUP BY platform, seller_nick, snick, tag_type, tag_id, tag_name
     ) AS dws_tag_stat
     GROUP BY platform, seller_nick, snick
-) AS ai_check_info
+) AS custom_check_info
 GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息
     SELECT

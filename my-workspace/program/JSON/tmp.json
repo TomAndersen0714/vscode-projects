@@ -1,22 +1,42 @@
-[('id', ''), ('create_time', '2020-11-23 03:32:35.085000'), ('update_time', '2020-11-23 06:02:52.709000'), ('company_id', '5f73e9c1684bf70001413636'), ('platform', 'tb'), ('task_id', '202011230001'), ('type', 1), ('title', '预发布新建1'), ('first_label', '5fbb2c8f6d19ef00012af09c'), ('second_label', '5fbb2c9a6d19ef00012af09e'), ('relate_staff', [ObjectId('5f981308104a5500012fea16')]), ('handler', '5fa1700b52e83200011e32c4'), ('cc_staff', [ObjectId('5fa21591c2bd95000192f72e')]), ('expected_finish_time', 1606319999), ('real_finish_time', 0), ('problem', '<p>不</p>'), ('dialog_ids', [ObjectId('5fb6678cc1347f0001225f39')]), ('status', 6), ('creator', '5f73e9c1684bf7000141363d'), ('attachment', [{
-'name': '反问质问质检词列表.xlsx',
-'url': 'http://xd-mp.oss-cn-hangzhou.aliyuncs.com/prod/xinghuan/mc/file/6bc886d5-cb28-43ab-8fbb-838b5c9e8516/反问质问质检词列表.xlsx'
-}]), ('record', ''), ('refuse_reason', ''), ('refuse_num', 0), ('hold_reason', ''), ('close_reason', ''), ('expire_notify_num', 1), ('remark_info', [{
-'content': '备注',
-'attachment': [],
-'account_id': ObjectId('5f980d59104a5500012fe9ea'),
-'username': '白嘉兴',
-'create_time': 1606106610
-}, {
-'content': '我也备注',
-'attachment': [],
-'account_id': ObjectId('5f73e9c1684bf7000141363e'),
-'username': '测试',
-'create_time': 1606106623
-}, {
-'content': '问',
-'attachment': [],
-'account_id': ObjectId('5f73e9c1684bf7000141363e'),
-'username': '测试',
-'create_time': 1606111372
-}]), ('snicks', []), ('cnicks', [])])...
+{
+    '_id': ObjectId('625bdf2b9108970001308487'),
+    'iscardmsg': False,
+    'create_time': datetime.datetime(2022, 4, 17, 9, 34, 35, 394000),
+    'update_time': datetime.datetime(2022, 4, 17, 9, 34, 35, 394000),
+    'dialog_id': ObjectId('625bdf2b4bed740001f396b9'),
+    'platform': 'tb',
+    'channel': 'tb',
+    'cnick': 'shuohe1988',
+    'snick': 'chanitex佳尼特旗舰店:白白',
+    'seller_nick': 'chanitex佳尼特旗舰店',
+    'source': 1,
+    'content': '由 白白 转交给 小风',
+    'time': datetime.datetime(2022, 4, 17, 9, 34, 34),
+    'algo_emotion': 0,
+    'qa_flags': [],
+    'ai_results': {},
+    'ref_msgs': {},
+    'qa_delay_sec': 0,
+    'abnormal_model': 0,
+    'excellent_model': 0,
+    'abnormal_scroe': [],
+    'excellent_score': [],
+    'suspected_abnormals': [],
+    'auto_send': False,
+    'send_from': '',
+    'is_transfer': True,
+    'transfer_info': {
+        'from': 'chanitex佳尼特旗舰店:白白',
+        'to': 'chanitex佳尼特旗舰店:小风',
+        'torange': 'one',
+        'reason': '',
+        'status': 'send_transfer',
+        'sellernick': 'chanitex佳尼特旗舰店',
+        'buyer': 'shuohe1988'
+    },
+    'ms_msg_time': 1650188074,
+    'xrule_stats': [],
+    'wx_rule_stats': [],
+    'tags': [],
+    'mark': ''
+}

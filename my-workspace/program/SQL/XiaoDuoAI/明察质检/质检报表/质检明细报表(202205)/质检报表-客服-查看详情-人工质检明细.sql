@@ -64,7 +64,7 @@ FROM (
                     tag_score_stats_md
                 ) AS tag_mds
             FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             -- 过滤空数据
             AND tag_score_stats_id != []
             AND platform = 'tb'
@@ -87,15 +87,15 @@ FROM (
             )
             -- 下拉框-店铺名
             AND (
-                    '{{ seller_nicks }}'=''
+                    '{{ seller_nicks_ }}'=''
                     OR
-                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
             -- 下拉框-子账号
             AND (
-                    '{{ snicks }}'=''
+                    '{{ snicks_ }}'=''
                     OR
-                    snick IN splitByChar(',','{{ snicks }}')
+                    snick IN splitByChar(',','{{ snicks_ }}')
             )
 
             -- 人工质检项-加分项
@@ -116,7 +116,7 @@ FROM (
                     tag_score_add_stats_md
                 ) AS tag_mds
             FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             -- 过滤空数据
             AND tag_score_add_stats_id != []
             AND platform = 'tb'
@@ -139,15 +139,15 @@ FROM (
             )
             -- 下拉框-店铺名
             AND (
-                    '{{ seller_nicks }}'=''
+                    '{{ seller_nicks_ }}'=''
                     OR
-                    seller_nick IN splitByChar(',','{{ seller_nicks }}')
+                    seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
             -- 下拉框-子账号
             AND (
-                    '{{ snicks }}'=''
+                    '{{ snicks_ }}'=''
                     OR
-                    snick IN splitByChar(',','{{ snicks }}')
+                    snick IN splitByChar(',','{{ snicks_ }}')
             )
         ) AS ods_manual_tag
         ARRAY JOIN

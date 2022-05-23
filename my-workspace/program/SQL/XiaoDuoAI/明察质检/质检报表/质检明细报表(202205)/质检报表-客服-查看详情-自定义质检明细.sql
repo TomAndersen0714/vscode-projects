@@ -1,4 +1,4 @@
--- 质检报表-客服-查看详情-AI质检明细
+-- 质检报表-客服-查看详情-自定义质检明细
 -- 统计维度: 平台/店铺/子账号, 下钻维度路径: 平台/店铺/子账号分组/子账号/会话
 SELECT
     dialog_id,
@@ -20,11 +20,11 @@ SELECT
     employee_name AS `客服姓名`,
     superior_name AS `上级姓名`,
 
-    -- AI质检结果
-    arrayStringConcat(ai_tag_names,'$$') AS `AI质检标签`,
-    arrayStringConcat(ai_tag_cnts,'$$') AS `AI质检触发次数`
+    -- 自定义质检结果
+    arrayStringConcat(custom_tag_names,'$$') AS `自定义质检标签`,
+    arrayStringConcat(custom_tag_cnts,'$$') AS `自定义质检触发次数`
 FROM (
-    -- AI质检结果-会话维度质检项触发次数统计
+    -- 自定义质检结果-会话维度质检项触发次数统计
     SELECT
         day,
         platform,
@@ -32,8 +32,8 @@ FROM (
         snick,
         cnick,
         dialog_id,
-        arrayMap(x->toString(x), groupArray(tag_name)) AS ai_tag_names,
-        arrayMap(x->toString(x), groupArray(tag_sum)) AS ai_tag_cnts
+        arrayMap(x->toString(x), groupArray(tag_name)) AS custom_tag_names,
+        arrayMap(x->toString(x), groupArray(tag_sum)) AS custom_tag_cnts
     FROM (
         SELECT
             day,
@@ -42,11 +42,10 @@ FROM (
             snick,
             cnick,
             dialog_id,
-            tag_type,
             tag_id,
             SUM(tag_cnt) AS tag_sum
         FROM (
-            -- 旧版本AI质检项-非情绪扣分项
+            -- 旧版本自定义质检项-扣分项
             SELECT
                 toYYYYMMDD(begin_time) AS day,
                 platform,
@@ -54,9 +53,9 @@ FROM (
                 snick,
                 cnick,
                 _id AS dialog_id,
-                'ai_abnormal' AS tag_type,
-                arrayMap((x)->toString(x), abnormals_type) AS tag_ids,
-                abnormals_count AS tag_cnts
+                'custom_subtract' AS tag_type,
+                rule_stats_id AS tag_ids,
+                rule_stats_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             AND platform = 'tb'
@@ -75,9 +74,9 @@ FROM (
                     seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
             -- 过滤空数据
-            AND arraySum(abnormals_count) > 0
-
-            -- 旧版本AI质检项-非情绪加分项
+            AND rule_stats_id != []
+    
+            -- 旧版本自定义质检项-加分项
             UNION ALL
             SELECT
                 toYYYYMMDD(begin_time) AS day,
@@ -86,9 +85,9 @@ FROM (
                 snick,
                 cnick,
                 _id AS dialog_id,
-                'ai_excellent' AS tag_type,
-                arrayMap((x)->toString(x), excellents_type) AS tag_ids,
-                excellents_count AS tag_cnts
+                'custom_add' AS tag_type,
+                rule_add_stats_id AS tag_ids,
+                rule_add_stats_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             AND platform = 'tb'
@@ -107,9 +106,9 @@ FROM (
                     seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
             -- 过滤空数据
-            AND arraySum(excellents_count) > 0
-
-            -- 旧版本AI质检项-买家情绪项
+            AND rule_add_stats_id != []
+    
+            -- 新版本自定义质检项-消息质检项
             UNION ALL
             SELECT
                 toYYYYMMDD(begin_time) AS day,
@@ -118,9 +117,9 @@ FROM (
                 snick,
                 cnick,
                 _id AS dialog_id,
-                'ai_c_emotion' AS tag_type,
-                arrayMap((x)->toString(x), c_emotion_type) AS tag_ids,
-                c_emotion_count AS tag_cnts
+                'custom_message' AS tag_type,
+                xrule_stats_id AS tag_ids,
+                xrule_stats_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             AND platform = 'tb'
@@ -139,10 +138,9 @@ FROM (
                     seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
             -- 过滤空数据
-            AND arraySum(c_emotion_count) > 0
-            
-
-            -- 旧版本AI质检项-客服情绪项
+            AND xrule_stats_id != []
+    
+            -- 新版本自定义质检项-会话质检项
             UNION ALL
             SELECT
                 toYYYYMMDD(begin_time) AS day,
@@ -151,9 +149,9 @@ FROM (
                 snick,
                 cnick,
                 _id AS dialog_id,
-                'ai_s_emotion' AS tag_type,
-                arrayMap((x)->toString(x), s_emotion_type) AS tag_ids,
-                s_emotion_count AS tag_cnts
+                'custom_dialog' AS tag_type,
+                top_xrules_id AS tag_ids,
+                top_xrules_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             AND platform = 'tb'
@@ -172,12 +170,12 @@ FROM (
                     seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
             -- 过滤空数据
-            AND arraySum(s_emotion_count) > 0
-        ) AS ods_ai_tag
+            AND top_xrules_id != []
+    
+        ) AS ods_custom_tag
         ARRAY JOIN
             tag_ids AS tag_id,
-            tag_cnts AS tag_cnt,
-            tag_mds AS tag_md
+            tag_cnts AS tag_cnt
         WHERE snick GLOBAL IN (
             -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
             -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
@@ -193,22 +191,22 @@ FROM (
             OR
             snick IN splitByChar(',','{{ snicks_ }}')
         )
-        -- 过滤空数据
-        AND tag_cnt!=0
-        GROUP BY day, platform, seller_nick, snick, cnick, dialog_id, tag_type, tag_id
-    ) AS ods_ai_tag
+        -- 排除空数据
+        AND tag_id!='' AND tag_cnt!=0
+        GROUP BY day, platform, seller_nick, snick, cnick, dialog_id, tag_id 
+    ) AS ods_custom_tag
     GLOBAL LEFT JOIN (
-        -- 关联AI质检项
+        -- 查询自定义质检项
         SELECT
-            qc_rule_type AS tag_type,
-            qc_rule_id AS tag_id,
-            qc_rule_name AS tag_name
-        FROM xqc_dim.qc_rule_constant_all
-        WHERE day=toYYYYMMDD(yesterday())
+            _id AS tag_id,
+            name AS tag_name
+        FROM xqc_dim.qc_rule_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND rule_category = 3
     ) AS dim_tag
-    USING(tag_type, tag_id)
+    USING(tag_id)
     GROUP BY day, platform, seller_nick, snick, cnick, dialog_id
-) AS ods_ai_tag_stat
+) AS ods_custom_tag_stat
 GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息
     SELECT

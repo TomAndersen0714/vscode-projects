@@ -37,7 +37,7 @@ FROM (
             platform, seller_nick, snick, tag_type, tag_id, tag_name,
             sum(tag_cnt_sum) AS tag_cnt_sum
         FROM xqc_dws.tag_stat_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
         AND platform = 'tb'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺
@@ -56,22 +56,22 @@ FROM (
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 下拉框-子账号分组
             AND (
-                '{{ department_ids }}'=''
+                '{{ department_ids_ }}'=''
                 OR
-                department_id IN splitByChar(',','{{ department_ids }}')
+                department_id IN splitByChar(',','{{ department_ids_ }}')
             )
         )
         -- 下拉框-店铺名
         AND (
-            '{{ seller_nicks }}'=''
+            '{{ seller_nicks_ }}'=''
             OR
-            seller_nick IN splitByChar(',','{{ seller_nicks }}')
+            seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
         )
         -- 下拉框-子账号
         AND (
-            '{{ snicks }}'=''
+            '{{ snicks_ }}'=''
             OR
-            snick IN splitByChar(',','{{ snicks }}')
+            snick IN splitByChar(',','{{ snicks_ }}')
         )
         GROUP BY platform, seller_nick, snick, tag_type, tag_id, tag_name
     ) AS dws_tag_stat
