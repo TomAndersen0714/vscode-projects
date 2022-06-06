@@ -236,6 +236,7 @@ from (
     ) as b on a.platform = b.platform
 order by qc_proportion desc
 limit 10
+
 UNION ALL
 select a.platform as platform,
     'manual' as `type`,
@@ -289,6 +290,7 @@ from (
     ) as b on a.platform = b.platform
 order by qc_proportion desc
 limit 10
+
 UNION ALL
 select b.platform as platform,
     'qc_word' as `type`,
@@ -296,44 +298,44 @@ select b.platform as platform,
     a.word as qc_name,
     round((a.words_count_info / b.words_count_all), 4) as qc_proportion
 from (
-        select platform,
-            word,
-            sum(words_count) as words_count_info
-        from ods.qc_words_detail_all
-        WHERE date >= 1649260800
-            and date < 1649865599
-            and platform = 'jd'
-            and shop_name in (
-                '方太官方旗舰店',
-                '方太京东自营旗舰店',
-                '方太厨卫旗舰店',
-                '方太烟灶旗舰店',
-                '方太京东旗舰店',
-                '方太集成烹饪中心京东自营旗舰店'
-            )
-        group by platform,
-            word
-        order by words_count_info desc
-    ) a
-    left join (
-        select platform,
-            sum(words_count) as words_count_all
-        from ods.qc_words_detail_all
-        WHERE date >= 1649260800
-            and date < 1649865599
-            and platform = 'jd'
-            and shop_name in (
-                '方太官方旗舰店',
-                '方太京东自营旗舰店',
-                '方太厨卫旗舰店',
-                '方太烟灶旗舰店',
-                '方太京东旗舰店',
-                '方太集成烹饪中心京东自营旗舰店'
-            )
-        group by platform
-        order by words_count_all desc
-        limit 10
-    ) b on a.platform = b.platform
+    select platform,
+        word,
+        sum(words_count) as words_count_info
+    from ods.qc_words_detail_all
+    WHERE date >= 1649260800
+        and date < 1649865599
+        and platform = 'jd'
+        and shop_name in (
+            '方太官方旗舰店',
+            '方太京东自营旗舰店',
+            '方太厨卫旗舰店',
+            '方太烟灶旗舰店',
+            '方太京东旗舰店',
+            '方太集成烹饪中心京东自营旗舰店'
+        )
+    group by platform, word
+    order by words_count_info desc
+) a
+left join (
+    select platform,
+        sum(words_count) as words_count_all
+    from ods.qc_words_detail_all
+    WHERE date >= 1649260800
+        and date < 1649865599
+        and platform = 'jd'
+        and shop_name in (
+            '方太官方旗舰店',
+            '方太京东自营旗舰店',
+            '方太厨卫旗舰店',
+            '方太烟灶旗舰店',
+            '方太京东旗舰店',
+            '方太集成烹饪中心京东自营旗舰店'
+        )
+    group by platform
+    order by words_count_all desc
+    limit 10
+) b
+on a.platform = b.platform
 order by qc_proportion desc
 limit 10
 

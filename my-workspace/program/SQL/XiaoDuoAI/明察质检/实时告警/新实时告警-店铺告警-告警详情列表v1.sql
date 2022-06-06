@@ -3,6 +3,7 @@ SELECT
     seller_nick AS `店铺`, -- 店铺
     superior_name AS `客服负责人`, -- 负责人
     employee_name AS `客服`, -- 客服
+    department_name AS `子账号分组`,
     snick AS `子账号`, -- 子账号
     cnick AS `顾客`, -- 顾客
     CASE
@@ -24,10 +25,12 @@ SELECT
     message_id, -- 消息ID(反查)
     id AS alert_id, -- 告警ID(反查)
     platform,day,shop_id
-FROM xqc_ods.alert_all FINAL
-    -- 已订阅店铺
-WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
-    AND toYYYYMMDD(toDate('{{ day.end=today }}'))
+FROM (
+    SELECT *
+    FROM xqc_ods.alert_all FINAL
+        -- 已订阅店铺
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
+        AND toYYYYMMDD(toDate('{{ day.end=today }}'))
     -- 过滤旧版标准
     AND level IN [1,2,3]
     -- 已订阅店铺
@@ -77,4 +80,27 @@ WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}'))
         OR
         cnick LIKE '%{{ search_string }}%'
     )
+) AS alert_info
+GLOBAL LEFT JOIN (
+    -- 关联子账号分组/子账号员工信息
+    SELECT
+        snick, department_id, department_name
+    FROM (
+        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+        SELECT snick, department_id
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND platform = 'tb'
+        AND company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+    ) AS snick_info
+    GLOBAL LEFT JOIN (
+        SELECT
+            _id AS department_id, full_name AS department_name
+        FROM xqc_dim.snick_department_full_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+    ) AS department_info
+    USING (department_id)
+) AS dim_snick_department
+USING(snick)
 order by time desc

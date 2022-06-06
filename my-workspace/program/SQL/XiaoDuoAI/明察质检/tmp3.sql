@@ -1,53 +1,36 @@
-
-SELECT
-    count(1) as count
+SELECT g3.plat_goods_id AS plat_goods_id,
+    g3.plat_goods_name,
+    if(g4.name = '', '空类目', g4.name) AS name
 FROM (
-            SELECT
-            shop_info.company_id AS company_id,
-            shop_info.bg_id AS bg_id,
-            bg_info.department_name AS BG,
-            shop_info.bu_id AS bu_id,
-            bu_info.department_name AS BU,
-            shop_info.department_id AS shop_id,
-            shop_info.department_name AS shop_name
+        SELECT g1.plat_goods_id AS plat_goods_id,
+            g1.plat_goods_name AS plat_goods_name,
+            g2.category_id AS category_id
         FROM (
-                SELECT
-                parent_department_path[1] AS bg_id,
-                parent_department_path[2] AS bu_id,
-                parent_department_path,
-                company_id,
-                department_id,
-                department_name
-            FROM xqc_dim.group_all
-            WHERE is_shop = 'True'
-        ) AS shop_info
-        GLOBAL LEFT JOIN (
-                SELECT department_id , department_name
-            FROM xqc_dim.group_all
-            WHERE is_shop = 'False'
-        ) AS bg_info
-        ON shop_info.bg_id = bg_info.department_id
-        GLOBAL LEFT JOIN (
-                SELECT department_id , department_name
-            FROM xqc_dim.group_all
-            WHERE is_shop = 'False'
-        ) AS bu_info
-        ON shop_info.bu_id = bu_info.department_id
-        WHERE company_id = '6131e6554524490001fc6825'
-)
-GLOBAL INNER JOIN(
-        SELECT *
-    FROM (
-            SELECT
-            alert_id, time AS notify_time
-        FROM xqc_ods.alert_remind_all
-        WHERE shop_id IN ['61d6a38716bbc36cb34dfd4c','61d6a38716bbc36cb34dfd56','61d6a38716bbc36cb34dfd52','61c193262ba76f001d769b90','5f3cd79bb7fba70017c854bb','61de9efadba7c00020cfd5f5','61dd56c1df229d00176cdce8','6170ddb2abefdb000c773b0a','616d2b651ffab50014d6f922','6172894009841b000fafffc9','61ee6acf09f2f12c5f2f1852','61ee6acf09f2f12c5f2f182a','61ee6acf09f2f12c5f2f1839','616d49b11ffab50016d6fa49','616fccff269ebf000e1b88b0','616e207da08ae900109dcf33','616e1b70abefdb0010773a23','616d282d1ffab50012d6f485','61d6a38716bbc36cb34dfd48','61d6a38716bbc36cb34dfd58','61ee6acf09f2f12c5f2f1843','61d6a38716bbc36cb34dfd4a','61d6a38716bbc36cb34dfd4e','61e5018858da510015331810','61e5044057e4bb0013e7c8f2','61e504cc90454f001656481e','61e50a34614e070018f45a8e','616face4a08ae9000e9dd0a9','616f7c6d09841b000eaff41e','61c94f4f6383be001deb8e21','61ee6acf09f2f12c5f2f1834','61d6a38716bbc36cb34dfd46','61d6a38716bbc36cb34dfd50','61d6a38716bbc36cb34dfd54','61ee6acf09f2f12c5f2f1848','61ee6acf09f2f12c5f2f184d','61ee6acf09f2f12c5f2f182f','61ee6acf09f2f12c5f2f183e','6139c3c96ebd17000e94b5b5','6139e720fb530f0010c19481','613af5f56ebd17000f942ca2','6131c3766ebd17000a93c0cd','627b9d832ea7ee00179fc09d','614ae633fb530f0010c1b33f','5cd268e42bf9a8000f9301d7','614c21b16ebd170010947761','6139c118e16787000fb8a1cf','618ca3649416a3001c5f413d'] and resp_code = 0
-    ) AS alert_remind
-    GLOBAL RIGHT JOIN (
-        SELECT id AS alert_id, *
-    FROM xqc_ods.alert_all FINAL
-    WHERE day BETWEEN 20220513 AND 20220513 AND (shop_id IN 
-    ) AS alert_info
-    USING(alert_id)
-) AS alert_info
-USING shop_id
+                SELECT _id,
+                    plat_goods_id,
+                    plat_goods_name
+                FROM ods.goods_t_all
+                WHERE `day` = toYYYYMMDD(addDays(today(), -1))
+                    AND shop_id = '5b7e402c89bc464c71271638'
+                    and `status` = 1
+                    and plat_goods_id not in (
+                        select plat_goods_id
+                        from zhl_dim.goods_fliter_all
+                        where shop_id = '5b7e402c89bc464c71271638'
+                    )
+            ) AS g1
+            LEFT JOIN (
+                SELECT _id,
+                    goods_id,
+                    category_id
+                FROM dim.goods_relationship_all
+                WHERE shop_id = '5b7e402c89bc464c71271638'
+            ) AS g2 ON g1._id = g2.goods_id
+    ) AS g3
+    LEFT JOIN (
+        SELECT _id,
+            name
+        FROM dim.goods_classification_category_all
+        WHERE shop_id = '5b7e402c89bc464c71271638'
+    ) AS g4 ON g3.category_id = g4._id
+WHERE name != '空类目'

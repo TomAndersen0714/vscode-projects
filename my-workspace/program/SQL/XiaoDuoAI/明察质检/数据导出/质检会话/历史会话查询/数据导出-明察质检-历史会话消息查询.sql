@@ -1,4 +1,4 @@
--- 明察质检-历史会话消息查询
+-- 数据导出-明察质检-历史会话消息查询
 -- 查询条件： AI质检项
 SELECT
     day,
@@ -10,7 +10,11 @@ SELECT
     content,
     create_time,
     qid,
-    question,
+    answer_explain,
+    send_from,
+    algo_emotion,
+    abnormal_model,
+    excellent_model,
     groupArray(tag_name) AS tag_names
 FROM (
     SELECT
@@ -23,7 +27,11 @@ FROM (
         content,
         create_time,
         qid,
-        question,
+        answer_explain,
+        send_from,
+        algo_emotion,
+        abnormal_model,
+        excellent_model,
         tag_type,
         toString(tag_id_num) AS tag_id
     FROM (
@@ -63,7 +71,7 @@ FROM (
                         ) AS s_emotion_types
 
                     FROM dwd.xdqc_dialog_all
-                    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{day.start=31-day-ago}}'))
+                    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}'))
                         AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
                     AND platform = 'tb'
                     -- 文本框-店铺名
@@ -98,7 +106,7 @@ FROM (
                     )
                 ) AS ai_tags
                 -- 文本框-限制会话数量
-                LIMIT toUInt32({{dialog_limit_num=1}})
+                LIMIT toUInt32({{ dialog_limit_num=1 }})
             ) AS dialog_tag_info
         ) AS dialog_id_list
         -- 旧版本AI质检项-非情绪扣分项
@@ -110,9 +118,13 @@ FROM (
             cnick,
             if(source=1, 'send_msg', 'recv_msg') AS act,
             content,
-            toDateTime64(create_time, 0, 'UTC') + 8*3600 AS create_time,
+            toString(toDateTime64(create_time, 0, 'UTC') + 8*3600) AS create_time,
             qid,
-            answer_explain AS question,
+            answer_explain,
+            send_from,
+            algo_emotion,
+            abnormal_model,
+            excellent_model,
             arrayPushBack(
                 arrayConcat(
                     arrayResize(['ai_abnormal'], length(abnormal), 'ai_abnormal'),
@@ -129,7 +141,7 @@ FROM (
             ) AS tag_ids
 
         FROM xqc_ods.message_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}'))
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}')) 
             AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
         AND platform = 'tb'
         -- 文本框-店铺名
@@ -167,5 +179,9 @@ GROUP BY
     content,
     create_time,
     qid,
-    question
+    answer_explain,
+    send_from,
+    algo_emotion,
+    abnormal_model,
+    excellent_model
 ORDER BY day, dialog_id, create_time
