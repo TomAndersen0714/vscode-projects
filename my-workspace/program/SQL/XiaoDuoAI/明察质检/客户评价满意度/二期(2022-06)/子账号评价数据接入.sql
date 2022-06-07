@@ -16,7 +16,7 @@ ENGINE = ReplicatedMergeTree(
     '{replica}'
 )
 PARTITION BY day
-ORDER BY user_nick
+ORDER BY (user_nick, dialog_id)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 -- DROP TABLE xqc_ods.snick_eval_all ON CLUSTER cluster_3s_2r
