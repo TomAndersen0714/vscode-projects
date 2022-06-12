@@ -7,8 +7,8 @@ SELECT
     source,
     send_time,
 
-    groupArray(eval_time) AS eval_times,
-    groupArray(eval_code) AS eval_codes,
+    arraySort(groupArray(eval_time)) AS eval_times,
+    arraySort((x,y)->y, groupArray(eval_code), groupArray(eval_time)) AS eval_codes,
     eval_times[-1] AS latest_eval_time,
     eval_codes[-1] AS latest_eval_code,
     eval_codes[1] AS first_eval_code,

@@ -1,61 +1,28 @@
-CREATE TABLE ods.xdrs_logs_bak_local ON CLUSTER cluster_3s_2r
-(
-    `question_type` Int32,
-    `send_msg_from` Int32,
-    `snick` String,
-    `act` String,
-    `mode` String,
-    `ms_msg_time` Int64,
-    `msg` String,
-    `msg_id` String,
-    `task_id` String,
-    `answer_explain` String,
-    `intent` String,
-    `mp_category` String,
-    `shop_id` String,
-    `create_time` DateTime64(6),
-    `mp_version` Int32,
-    `qa_id` String,
-    `question_b_proba` String,
-    `question_b_standard_q` String,
-    `is_identified` Int8,
-    `current_sale_stage` String,
-    `question_b_qid` String,
-    `remind_answer` String,
-    `cnick` String,
-    `platform` String,
-    `msg_time` DateTime,
-    `plat_goods_id` String,
-    `answer_id` String,
-    `robot_answer` String,
-    `transfer_type` String,
-    `transfer_to` String,
-    `transfer_from` String,
-    `shop_question_type` String,
-    `shop_question_id` String,
-    `no_reply_reason` Int32,
-    `no_reply_sub_reason` Int32,
-    `msg_scenes_source` String,
-    `msg_content_type` String,
-    `trace_id` String,
-    `day` Int32,
-    `precise_intent_id` String,
-    `precise_intent_standard_q` String,
-    `cond_answer_id` String
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/ods/tables/{layer}_{shard}/xdrs_logs_bak_local',
-    '{replica}'
-)
-PARTITION BY day
-ORDER BY (shop_id, snick)
-SETTINGS index_granularity = 8192, storage_policy = 'rr'
-
-
-CREATE TABLE ods.xdrs_logs_all ON CLUSTER cluster_3s_2r
-AS ods.xdrs_logs_bak_local
-ENGINE = Distributed('cluster_3s_2r', 'ods', 'xdrs_logs_bak_local', rand() )
-
-
-CREATE TABLE buffer.xdrs_logs_buffer ON CLUSTER cluster_3s_2r
-AS ods.xdrs_logs_all
-ENGINE = Buffer('ods', 'xdrs_logs_bak_1_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
+ d36081ea0f5f4cc1a0d5a02bd38cf9b5 | 18            | 6            | impala::test.reminder_shop_stat_day
+ 035817ab6f2a4c78beaca68b1e097b01 | 18            | 6            | impala::test_fishpond.stat
+ 683b531b3ccb4e0ea90873239b09cac5 | 24            | 6            | impala::dwd.growth_shop_monitor_extend
+ 4a53a5d1ae8743af85e647dfb518ecdb | 24            | 6            | impala::abtest.version_stat
+ c76ff51297924013ba1429ff3742025e | 18            | 6            | impala::fishpond.filtered_buyers
+ 2f1f602911b04ebcba392f1047ae5e0d | 18            | 6            | impala::fishpond.buyers_sms
+ 773fe08725614418a45f20622ee716df | 24            | 7            | impala::dwd.shop_monitor
+ 52fbb26cb9044d3aa06c2689d1042e0d | 24            | 7            | impala::test_fishpond.payment
+ 3d4af46240d1441d873cbfc176efafba | 24            | 7            | impala::marketing.subnick_reminder_stat
+ e5ff9dbf151240169666a32406829e40 | 24            | 7            | impala::app_mp.subnick_reminder_task_stat
+ bc64d11db3d241e7a893ab2f3760b7df | 24            | 8            | impala::dwd.growth_shop_monitor
+ 4950339283814c04a85ac1671e97a409 | 24            | 8            | impala::dwd.shop_monitor_detail
+ c625e49f14964dcf8ebcf454c2a406d3 | 24            | 8            | impala::fishpond.payment
+ 11cbd0bf1fd24a47aa6a31afe3dee109 | 24            | 8            | impala::app_touchstone.reminder_version_dis
+ 53c3a3ff4c6f44fd89374d259239c9bc | 24            | 8            | impala::app_growth.shop_score
+ e722c45ec15d4d0382daf6cbd34c70cf | 30            | 9            | impala::tmp_db.ask_order_buyers_send
+ cdf0eb435c45440aa4de5cb8924ecf43 | 30            | 10           | impala::app_csm.sentry_statistics
+ 2b3655fb32514197bff7dcb321e4bea6 | 30            | 10           | impala::tmp_db.withdraw_rich
+ abd5acb914364e9c8e4fd0bd13925cf5 | 48            | 11           | impala::abtest.reminder_send_detail
+ 3f0e455494a14273bfc9142f19469a4f | 48            | 13           | impala::dwd.withdraw_rich
+ 8e624da1c2b94aab8cec5da9c726f14a | 48            | 14           | impala::fishpond.send_detail
+ d5f59b97ce934ea7b59dd3d7dd7b4d10 | 48            | 15           | impala::abtest.reminder_order_detail
+ d67fcb9a3371475ab9e75a35317bdbb7 | 48            | 15           | impala::ods.shop_receive_new
+ 0e345f9de2734a66996758cd67eb75af | 48            | 15           | impala::ods.all_xdmp_question_b_shop_answer
+ 66a21788e1134816a6fbdf23d98cc72f | 48            | 15           | impala::app_ms_stat.shop_day_ms_stat
+ 05421eccafbd4e1ca6fbc27a1b619011 | 48            | 15           | impala::tmp.intent_question_keyword_tokenized
+ 37db27ed4ff7450ab06718422ef7ab73 | 48            | 15           | impala::test_fishpond.send_detail
+ 49443b4ea8b14b3b85c6f3fffeeaad07 | 48            | 16           | impala::tmp.intent_question_cutted_filtered
