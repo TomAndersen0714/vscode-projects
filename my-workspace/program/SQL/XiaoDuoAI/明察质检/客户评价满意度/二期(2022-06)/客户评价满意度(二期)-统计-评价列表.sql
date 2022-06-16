@@ -1,14 +1,15 @@
 -- 客户评价满意度(二期)-分析-评价列表
 SELECT
-    dialog_id,
     seller_nick,
     snick,
     cnick,
+    dialog_id,
     source,
     send_time,
+    is_invited,
 
-    arraySort(groupArrayIf(_eval_time, _eval_time != '')) AS eval_times,
-    arraySort((x,y)->y, groupArray(_eval_code, _eval_time != ''), groupArray(_eval_time, _eval_time != '')) AS eval_codes,
+    arraySort(groupArrayIf(eval_time, eval_time !='')) AS eval_times,
+    arraySort((x,y)->y, groupArrayIf(eval_code, eval_time != ''), groupArrayIf(eval_time, eval_time != '')) AS eval_codes,
     toString(eval_times[-1]) AS latest_eval_time,
     if(latest_eval_time != '', eval_codes[-1], -1) AS latest_eval_code,
     if(latest_eval_time != '', eval_codes[1], -1) AS first_eval_code,
@@ -16,7 +17,7 @@ SELECT
     seller_nick AS `店铺`,
     snick AS `客服子账号`,
     cnick AS `顾客名称`,
-    if(source!=1, send_time, '-') AS `邀评时间`,
+    if(is_invited, send_time, '-') AS `邀评时间`,
     if(latest_eval_time != '', latest_eval_time, '-') AS `最新评价时间`,
     CASE
         WHEN latest_eval_code=0 THEN '非常满意'
@@ -48,32 +49,40 @@ SELECT
     ) AS `是否可挽回`
 FROM (
     SELECT
+        seller_nick,
+        snick,
+        cnick,
         dialog_id,
-        user_nick,
-        if(_eval_time = '', -1, eval_code) AS _eval_code,
-        eval_recer,
-        eval_sender,
-        if(source = 1, send_time, eval_time) AS _eval_time,
+        eval_code,
+        eval_time,
         send_time,
         source,
-
-        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao','') AS seller_nick,
-        replaceOne(user_nick, 'cntaobao', '') AS snick,
-        replaceOne(eval_recer, 'cntaobao', '') AS cnick
-    FROM xqc_ods.snick_eval_all
+        if(eval_time != '' AND source = 1, 0, 1) AS is_invited,
+        day
+    FROM xqc_ods.dialog_eval_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    AND platform = 'tb'
     -- 下拉框-店铺
     AND (
         '{{ seller_nicks }}'=''
         OR
         seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
     )
+    -- 当前企业对应的店铺
+    AND seller_nick GLOBAL IN (
+        SELECT DISTINCT
+            seller_nick
+        FROM xqc_dim.xqc_shop_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        AND platform = 'tb'
+    )
     -- 当前企业对应的子账号
-    AND user_nick GLOBAL IN (
-        SELECT DISTINCT plat_snick
+    AND snick GLOBAL IN (
+        SELECT DISTINCT snick
         FROM (
-            SELECT distinct concat('cntaobao',snick) AS plat_snick, username
+            SELECT DISTINCT snick, username
             FROM ods.xinghuan_employee_snick_all AS snick_info
             GLOBAL LEFT JOIN (
                 SELECT distinct
@@ -100,8 +109,8 @@ FROM (
             username IN splitByChar(',','{{ usernames }}')
         )
     )
-) AS ods_snick_eval
-GROUP BY dialog_id, seller_nick, snick, cnick, source, send_time
+) AS ods_dialog_eval
+GROUP BY seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
 -- 单选-评价类型
 HAVING (
     ('{{ type }}'='全部')
@@ -112,10 +121,4 @@ HAVING (
     OR
     ('{{ type }}'='不满意' AND latest_eval_time != '' AND latest_eval_code IN (2, 3, 4))
 )
--- -- 下拉框-评价等级
--- AND (
---     '{{ latest_eval_codes }}'=''
---     OR
---     toString(latest_eval_code) IN splitByChar(',','{{ latest_eval_codes }}')
--- )
 ORDER BY latest_eval_time DESC

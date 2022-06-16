@@ -3,24 +3,16 @@ SELECT DISTINCT
     seller_nick AS `店铺`
 FROM (
     SELECT
-        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
-        replaceOne(user_nick, 'cntaobao', '') AS snick,
-        eval_code
-    FROM xqc_ods.snick_eval_all
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    -- 过滤买家已评价记录
-    AND eval_time != ''
-    -- 下拉框-评价等级
-    AND (
-        '{{ eval_codes }}'=''
-        OR
-        toString(eval_code) IN splitByChar(',','{{ eval_codes }}')
-    )
+        seller_nick
+    FROM xqc_ods.dialog_eval_all
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    AND platform = 'tb'
     -- 当前企业对应的子账号
-    AND user_nick GLOBAL IN (
-        SELECT DISTINCT CONCAT('cntaobao', snick) AS plat_snick
+    AND snick GLOBAL IN (
+        SELECT DISTINCT snick
         FROM (
-            SELECT distinct snick, username
+            SELECT DISTINCT snick, username
             FROM ods.xinghuan_employee_snick_all AS snick_info
             GLOBAL LEFT JOIN (
                 SELECT distinct
@@ -47,5 +39,5 @@ FROM (
             username IN splitByChar(',','{{ usernames }}')
         )
     )
-) AS eval_info
-ORDER BY seller_nick COLLATE 'zh'
+) AS ods_eval_info
+ORDER BY `店铺` COLLATE 'zh'
