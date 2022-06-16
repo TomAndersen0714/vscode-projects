@@ -10,8 +10,8 @@ SELECT
     CONCAT(toString(if(`评价总数`!=0, round(`当前评价数`/`评价总数`*100,2), 0.00)),'%') AS `评价占比`
 FROM (
     SELECT
-        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-        replaceOne(eval_sender,'cntaobao','') AS snick,
+        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+        replaceOne(user_nick, 'cntaobao', '') AS snick,
         toUInt32(day) as day,
         eval_code
     FROM ods.kefu_eval_detail_all

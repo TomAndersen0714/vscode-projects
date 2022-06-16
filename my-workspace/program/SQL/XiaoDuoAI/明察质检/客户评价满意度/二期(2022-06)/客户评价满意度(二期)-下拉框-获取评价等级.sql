@@ -16,8 +16,8 @@ SELECT DISTINCT
     END AS `评价等级`
 FROM (
     SELECT
-        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-        replaceOne(eval_sender,'cntaobao','') AS snick,
+        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+        replaceOne(user_nick, 'cntaobao', '') AS snick,
         eval_code
     FROM xqc_ods.snick_eval_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

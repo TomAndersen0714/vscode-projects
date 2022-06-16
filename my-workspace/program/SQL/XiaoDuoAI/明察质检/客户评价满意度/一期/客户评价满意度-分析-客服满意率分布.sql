@@ -86,8 +86,8 @@ FROM (
             if(eval_sum!=0, round((eval_code_0_cnt + eval_code_1_cnt)/eval_sum*100,2), 0.00) AS satisfy_pct
         FROM (
             SELECT
-                replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                replaceOne(eval_sender,'cntaobao','') AS snick,
+                replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                replaceOne(user_nick, 'cntaobao', '') AS snick,
                 eval_code,
                 source
             FROM ods.kefu_eval_detail_all

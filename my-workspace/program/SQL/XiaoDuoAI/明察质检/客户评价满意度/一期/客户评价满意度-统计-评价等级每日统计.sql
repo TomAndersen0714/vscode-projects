@@ -17,8 +17,8 @@ FROM (
         SUM(1) AS cnt 
     FROM (
         SELECT
-            replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-            replaceOne(eval_sender,'cntaobao','') AS snick,
+            replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+            replaceOne(user_nick, 'cntaobao', '') AS snick,
             toUInt32(day) as day,
             eval_code
         FROM ods.kefu_eval_detail_all
@@ -86,8 +86,8 @@ GLOBAL RIGHT JOIN (
         SELECT DISTINCT eval_code
         FROM (
             SELECT
-                replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                replaceOne(eval_sender,'cntaobao','') AS snick,
+                replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                replaceOne(user_nick, 'cntaobao', '') AS snick,
                 toUInt32(day) as day,
                 eval_code
             FROM ods.kefu_eval_detail_all

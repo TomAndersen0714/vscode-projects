@@ -7,8 +7,8 @@ SELECT
     source,
     send_time,
 
-    arraySort(groupArray(_eval_time)) AS eval_times,
-    arraySort((x,y)->y, groupArray(_eval_code), groupArray(_eval_time)) AS eval_codes,
+    arraySort(groupArrayIf(_eval_time, _eval_time != '')) AS eval_times,
+    arraySort((x,y)->y, groupArray(_eval_code, _eval_time != ''), groupArray(_eval_time, _eval_time != '')) AS eval_codes,
     toString(eval_times[-1]) AS latest_eval_time,
     if(latest_eval_time != '', eval_codes[-1], -1) AS latest_eval_code,
     if(latest_eval_time != '', eval_codes[1], -1) AS first_eval_code,
@@ -48,7 +48,7 @@ SELECT
     ) AS `是否可挽回`
 FROM (
     SELECT
-        '' AS dialog_id,
+        dialog_id,
         user_nick,
         if(_eval_time = '', -1, eval_code) AS _eval_code,
         eval_recer,
@@ -60,12 +60,12 @@ FROM (
         replaceOne(splitByChar(':', user_nick)[1], 'cntaobao','') AS seller_nick,
         replaceOne(user_nick, 'cntaobao', '') AS snick,
         replaceOne(eval_recer, 'cntaobao', '') AS cnick
-    FROM ods.kefu_eval_detail_all
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}'))
-        AND toYYYYMMDD(toDate('{{ day.end }}'))
+    FROM xqc_ods.snick_eval_all
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 下拉框-店铺
     AND (
-        '{{ seller_nicks }}'=' '
+        '{{ seller_nicks }}'=''
         OR
         seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
     )
@@ -88,14 +88,14 @@ FROM (
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 下拉框-子账号分组id
             AND (
-                '{{ department_ids }}'=' '
+                '{{ department_ids }}'=''
                 OR
                 department_id IN splitByChar(',','{{ department_ids }}')
             )
         ) AS snick_employee_info
         -- 下拉框-客服姓名
         WHERE (
-            '{{ usernames }}'=' '
+            '{{ usernames }}'=''
             OR
             username IN splitByChar(',','{{ usernames }}')
         )
@@ -104,17 +104,17 @@ FROM (
 GROUP BY dialog_id, seller_nick, snick, cnick, source, send_time
 -- 单选-评价类型
 HAVING (
-    ('{{ type=全部 }}'='全部')
+    ('{{ type }}'='全部')
     OR
-    ('{{ type=全部 }}'='未评价' AND latest_eval_time = '')
+    ('{{ type }}'='未评价' AND latest_eval_time = '')
     OR
-    ('{{ type=全部 }}'='满意' AND latest_eval_time != '' AND latest_eval_code IN (0, 1))
+    ('{{ type }}'='满意' AND latest_eval_time != '' AND latest_eval_code IN (0, 1))
     OR
-    ('{{ type=全部 }}'='不满意' AND latest_eval_time != '' AND latest_eval_code IN (2, 3, 4))
+    ('{{ type }}'='不满意' AND latest_eval_time != '' AND latest_eval_code IN (2, 3, 4))
 )
 -- -- 下拉框-评价等级
 -- AND (
---     '{{ latest_eval_codes }}'=' '
+--     '{{ latest_eval_codes }}'=''
 --     OR
 --     toString(latest_eval_code) IN splitByChar(',','{{ latest_eval_codes }}')
 -- )

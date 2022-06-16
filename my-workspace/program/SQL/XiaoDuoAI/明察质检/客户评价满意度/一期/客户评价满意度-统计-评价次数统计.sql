@@ -5,8 +5,8 @@ SELECT
     SUM(eval_time = '') AS `待跟进评价次数`
 FROM (
     SELECT
-        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-        replaceOne(eval_sender,'cntaobao','') AS snick,
+        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+        replaceOne(user_nick, 'cntaobao', '') AS snick,
         eval_time
     FROM ods.kefu_eval_detail_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))

@@ -93,8 +93,8 @@ FROM (
                     toUInt32(day), snick, cnick
                 FROM (
                     SELECT
-                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                        replaceOne(user_nick, 'cntaobao', '') AS snick,
                         replaceOne(eval_recer,'cntaobao','') AS cnick,
                         eval_code,
                         day
@@ -236,8 +236,8 @@ FROM (
                     toUInt32(day), snick, cnick
                 FROM (
                     SELECT
-                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                        replaceOne(user_nick, 'cntaobao', '') AS snick,
                         replaceOne(eval_recer,'cntaobao','') AS cnick,
                         eval_code,
                         day
@@ -375,8 +375,8 @@ FROM (
                     toUInt32(day), snick, cnick
                 FROM (
                     SELECT
-                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                        replaceOne(user_nick, 'cntaobao', '') AS snick,
                         replaceOne(eval_recer,'cntaobao','') AS cnick,
                         eval_code,
                         day
@@ -506,8 +506,8 @@ FROM (
                     toUInt32(day), snick, cnick
                 FROM (
                     SELECT
-                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                        replaceOne(eval_sender,'cntaobao','') AS snick,
+                        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                        replaceOne(user_nick, 'cntaobao', '') AS snick,
                         replaceOne(eval_recer,'cntaobao','') AS cnick,
                         eval_code,
                         day

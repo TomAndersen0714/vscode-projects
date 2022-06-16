@@ -22,8 +22,8 @@ AND _id IN (
             snick
         FROM (
             SELECT
-                replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-                replaceOne(eval_sender,'cntaobao','') AS snick,
+                replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+                replaceOne(user_nick, 'cntaobao', '') AS snick,
                 eval_code
             FROM xqc_ods.snick_eval_all
             WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -42,8 +42,8 @@ AND _id IN (
                 seller_nick IN splitByChar(',','{{ seller_nicks }}')
             )
             -- 当前企业对应的子账号
-            AND snick IN (
-                SELECT distinct snick
+            AND user_nick GLOBAL IN (
+                SELECT DISTINCT CONCAT('cntaobao', snick) AS plat_snick
                 FROM ods.xinghuan_employee_snick_all
                 WHERE day = toYYYYMMDD(yesterday())
                 AND platform = 'tb'

@@ -9,8 +9,8 @@ SELECT
     COUNT(1) AS `评价次数` 
 FROM (
     SELECT
-        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-        replaceOne(eval_sender,'cntaobao','') AS snick,
+        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+        replaceOne(user_nick, 'cntaobao', '') AS snick,
         source,
         eval_code
     FROM ods.kefu_eval_detail_all

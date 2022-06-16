@@ -7,8 +7,8 @@ SELECT
     CONCAT(toString(if(eval_sum!=0, round(unsatisfy/eval_sum*100,2), 0.00)),'%') AS `不满意率`
 FROM (
     SELECT
-        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
-        replaceOne(eval_sender,'cntaobao','') AS snick,
+        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
+        replaceOne(user_nick, 'cntaobao', '') AS snick,
         eval_code
     FROM ods.kefu_eval_detail_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
