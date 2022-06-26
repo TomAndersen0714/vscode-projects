@@ -15,7 +15,7 @@ CREATE TABLE sxx_dwd.compensate_workorder_local ON CLUSTER cluster_3s_2r
     `priority` String,
     `create_time` String,
     `creator` String,
-    `discription` String,
+    `description` String,
     `finish_time` String,
     `eval_status` String,
     `score` String,
@@ -67,4 +67,3 @@ ENGINE = Distributed('cluster_3s_2r', 'sxx_dwd', 'compensate_workorder_local', r
 CREATE TABLE buffer.sxx_dwd_compensate_workorder_buffer ON CLUSTER cluster_3s_2r
 AS sxx_dwd.compensate_workorder_all
 ENGINE = Buffer('sxx_dwd', 'compensate_workorder_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
-

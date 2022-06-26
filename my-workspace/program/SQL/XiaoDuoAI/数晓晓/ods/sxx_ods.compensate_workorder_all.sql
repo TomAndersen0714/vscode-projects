@@ -16,7 +16,7 @@ CREATE TABLE sxx_ods.compensate_workorder_local ON CLUSTER cluster_3s_2r
     `priority` String,
     `create_time` String,
     `creator` String,
-    `discription` String,
+    `description` String,
     `finish_time` String,
     `eval_status` String,
     `score` String,
@@ -48,7 +48,7 @@ ENGINE = ReplicatedMergeTree(
     '{replica}'
 )
 PARTITION BY (day, platform)
-ORDER BY (order_id, warehouse)
+ORDER BY (order_id, reason_level_3, reason_level_4)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

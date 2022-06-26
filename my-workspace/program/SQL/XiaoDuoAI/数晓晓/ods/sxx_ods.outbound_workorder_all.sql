@@ -108,7 +108,7 @@ ENGINE = ReplicatedMergeTree(
     '{replica}'
 )
 PARTITION BY (day, platform)
-ORDER BY (order_id, warehouse)
+ORDER BY (order_id, product_name)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 
