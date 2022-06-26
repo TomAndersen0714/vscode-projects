@@ -6,8 +6,8 @@ SELECT
     SUM(latest_eval_time != '') AS eval_cnt_sum,
     SUM(latest_eval_time != '' AND latest_eval_code < 2) AS eval_satisfied_cnt,
     eval_cnt_sum - eval_satisfied_cnt AS eval_unsatisfied_cnt,
-    if(eval_cnt_sum!=0, round(eval_satisfied_cnt / eval_cnt_sum, 2), 0.00) AS `满意率`,
-    if(eval_cnt_sum!=0, round(eval_unsatisfied_cnt / eval_cnt_sum, 2), 0.00) AS `不满意率`
+    if(eval_cnt_sum!=0, round(eval_satisfied_cnt / eval_cnt_sum, 4), 0.0000) AS `满意率`,
+    if(eval_cnt_sum!=0, round(eval_unsatisfied_cnt / eval_cnt_sum, 4), 0.0000) AS `不满意率`
 
 FROM (
     SELECT
