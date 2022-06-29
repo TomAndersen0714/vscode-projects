@@ -1,61 +1,40 @@
-SELECT
-    seller_nick,
-    snick,
-    cnick,
-    dialog_id,
-    eval_code,
-    eval_time,
-    send_time,
-    source,
-    if(eval_time != '' AND source = 1, 0, 1) AS is_invited,
-    day
-FROM xqc_ods.dialog_eval_all
-WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-    AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-AND platform = 'tb'
--- 下拉框-店铺
-AND (
-    '{{ seller_nicks }}'=''
-    OR
-    seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
-)
--- 当前企业对应的店铺
-AND seller_nick GLOBAL IN (
-    SELECT DISTINCT
-        seller_nick
-    FROM xqc_dim.xqc_shop_all
-    WHERE day = toYYYYMMDD(yesterday())
-    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    AND platform = 'tb'
-)
--- 当前企业对应的子账号
-AND snick GLOBAL IN (
-    SELECT DISTINCT snick
-    FROM (
-        SELECT DISTINCT snick, username
-        FROM ods.xinghuan_employee_snick_all AS snick_info
-        GLOBAL LEFT JOIN (
-            SELECT distinct
-                _id AS employee_id, username
-            FROM ods.xinghuan_employee_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS employee_info
-        USING(employee_id)
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 下拉框-子账号分组id
-        AND (
-            '{{ department_ids }}'=''
-            OR
-            department_id IN splitByChar(',','{{ department_ids }}')
-        )
-    ) AS snick_employee_info
-    -- 下拉框-客服姓名
-    WHERE (
-        '{{ usernames }}'=''
-        OR
-        username IN splitByChar(',','{{ usernames }}')
-    )
-)
+sxx_ods.compensate_filter_condition_local
+sxx_ods.compensate_way_map_local
+sxx_ods.jd_warehouse_map_local
+sxx_ods.logistics_local
+sxx_ods.outbound_goods_map_local
+sxx_ods.plat_goods_map_local
+sxx_ods.responsible_party_map_local
+sxx_ods.warehouse_local
+sxx_ods.workorder_filter_condition_local
+
+ALTER TABLE sxx_ods.compensate_filter_condition_local ON CLUSTER cluster_3s_2r UPDATE day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.compensate_way_map_local ON CLUSTER cluster_3s_2r UPDATE day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.jd_warehouse_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.logistics_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.outbound_goods_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.plat_goods_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.responsible_party_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.warehouse_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+ALTER TABLE sxx_ods.workorder_filter_condition_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
+
+
+ALTER TABLE sxx_ods.compensate_filter_condition_local ON CLUSTER cluster_3s_2r DELETE WHERE day = 0
+ALTER TABLE sxx_ods.compensate_way_map_local ON CLUSTER cluster_3s_2r DELETE WHERE day = 0
+ALTER TABLE sxx_ods.jd_warehouse_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+ALTER TABLE sxx_ods.logistics_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+ALTER TABLE sxx_ods.outbound_goods_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+ALTER TABLE sxx_ods.plat_goods_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+ALTER TABLE sxx_ods.responsible_party_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+ALTER TABLE sxx_ods.warehouse_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+ALTER TABLE sxx_ods.workorder_filter_condition_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
+
+truncate table sxx_ods.compensate_way_map_local on cluster cluster_3s_2r
+truncate table sxx_ods.plat_goods_map_local on cluster cluster_3s_2r
+truncate table sxx_ods.outbound_goods_map_local on cluster cluster_3s_2r
+truncate table sxx_ods.compensate_filter_condition_local on cluster cluster_3s_2r
+truncate table sxx_ods.responsible_party_map_local on cluster cluster_3s_2r
+
+
+docker exec -i 497fcc1132c7 clickhouse-client --port=19000 -m --query="\
+INSERT INTO sxx_ods.compensate_way_map_all FORMAT CSV" < sxx_ods.compensate_way_map_all.csv

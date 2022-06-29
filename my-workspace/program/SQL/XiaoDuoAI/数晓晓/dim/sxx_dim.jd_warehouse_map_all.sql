@@ -3,7 +3,7 @@ CREATE DATABASE sxx_dim ON CLUSTER cluster_3s_2r
 -- DROP TABLE sxx_dim.jd_warehouse_map_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE sxx_dim.jd_warehouse_map_local ON CLUSTER cluster_3s_2r
 (
-    `snaphost_day` Int32,
+    `snapshot_day` Int32,
     `day` Int32,
     `platform` String,
     `shop_id` String,
@@ -15,7 +15,7 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (snaphost_day)
+PARTITION BY (snapshot_day)
 ORDER BY (platform, warehouse_type)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 

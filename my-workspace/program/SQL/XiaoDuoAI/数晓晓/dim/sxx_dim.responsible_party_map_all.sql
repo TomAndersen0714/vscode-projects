@@ -3,7 +3,7 @@ CREATE DATABASE sxx_dim ON CLUSTER cluster_3s_2r
 -- DROP TABLE sxx_dim.responsible_party_map_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE sxx_dim.responsible_party_map_local ON CLUSTER cluster_3s_2r
 (
-    `snaphost_day` Int32,
+    `snapshot_day` Int32,
     `day` Int32,
     `platform` String,
     `shop_id` String,
@@ -19,7 +19,7 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (snaphost_day)
+PARTITION BY (snapshot_day)
 ORDER BY (platform, qc_label_group_name, compensate_reason_3)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
