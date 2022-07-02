@@ -1,17 +1,23 @@
-INSERT INTO {ch_sink_table}(day, platform, shop_id, order_id, warehouse_type)
-SELECT
-    day,
-    'jd' AS platform,
-    shop_id,
-    order_id,
-    '京东仓' AS warehouse_type
-FROM {ch_jd_order_table}
-WHERE day = {ds_nodash}
-AND shop_id GLOABL IN (
-    '红小厨旗舰店',
-    '星农联合京东自营官方旗舰店',
-    '红小厨京东自营旗舰店',
-    '星农联合官方旗舰店',
-    '红小厨生鲜旗舰店',
-    '阳澄联合京东自营官方旗舰店'
-)
+dialog_id
+day
+platform
+seller_nick
+snick
+cnick
+order_id
+focus_goods_id
+qc_label_id
+qc_label
+sub_group_name
+sub_sub_group_name
+full_group_name
+responsible_party
+goods_name
+compensate_workerorder_id
+compensate_day
+refund_way
+warehouse_type
+warehouse
+logistics_company
+logistics_company_abbr
+receiving_area
