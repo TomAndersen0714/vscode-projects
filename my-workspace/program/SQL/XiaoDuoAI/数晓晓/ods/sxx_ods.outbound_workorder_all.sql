@@ -86,7 +86,7 @@ CREATE TABLE sxx_ods.outbound_workorder_local ON CLUSTER cluster_3s_2r
     `order_label` String,
     `unit_price` String,
     `distributor_name` String,
-    `unit_wrigh` String,
+    `unit_weigh` String,
     `unit_class` String,
     `unit_attribute_3` String,
     `unit_attribute_4` String,

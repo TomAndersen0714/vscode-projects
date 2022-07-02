@@ -86,7 +86,7 @@ CREATE TABLE sxx_dwd.outbound_workorder_local ON CLUSTER cluster_3s_2r
     `order_label` String,
     `unit_price` String,
     `distributor_name` String,
-    `unit_wrigh` String,
+    `unit_weigh` String,
     `unit_class` String,
     `unit_attribute_3` String,
     `unit_attribute_4` String,
@@ -103,14 +103,15 @@ CREATE TABLE sxx_dwd.outbound_workorder_local ON CLUSTER cluster_3s_2r
     `combination_attribute_3` String,
     `combination_attribute_4` String,
     `goods_name` String,
-    `is_need_to_filter` String
+    `is_need_to_filter` String,
+    `warehouse_type` String
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
 PARTITION BY (day, platform)
-ORDER BY (order_id, warehouse)
+ORDER BY (origin_id, warehouse)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

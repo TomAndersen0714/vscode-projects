@@ -38,7 +38,7 @@ CREATE TABLE sxx_ods.compensate_workorder_local ON CLUSTER cluster_3s_2r
     `compensate_cnt` Int64,
     `unit_name` String,
     `compensate_type` String,
-    `transfer_money` String,
+    `transfer_money` Int64,
     `relative_pic` String,
     `factory_code` String,
     `is_delivery_paid` String,

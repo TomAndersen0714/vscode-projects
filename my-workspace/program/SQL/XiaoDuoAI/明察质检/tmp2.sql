@@ -1,29 +1,17 @@
--- CDH2数据导出
-docker exec -i 98c20caf2a35 clickhouse-client --host=10.248.32.3 --port=19000 -m --query="\
-SELECT * FROM sxx_ods.outbound_workorder_all LIMIT 10000 FORMAT Avro" \
-> sxx_ods.outbound_workorder_all.avro
-
-docker exec -i 98c20caf2a35 clickhouse-client --host=10.248.32.3 --port=19000 -m --query="\
-SELECT * FROM sxx_ods.compensate_workorder_all LIMIT 10000 FORMAT Avro" \
-> sxx_ods.compensate_workorder_all.avro
-
-
--- Test数据导入
-docker exec -i 5eb03ec8bacb clickhouse-client --port=19000 -m --query="\
-INSERT INTO sxx_ods.outbound_workorder_all FORMAT Avro" < sxx_ods.outbound_workorder_all.avro
-
-
-docker exec -i 5eb03ec8bacb clickhouse-client --port=19000 -m --query="\
-INSERT INTO sxx_ods.compensate_workorder_all FORMAT Avro" < sxx_ods.compensate_workorder_all.avro
-
-
-
--- 映射表导入
-docker exec -i 497fcc1132c7 clickhouse-client --port=19000 -m --query="\
-INSERT INTO sxx_ods.compensate_filter_condition_all FORMAT CSV" < sxx_ods.compensate_filter_condition_all.csv
-
-docker exec -i 497fcc1132c7 clickhouse-client --port=19000 -m --query="\
-INSERT INTO sxx_ods.compensate_way_map_all FORMAT CSV" < sxx_ods.compensate_way_map_all.csv
-
-docker exec -i 497fcc1132c7 clickhouse-client --port=19000 -m --query="\
-INSERT INTO sxx_ods.responsible_party_map_all FORMAT CSV" < sxx_ods.responsible_party_map_all.csv
+INSERT INTO {ch_sink_table}(day, platform, shop_id, order_id, warehouse_type)
+SELECT
+    day,
+    'jd' AS platform,
+    shop_id,
+    order_id,
+    '京东仓' AS warehouse_type
+FROM {ch_jd_order_table}
+WHERE day = {ds_nodash}
+AND shop_id GLOABL IN (
+    '红小厨旗舰店',
+    '星农联合京东自营官方旗舰店',
+    '红小厨京东自营旗舰店',
+    '星农联合官方旗舰店',
+    '红小厨生鲜旗舰店',
+    '阳澄联合京东自营官方旗舰店'
+)
