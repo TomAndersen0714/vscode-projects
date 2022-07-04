@@ -9,6 +9,7 @@ CREATE TABLE sxx_dim.compensate_filter_condition_local ON CLUSTER cluster_3s_2r
     `shop_id` String,
     `shop_name` String,
     `raw_info` String,
+    `sequence_num` Int64,
     `field_name` String,
     `filter_value` String
 )

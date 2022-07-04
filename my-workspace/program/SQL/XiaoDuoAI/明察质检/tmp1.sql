@@ -1,23 +1,12 @@
-dialog_id
-day
-platform
-seller_nick
-snick
-cnick
-order_id
-focus_goods_id
-qc_label_id
-qc_label
-sub_group_name
-sub_sub_group_name
-full_group_name
-responsible_party
-goods_name
-compensate_workerorder_id
-compensate_day
-refund_way
-warehouse_type
-warehouse
-logistics_company
-logistics_company_abbr
-receiving_area
+ALTER TABLE sxx_dwd.voc_qc_compensate_local ON CLUSTER cluster_3s_2r
+DROP COLUMN `qc_cnt`
+
+ALTER TABLE sxx_dwd.voc_qc_compensate_all ON CLUSTER cluster_3s_2r
+DROP COLUMN `qc_cnt`
+
+
+ALTER TABLE sxx_dwd.voc_qc_compensate_local ON CLUSTER cluster_3s_2r
+ADD COLUMN `qc_label_cnt` Int64 AFTER `qc_label_id`
+
+ALTER TABLE sxx_dwd.voc_qc_compensate_all ON CLUSTER cluster_3s_2r
+ADD COLUMN `qc_label_cnt` Int64 AFTER `qc_label_id`

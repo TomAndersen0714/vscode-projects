@@ -5,6 +5,7 @@ CREATE TABLE sxx_ods.outbound_workorder_local ON CLUSTER cluster_3s_2r
 (
     `day` Int32,
     `platform` String,
+    `platform_cn` String,
     `shop_id` String,
     `shop_name` String,
     `raw_info` String,
@@ -107,8 +108,8 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (day, platform)
-ORDER BY (order_id, product_name)
+PARTITION BY (day)
+ORDER BY (platform, order_id, product_name)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

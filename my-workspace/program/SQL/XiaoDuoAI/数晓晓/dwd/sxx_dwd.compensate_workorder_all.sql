@@ -5,6 +5,7 @@ CREATE TABLE sxx_dwd.compensate_workorder_local ON CLUSTER cluster_3s_2r
 (
     `day` Int32,
     `platform` String,
+    `platform_cn` String,
     `shop_id` String,
     `shop_name` String,
     `raw_info` String,

@@ -5,6 +5,7 @@ CREATE TABLE sxx_ods.compensate_workorder_local ON CLUSTER cluster_3s_2r
 (
     `day` Int32,
     `platform` String,
+    `platform_cn` String,
     `shop_id` String,
     `shop_name` String,
     `raw_info` String,
@@ -48,8 +49,7 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (day, platform)
-ORDER BY (order_id, reason_level_3, reason_level_4)
+ORDER BY (day, platform, order_id, reason_level_3, reason_level_4)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

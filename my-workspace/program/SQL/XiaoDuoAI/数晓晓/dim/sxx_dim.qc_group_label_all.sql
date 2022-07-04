@@ -15,6 +15,7 @@ CREATE TABLE sxx_dim.qc_group_label_local ON CLUSTER cluster_3s_2r
     `sub_group_name` String,
     `sub_sub_group_id` String,
     `sub_sub_group_name` String,
+    `full_group_name` String,
     `qc_label_id` String,
     `qc_label_name` String,
     `qc_label_category` String,
@@ -55,7 +56,12 @@ FROM (
         SELECT
             voc_sub_group.*,
             voc_sub_sub_group._id AS sub_sub_group_id,
-            voc_sub_sub_group.name AS sub_sub_group_name
+            voc_sub_sub_group.name AS sub_sub_group_name,
+            concat(
+                sub_group_name,
+                if(sub_sub_group_name='', '', '/'),
+                if(sub_sub_group_name='', '', sub_sub_group_name)
+            ) AS full_group_name
         FROM (
             SELECT
                 voc_group.*,
