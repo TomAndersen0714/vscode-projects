@@ -59,8 +59,8 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (day, platform)
-ORDER BY (warehouse_type, refund_way)
+PARTITION BY day
+ORDER BY (platform, warehouse_type, refund_way)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

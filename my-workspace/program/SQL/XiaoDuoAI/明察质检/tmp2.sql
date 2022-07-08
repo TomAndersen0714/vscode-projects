@@ -1,134 +1,105 @@
-    
 SELECT
-    day,
-    platform,
-    seller_nick,
-    snick,
-    dim_tag.tag_group_id AS tag_group_id,
-    dim_tag.tag_group_name AS tag_group_name,
-    tag_type,
-    tag_id,
-    dim_tag.tag_name AS tag_name,
-    tag_cnt_sum,
-    tag_score_sum
+    compensate_warehouse_type_info.*,
+    if({filter_condition_str}, 'false', 'true') AS is_cost
 FROM (
+    WITH (
+        SELECT groupArray(warehouse_type)
+        FROM sxx_dim.jd_warehouse_map_all
+        WHERE snapshot_day = {snapshot_ds_nodash}
+    ) AS jd_warehouses
     SELECT
-        day,
-        platform,
-        seller_nick,
-        snick,
-        cnick,
-        _id AS dialog_id,
-        tag_type,
-        tag_id,
-        SUM(tag_cnt) AS tag_cnt_sum,
-        -- 同一个ID分数可能发生变化, 以实际打标为准
-        SUM(tag_score*tag_cnt) AS tag_score_sum
+        compensate_refund_way_info.*,
+        if(
+            has(jd_warehouses, warehouse), 
+            '京东仓', 
+            if(warehouse='', '未知', warehouse)
+        ) AS warehouse_type
     FROM (
-        -- 新版本AI质检项-非情绪扣分项
         SELECT
-            toYYYYMMDD(begin_time) AS day,
-            platform,
-            seller_nick,
-            snick,
-            cnick,
-            _id AS dialog_id,
-            order_info_id[1] AS order_id,
-            focus_goods_id,
-            abnormals_rule_id AS tag_ids,
-            abnormals_count AS tag_cnts,
-            abnormals_score AS tag_scores
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) = {ds_nodash}
-        -- 过滤新版本AI质检-扣分项
-        AND arrayExists((x)->x!='',abnormals_rule_id)
-
-        -- 新版本AI质检项-非情绪加分项
-        UNION ALL
-        SELECT
-            toYYYYMMDD(begin_time) AS day,
-            platform,
-            seller_nick,
-            snick,
-            'ai_excellent' AS tag_type,
-            excellents_rule_id AS tag_ids,
-            excellents_count AS tag_cnts,
-            excellents_score AS tag_scores
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) = {ds_nodash}
-        -- 过滤新版本AI质检-加分项
-        AND arrayExists((x)->x!='',excellents_rule_id)
-
-        -- 新版本AI质检项-买家情绪项
-        UNION ALL
-        SELECT
-            toYYYYMMDD(begin_time) AS day,
-            platform,
-            seller_nick,
-            snick,
-            'ai_c_emotion' AS tag_type,
-            c_emotion_rule_id AS tag_ids,
-            c_emotion_count AS tag_cnts,
-            c_emotion_score AS tag_scores
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) = {ds_nodash}
-        -- 过滤新版本AI质检-买家情绪项
-        AND arrayExists((x)->x!='',c_emotion_rule_id)
-
-        -- 新版本AI质检项-客服情绪项
-        UNION ALL
-        SELECT
-            toYYYYMMDD(begin_time) AS day,
-            platform,
-            seller_nick,
-            snick,
-            'ai_s_emotion' AS tag_type,
-            s_emotion_rule_id AS tag_ids,
-            s_emotion_count AS tag_cnts,
-            s_emotion_score AS tag_scores
-        FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) = {ds_nodash}
-        -- 过滤新版本AI质检-客服情绪项
-        AND arrayExists((x)->x!='',s_emotion_rule_id)
-    ) AS ods_ai_tag
-    ARRAY JOIN
-        tag_ids AS tag_id,
-        tag_cnts AS tag_cnt,
-        tag_scores AS tag_score
-    -- 排除空数据
-    WHERE tag_id!='' AND tag_cnt!=0
-    GROUP BY
-        day,
-        platform,
-        seller_nick,
-        snick,
-        tag_type,
-        tag_id
-) AS ods_ai_tag
-GLOBAL LEFT JOIN (
-    -- 关联维度信息
-    SELECT
-        *
-    FROM (
-        -- 查询AI质检项
-        SELECT
-            _id AS tag_id,
-            name AS tag_name,
-            qc_norm_group_id AS tag_group_id
-        FROM xqc_dim.qc_rule_all
-        WHERE day = {snapshot_ds_nodash}
-        AND rule_category = 1
-    ) AS dim_tag
-    GLOBAL LEFT JOIN (
-        -- 关联质检项分组
-        -- PS: 已删除的分组无法获取
-        SELECT
-            _id AS tag_group_id,
-            full_name AS tag_group_name
-        FROM xqc_dim.qc_norm_group_full_all
-        WHERE day = {snapshot_ds_nodash}
-    ) AS dim_tag_group
-    USING(tag_group_id)
-) AS dim_tag
-USING(tag_id)
-    
+            compensate_responsible_info.*,
+            if(
+                compensate_way.refund_way='',
+                '线上',
+                compensate_way.refund_way
+            ) AS refund_way
+        FROM (
+            SELECT
+                compensate_warehouse_info.*,
+                responsible_party
+            FROM (
+                SELECT
+                    compensate_workorder_all.*,
+                    if(
+                        outbound_workorder_info.warehouse='',
+                        '未知',
+                        outbound_workorder_info.warehouse
+                    ) AS warehouse,
+                    if(
+                        outbound_workorder_info.logistics_company='',
+                        '未知',
+                        outbound_workorder_info.logistics_company
+                    ) AS logistics_company,
+                    if(
+                        outbound_workorder_info.logistics_company_abbr='',
+                        '未知',
+                        outbound_workorder_info.logistics_company_abbr
+                    ) AS logistics_company_abbr,
+                    if(
+                        outbound_workorder_info.receiving_area='',
+                        '未知',
+                        outbound_workorder_info.receiving_area
+                    ) AS receiving_area,
+                    if(
+                        outbound_workorder_info.is_outbound_need_to_filter='',
+                        'false',
+                        outbound_workorder_info.is_outbound_need_to_filter
+                    ) AS is_outbound_need_to_filter
+                FROM (
+                    SELECT
+                        toYYYYMMDD(toDateTime64(paid_time,3)) AS paid_day,
+                        * EXCEPT(day),
+                        concat(
+                            reason_level_3,
+                            if(reason_level_4='/' OR reason_level_4='', '', '/'),
+                            if(reason_level_4='/' OR reason_level_4='', '', reason_level_4)
+                        ) AS reason_level_3_4
+                    FROM {ch_source_table}
+                    -- 此处迫不得已, 扫全表, 由于当前数据量较小, 因此能够正常运转
+                    WHERE toYYYYMMDD(toDateTime64(paid_time,3)) = {ds_nodash}
+                    -- 筛选批量打款工单
+                    AND type = '批量打款工单'
+                ) AS compensate_workorder_all
+                GLOBAL LEFT JOIN (
+                    SELECT DISTINCT
+                        origin_id,
+                        warehouse,
+                        logistics_company,
+                        logistics_company_abbr,
+                        receiving_area,
+                        is_need_to_filter AS is_outbound_need_to_filter
+                    FROM sxx_dwd.outbound_workorder_all
+                    WHERE day BETWEEN {start_ds_nodash} AND {ds_nodash}
+                ) AS outbound_workorder_info
+                ON compensate_workorder_all.order_id = outbound_workorder_info.origin_id
+            ) AS compensate_warehouse_info
+            GLOBAL LEFT JOIN (
+                SELECT DISTINCT
+                    compensate_reason_3,
+                    compensate_reason_4,
+                    responsible_party
+                FROM sxx_dim.responsible_party_map_all
+                WHERE snapshot_day = {snapshot_ds_nodash}
+            ) AS responsible_party_map
+            ON compensate_warehouse_info.reason_level_3 = responsible_party_map.compensate_reason_3
+            AND compensate_warehouse_info.reason_level_4 = responsible_party_map.compensate_reason_4
+        ) AS compensate_responsible_info
+        GLOBAL LEFT JOIN (
+            SELECT DISTINCT
+                compensate_type,
+                refund_way
+            FROM sxx_dim.compensate_way_map_all
+            WHERE snapshot_day = {snapshot_ds_nodash}
+        ) AS compensate_way
+        USING(compensate_type)
+    ) AS compensate_refund_way_info
+) AS compensate_warehouse_type_info

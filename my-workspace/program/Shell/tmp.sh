@@ -1,8 +1,2 @@
 #!/bin/bash
-for file in ./*; do
-    if test -d $file; then
-        echo $file
-        cd $file && git pull origin master && cd ..
-        echo
-    fi
-done
+python3 sxx_hxc_etl_tb_script.py 20220622 20220704

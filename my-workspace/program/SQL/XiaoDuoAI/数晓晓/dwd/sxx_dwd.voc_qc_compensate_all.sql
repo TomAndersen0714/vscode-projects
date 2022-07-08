@@ -3,15 +3,16 @@ CREATE DATABASE sxx_dwd ON CLUSTER cluster_3s_2r
 -- DROP TABLE sxx_dwd.voc_qc_compensate_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE sxx_dwd.voc_qc_compensate_local ON CLUSTER cluster_3s_2r
 (
-    `dialog_id` String,
     `day` Int32,
     `platform` String,
     `seller_nick` String,
     `snick` String,
     `cnick` String,
+    `dialog_id` String,
     `order_id` String,
     `focus_goods_id` String,
     `qc_label_id` String,
+    `qc_label_cnt` Int64,
     `qc_label` String,
     `sub_group_name` String,
     `sub_sub_group_name` String,
@@ -31,8 +32,8 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (day, platform)
-ORDER BY (refund_way, warehouse_type)
+PARTITION BY day
+ORDER BY (platform, refund_way, warehouse_type)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 
