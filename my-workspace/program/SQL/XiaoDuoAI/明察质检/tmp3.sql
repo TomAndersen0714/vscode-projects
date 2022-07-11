@@ -1,19 +1,23 @@
-SELECT DISTINCT
-    plat_order_id,
-    warehouse,
-    logistics_company,
-    logistics_company_abbr,
-    receiving_area,
-    is_need_to_filter AS is_outbound_need_to_filter
-FROM sxx_dwd.outbound_workorder_all
-ARRAY JOIN
-    splitByChar(',', origin_id) AS plat_order_id
-WHERE day BETWEEN {start_ds_nodash} AND {ds_nodash}
-AND plat_order_id GLOBAL IN (
-    SELECT DISTINCT
-        order_id
-    FROM {ch_source_table}
-    WHERE day = {ds_nodash}
-    -- 筛选非批量打款工单
-    AND type != '批量打款工单'
-)
+INSERT INTO buffer.sxx_ods_outbound_workorder_buffer
+SELECT
+    toYYYYMMDD(toDateTime64(outbound_info.delivery_time, 3)) AS day,
+    plat_map.platform AS platform,
+    plat_map.platform_cn AS platform_cn,
+    '' AS shop_id,
+    plat_map.shop_name AS shop_name,
+    '' AS raw_info,
+    outbound_info.*
+FROM (
+    SELECT
+        *
+    FROM sxx_tmp.outbound_workorder_all
+) AS outbound_info
+GLOBAL LEFT JOIN (
+    SELECT 
+        platform,
+        platform_cn,
+        custom_shop_name,
+        shop_name
+    FROM sxx_tmp.plat_shop_map_all
+) AS plat_map
+USING(custom_shop_name)
