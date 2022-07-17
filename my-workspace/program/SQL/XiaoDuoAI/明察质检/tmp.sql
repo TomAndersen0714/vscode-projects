@@ -1,40 +1,41 @@
-sxx_ods.compensate_filter_condition_local
-sxx_ods.compensate_way_map_local
-sxx_ods.jd_warehouse_map_local
-sxx_ods.logistics_local
-sxx_ods.outbound_goods_map_local
-sxx_ods.plat_goods_map_local
-sxx_ods.responsible_party_map_local
-sxx_ods.warehouse_local
-sxx_ods.workorder_filter_condition_local
-
-ALTER TABLE sxx_ods.compensate_filter_condition_local ON CLUSTER cluster_3s_2r UPDATE day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.compensate_way_map_local ON CLUSTER cluster_3s_2r UPDATE day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.jd_warehouse_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.logistics_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.outbound_goods_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.plat_goods_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.responsible_party_map_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.warehouse_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-ALTER TABLE sxx_ods.workorder_filter_condition_local ON CLUSTER cluster_3s_2r UPDATE  day = 20220628 WHERE 1=1
-
-
-ALTER TABLE sxx_ods.compensate_filter_condition_local ON CLUSTER cluster_3s_2r DELETE WHERE day = 0
-ALTER TABLE sxx_ods.compensate_way_map_local ON CLUSTER cluster_3s_2r DELETE WHERE day = 0
-ALTER TABLE sxx_ods.jd_warehouse_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-ALTER TABLE sxx_ods.logistics_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-ALTER TABLE sxx_ods.outbound_goods_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-ALTER TABLE sxx_ods.plat_goods_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-ALTER TABLE sxx_ods.responsible_party_map_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-ALTER TABLE sxx_ods.warehouse_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-ALTER TABLE sxx_ods.workorder_filter_condition_local ON CLUSTER cluster_3s_2r DELETE WHERE  day = 0
-
-truncate table sxx_ods.compensate_way_map_local on cluster cluster_3s_2r
-truncate table sxx_ods.plat_goods_map_local on cluster cluster_3s_2r
-truncate table sxx_ods.outbound_goods_map_local on cluster cluster_3s_2r
-truncate table sxx_ods.compensate_filter_condition_local on cluster cluster_3s_2r
-truncate table sxx_ods.responsible_party_map_local on cluster cluster_3s_2r
-
-
-docker exec -i 497fcc1132c7 clickhouse-client --port=19000 -m --query="\
-INSERT INTO sxx_ods.compensate_way_map_all FORMAT CSV" < sxx_ods.compensate_way_map_all.csv
+#!/bin/bash
+echo "2022.01.01-2022.01.13.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.01.01-2022.01.13.snappy.parquet
+echo "2022.01.14.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.01.14.snappy.parquet
+echo "2022.01.15-01.20.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.01.15-01.20.snappy.parquet
+echo "2022.01.20-01.25.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.01.20-01.25.snappy.parquet
+echo "2022.01.25-01.31.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.01.25-01.31.snappy.parquet
+echo "2022.01.31.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.01.31.snappy.parquet
+echo "2022.02.01-02.20.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.02.01-02.20.snappy.parquet
+echo "2022.02.21-02.31.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.02.21-02.31.snappy.parquet
+echo "2022.03.01-2022.03.15.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.03.01-2022.03.15.snappy.parquet
+echo "2022.03.16-03.31.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.03.16-03.31.snappy.parquet
+echo "2022.04.01-04.15.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.04.01-04.15.snappy.parquet
+echo "2022.04.16-04.28.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.04.16-04.28.snappy.parquet
+echo "2022.04.29-05.13.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.04.29-05.13.snappy.parquet
+echo "2022.05.14-05.30.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.05.14-05.30.snappy.parquet
+echo "2022.05.31-06.16.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.05.31-06.16.snappy.parquet
+echo "2022.06.17-06.29.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.06.17-06.29.snappy.parquet
+echo "2022.06.30-07.07.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.06.30-07.07.snappy.parquet
+echo "2022.07.08.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.07.08.snappy.parquet
+echo "2022.07.09-07.12.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.07.09-07.12.snappy.parquet
+echo "2022.07.13.snappy.parquet" 
+docker exec -i 42198f0fe342 clickhouse-client --port=29000 --query="INSERT INTO buffer.sxx_tmp_outbound_workorder_buffer FORMAT Parquet" < 2022.07.13.snappy.parquet
