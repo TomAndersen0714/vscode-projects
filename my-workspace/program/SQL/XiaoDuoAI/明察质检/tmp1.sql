@@ -1,19 +1,19 @@
--- 写入数据
--- 京东, 5月份数据
+
+
 ALTER TABLE tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r
-DELETE WHERE day BETWEEN 20220711 AND 20220720 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
+DELETE WHERE day BETWEEN 20220701 AND 20220712 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
 
 INSERT INTO tmp.xqc_qc_report_snick_all
--- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果-子账号维度
+
 SELECT *
 FROM (
-    -- 质检结果总览+AI质检结果+人工质检结果-子账号维度
+    
     SELECT *
     FROM (
-        -- 质检结果总览+AI质检结果-子账号维度
+        
         SELECT *
         FROM (
-            -- 质检结果总览-子账号维度
+            
             SELECT
                 toYYYYMMDD(begin_time) AS day,
                 platform,
@@ -62,39 +62,39 @@ FROM (
                     )!=0
                 ) AS rule_add_dialog_cnt
             FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+            WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
             AND platform = 'jd'
             AND seller_nick GLOBAL IN (
-                -- 查询对应企业-平台的店铺
+                
                 SELECT DISTINCT seller_nick
                 FROM xqc_dim.xqc_shop_all
-                WHERE day=toYYYYMMDD(yesterday())
+                WHERE day=20220720
                 AND platform = 'jd'
                 AND company_id = '614d86d84eed94e6fc980b1c'
             )
             AND snick GLOBAL IN (
-                -- 获取最新版本的维度数据(T+1)
+                
                 SELECT distinct snick
                 FROM ods.xinghuan_employee_snick_all
-                WHERE day = toYYYYMMDD(yesterday())
+                WHERE day = 20220720
                 AND platform = 'jd'
                 AND company_id = '614d86d84eed94e6fc980b1c'
             )
-            -- 顾家定制化需求新增条件
-            -- 最近订单是未创建/已下单/已付定金的会话
+            
+            
             AND order_info_status[1] IN ('','created','deposited')
-            -- 排除无效会话(买家必须有发送消息)
+            
             AND (question_count!=0)
             GROUP BY day, platform, seller_nick, snick
         ) AS stat_info
         GLOBAL FULL OUTER JOIN (
-            -- AI质检结果-子账号维度
+            
             SELECT *
             FROM (
-                -- AI质检-子账号维度加分扣分质检项触发次数统计
+                
                 SELECT *
                 FROM (
-                    -- AI质检-子账号维度扣分质检项触发次数统计
+                    
                     SELECT
                         toYYYYMMDD(begin_time) AS day,
                         platform,
@@ -133,35 +133,35 @@ FROM (
                     ARRAY JOIN
                         abnormals_type AS abnormal_type, 
                         abnormals_count AS abnormal_cnt
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
-                        -- 查询对应企业-平台的店铺
+                        
                         SELECT DISTINCT seller_nick
                         FROM xqc_dim.xqc_shop_all
-                        WHERE day=toYYYYMMDD(yesterday())
+                        WHERE day=20220720
                         AND platform = 'jd'
                         AND company_id = '614d86d84eed94e6fc980b1c'
                     )
                     AND snick GLOBAL IN (
-                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-                        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                        
+                        
                         SELECT distinct snick
                         FROM ods.xinghuan_employee_snick_all
-                        WHERE day = toYYYYMMDD(yesterday())
+                        WHERE day = 20220720
                         AND platform = 'jd'
                         AND company_id = '614d86d84eed94e6fc980b1c'
                     )
                     AND abnormal_cnt!=0
-                    -- 顾家定制化需求新增条件
-                    -- 最近订单是未创建/已下单/已付定金的会话
+                    
+                    
                     AND order_info_status[1] IN ('','created','deposited')
-                    -- 排除无效会话(买家必须有发送消息)
+                    
                     AND (question_count!=0)
                     GROUP BY day, platform, seller_nick, snick
                 ) AS ai_abnormal_info
                 GLOBAL FULL OUTER JOIN (
-                    -- AI质检-子账号维度加分质检项触发次数统计
+                    
                     SELECT
                         toYYYYMMDD(begin_time) AS day,
                         platform,
@@ -184,40 +184,40 @@ FROM (
                     ARRAY JOIN
                         excellents_type AS excellent_type, 
                         excellents_count AS excellent_cnt
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
-                        -- 查询对应企业-平台的店铺
+                        
                         SELECT DISTINCT seller_nick
                         FROM xqc_dim.xqc_shop_all
-                        WHERE day=toYYYYMMDD(yesterday())
+                        WHERE day=20220720
                         AND platform = 'jd'
                         AND company_id = '614d86d84eed94e6fc980b1c'
                     )
                     AND snick GLOBAL IN (
-                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-                        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                        
+                        
                         SELECT distinct snick
                         FROM ods.xinghuan_employee_snick_all
-                        WHERE day = toYYYYMMDD(yesterday())
+                        WHERE day = 20220720
                         AND platform = 'jd'
                         AND company_id = '614d86d84eed94e6fc980b1c'
                     )
                     AND excellent_cnt!=0
-                    -- 顾家定制化需求新增条件
-                    -- 最近订单是未创建/已下单/已付定金的会话
+                    
+                    
                     AND order_info_status[1] IN ('','created','deposited')
-                    -- 排除无效会话(买家必须有发送消息)
+                    
                     AND (question_count!=0)
                     GROUP BY day, platform, seller_nick, snick
                 ) AS ai_excellent_info
                 USING(day, platform, seller_nick, snick)
             ) AS ai_abnormal_excellent_info
             GLOBAL FULL OUTER JOIN (
-                -- AI质检-子账号维度情绪质检项触发次数统计
+                
                 SELECT *
                 FROM (
-                    -- AI质检-子账号维度顾客情绪质检项触发次数统计
+                    
                     SELECT
                         toYYYYMMDD(begin_time) AS day,
                         platform,
@@ -236,35 +236,35 @@ FROM (
                     ARRAY JOIN
                         c_emotion_type,
                         c_emotion_count
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
-                        -- 查询对应企业-平台的店铺
+                        
                         SELECT DISTINCT seller_nick
                         FROM xqc_dim.xqc_shop_all
-                        WHERE day=toYYYYMMDD(yesterday())
+                        WHERE day=20220720
                         AND platform = 'jd'
                         AND company_id = '614d86d84eed94e6fc980b1c'
                     )
                     AND snick GLOBAL IN (
-                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-                        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                        
+                        
                         SELECT distinct snick
                         FROM ods.xinghuan_employee_snick_all
-                        WHERE day = toYYYYMMDD(yesterday())
+                        WHERE day = 20220720
                         AND company_id = '614d86d84eed94e6fc980b1c'
                         AND platform = 'jd'
                     )
                     AND c_emotion_count!=0
-                    -- 顾家定制化需求新增条件
-                    -- 最近订单是未创建/已下单/已付定金的会话
+                    
+                    
                     AND order_info_status[1] IN ('','created','deposited')
-                    -- 排除无效会话(买家必须有发送消息)
+                    
                     AND (question_count!=0)
                     GROUP BY day, platform, seller_nick, snick
                 ) AS ai_c_emotion_info
                 GLOBAL FULL OUTER JOIN(
-                    -- AI质检-子账号维度客服情绪质检项触发次数统计
+                    
                     SELECT
                         toYYYYMMDD(begin_time) AS day,
                         platform,
@@ -275,30 +275,30 @@ FROM (
                     ARRAY JOIN
                         s_emotion_type,
                         s_emotion_count
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
-                        -- 查询对应企业-平台的店铺
+                        
                         SELECT DISTINCT seller_nick
                         FROM xqc_dim.xqc_shop_all
-                        WHERE day=toYYYYMMDD(yesterday())
+                        WHERE day=20220720
                         AND platform = 'jd'
                         AND company_id = '614d86d84eed94e6fc980b1c'
                     )
                     AND snick GLOBAL IN (
-                        -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-                        -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                        
+                        
                         SELECT distinct snick
                         FROM ods.xinghuan_employee_snick_all
-                        WHERE day = toYYYYMMDD(yesterday())
+                        WHERE day = 20220720
                         AND company_id = '614d86d84eed94e6fc980b1c'
                         AND platform = 'jd'
                     )
                     AND s_emotion_count!=0
-                    -- 顾家定制化需求新增条件
-                    -- 最近订单是未创建/已下单/已付定金的会话
+                    
+                    
                     AND order_info_status[1] IN ('','created','deposited')
-                    -- 排除无效会话(买家必须有发送消息)
+                    
                     AND (question_count!=0)
                     
                     GROUP BY day, platform, seller_nick, snick
@@ -310,7 +310,7 @@ FROM (
         USING(day, platform, seller_nick, snick)
     ) AS stat_ai_check_info
     GLOBAL FULL OUTER JOIN (
-        -- 人工质检结果-子账号维度
+        
         SELECT
             day,
             platform,
@@ -319,7 +319,7 @@ FROM (
             groupArray(tag_name) AS human_check_tag_name_arr,
             groupArray(tag_cnt) AS human_check_tag_cnt_arr
         FROM (
-            -- 人工质检-子账号维度扣分标签触发次数统计
+            
             SELECT
                 day,
                 platform,
@@ -328,14 +328,14 @@ FROM (
                 tag_id,
                 sum(tag_score_stat_count + tag_score_stat_md) AS tag_cnt
             FROM (
-                -- 针对字段缺失的历史数据进行转换, 使其数据为0, 保证语法正确
+                
                 SELECT
                     toYYYYMMDD(begin_time) AS day,
                     platform,
                     seller_nick,
                     snick,
                     tag_score_stats_id AS tag_score_stats_id,
-                    -- 缺失历史数据直接为0, 对齐数组长度
+                    
                     if(
                         length(tag_score_stats_count)!=length(tag_score_stats_id),
                         arrayResize([0],length(tag_score_stats_id),0),
@@ -347,44 +347,44 @@ FROM (
                         tag_score_stats_md
                     ) AS tag_score_stats_md
                 FROM dwd.xdqc_dialog_all
-                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
                 AND platform = 'jd'
                 AND seller_nick GLOBAL IN (
-                    -- 查询对应企业-平台的店铺
+                    
                     SELECT DISTINCT seller_nick
                     FROM xqc_dim.xqc_shop_all
-                    WHERE day=toYYYYMMDD(yesterday())
+                    WHERE day=20220720
                     AND platform = 'jd'
                     AND company_id = '614d86d84eed94e6fc980b1c'
                 )
                 AND snick GLOBAL IN (
-                    -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-                    -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                    
+                    
                     SELECT distinct snick
                     FROM ods.xinghuan_employee_snick_all
-                    WHERE day = toYYYYMMDD(yesterday())
+                    WHERE day = 20220720
                     AND platform = 'jd'
                     AND company_id = '614d86d84eed94e6fc980b1c'
                 )
-                -- 清除没有打标的数据, 减小计算量
+                
                 AND tag_score_stats_id!=[]
-                -- 顾家定制化需求新增条件
-                -- 最近订单是未创建/已下单/已付定金的会话
+                
+                
                 AND order_info_status[1] IN ('','created','deposited')
-                -- 排除无效会话(买家必须有发送消息)
+                
                 AND (question_count!=0)
             ) AS transformed_dialog_info
             ARRAY JOIN
                 tag_score_stats_id AS tag_id,
                 tag_score_stats_count AS tag_score_stat_count,
                 tag_score_stats_md AS tag_score_stat_md
-            -- 清除空数据
+            
             WHERE tag_score_stats_id!=[]
             GROUP BY day, platform, seller_nick, snick, tag_id
             
             UNION ALL
             
-            -- 人工质检-子账号维度加分标签触发次数统计
+            
             SELECT
                 day,
                 platform,
@@ -393,14 +393,14 @@ FROM (
                 tag_id,
                 sum(tag_score_add_stat_count + tag_score_add_stat_md) AS tag_cnt
             FROM (
-                -- 针对字段缺失的历史数据进行转换, 使其数据为0, 保证语法正确
+                
                 SELECT
                     toYYYYMMDD(begin_time) AS day,
                     platform,
                     seller_nick,
                     snick,
                     tag_score_add_stats_id AS tag_score_add_stats_id,
-                    -- 缺失历史数据直接为0, 对齐数组长度
+                    
                     if(
                         length(tag_score_add_stats_count)!=length(tag_score_add_stats_id),
                         arrayResize([0],length(tag_score_add_stats_id),0),
@@ -412,48 +412,48 @@ FROM (
                         tag_score_add_stats_md
                     ) AS tag_score_add_stats_md
                 FROM dwd.xdqc_dialog_all
-                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
                 AND platform = 'jd'
                 AND seller_nick GLOBAL IN (
-                    -- 查询对应企业-平台的店铺
+                    
                     SELECT DISTINCT seller_nick
                     FROM xqc_dim.xqc_shop_all
-                    WHERE day=toYYYYMMDD(yesterday())
+                    WHERE day=20220720
                     AND platform = 'jd'
                     AND company_id = '614d86d84eed94e6fc980b1c'
                 )
                 AND snick GLOBAL IN (
-                    -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-                    -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+                    
+                    
                     SELECT distinct snick
                     FROM ods.xinghuan_employee_snick_all
-                    WHERE day = toYYYYMMDD(yesterday())
+                    WHERE day = 20220720
                     AND platform = 'jd'
                     AND company_id = '614d86d84eed94e6fc980b1c'
                 )
-                -- 清除没有打标的数据, 减小计算量
+                
                 AND tag_score_add_stats_id!=[]
-                -- 顾家定制化需求新增条件
-                -- 最近订单是未创建/已下单/已付定金的会话
+                
+                
                 AND order_info_status[1] IN ('','created','deposited')
-                -- 排除无效会话(买家必须有发送消息)
+                
                 AND (question_count!=0)
             ) AS transformed_dialog_info
             ARRAY JOIN
                 tag_score_add_stats_id AS tag_id,
                 tag_score_add_stats_count AS tag_score_add_stat_count,
                 tag_score_add_stats_md AS tag_score_add_stat_md
-            -- 清除空数据
+            
             WHERE tag_score_add_stats_id!=[]
             GROUP BY day, platform, seller_nick, snick, tag_id
         ) AS human_check_tag_info
         GLOBAL LEFT JOIN (
-            -- 获取人工质检项
+            
             SELECT
                 _id AS tag_id,
                 name AS tag_name
             FROM xqc_dim.qc_rule_all
-            WHERE day = toYYYYMMDD(yesterday())
+            WHERE day = 20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
             AND rule_category = 2
@@ -465,7 +465,7 @@ FROM (
 ) AS stat_ai_human_check_info
 
 GLOBAL FULL OUTER JOIN (
-    -- 自定义质检结果-子账号维度
+    
     SELECT
         day,
         platform,
@@ -474,7 +474,7 @@ GLOBAL FULL OUTER JOIN (
         groupArray(tag_name) AS customize_check_tag_name_arr,
         groupArray(tag_cnt) AS customize_check_tag_cnt_arr
     FROM (
-        -- 自定义质检-平台维度扣分质检项触发次数统计
+        
         SELECT
             toYYYYMMDD(begin_time) AS day,
             platform,
@@ -486,36 +486,36 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             rule_stats_id AS rule_stats_tag_id,
             rule_stats_count AS rule_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
-            -- 查询对应企业-平台的店铺
+            
             SELECT DISTINCT seller_nick
             FROM xqc_dim.xqc_shop_all
-            WHERE day=toYYYYMMDD(yesterday())
+            WHERE day=20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
         )
         AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            
+            
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
+            WHERE day = 20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
         )
-        -- 清除没有打标的数据, 减小计算量
+        
         AND rule_stats_id!=[]
-        -- 顾家定制化需求新增条件
-        -- 最近订单是未创建/已下单/已付定金的会话
+        
+        
         AND order_info_status[1] IN ('','created','deposited')
-        -- 排除无效会话(买家必须有发送消息)
+        
         AND (question_count!=0)
         GROUP BY day, platform, seller_nick, snick, rule_stats_tag_id
 
         UNION ALL
-        -- 自定义质检-平台维度加分质检项触发次数统计
+        
         SELECT
             toYYYYMMDD(begin_time) AS day,
             platform,
@@ -527,36 +527,36 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             rule_add_stats_id AS rule_add_stats_tag_id,
             rule_add_stats_count AS rule_add_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
-            -- 查询对应企业-平台的店铺
+            
             SELECT DISTINCT seller_nick
             FROM xqc_dim.xqc_shop_all
-            WHERE day=toYYYYMMDD(yesterday())
+            WHERE day=20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
         )
         AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            
+            
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
+            WHERE day = 20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
         )
-        -- 清除没有打标的数据, 减小计算量
+        
         AND rule_add_stats_id!=[]
-        -- 顾家定制化需求新增条件
-        -- 最近订单是未创建/已下单/已付定金的会话
+        
+        
         AND order_info_status[1] IN ('','created','deposited')
-        -- 排除无效会话(买家必须有发送消息)
+        
         AND (question_count!=0)
         GROUP BY day, platform, seller_nick, snick, rule_add_stats_tag_id
 
         UNION ALL
-        -- 自定义质检-平台维度会话质检项触发次数统计
+        
         SELECT
             toYYYYMMDD(begin_time) AS day,
             platform,
@@ -568,36 +568,36 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             top_xrules_id AS top_xrules_tag_id,
             top_xrules_count AS top_xrules_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
-            -- 查询对应企业-平台的店铺
+            
             SELECT DISTINCT seller_nick
             FROM xqc_dim.xqc_shop_all
-            WHERE day=toYYYYMMDD(yesterday())
+            WHERE day=20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
         )
         AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            
+            
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
+            WHERE day = 20220720
             AND platform = 'jd'
             AND company_id = '614d86d84eed94e6fc980b1c'
         )
-        -- 清除没有打标的数据, 减小计算量
+        
         AND top_xrules_id!=[]
-        -- 顾家定制化需求新增条件
-        -- 最近订单是未创建/已下单/已付定金的会话
+        
+        
         AND order_info_status[1] IN ('','created','deposited')
-        -- 排除无效会话(买家必须有发送消息)
+        
         AND (question_count!=0)
         GROUP BY day, platform, seller_nick, snick, top_xrules_tag_id
 
         UNION ALL
-        -- 自定义质检-平台维度消息质检项触发次数统计
+        
         SELECT
             toYYYYMMDD(begin_time) AS day,
             platform,
@@ -609,42 +609,42 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             xrule_stats_id AS xrules_tag_id,
             xrule_stats_count AS xrules_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220712
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
-            -- 查询对应企业-平台的店铺
+            
             SELECT DISTINCT seller_nick
             FROM xqc_dim.xqc_shop_all
-            WHERE day=toYYYYMMDD(yesterday())
+            WHERE day=20220720
             AND platform = 'jd'
             AND company_id = '6234209693e6cbff31d6c118'
         )
         AND snick GLOBAL IN (
-            -- 查询对应企业-平台的所有最新的子账号, 不论其是否绑定员工
-            -- PS: 因为已经删除的子账号无法落入到最新的子账号分组中
+            
+            
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
+            WHERE day = 20220720
             AND platform = 'jd'
             AND company_id = '6234209693e6cbff31d6c118'
         )
-        -- 清除没有打标的数据, 减小计算量
+        
         AND xrule_stats_id!=[]
-        -- 顾家定制化需求新增条件
-        -- 最近订单是未创建/已下单/已付定金的会话
+        
+        
         AND order_info_status[1] IN ('','created','deposited')
-        -- 排除无效会话(买家必须有发送消息)
+        
         AND (question_count!=0)
         GROUP BY day, platform, seller_nick, snick, xrules_tag_id
 
     ) AS customize_check_stat
     GLOBAL LEFT JOIN (
-        -- 获取自定义质检项
+        
         SELECT
             _id AS tag_id,
             name AS tag_name
         FROM xqc_dim.qc_rule_all
-        WHERE day = toYYYYMMDD(yesterday())
+        WHERE day = 20220720
         AND platform = 'jd'
         AND company_id = '614d86d84eed94e6fc980b1c'
         AND rule_category = 3
@@ -653,3 +653,4 @@ GLOBAL FULL OUTER JOIN (
     GROUP BY day, platform, seller_nick, snick
 ) AS customize_check_info
 USING(day, platform, seller_nick, snick)
+WHERE seller_nick = '顾家家居京东自营旗舰店'

@@ -1,7 +1,7 @@
 
 
 ALTER TABLE tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r
-DELETE WHERE day BETWEEN 20220711 AND 20220720 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
+DELETE WHERE day BETWEEN 20220713 AND 20220720 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
 
 INSERT INTO tmp.xqc_qc_report_snick_all
 
@@ -20,7 +20,7 @@ FROM (
                 seller_nick,
                 snick,
                 COUNT(1) AS dialog_cnt,
-                sum(score) AS score,
+                sum(score + abnormals_score[16]*abnormals_count[16]) AS score,
                 sum(score_add) AS score_add,
                 sum(mark_score) AS mark_score,
                 sum(mark_score_add) AS mark_score_add,
@@ -62,7 +62,7 @@ FROM (
                     )!=0
                 ) AS rule_add_dialog_cnt
             FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+            WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
             AND platform = 'jd'
             AND seller_nick GLOBAL IN (
                 
@@ -115,7 +115,7 @@ FROM (
                         sumIf(abnormal_cnt, abnormal_type=13) AS abnormal_type_13_cnt,
                         sumIf(abnormal_cnt, abnormal_type=14) AS abnormal_type_14_cnt,
                         sumIf(abnormal_cnt, abnormal_type=15) AS abnormal_type_15_cnt,
-                        sumIf(abnormal_cnt, abnormal_type=16) AS abnormal_type_16_cnt,
+                        0 AS abnormal_type_16_cnt,
                         sumIf(abnormal_cnt, abnormal_type=17) AS abnormal_type_17_cnt,
                         sumIf(abnormal_cnt, abnormal_type=18) AS abnormal_type_18_cnt,
                         sumIf(abnormal_cnt, abnormal_type=19) AS abnormal_type_19_cnt,
@@ -133,7 +133,7 @@ FROM (
                     ARRAY JOIN
                         abnormals_type AS abnormal_type, 
                         abnormals_count AS abnormal_cnt
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         
@@ -184,7 +184,7 @@ FROM (
                     ARRAY JOIN
                         excellents_type AS excellent_type, 
                         excellents_count AS excellent_cnt
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         
@@ -236,7 +236,7 @@ FROM (
                     ARRAY JOIN
                         c_emotion_type,
                         c_emotion_count
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         
@@ -275,7 +275,7 @@ FROM (
                     ARRAY JOIN
                         s_emotion_type,
                         s_emotion_count
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         
@@ -347,7 +347,7 @@ FROM (
                         tag_score_stats_md
                     ) AS tag_score_stats_md
                 FROM dwd.xdqc_dialog_all
-                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
                 AND platform = 'jd'
                 AND seller_nick GLOBAL IN (
                     
@@ -412,7 +412,7 @@ FROM (
                         tag_score_add_stats_md
                     ) AS tag_score_add_stats_md
                 FROM dwd.xdqc_dialog_all
-                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
                 AND platform = 'jd'
                 AND seller_nick GLOBAL IN (
                     
@@ -486,7 +486,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             rule_stats_id AS rule_stats_tag_id,
             rule_stats_count AS rule_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             
@@ -527,7 +527,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             rule_add_stats_id AS rule_add_stats_tag_id,
             rule_add_stats_count AS rule_add_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             
@@ -568,7 +568,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             top_xrules_id AS top_xrules_tag_id,
             top_xrules_count AS top_xrules_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             
@@ -609,7 +609,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             xrule_stats_id AS xrules_tag_id,
             xrule_stats_count AS xrules_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220713 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             
@@ -653,3 +653,4 @@ GLOBAL FULL OUTER JOIN (
     GROUP BY day, platform, seller_nick, snick
 ) AS customize_check_info
 USING(day, platform, seller_nick, snick)
+WHERE seller_nick = '顾家家居京东自营旗舰店'
