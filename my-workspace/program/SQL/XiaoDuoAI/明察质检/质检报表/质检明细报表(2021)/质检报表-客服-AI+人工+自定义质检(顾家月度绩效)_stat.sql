@@ -1,7 +1,7 @@
 -- 写入数据
 -- 京东, 5月份数据
 ALTER TABLE tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r
-DELETE WHERE day BETWEEN 20220701 AND 20220710 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
+DELETE WHERE day BETWEEN 20220711 AND 20220720 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
 
 INSERT INTO tmp.xqc_qc_report_snick_all
 -- 质检结果总览+AI质检结果+人工质检结果+自定义质检结果-子账号维度
@@ -62,7 +62,7 @@ FROM (
                     )!=0
                 ) AS rule_add_dialog_cnt
             FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+            WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
             AND platform = 'jd'
             AND seller_nick GLOBAL IN (
                 -- 查询对应企业-平台的店铺
@@ -133,7 +133,7 @@ FROM (
                     ARRAY JOIN
                         abnormals_type AS abnormal_type, 
                         abnormals_count AS abnormal_cnt
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         -- 查询对应企业-平台的店铺
@@ -184,7 +184,7 @@ FROM (
                     ARRAY JOIN
                         excellents_type AS excellent_type, 
                         excellents_count AS excellent_cnt
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         -- 查询对应企业-平台的店铺
@@ -236,7 +236,7 @@ FROM (
                     ARRAY JOIN
                         c_emotion_type,
                         c_emotion_count
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         -- 查询对应企业-平台的店铺
@@ -275,7 +275,7 @@ FROM (
                     ARRAY JOIN
                         s_emotion_type,
                         s_emotion_count
-                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
                     AND platform = 'jd'
                     AND seller_nick GLOBAL IN (
                         -- 查询对应企业-平台的店铺
@@ -347,7 +347,7 @@ FROM (
                         tag_score_stats_md
                     ) AS tag_score_stats_md
                 FROM dwd.xdqc_dialog_all
-                WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
                 AND platform = 'jd'
                 AND seller_nick GLOBAL IN (
                     -- 查询对应企业-平台的店铺
@@ -412,7 +412,7 @@ FROM (
                         tag_score_add_stats_md
                     ) AS tag_score_add_stats_md
                 FROM dwd.xdqc_dialog_all
-                WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
                 AND platform = 'jd'
                 AND seller_nick GLOBAL IN (
                     -- 查询对应企业-平台的店铺
@@ -486,7 +486,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             rule_stats_id AS rule_stats_tag_id,
             rule_stats_count AS rule_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺
@@ -527,7 +527,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             rule_add_stats_id AS rule_add_stats_tag_id,
             rule_add_stats_count AS rule_add_stats_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺
@@ -568,7 +568,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             top_xrules_id AS top_xrules_tag_id,
             top_xrules_count AS top_xrules_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺
@@ -609,7 +609,7 @@ GLOBAL FULL OUTER JOIN (
         ARRAY JOIN
             xrule_stats_id AS xrules_tag_id,
             xrule_stats_count AS xrules_tag_count
-        WHERE toYYYYMMDD(begin_time) BETWEEN 20220701 AND 20220710
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
         AND platform = 'jd'
         AND seller_nick GLOBAL IN (
             -- 查询对应企业-平台的店铺

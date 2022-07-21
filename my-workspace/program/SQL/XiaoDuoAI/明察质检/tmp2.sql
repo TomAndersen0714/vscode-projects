@@ -1,113 +1,655 @@
-        SELECT
-            compensate_warehouse_type_info.*,
-            if(0 or (warehouse in ['代发仓', '萧山协作仓', '虚拟仓']) or (reason_level_3 in ['好评返现', '超时发货', '退差价', '仓库丢单', '修改差评', '直播中奖']) or (custom_goods in ['意大利面', '外婆菜', '海鲜卡', '火锅底料', '谢云提货', '鸭脖', '大闸蟹', '蟹卡']), 'false', 'true') AS is_cost
+
+
+ALTER TABLE tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r
+DELETE WHERE day BETWEEN 20220711 AND 20220720 SETTINGS mutations_sync = 2, replication_alter_partitions_sync = 2
+
+INSERT INTO tmp.xqc_qc_report_snick_all
+
+SELECT *
+FROM (
+    
+    SELECT *
+    FROM (
+        
+        SELECT *
         FROM (
-            WITH (
-                SELECT groupArray(warehouse_type)
-                FROM sxx_dim.jd_warehouse_map_all
-                WHERE snapshot_day = 20220714
-            ) AS jd_warehouses
+            
             SELECT
-                compensate_refund_way_info.*,
-                if(
-                    has(jd_warehouses, warehouse), 
-                    '京东仓', 
-                    if(warehouse='', '未知', warehouse)
-                ) AS warehouse_type
+                toYYYYMMDD(begin_time) AS day,
+                platform,
+                seller_nick,
+                snick,
+                COUNT(1) AS dialog_cnt,
+                sum(score) AS score,
+                sum(score_add) AS score_add,
+                sum(mark_score) AS mark_score,
+                sum(mark_score_add) AS mark_score_add,
+                sum(
+                    arraySum(rule_stats_score)
+                    +
+                    negate(arraySum(arrayFilter(x->x<0, xrule_stats_score)))
+                    +
+                    negate(arraySum(arrayFilter(x->x<0, top_xrules_score)))
+                ) AS rule_score,
+                sum(
+                    arraySum(rule_add_stats_score)
+                    +
+                    arraySum(arrayFilter(x->x>0, xrule_stats_score))
+                    +
+                    arraySum(arrayFilter(x->x>0, top_xrules_score))
+                ) AS rule_score_add,
+                score - mark_score - rule_score AS ai_score,
+                score_add - mark_score_add - rule_score_add AS ai_score_add,
+                sum(arraySum(abnormals_count)!=0) AS abnormal_dialog_cnt,
+                sum(arraySum(excellents_count)!=0) AS excellents_dialog_cnt,
+                sum(length(mark_ids)!=0) AS mark_dialog_cnt,
+                sum(length(tag_score_stats_id)!=0) AS tag_score_dialog_cnt,
+                sum(length(tag_score_add_stats_id)!=0) AS tag_score_add_dialog_cnt,
+                sum((
+                        length(rule_stats_id)
+                        +
+                        length(arrayFilter(x->x<0, xrule_stats_score))
+                        +
+                        length(arrayFilter(x->x<0, top_xrules_score))
+                    )!=0
+                ) AS rule_dialog_cnt,
+                sum((
+                        length(rule_add_stats_id)
+                        +
+                        length(arrayFilter(x->x>0, xrule_stats_score))
+                        +
+                        length(arrayFilter(x->x>0, top_xrules_score))
+                    )!=0
+                ) AS rule_add_dialog_cnt
+            FROM dwd.xdqc_dialog_all
+            WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+            AND platform = 'jd'
+            AND seller_nick GLOBAL IN (
+                
+                SELECT DISTINCT seller_nick
+                FROM xqc_dim.xqc_shop_all
+                WHERE day=20220720
+                AND platform = 'jd'
+                AND company_id = '614d86d84eed94e6fc980b1c'
+            )
+            AND snick GLOBAL IN (
+                
+                SELECT distinct snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = 20220720
+                AND platform = 'jd'
+                AND company_id = '614d86d84eed94e6fc980b1c'
+            )
+            
+            
+            AND order_info_status[1] IN ('','created','deposited')
+            
+            AND (question_count!=0)
+            GROUP BY day, platform, seller_nick, snick
+        ) AS stat_info
+        GLOBAL FULL OUTER JOIN (
+            
+            SELECT *
             FROM (
-                SELECT
-                    compensate_responsible_info.*,
-                    if(
-                        compensate_way.refund_way='',
-                        '线上',
-                        compensate_way.refund_way
-                    ) AS refund_way
+                
+                SELECT *
                 FROM (
+                    
                     SELECT
-                        compensate_warehouse_info.*,
-                        responsible_party
-                    FROM (
-                        SELECT
-                            compensate_workorder_all.*,
-                            if(
-                                outbound_workorder_info.warehouse='',
-                                '未知',
-                                outbound_workorder_info.warehouse
-                            ) AS warehouse,
-                            if(
-                                outbound_workorder_info.logistics_company='',
-                                '未知',
-                                outbound_workorder_info.logistics_company
-                            ) AS logistics_company,
-                            if(
-                                outbound_workorder_info.logistics_company_abbr='',
-                                '未知',
-                                outbound_workorder_info.logistics_company_abbr
-                            ) AS logistics_company_abbr,
-                            if(
-                                outbound_workorder_info.receiving_area='',
-                                '未知',
-                                outbound_workorder_info.receiving_area
-                            ) AS receiving_area,
-                            if(
-                                outbound_workorder_info.is_outbound_need_to_filter='',
-                                'false',
-                                outbound_workorder_info.is_outbound_need_to_filter
-                            ) AS is_outbound_need_to_filter
-                        FROM (
-                            SELECT
-                                *,
-                                concat(
-                                    reason_level_3,
-                                    if(reason_level_4='/' OR reason_level_4='', '', '/'),
-                                    if(reason_level_4='/' OR reason_level_4='', '', reason_level_4)
-                                ) AS reason_level_3_4
-                            FROM sxx_ods.compensate_workorder_all
-                            WHERE day = 20220712
-                            -- 筛选非批量打款工单
-                            AND type != '批量打款工单'
-                        ) AS compensate_workorder_all
-                        GLOBAL LEFT JOIN (
-                            SELECT DISTINCT
-                                plat_order_id,
-                                warehouse,
-                                logistics_company,
-                                logistics_company_abbr,
-                                receiving_area,
-                                is_need_to_filter AS is_outbound_need_to_filter
-                            FROM sxx_dwd.outbound_workorder_all
-                            ARRAY JOIN
-                                splitByChar(',', origin_id) AS plat_order_id
-                            WHERE day BETWEEN 20220113 AND 20220712
-                            AND plat_order_id GLOBAL IN (
-                                SELECT DISTINCT
-                                    order_id
-                                FROM sxx_ods.compensate_workorder_all
-                                WHERE day = 20220712
-                                -- 筛选非批量打款工单
-                                AND type != '批量打款工单'
-                            )
-                        ) AS outbound_workorder_info
-                        ON compensate_workorder_all.order_id = outbound_workorder_info.plat_order_id
-                    ) AS compensate_warehouse_info
-                    GLOBAL LEFT JOIN (
-                        SELECT DISTINCT
-                            compensate_reason_3,
-                            compensate_reason_4,
-                            responsible_party
-                        FROM sxx_dim.responsible_party_map_all
-                        WHERE snapshot_day = 20220714
-                    ) AS responsible_party_map
-                    ON compensate_warehouse_info.reason_level_3 = responsible_party_map.compensate_reason_3
-                    AND compensate_warehouse_info.reason_level_4 = responsible_party_map.compensate_reason_4
-                ) AS compensate_responsible_info
-                GLOBAL LEFT JOIN (
-                    SELECT DISTINCT
-                        compensate_type,
-                        refund_way
-                    FROM sxx_dim.compensate_way_map_all
-                    WHERE snapshot_day = 20220714
-                ) AS compensate_way
-                USING(compensate_type)
-            ) AS compensate_refund_way_info
-        ) AS compensate_warehouse_type_info
+                        toYYYYMMDD(begin_time) AS day,
+                        platform,
+                        seller_nick,
+                        snick,
+                        sumIf(abnormal_cnt, abnormal_type=1) AS abnormal_type_1_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=2) AS abnormal_type_2_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=3) AS abnormal_type_3_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=4) AS abnormal_type_4_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=5) AS abnormal_type_5_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=6) AS abnormal_type_6_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=7) AS abnormal_type_7_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=8) AS abnormal_type_8_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=9) AS abnormal_type_9_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=10) AS abnormal_type_10_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=11) AS abnormal_type_11_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=12) AS abnormal_type_12_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=13) AS abnormal_type_13_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=14) AS abnormal_type_14_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=15) AS abnormal_type_15_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=16) AS abnormal_type_16_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=17) AS abnormal_type_17_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=18) AS abnormal_type_18_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=19) AS abnormal_type_19_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=20) AS abnormal_type_20_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=21) AS abnormal_type_21_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=22) AS abnormal_type_22_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=23) AS abnormal_type_23_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=24) AS abnormal_type_24_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=25) AS abnormal_type_25_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=26) AS abnormal_type_26_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=27) AS abnormal_type_27_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=28) AS abnormal_type_28_cnt,
+                        sumIf(abnormal_cnt, abnormal_type=29) AS abnormal_type_29_cnt
+                    FROM dwd.xdqc_dialog_all
+                    ARRAY JOIN
+                        abnormals_type AS abnormal_type, 
+                        abnormals_count AS abnormal_cnt
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    AND platform = 'jd'
+                    AND seller_nick GLOBAL IN (
+                        
+                        SELECT DISTINCT seller_nick
+                        FROM xqc_dim.xqc_shop_all
+                        WHERE day=20220720
+                        AND platform = 'jd'
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                    )
+                    AND snick GLOBAL IN (
+                        
+                        
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = 20220720
+                        AND platform = 'jd'
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                    )
+                    AND abnormal_cnt!=0
+                    
+                    
+                    AND order_info_status[1] IN ('','created','deposited')
+                    
+                    AND (question_count!=0)
+                    GROUP BY day, platform, seller_nick, snick
+                ) AS ai_abnormal_info
+                GLOBAL FULL OUTER JOIN (
+                    
+                    SELECT
+                        toYYYYMMDD(begin_time) AS day,
+                        platform,
+                        seller_nick,
+                        snick,
+                        sumIf(excellent_cnt, excellent_type=1) AS excellent_type_1_cnt,
+                        sumIf(excellent_cnt, excellent_type=2) AS excellent_type_2_cnt,
+                        sumIf(excellent_cnt, excellent_type=3) AS excellent_type_3_cnt,
+                        sumIf(excellent_cnt, excellent_type=4) AS excellent_type_4_cnt,
+                        sumIf(excellent_cnt, excellent_type=5) AS excellent_type_5_cnt,
+                        sumIf(excellent_cnt, excellent_type=6) AS excellent_type_6_cnt,
+                        sumIf(excellent_cnt, excellent_type=7) AS excellent_type_7_cnt,
+                        sumIf(excellent_cnt, excellent_type=8) AS excellent_type_8_cnt,
+                        sumIf(excellent_cnt, excellent_type=9) AS excellent_type_9_cnt,
+                        sumIf(excellent_cnt, excellent_type=10) AS excellent_type_10_cnt,
+                        sumIf(excellent_cnt, excellent_type=11) AS excellent_type_11_cnt,
+                        sumIf(excellent_cnt, excellent_type=12) AS excellent_type_12_cnt,
+                        sumIf(excellent_cnt, excellent_type=13) AS excellent_type_13_cnt
+                    FROM dwd.xdqc_dialog_all
+                    ARRAY JOIN
+                        excellents_type AS excellent_type, 
+                        excellents_count AS excellent_cnt
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    AND platform = 'jd'
+                    AND seller_nick GLOBAL IN (
+                        
+                        SELECT DISTINCT seller_nick
+                        FROM xqc_dim.xqc_shop_all
+                        WHERE day=20220720
+                        AND platform = 'jd'
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                    )
+                    AND snick GLOBAL IN (
+                        
+                        
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = 20220720
+                        AND platform = 'jd'
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                    )
+                    AND excellent_cnt!=0
+                    
+                    
+                    AND order_info_status[1] IN ('','created','deposited')
+                    
+                    AND (question_count!=0)
+                    GROUP BY day, platform, seller_nick, snick
+                ) AS ai_excellent_info
+                USING(day, platform, seller_nick, snick)
+            ) AS ai_abnormal_excellent_info
+            GLOBAL FULL OUTER JOIN (
+                
+                SELECT *
+                FROM (
+                    
+                    SELECT
+                        toYYYYMMDD(begin_time) AS day,
+                        platform,
+                        seller_nick,
+                        snick,
+                        sumIf(c_emotion_count,c_emotion_type=1) AS c_emotion_type_1_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=2) AS c_emotion_type_2_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=3) AS c_emotion_type_3_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=4) AS c_emotion_type_4_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=5) AS c_emotion_type_5_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=6) AS c_emotion_type_6_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=7) AS c_emotion_type_7_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=8) AS c_emotion_type_8_cnt,
+                        sumIf(c_emotion_count,c_emotion_type=9) AS c_emotion_type_9_cnt
+                    FROM dwd.xdqc_dialog_all
+                    ARRAY JOIN
+                        c_emotion_type,
+                        c_emotion_count
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    AND platform = 'jd'
+                    AND seller_nick GLOBAL IN (
+                        
+                        SELECT DISTINCT seller_nick
+                        FROM xqc_dim.xqc_shop_all
+                        WHERE day=20220720
+                        AND platform = 'jd'
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                    )
+                    AND snick GLOBAL IN (
+                        
+                        
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = 20220720
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                        AND platform = 'jd'
+                    )
+                    AND c_emotion_count!=0
+                    
+                    
+                    AND order_info_status[1] IN ('','created','deposited')
+                    
+                    AND (question_count!=0)
+                    GROUP BY day, platform, seller_nick, snick
+                ) AS ai_c_emotion_info
+                GLOBAL FULL OUTER JOIN(
+                    
+                    SELECT
+                        toYYYYMMDD(begin_time) AS day,
+                        platform,
+                        seller_nick,
+                        snick,
+                        sumIf(s_emotion_count, s_emotion_type=8) AS s_emotion_type_8_cnt
+                    FROM dwd.xdqc_dialog_all
+                    ARRAY JOIN
+                        s_emotion_type,
+                        s_emotion_count
+                    WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                    AND platform = 'jd'
+                    AND seller_nick GLOBAL IN (
+                        
+                        SELECT DISTINCT seller_nick
+                        FROM xqc_dim.xqc_shop_all
+                        WHERE day=20220720
+                        AND platform = 'jd'
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                    )
+                    AND snick GLOBAL IN (
+                        
+                        
+                        SELECT distinct snick
+                        FROM ods.xinghuan_employee_snick_all
+                        WHERE day = 20220720
+                        AND company_id = '614d86d84eed94e6fc980b1c'
+                        AND platform = 'jd'
+                    )
+                    AND s_emotion_count!=0
+                    
+                    
+                    AND order_info_status[1] IN ('','created','deposited')
+                    
+                    AND (question_count!=0)
+                    
+                    GROUP BY day, platform, seller_nick, snick
+                ) AS ai_s_emotion_info
+                USING(day, platform, seller_nick, snick)
+            ) AS ai_emotion_info
+            USING(day, platform, seller_nick, snick)
+        ) AS ai_check_info
+        USING(day, platform, seller_nick, snick)
+    ) AS stat_ai_check_info
+    GLOBAL FULL OUTER JOIN (
+        
+        SELECT
+            day,
+            platform,
+            seller_nick,
+            snick,
+            groupArray(tag_name) AS human_check_tag_name_arr,
+            groupArray(tag_cnt) AS human_check_tag_cnt_arr
+        FROM (
+            
+            SELECT
+                day,
+                platform,
+                seller_nick,
+                snick,
+                tag_id,
+                sum(tag_score_stat_count + tag_score_stat_md) AS tag_cnt
+            FROM (
+                
+                SELECT
+                    toYYYYMMDD(begin_time) AS day,
+                    platform,
+                    seller_nick,
+                    snick,
+                    tag_score_stats_id AS tag_score_stats_id,
+                    
+                    if(
+                        length(tag_score_stats_count)!=length(tag_score_stats_id),
+                        arrayResize([0],length(tag_score_stats_id),0),
+                        tag_score_stats_count
+                    ) AS tag_score_stats_count,
+                    if(
+                        length(tag_score_stats_md)!=length(tag_score_stats_id),
+                        arrayResize([0],length(tag_score_stats_id),0),
+                        tag_score_stats_md
+                    ) AS tag_score_stats_md
+                FROM dwd.xdqc_dialog_all
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                AND platform = 'jd'
+                AND seller_nick GLOBAL IN (
+                    
+                    SELECT DISTINCT seller_nick
+                    FROM xqc_dim.xqc_shop_all
+                    WHERE day=20220720
+                    AND platform = 'jd'
+                    AND company_id = '614d86d84eed94e6fc980b1c'
+                )
+                AND snick GLOBAL IN (
+                    
+                    
+                    SELECT distinct snick
+                    FROM ods.xinghuan_employee_snick_all
+                    WHERE day = 20220720
+                    AND platform = 'jd'
+                    AND company_id = '614d86d84eed94e6fc980b1c'
+                )
+                
+                AND tag_score_stats_id!=[]
+                
+                
+                AND order_info_status[1] IN ('','created','deposited')
+                
+                AND (question_count!=0)
+            ) AS transformed_dialog_info
+            ARRAY JOIN
+                tag_score_stats_id AS tag_id,
+                tag_score_stats_count AS tag_score_stat_count,
+                tag_score_stats_md AS tag_score_stat_md
+            
+            WHERE tag_score_stats_id!=[]
+            GROUP BY day, platform, seller_nick, snick, tag_id
+            
+            UNION ALL
+            
+            
+            SELECT
+                day,
+                platform,
+                seller_nick,
+                snick,
+                tag_id,
+                sum(tag_score_add_stat_count + tag_score_add_stat_md) AS tag_cnt
+            FROM (
+                
+                SELECT
+                    toYYYYMMDD(begin_time) AS day,
+                    platform,
+                    seller_nick,
+                    snick,
+                    tag_score_add_stats_id AS tag_score_add_stats_id,
+                    
+                    if(
+                        length(tag_score_add_stats_count)!=length(tag_score_add_stats_id),
+                        arrayResize([0],length(tag_score_add_stats_id),0),
+                        tag_score_add_stats_count
+                    ) AS tag_score_add_stats_count,
+                    if(
+                        length(tag_score_add_stats_md)!=length(tag_score_add_stats_id),
+                        arrayResize([0],length(tag_score_add_stats_id),0),
+                        tag_score_add_stats_md
+                    ) AS tag_score_add_stats_md
+                FROM dwd.xdqc_dialog_all
+                WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+                AND platform = 'jd'
+                AND seller_nick GLOBAL IN (
+                    
+                    SELECT DISTINCT seller_nick
+                    FROM xqc_dim.xqc_shop_all
+                    WHERE day=20220720
+                    AND platform = 'jd'
+                    AND company_id = '614d86d84eed94e6fc980b1c'
+                )
+                AND snick GLOBAL IN (
+                    
+                    
+                    SELECT distinct snick
+                    FROM ods.xinghuan_employee_snick_all
+                    WHERE day = 20220720
+                    AND platform = 'jd'
+                    AND company_id = '614d86d84eed94e6fc980b1c'
+                )
+                
+                AND tag_score_add_stats_id!=[]
+                
+                
+                AND order_info_status[1] IN ('','created','deposited')
+                
+                AND (question_count!=0)
+            ) AS transformed_dialog_info
+            ARRAY JOIN
+                tag_score_add_stats_id AS tag_id,
+                tag_score_add_stats_count AS tag_score_add_stat_count,
+                tag_score_add_stats_md AS tag_score_add_stat_md
+            
+            WHERE tag_score_add_stats_id!=[]
+            GROUP BY day, platform, seller_nick, snick, tag_id
+        ) AS human_check_tag_info
+        GLOBAL LEFT JOIN (
+            
+            SELECT
+                _id AS tag_id,
+                name AS tag_name
+            FROM xqc_dim.qc_rule_all
+            WHERE day = 20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+            AND rule_category = 2
+        ) AS human_tag_info
+        USING(tag_id)
+        GROUP BY day, platform, seller_nick, snick
+    ) AS human_check_info
+    USING(day, platform, seller_nick, snick)
+) AS stat_ai_human_check_info
+
+GLOBAL FULL OUTER JOIN (
+    
+    SELECT
+        day,
+        platform,
+        seller_nick,
+        snick,
+        groupArray(tag_name) AS customize_check_tag_name_arr,
+        groupArray(tag_cnt) AS customize_check_tag_cnt_arr
+    FROM (
+        
+        SELECT
+            toYYYYMMDD(begin_time) AS day,
+            platform,
+            seller_nick,
+            snick,
+            rule_stats_tag_id AS tag_id,
+            sum(rule_stats_tag_count) AS tag_cnt
+        FROM dwd.xdqc_dialog_all
+        ARRAY JOIN
+            rule_stats_id AS rule_stats_tag_id,
+            rule_stats_count AS rule_stats_tag_count
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        AND platform = 'jd'
+        AND seller_nick GLOBAL IN (
+            
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day=20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+        )
+        AND snick GLOBAL IN (
+            
+            
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = 20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+        )
+        
+        AND rule_stats_id!=[]
+        
+        
+        AND order_info_status[1] IN ('','created','deposited')
+        
+        AND (question_count!=0)
+        GROUP BY day, platform, seller_nick, snick, rule_stats_tag_id
+
+        UNION ALL
+        
+        SELECT
+            toYYYYMMDD(begin_time) AS day,
+            platform,
+            seller_nick,
+            snick,
+            rule_add_stats_tag_id AS tag_id,
+            sum(rule_add_stats_tag_count) AS tag_cnt
+        FROM dwd.xdqc_dialog_all
+        ARRAY JOIN
+            rule_add_stats_id AS rule_add_stats_tag_id,
+            rule_add_stats_count AS rule_add_stats_tag_count
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        AND platform = 'jd'
+        AND seller_nick GLOBAL IN (
+            
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day=20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+        )
+        AND snick GLOBAL IN (
+            
+            
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = 20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+        )
+        
+        AND rule_add_stats_id!=[]
+        
+        
+        AND order_info_status[1] IN ('','created','deposited')
+        
+        AND (question_count!=0)
+        GROUP BY day, platform, seller_nick, snick, rule_add_stats_tag_id
+
+        UNION ALL
+        
+        SELECT
+            toYYYYMMDD(begin_time) AS day,
+            platform,
+            seller_nick,
+            snick,
+            top_xrules_tag_id AS tag_id,
+            sum(top_xrules_tag_count) AS tag_cnt
+        FROM dwd.xdqc_dialog_all
+        ARRAY JOIN
+            top_xrules_id AS top_xrules_tag_id,
+            top_xrules_count AS top_xrules_tag_count
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        AND platform = 'jd'
+        AND seller_nick GLOBAL IN (
+            
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day=20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+        )
+        AND snick GLOBAL IN (
+            
+            
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = 20220720
+            AND platform = 'jd'
+            AND company_id = '614d86d84eed94e6fc980b1c'
+        )
+        
+        AND top_xrules_id!=[]
+        
+        
+        AND order_info_status[1] IN ('','created','deposited')
+        
+        AND (question_count!=0)
+        GROUP BY day, platform, seller_nick, snick, top_xrules_tag_id
+
+        UNION ALL
+        
+        SELECT
+            toYYYYMMDD(begin_time) AS day,
+            platform,
+            seller_nick,
+            snick,
+            xrules_tag_id AS tag_id,
+            sum(xrules_tag_count) AS tag_cnt
+        FROM dwd.xdqc_dialog_all
+        ARRAY JOIN
+            xrule_stats_id AS xrules_tag_id,
+            xrule_stats_count AS xrules_tag_count
+        WHERE toYYYYMMDD(begin_time) BETWEEN 20220711 AND 20220720
+        AND platform = 'jd'
+        AND seller_nick GLOBAL IN (
+            
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day=20220720
+            AND platform = 'jd'
+            AND company_id = '6234209693e6cbff31d6c118'
+        )
+        AND snick GLOBAL IN (
+            
+            
+            SELECT distinct snick
+            FROM ods.xinghuan_employee_snick_all
+            WHERE day = 20220720
+            AND platform = 'jd'
+            AND company_id = '6234209693e6cbff31d6c118'
+        )
+        
+        AND xrule_stats_id!=[]
+        
+        
+        AND order_info_status[1] IN ('','created','deposited')
+        
+        AND (question_count!=0)
+        GROUP BY day, platform, seller_nick, snick, xrules_tag_id
+
+    ) AS customize_check_stat
+    GLOBAL LEFT JOIN (
+        
+        SELECT
+            _id AS tag_id,
+            name AS tag_name
+        FROM xqc_dim.qc_rule_all
+        WHERE day = 20220720
+        AND platform = 'jd'
+        AND company_id = '614d86d84eed94e6fc980b1c'
+        AND rule_category = 3
+    ) AS customize_tag_info
+    USING(tag_id)
+    GROUP BY day, platform, seller_nick, snick
+) AS customize_check_info
+USING(day, platform, seller_nick, snick)

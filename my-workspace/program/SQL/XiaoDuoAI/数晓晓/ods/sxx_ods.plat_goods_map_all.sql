@@ -12,7 +12,8 @@ CREATE TABLE sxx_ods.plat_goods_map_local ON CLUSTER cluster_3s_2r
     `custom_goods_name` String,
     `goods_name` String,
     `product_id` String,
-    `product_name` String
+    `product_name` String,
+    `update_time` String
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
