@@ -1,178 +1,187 @@
-WITH t1 AS (
-    SELECT company_id AS _id,
-        count(1) AS shop_cnt
-    FROM xqc_dim.xqc_shop_all
-    WHERE `day` = toYYYYMMDD(yesterday())
-    GROUP BY _id
-),
-t2 AS (
-    SELECT _id,
-        name,
-        shot_name,
-        platforms,
-        IF (
-            dateDiff('day', created_time, expired_time) >= 40,
-            '正式',
-            '试用'
-        ) AS customer_type,
-        toDate(expired_time) AS expired_date,
-        toDate(created_time) AS created_date,
-        dateDiff('day', today(), expired_time) AS remain_days,
-        dateDiff('day', created_time, expired_time) AS service_days
-    FROM xqc_dim.company
-    WHERE shot_name NOT IN (
-            '何相玄',
-            '测试',
-            '客户端'
-        )
-        AND toDate(expired_time) >= toDate(subtractWeeks(yesterday(), 1))
-),
-t3 AS (
-    SELECT arrayElement(splitByString(':', distinct_id), 1) AS shot_name,
-        uniqExact(arrayElement(splitByString(':', distinct_id), 2)) AS uv,
-        count(1) AS pv,
-        uniqExact(`day`) AS active_days,
-        min(`day`) AS min_day,
-        max(`day`) AS max_day
-    FROM ods.web_log_dis
-    WHERE `day` <= toYYYYMMDD(toDate('{{ 结束日期 }}'))
-        AND `day` >= toYYYYMMDD(toDate('{{ 开始日期 }}'))
-        AND `event` = '$pageview'
-        AND url LIKE '%xh-mc.xiaoduoai.com/%'
-        AND app_id IN ('xd001', 'xd023')
-        AND shot_name GLOBAL IN (
-            SELECT shot_name
-            FROM xqc_dim.company
-        )
-    GROUP BY shot_name
-),
-t4 AS (
-    SELECT *
-    FROM t2
-        JOIN t1 USING (_id)
-),
-t5 AS (
-    SELECT *
-    FROM t4
-        LEFT JOIN t3 USING(shot_name)
-),
-t6 AS (
-    SELECT user_name AS shot_name,
-        arrayStringConcat(groupArray(role_name), ',') AS versions
-    FROM dim.pri_center_version_all
-    WHERE product_name = '明察质检(XQC)'
-        AND user_id NOT IN (
-            '60f957f1c3d62bccb1606bd9',
-            '方太',
-            '晓多',
-            '测试'
-        )
-    GROUP BY shot_name
-),
-t7 AS (
-    SELECT shot_name,
-        (
-            CASE
-                WHEN versions IN (
-                    '企业版+大屏',
-                    '企业版-宝尊'
-                ) THEN '企业版'
-                ELSE versions
-            END
-        ) AS versions
-    FROM t6
-    WHERE versions NOT IN ('测试', '晓多')
-),
-t8 AS (
-    SELECT shot_name AS customer_name,
-        *,
-        (service_days - remain_days + 1) AS consumimg_days,
-        round(
-            active_days / 1.0000001 / (service_days - remain_days + 1),
-            4
-        ) AS `active_ratio`
-    FROM t5
-        LEFT JOIN t7 USING shot_name
-),
-t9 AS (
-    SELECT *,
-        (
-            CASE
-                WHEN consumimg_days >= 60 THEN '维护期'
-                ELSE '交付期'
-            END
-        ) AS service_stage,
-        (
-            CASE
-                WHEN versions IN ('企业版')
-                AND (
-                    uv >= 5
-                    AND pv >= 500
-                    AND active_days >= 15
-                ) THEN '高活'
-                WHEN versions IN ('企业版')
-                AND (
-                    uv >= 5
-                    OR pv >= 500
-                    OR active_days >= 15
-                ) THEN '正常'
-                WHEN versions IN ('企业版')
-                AND (
-                    uv < 5
-                    AND pv < 500
-                    AND active_days < 15
-                ) THEN '低活'
-                WHEN versions IN ('商户版')
-                AND (
-                    uv >= 2
-                    AND pv >= 300
-                    AND active_days >= 5
-                ) THEN '高活'
-                WHEN versions IN ('商户版')
-                AND (
-                    uv >= 1
-                    OR pv >= 200
-                    OR active_days >= 5
-                ) THEN '正常'
-                WHEN versions IN ('商户版')
-                AND (
-                    uv < 1
-                    AND pv < 100
-                    AND active_days < 3
-                ) THEN '低活'
-                WHEN versions IN ('通用版')
-                AND (
-                    uv >= 2
-                    AND pv >= 300
-                    AND active_days >= 5
-                ) THEN '高活'
-                ELSE '低活'
-            END
-        ) AS is_active
-    FROM t8
-    WHERE customer_name NOT IN ('晓多')
-),
-tx AS (
-    SELECT name,
-        tonnage_level,
-        sum(payment) AS payment
+-- 数据导出-明察质检-历史会话消息查询
+-- 查询条件： AI质检项
+SELECT
+    day,
+    dialog_id,
+    message_id,
+    snick,
+    cnick,
+    act,
+    content,
+    create_time,
+    qid,
+    answer_explain,
+    send_from,
+    algo_emotion,
+    abnormal_model,
+    excellent_model,
+    groupArray(tag_name) AS tag_names
+FROM (
+    SELECT
+        day,
+        dialog_id,
+        message_id,
+        snick,
+        cnick,
+        act,
+        content,
+        create_time,
+        qid,
+        answer_explain,
+        send_from,
+        algo_emotion,
+        abnormal_model,
+        excellent_model,
+        tag_type,
+        toString(tag_id_num) AS tag_id
     FROM (
-            SELECT DISTINCT customer_name AS name,
-                contract_type,
-                tonnage_level,
-                toInt32(webapp_value) AS payment,
-                day_end
-            FROM dws.crm_shop_contract_all
-            WHERE is_had_webapp = '是'
-                AND toDate(day_end) >= toDate(today())
-        )
-    GROUP BY name,
-        tonnage_level
-)
-SELECT *
-FROM t9
-    LEFT JOIN tx USING name
-where customer_name like '%{{ customer_name }}%'
-    AND versions like '%{{ 版本 }}%'
-    AND is_active like '%{{ 活跃等级 }}%'
-    AND service_stage like '%{{ 服务阶段 }}%'
+        WITH (
+            SELECT groupArray(dialog_id) AS dialog_id_list
+            FROM (
+                SELECT DISTINCT
+                    dialog_id
+                FROM (
+                    SELECT
+                        _id AS dialog_id,
+                        -- 旧版本AI质检项-非情绪扣分项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            abnormals_type,
+                            abnormals_count
+                        ) AS abnormals_types,
+                        -- 旧版本AI质检项-非情绪加分项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            excellents_type,
+                            excellents_count
+                        ) AS excellents_types,
+
+                        -- 旧版本AI质检项-买家情绪项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            c_emotion_type,
+                            c_emotion_count
+                        ) AS c_emotion_types,
+    
+                        -- 旧版本AI质检项-客服情绪项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            s_emotion_type,
+                            s_emotion_count
+                        ) AS s_emotion_types
+
+                    FROM dwd.xdqc_dialog_all
+                    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}'))
+                        AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
+                    AND platform = 'tb'
+                    -- 文本框-店铺名
+                    AND seller_nick = '{{ seller_nick=方太官方旗舰店 }}'
+                    -- 过滤空数据
+                    AND (
+                        abnormals_types!=[] OR excellents_types!=[] OR c_emotion_types!=[] OR s_emotion_types!=[]
+                    )
+                    -- 下拉框-旧版本AI质检项-非情绪扣分项
+                    AND (
+                        '{{ abnormals_types }}'=''
+                        OR
+                        hasAny([{{ abnormals_types }}], abnormals_types)
+                    )
+                    -- 下拉框-旧版本AI质检项-加分项
+                    AND (
+                        '{{ excellents_types }}'=''
+                        OR
+                        hasAny([{{ excellents_types }}], excellents_types)
+                    )
+                    -- 下拉框-旧版本AI质检项-买家情绪项
+                    AND (
+                        '{{ c_emotion_types }}'=''
+                        OR
+                        hasAny([{{ c_emotion_types }}], c_emotion_types)
+                    )
+                    -- 下拉框-旧版本AI质检项-客服情绪项
+                    AND (
+                        '{{ s_emotion_types }}'=''
+                        OR
+                        hasAny([{{ s_emotion_types }}], s_emotion_types)
+                    )
+                ) AS ai_tags
+                -- 文本框-限制会话数量
+                LIMIT toUInt32({{ dialog_limit_num=1 }})
+            ) AS dialog_tag_info
+        ) AS dialog_id_list
+        -- 旧版本AI质检项-非情绪扣分项
+        SELECT
+            day,
+            dialog_id,
+            _id AS message_id,
+            snick,
+            cnick,
+            if(source=1, 'send_msg', 'recv_msg') AS act,
+            content,
+            toString(toDateTime64(create_time, 0, 'UTC') + 8*3600) AS create_time,
+            qid,
+            answer_explain,
+            send_from,
+            algo_emotion,
+            abnormal_model,
+            excellent_model,
+            arrayPushBack(
+                arrayConcat(
+                    arrayResize(['ai_abnormal'], length(abnormal), 'ai_abnormal'),
+                    arrayResize(['ai_excellent'], length(excellent), 'ai_excellent')
+                ),
+                if(source=1, 'ai_s_emotion', 'ai_c_emotion' )
+            ) AS tag_types,
+            arrayPushBack(
+                arrayConcat(
+                    abnormal,
+                    excellent
+                ),
+                emotion
+            ) AS tag_ids
+
+        FROM xqc_ods.message_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}')) 
+            AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
+        AND platform = 'tb'
+        -- 文本框-店铺名
+        AND seller_nick = '{{ seller_nick=方太官方旗舰店 }}'
+        -- 过滤指定会话
+        AND has(dialog_id_list, dialog_id)
+
+    ) AS ai_no_emotion_tag
+    ARRAY JOIN
+        tag_types AS tag_type,
+        tag_ids AS tag_id_num
+) AS ai_msg_tag
+GLOBAL LEFT JOIN (
+    -- 关联AI质检项标签信息
+    SELECT
+        qc_rule_type AS tag_type,
+        qc_rule_id AS tag_id,
+        qc_rule_name AS tag_name
+    FROM xqc_dim.qc_rule_constant_all
+    WHERE day = toYYYYMMDD(yesterday())
+    UNION ALL
+    SELECT
+        'ai_s_emotion' AS tag_type,
+        '0' AS tag_id,
+        '中性' AS tag_name
+) AS dim_tag
+USING(tag_type, tag_id)
+GROUP BY
+    day,
+    dialog_id,
+    message_id,
+    snick,
+    cnick,
+    act,
+    content,
+    create_time,
+    qid,
+    answer_explain,
+    send_from,
+    algo_emotion,
+    abnormal_model,
+    excellent_model
+ORDER BY day, dialog_id, create_time
