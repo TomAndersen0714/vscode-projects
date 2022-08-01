@@ -1,108 +1,178 @@
--- 客户评价满意度(二期)-统计-评价次数每日统计
-SELECT
-    day,
-    -- 各等级评价次数
-    SUM(latest_eval_time != '') AS `评价总数`,
-    SUM(latest_eval_time != '' AND latest_eval_code = 0) AS `非常满意`,
-    SUM(latest_eval_time != '' AND latest_eval_code = 1) AS `满意`,
-    SUM(latest_eval_time != '' AND latest_eval_code = 2) AS `一般`,
-    SUM(latest_eval_time != '' AND latest_eval_code = 3) AS `不满意`,
-    SUM(latest_eval_time != '' AND latest_eval_code = 4) AS `非常不满意`
-FROM (
-    SELECT
-        day,
-        seller_nick,
-        snick,
-        cnick,
-        dialog_id,
-        source,
-        send_time,
-        is_invited,
-
-        arraySort(groupArrayIf(eval_time, eval_time !='')) AS eval_times,
-        arraySort((x,y)->y, groupArrayIf(eval_code, eval_time != ''), groupArrayIf(eval_time, eval_time != '')) AS eval_codes,
-        toString(eval_times[-1]) AS latest_eval_time,
-        if(latest_eval_time != '', eval_codes[-1], -1) AS latest_eval_code,
-        if(latest_eval_time != '', eval_codes[1], -1) AS first_eval_code
-    FROM (
-        SELECT
-            seller_nick,
-            snick,
-            cnick,
-            dialog_id,
-            eval_code,
-            eval_time,
-            send_time,
-            source,
-            if(eval_time != '' AND source = 1, 0, 1) AS is_invited,
-            day
-        FROM xqc_ods.dialog_eval_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-            AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND platform = 'tb'
-        -- 下拉框-店铺
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
+WITH t1 AS (
+    SELECT company_id AS _id,
+        count(1) AS shop_cnt
+    FROM xqc_dim.xqc_shop_all
+    WHERE `day` = toYYYYMMDD(yesterday())
+    GROUP BY _id
+),
+t2 AS (
+    SELECT _id,
+        name,
+        shot_name,
+        platforms,
+        IF (
+            dateDiff('day', created_time, expired_time) >= 40,
+            '正式',
+            '试用'
+        ) AS customer_type,
+        toDate(expired_time) AS expired_date,
+        toDate(created_time) AS created_date,
+        dateDiff('day', today(), expired_time) AS remain_days,
+        dateDiff('day', created_time, expired_time) AS service_days
+    FROM xqc_dim.company
+    WHERE shot_name NOT IN (
+            '何相玄',
+            '测试',
+            '客户端'
         )
-        -- 当前企业对应的店铺
-        AND seller_nick GLOBAL IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            AND platform = 'tb'
+        AND toDate(expired_time) >= toDate(subtractWeeks(yesterday(), 1))
+),
+t3 AS (
+    SELECT arrayElement(splitByString(':', distinct_id), 1) AS shot_name,
+        uniqExact(arrayElement(splitByString(':', distinct_id), 2)) AS uv,
+        count(1) AS pv,
+        uniqExact(`day`) AS active_days,
+        min(`day`) AS min_day,
+        max(`day`) AS max_day
+    FROM ods.web_log_dis
+    WHERE `day` <= toYYYYMMDD(toDate('{{ 结束日期 }}'))
+        AND `day` >= toYYYYMMDD(toDate('{{ 开始日期 }}'))
+        AND `event` = '$pageview'
+        AND url LIKE '%xh-mc.xiaoduoai.com/%'
+        AND app_id IN ('xd001', 'xd023')
+        AND shot_name GLOBAL IN (
+            SELECT shot_name
+            FROM xqc_dim.company
         )
-        -- 当前企业对应的子账号
-        AND snick GLOBAL IN (
-            SELECT DISTINCT snick
-            FROM (
-                SELECT DISTINCT snick, username
-                FROM ods.xinghuan_employee_snick_all AS snick_info
-                GLOBAL LEFT JOIN (
-                    SELECT distinct
-                        _id AS employee_id, username
-                    FROM ods.xinghuan_employee_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                ) AS employee_info
-                USING(employee_id)
-                WHERE day = toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                -- 下拉框-子账号分组id
+    GROUP BY shot_name
+),
+t4 AS (
+    SELECT *
+    FROM t2
+        JOIN t1 USING (_id)
+),
+t5 AS (
+    SELECT *
+    FROM t4
+        LEFT JOIN t3 USING(shot_name)
+),
+t6 AS (
+    SELECT user_name AS shot_name,
+        arrayStringConcat(groupArray(role_name), ',') AS versions
+    FROM dim.pri_center_version_all
+    WHERE product_name = '明察质检(XQC)'
+        AND user_id NOT IN (
+            '60f957f1c3d62bccb1606bd9',
+            '方太',
+            '晓多',
+            '测试'
+        )
+    GROUP BY shot_name
+),
+t7 AS (
+    SELECT shot_name,
+        (
+            CASE
+                WHEN versions IN (
+                    '企业版+大屏',
+                    '企业版-宝尊'
+                ) THEN '企业版'
+                ELSE versions
+            END
+        ) AS versions
+    FROM t6
+    WHERE versions NOT IN ('测试', '晓多')
+),
+t8 AS (
+    SELECT shot_name AS customer_name,
+        *,
+        (service_days - remain_days + 1) AS consumimg_days,
+        round(
+            active_days / 1.0000001 / (service_days - remain_days + 1),
+            4
+        ) AS `active_ratio`
+    FROM t5
+        LEFT JOIN t7 USING shot_name
+),
+t9 AS (
+    SELECT *,
+        (
+            CASE
+                WHEN consumimg_days >= 60 THEN '维护期'
+                ELSE '交付期'
+            END
+        ) AS service_stage,
+        (
+            CASE
+                WHEN versions IN ('企业版')
                 AND (
-                    '{{ department_ids }}'=''
-                    OR
-                    department_id IN splitByChar(',','{{ department_ids }}')
-                )
-            ) AS snick_employee_info
-            -- 下拉框-客服姓名
-            WHERE (
-                '{{ usernames }}'=''
-                OR
-                username IN splitByChar(',','{{ usernames }}')
-            )
+                    uv >= 5
+                    AND pv >= 500
+                    AND active_days >= 15
+                ) THEN '高活'
+                WHEN versions IN ('企业版')
+                AND (
+                    uv >= 5
+                    OR pv >= 500
+                    OR active_days >= 15
+                ) THEN '正常'
+                WHEN versions IN ('企业版')
+                AND (
+                    uv < 5
+                    AND pv < 500
+                    AND active_days < 15
+                ) THEN '低活'
+                WHEN versions IN ('商户版')
+                AND (
+                    uv >= 2
+                    AND pv >= 300
+                    AND active_days >= 5
+                ) THEN '高活'
+                WHEN versions IN ('商户版')
+                AND (
+                    uv >= 1
+                    OR pv >= 200
+                    OR active_days >= 5
+                ) THEN '正常'
+                WHEN versions IN ('商户版')
+                AND (
+                    uv < 1
+                    AND pv < 100
+                    AND active_days < 3
+                ) THEN '低活'
+                WHEN versions IN ('通用版')
+                AND (
+                    uv >= 2
+                    AND pv >= 300
+                    AND active_days >= 5
+                ) THEN '高活'
+                ELSE '低活'
+            END
+        ) AS is_active
+    FROM t8
+    WHERE customer_name NOT IN ('晓多')
+),
+tx AS (
+    SELECT name,
+        tonnage_level,
+        sum(payment) AS payment
+    FROM (
+            SELECT DISTINCT customer_name AS name,
+                contract_type,
+                tonnage_level,
+                toInt32(webapp_value) AS payment,
+                day_end
+            FROM dws.crm_shop_contract_all
+            WHERE is_had_webapp = '是'
+                AND toDate(day_end) >= toDate(today())
         )
-    ) AS ods_snick_eval
-    GROUP BY day, seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
-    -- 下拉框-最新评价等级
-    HAVING (
-        '{{ latest_eval_codes }}'=''
-        OR
-        toString(latest_eval_code) IN splitByChar(',','{{ latest_eval_codes }}')
-    )
-) AS dialog_eval_info
-GLOBAL RIGHT JOIN (
-    SELECT arrayJoin(
-        arrayMap(
-            x->toInt32(toYYYYMMDD(toDate(x))),
-            range(toUInt32(toDate('{{ day.start=week_ago }}')), toUInt32(toDate('{{ day.end=yesterday }}') + 1), 1)
-        )
-    ) AS day
-) AS day_axis
-USING(day)
-GROUP BY day
-ORDER BY day ASC
+    GROUP BY name,
+        tonnage_level
+)
+SELECT *
+FROM t9
+    LEFT JOIN tx USING name
+where customer_name like '%{{ customer_name }}%'
+    AND versions like '%{{ 版本 }}%'
+    AND is_active like '%{{ 活跃等级 }}%'
+    AND service_stage like '%{{ 服务阶段 }}%'
