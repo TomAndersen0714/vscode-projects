@@ -36,6 +36,7 @@ FROM (
         toString(tag_id_num) AS tag_id
     FROM (
         WITH (
+            -- 筛选满足条件的dialog_id
             SELECT groupArray(dialog_id) AS dialog_id_list
             FROM (
                 SELECT DISTINCT
@@ -125,6 +126,7 @@ FROM (
             algo_emotion,
             abnormal_model,
             excellent_model,
+            -- 质检项类型
             arrayPushBack(
                 arrayConcat(
                     arrayResize(['ai_abnormal'], length(abnormal), 'ai_abnormal'),
@@ -132,6 +134,7 @@ FROM (
                 ),
                 if(source=1, 'ai_s_emotion', 'ai_c_emotion' )
             ) AS tag_types,
+            -- 质检项ID
             arrayPushBack(
                 arrayConcat(
                     abnormal,

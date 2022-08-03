@@ -12,18 +12,18 @@ CREATE TABLE xqc_dws.alert_tag_stat_local ON CLUSTER cluster_3s_2r
     `shop_name` String,
     `seller_nick` String,
     `level` Int64,
-    `is_finished` String,
     `warning_tag_id` String,
     `warning_tag_name` String,
     `warning_cnt` Int64,
-    `alert_elapsed_time` Int64,
+    `finished_warning_cnt` Int64,
     `finish_elapsed_time` Int64
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-ORDER BY (platform, company_id, day)
+PARTITION BY day
+ORDER BY (platform, company_id)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 
