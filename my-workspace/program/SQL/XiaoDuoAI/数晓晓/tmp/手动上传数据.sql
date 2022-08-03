@@ -120,7 +120,7 @@ FROM (
     SELECT
         *
     FROM sxx_tmp.outbound_workorder_all
-    WHERE toYYYYMM(toDateTime64(delivery_time, 3)) = 202207
+    -- WHERE toYYYYMM(toDateTime64(delivery_time, 3)) = 202207
 ) AS outbound_info
 GLOBAL LEFT JOIN (
     SELECT DISTINCT

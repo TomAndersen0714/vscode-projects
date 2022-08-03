@@ -10,18 +10,20 @@ CREATE TABLE tmp.manual_task_record_local ON CLUSTER cluster_3s_2r
     `platform` String,
     `day` Int32,
     `date` Int32,
+    `task_id` String,
     `task_name` String,
     `qc_type` Int32,
     `qc_way` Int32,
     `account_name` String,
+    `qc_norm_id` String,
     `target_num` Int32,
     `mark_num` Int32,
+    `ontime_mark_num` Int32,
+    `overdue_mark_num` Int32,
     `ai_num` Int32,
     `ai_rate` String,
     `human_num` Int32,
-    `human_rate` String,
-    `task_id` String,
-    `qc_norm_id` String
+    `human_rate` String
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
@@ -54,18 +56,20 @@ CREATE TABLE xqc_ods.manual_task_record_local ON CLUSTER cluster_3s_2r
     `platform` String,
     `day` Int32,
     `date` Int32,
+    `task_id` String,
     `task_name` String,
     `qc_type` Int32,
     `qc_way` Int32,
     `account_name` String,
+    `qc_norm_id` String,
     `target_num` Int32,
     `mark_num` Int32,
+    `ontime_mark_num` Int32,
+    `overdue_mark_num` Int32,
     `ai_num` Int32,
     `ai_rate` String,
     `human_num` Int32,
-    `human_rate` String,
-    `task_id` String,
-    `qc_norm_id` String
+    `human_rate` String
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',

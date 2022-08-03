@@ -37,73 +37,64 @@ FROM (
     FROM (
         WITH (
             -- 筛选满足条件的dialog_id
-            SELECT groupArray(dialog_id) AS dialog_id_list
+            SELECT groupUniqArray(dialog_id) AS dialog_id_list
             FROM (
-                SELECT DISTINCT
-                    dialog_id
-                FROM (
-                    SELECT
-                        _id AS dialog_id,
-                        -- 质检项ID
-                        arrayConcat(
-                            -- AI质检-非情绪扣分项
-                            arrayFilter(
-                                (x, y) -> y>0,
-                                abnormals_rule_id,
-                                abnormals_count
-                            ),
+                SELECT
+                    _id AS dialog_id,
+                    -- 质检项ID
+                    arrayConcat(
+                        -- AI质检-非情绪扣分项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            abnormals_rule_id,
+                            abnormals_count
+                        ),
+                        -- AI质检-非情绪加分项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            excellents_rule_id,
+                            excellents_count
+                        ),
+                        -- AI质检-买家情绪项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            c_emotion_rule_id,
+                            c_emotion_count
+                        ),
+                        -- AI质检-客服情绪项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            s_emotion_rule_id,
+                            s_emotion_count
+                        ),
 
-                            -- AI质检-非情绪加分项
-                            arrayFilter(
-                                (x, y) -> y>0,
-                                excellents_rule_id,
-                                excellents_count
-                            ),
+                        -- 自定义质检-消息质检项
+                        xrule_stats_id,
+                        -- 自定义质检-会话质检项
+                        top_xrules_id,
 
-                            -- AI质检-买家情绪项
-                            arrayFilter(
-                                (x, y) -> y>0,
-                                c_emotion_rule_id,
-                                c_emotion_count
-                            ),
-
-                            -- AI质检-客服情绪项
-                            arrayFilter(
-                                (x, y) -> y>0,
-                                s_emotion_rule_id,
-                                s_emotion_count
-                            )
-
-                            -- 自定义质检-消息质检项
-                            xrule_stats_id,
-                            -- 自定义质检-会话质检项
-                            top_xrules_id,
-
-                            -- 人工质检-扣分标签ID
-                            tag_score_stats_id,
-                            -- 人工质检-加分标签ID
-                            tag_score_add_stats_id
-                        ) AS tag_ids
-                    FROM dwd.xdqc_dialog_all
-                    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}'))
-                        AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
-                    AND platform = 'tb'
-                    -- 下拉框-店铺名
-                    AND seller_nick = '{{ seller_nick=方太官方旗舰店 }}'
-                    -- 过滤空数据
-                    AND (
-                        abnormals_types!=[] OR excellents_types!=[] OR c_emotion_types!=[] OR s_emotion_types!=[]
-                    )
-                    -- 下拉框-平台
-
-                    -- 下拉框-店铺主账号
-
-
-
-
-                ) AS ai_tags
+                        -- 人工质检-扣分标签ID
+                        tag_score_stats_id,
+                        -- 人工质检-加分标签ID
+                        tag_score_add_stats_id
+                    ) AS tag_ids
+                FROM dwd.xdqc_dialog_all
+                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}'))
+                    AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
+                -- 下拉框-平台
+                AND platform = '{{ platform=tb }}'
+                -- 下拉框-店铺主账号
+                AND seller_nick = '{{ seller_nick=方太官方旗舰店 }}'
+                -- 过滤空数据
+                AND tag_ids!=[]
+                -- 下拉框-质检项
+                AND (
+                    '{{ tag_ids }}'=''
+                    OR
+                    hasAny(tag_ids, splitByChar(',','{{ tag_ids }}'))
+                )
                 -- 下拉框-限制会话数量
-                LIMIT toUInt32({{ dialog_limit_num=1 }})
+                LIMIT {{ dialog_limit_num=1 }}
             ) AS dialog_tag_info
         ) AS dialog_id_list
         -- AI质检-非情绪扣分项
@@ -122,21 +113,14 @@ FROM (
             algo_emotion,
             abnormal_model,
             excellent_model,
-            -- 质检项类型
-            arrayPushBack(
-                arrayConcat(
-                    arrayResize(['ai_abnormal'], length(abnormal), 'ai_abnormal'),
-                    arrayResize(['ai_excellent'], length(excellent), 'ai_excellent')
-                ),
-                if(source=1, 'ai_s_emotion', 'ai_c_emotion' )
-            ) AS tag_types,
+
             -- 质检项ID
-            arrayPushBack(
-                arrayConcat(
-                    abnormal,
-                    excellent
-                ),
-                emotion
+            arrayConcat(
+                -- AI质检项
+                abnormal,
+                excellent,
+
+                --
             ) AS tag_ids
 
         FROM xqc_ods.message_all

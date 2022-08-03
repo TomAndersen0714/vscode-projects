@@ -1,5 +1,4 @@
-CREATE DATABASE IF NOT EXISTS xqc_dwd ON CLUSTER cluster_3s_2r 
-ENGINE=Ordinary
+CREATE DATABASE IF NOT EXISTS xqc_dwd ON CLUSTER cluster_3s_2r ENGINE=Ordinary
 
 
 -- DROP TABLE xqc_dwd.wiped_tag_local ON CLUSTER cluster_3s_2r NO DELAY
