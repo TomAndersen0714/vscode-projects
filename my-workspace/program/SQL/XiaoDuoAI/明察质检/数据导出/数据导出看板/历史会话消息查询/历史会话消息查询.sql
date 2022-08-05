@@ -110,7 +110,7 @@ FROM (
                 LIMIT toUInt32({{ dialog_limit_num=1 }})
             ) AS dialog_tag_info
         ) AS dialog_id_list
-        -- 旧版本AI质检项-非情绪扣分项
+        -- AI质检-旧版本质检项
         SELECT
             day,
             dialog_id,
@@ -141,7 +141,7 @@ FROM (
                     excellent
                 ),
                 emotion
-            ) AS tag_ids
+            ) AS tag_nums
 
         FROM xqc_ods.message_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}')) 
@@ -155,7 +155,7 @@ FROM (
     ) AS ai_no_emotion_tag
     ARRAY JOIN
         tag_types AS tag_type,
-        tag_ids AS tag_id_num
+        tag_nums AS tag_id_num
 ) AS ai_msg_tag
 GLOBAL LEFT JOIN (
     -- 关联AI质检项标签信息

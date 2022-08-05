@@ -1,4 +1,4 @@
--- 下拉框-质检标准
+-- 历史会话消息查询-下拉框-质检标准
 SELECT DISTINCT
     CONCAT(name, '//', _id) AS qc_norm_name_id
 FROM ods.xinghuan_qc_norm_all

@@ -1,4 +1,4 @@
--- 下拉框-质检项分组
+-- 历史会话消息查询-下拉框-质检项分组
 SELECT DISTINCT
     CONCAT(full_name, '//', _id) AS qc_norm_group_name_id
 FROM xqc_dim.qc_norm_group_full_all
@@ -10,6 +10,6 @@ AND _id GLOBAL IN (
     FROM xqc_dim.qc_rule_all
     WHERE day = toYYYYMMDD(yesterday())
     -- 下拉框-质检标准
-    AND qc_norm_id IN splitByChar(',','{{ qc_norm_ids }}')
+    AND qc_norm_id IN splitByChar(',','{{ qc_norm_ids=624e7765befbc1ec1606aa81 }}')
 )
 ORDER BY qc_norm_group_name_id COLLATE 'zh'
