@@ -1,251 +1,108 @@
-{
-    "http_endpoint": ":8155",
-    "grpc_endpoint": ":8156",
-    "pprof_endpoint": ":8157",
-    "stream_step_size": 1000,
-    "std_log": {
-        "level": "info",
-        "file": "/var/log/xiaoduo/query-sdk.log",
-        "err_file": "/var/log/xiaoduo/query-sdk.err.log",
-        "app_name": "query-sdk",
-        "auto_init": true
-    },
-    "api_log": {
-        "level": "info",
-        "file": "/var/log/xiaoduo/query-sdk.api.log",
-        "app_name": "query-sdk",
-        "auto_init": true
-    },
-    "switcher": ["10.20.0.125:2379"],
-    "rate_limit": {
-        "default": {
-            "impala": {
-                "qpm": 600,
-                "max": 10
-            },
-            "clickhouse": {
-                "qpm": 600,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            },
-            "postgres":{
-                "qpm": 1200,
-                "qps": 20,
-                "max": 10
-            }
-        },
-        "config-check": {
-            "impala": {
-                "qpm": 600,
-                "max": 10
-            },
-            "clickhouse": {
-                "qpm": 600,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            },
-            "postgres":{
-                "qpm": 1200,
-                "qps": 20,
-                "max": 10
-            }
-        },
-        "data-visual":{
-            "impala": {
-                "qpm": 600,
-                "max": 10
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 41
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "csm":{
-            "impala": {
-                "qpm": 240,
-                "max": 4
-            },
-            "clickhouse": {
-                "qpm": 240,
-                "max": 4
-            },
-            "mysql": {
-                "qpm": 240,
-                "max": 4
-            }
-        },  
-        "snowball":{
-            "impala": {
-                "qpm": 2,
-                "max": 1
-            },
-            "clickhouse": {
-                "qpm": 2,
-                "max": 1
-            },
-            "mysql": {
-                "qpm": 100,
-                "max": 20
-            }
-        },      
-        "x-data-x-data": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-screen": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-shandian": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 600,
-                "max": 10
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-xcm": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-xz": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-jd": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1800,
-                "max": 30
-            }
-        },
-        "x-data-csm": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-x-data-trans": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-xqc": {
-            "impala": {
-                "qpm": 600,
-                "max": 10
-            },
-            "clickhouse": {
-                "qps": 900,
-                "max": 15
-            }
-        },
-        "keban-group": {
-            "impala": {
-                "qpm": 10,
-                "max": 3
-            },
-            "clickhouse": {
-                "qpm": 10,
-                "max": 10
-            }
-        }
-    },
-    "storage": {
-        "ping": "20s",
-        "impala": {
-            "default": ["10.20.2.28:21050","10.20.2.29:21050","10.20.2.30:21050","10.20.133.176:21050","10.20.133.149:21050"],
-            "bee": ["10.20.2.28:21000","10.20.2.29:21000","10.20.2.30:21000","10.20.133.176:21000","10.20.133.149:21000"]
-        },
-        "clickhouse": {
-            "default": ["tcp://10.20.2.28:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.28:19000&max_memory_usage=20000000000"],
-            "mp": ["tcp://10.20.2.28:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.28:19000&max_memory_usage=20000000000"],
-            "keban": ["tcp://10.20.133.173:19000?debug=false"]
-        },
-        "mysql" : {
-            "default": ["select.user:hT0KABSS*X@tcp(172.16.124.5:3306)/jira?charset=utf8&parseTime=true"],
-            "snowball": ["root:Mysql1234!@tcp(10.20.0.173:3306)/snowball?charset=utf8&parseTime=true"]
-        },
-        "postgres": {
-            "default": [
-                "host=10.20.133.149 port=5432 user=postgres dbname=mayfly password=mysecretpassword sslmode=disable TimeZone=Asia/Shanghai"
-            ]
-        }
-    }
-}
+DROP TABLE ods.xdqc_dialog_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE ods.xdqc_dialog_local ON CLUSTER cluster_3s_2r
+(
+    `_id` String,
+    `platform` String,
+    `channel` String,
+    `group` String,
+    `date` Int32,
+    `seller_nick` String,
+    `cnick` String,
+    `snick` String,
+    `begin_time` DateTime64(3),
+    `end_time` DateTime64(3),
+    `is_after_sale` UInt8,
+    `is_inside` UInt8,
+    `employee_name` String,
+    `s_emotion_type` Array(UInt16),
+    `s_emotion_rule_id` Array(String),
+    `s_emotion_score` Array(Int32),
+    `s_emotion_count` Array(UInt32),
+    `c_emotion_type` Array(UInt16),
+    `c_emotion_rule_id` Array(String),
+    `c_emotion_score` Array(Int32),
+    `c_emotion_count` Array(UInt32),
+    `emotions` Array(String),
+    `abnormals_type` Array(UInt16),
+    `abnormals_rule_id` Array(String),
+    `abnormals_score` Array(Int32),
+    `abnormals_count` Array(UInt32),
+    `excellents_type` Array(UInt16),
+    `excellents_rule_id` Array(String),
+    `excellents_score` Array(Int32),
+    `excellents_count` Array(UInt32),
+    `qc_word_source` Array(UInt8),
+    `qc_word_word` Array(String),
+    `qc_word_count` Array(UInt32),
+    `qid` Array(Int64),
+    `mark` String,
+    `mark_judge` Int32,
+    `mark_score` Int32,
+    `mark_score_add` Int32,
+    `mark_ids` Array(String),
+    `last_mark_id` String,
+    `human_check` UInt8,
+    `tag_score_stats_id` Array(String),
+    `tag_score_stats_score` Array(Int32),
+    `tag_score_stats_count` Array(UInt32),
+    `tag_score_stats_md` Array(UInt8),
+    `tag_score_stats_mm` Array(UInt8),
+    `tag_score_add_stats_id` Array(String),
+    `tag_score_add_stats_score` Array(Int32),
+    `tag_score_add_stats_count` Array(UInt32),
+    `tag_score_add_stats_md` Array(UInt8),
+    `tag_score_add_stats_mm` Array(UInt8),
+    `rule_stats_id` Array(String),
+    `rule_stats_score` Array(Int32),
+    `rule_stats_count` Array(UInt32),
+    `rule_add_stats_id` Array(String),
+    `rule_add_stats_score` Array(Int32),
+    `rule_add_stats_count` Array(UInt32),
+    `xrule_stats_id` Array(String),
+    `xrule_stats_score` Array(Int32),
+    `xrule_stats_count` Array(UInt32),
+    `top_xrules_id` Array(String),
+    `top_xrules_score` Array(Int32),
+    `top_xrules_count` Array(UInt32),
+    `score` Int32,
+    `score_add` Int32,
+    `question_count` UInt32,
+    `answer_count` UInt32,
+    `first_answer_time` DateTime64(3),
+    `qa_time_sum` UInt32,
+    `qa_round_sum` UInt32,
+    `focus_goods_id` String,
+    `is_remind` UInt8,
+    `task_list_id` String,
+    `read_mark` Array(String),
+    `last_msg_id` String,
+    `consulte_transfor_v2` Int32,
+    `order_info_id` Array(String),
+    `order_info_status` Array(String),
+    `order_info_payment` Array(Float32),
+    `order_info_time` Array(UInt64),
+    `intel_score` Int32,
+    `remind_ntype` String,
+    `first_follow_up_time` DateTime64(3),
+    `is_follow_up_remind` UInt8,
+    `emotion_detect_mode` Int32,
+    `has_withdraw_robot_msg` UInt8,
+    `is_order_matched` UInt8,
+    `suspected_positive_emotion` UInt8,
+    `suspected_problem` UInt8,
+    `suspected_excellent` UInt8,
+    `has_after` UInt8,
+    `cnick_customize_rule` Array(String),
+    `update_time` DateTime('Asia/Shanghai'),
+    `wx_rule_stats_id` Array(String),
+    `wx_rule_stats_score` Array(Int32),
+    `wx_rule_stats_count` Array(UInt32),
+    `wx_rule_add_stats_id` Array(String),
+    `wx_rule_add_stats_score` Array(Int32),
+    `wx_rule_add_stats_count` Array(UInt32)
+) ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+) PARTITION BY toYYYYMMDD(begin_time)
+ORDER BY (platform, seller_nick, _id) SETTINGS storage_policy = 'rr',
+    index_granularity = 8192
