@@ -1,29 +1,77 @@
 -- 质检诊断报告-合格会话统计
-WITH (
-    SELECT toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')
-)
 SELECT
-    COUNT(1) AS dialog_cnt,
-    SUM((100 - score + score_add) >= 60) AS qualified_dialog_cnt
-FROM dwd.xdqc_dialog_all
-WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-    AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
--- 筛选指定平台
-AND platform = '{{ platform=tb }}'
--- 筛选指定企业的店铺
-AND seller_nick IN (
-    SELECT DISTINCT
-        seller_nick
-    FROM xqc_dim.xqc_shop_all
-    WHERE day = toYYYYMMDD(yesterday())
-    -- 筛选指定企业
-    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    cur_period.dialog_cnt AS `质检会话总量`,
+    cur_period.qualified_dialog_cnt AS `合格会话总量`,
+    pre_period.dialog_cnt AS `上期质检会话总量`,
+    pre_period.qualified_dialog_cnt AS `上期合格会话总量`,
+    cur_period.dialog_cnt - pre_period.dialog_cnt AS dialog_cnt_diff,
+    cur_period.qualified_dialog_cnt - pre_period.qualified_dialog_cnt AS qualified_dialog_cnt_diff,
+    CONCAT(
+        toString(
+            if(pre_period.dialog_cnt!=0, round(pre_period.dialog_cnt/dialog_cnt_diff*100,2), 0.00)
+        ),'%'
+    ) AS `环比1`,
+    CONCAT(
+        toString(
+            if(pre_period.qualified_dialog_cnt!=0, round(pre_period.qualified_dialog_cnt/qualified_dialog_cnt_diff*100,2), 0.00)
+        ),'%'
+    ) AS `环比2`,
+    if(cur_period.qualified_dialog_cnt!=0, round(cur_period.qualified_dialog_cnt/cur_period.dialog_cnt, 4), 0.00) AS `合格会话率`
+FROM (
+    SELECT
+        COUNT(1) AS dialog_cnt,
+        SUM((100 - score + score_add) >= 60) AS qualified_dialog_cnt
+    FROM dwd.xdqc_dialog_all
+    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台
-    AND platform = '{{ platform=tb }}'
-    -- 下拉框-店铺主账号
-    AND (
-        '{{ seller_nicks }}'=''
-        OR
-        seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+    AND platform = 'tb'
+    -- 筛选指定企业的店铺
+    AND seller_nick IN (
+        SELECT DISTINCT
+            seller_nick
+        FROM xqc_dim.xqc_shop_all
+        WHERE day = toYYYYMMDD(yesterday())
+        -- 筛选指定企业
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 筛选指定平台
+        AND platform = 'tb'
+        -- 下拉框-店铺主账号
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        )
     )
-)
+) AS cur_period
+GLOBAL CROSS JOIN (
+    SELECT
+        COUNT(1) AS dialog_cnt,
+        SUM((100 - score + score_add) >= 60) AS qualified_dialog_cnt
+    FROM dwd.xdqc_dialog_all
+    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(
+            toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
+        )
+        AND toYYYYMMDD(
+            toDate('{{ day.end=yesterday }}') - 1
+        )
+    -- 筛选指定平台
+    AND platform = 'tb'
+    -- 筛选指定企业的店铺
+    AND seller_nick IN (
+        SELECT DISTINCT
+            seller_nick
+        FROM xqc_dim.xqc_shop_all
+        WHERE day = toYYYYMMDD(yesterday())
+        -- 筛选指定企业
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 筛选指定平台
+        AND platform = 'tb'
+        -- 下拉框-店铺主账号
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        )
+    )
+) AS pre_period
