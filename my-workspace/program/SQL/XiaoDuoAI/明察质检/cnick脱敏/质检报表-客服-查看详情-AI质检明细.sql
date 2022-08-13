@@ -16,7 +16,7 @@ SELECT
     seller_nick AS `店铺`,
     department_name AS `子账号分组`,
     snick AS `客服子账号`,
-    cnick AS `顾客名称`,
+    real_buyer_nick AS `顾客名称`,
     employee_name AS `客服姓名`,
     superior_name AS `上级姓名`,
 
@@ -30,7 +30,7 @@ FROM (
         platform,
         seller_nick,
         snick,
-        cnick,
+        real_buyer_nick,
         dialog_id,
         arrayMap(x->toString(x), groupArray(tag_name)) AS ai_tag_names,
         arrayMap(x->toString(x), groupArray(tag_sum)) AS ai_tag_cnts
@@ -40,7 +40,7 @@ FROM (
             platform,
             seller_nick,
             snick,
-            cnick,
+            real_buyer_nick,
             dialog_id,
             tag_type,
             tag_id,
@@ -52,20 +52,20 @@ FROM (
                 platform,
                 seller_nick,
                 snick,
-                cnick,
+                real_buyer_nick,
                 _id AS dialog_id,
                 'ai_abnormal' AS tag_type,
                 arrayMap((x)->toString(x), abnormals_type) AS tag_ids,
                 abnormals_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'ks'
+            AND platform = 'tb'
             AND seller_nick GLOBAL IN (
                 -- 查询对应企业-平台的店铺
                 SELECT DISTINCT seller_nick
                 FROM xqc_dim.xqc_shop_all
                 WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'ks'
+                AND platform = 'tb'
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             )
             -- 下拉框-店铺名
@@ -84,20 +84,20 @@ FROM (
                 platform,
                 seller_nick,
                 snick,
-                cnick,
+                real_buyer_nick,
                 _id AS dialog_id,
                 'ai_excellent' AS tag_type,
                 arrayMap((x)->toString(x), excellents_type) AS tag_ids,
                 excellents_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'ks'
+            AND platform = 'tb'
             AND seller_nick GLOBAL IN (
                 -- 查询对应企业-平台的店铺
                 SELECT DISTINCT seller_nick
                 FROM xqc_dim.xqc_shop_all
                 WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'ks'
+                AND platform = 'tb'
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             )
             -- 下拉框-店铺名
@@ -116,20 +116,20 @@ FROM (
                 platform,
                 seller_nick,
                 snick,
-                cnick,
+                real_buyer_nick,
                 _id AS dialog_id,
                 'ai_c_emotion' AS tag_type,
                 arrayMap((x)->toString(x), c_emotion_type) AS tag_ids,
                 c_emotion_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'ks'
+            AND platform = 'tb'
             AND seller_nick GLOBAL IN (
                 -- 查询对应企业-平台的店铺
                 SELECT DISTINCT seller_nick
                 FROM xqc_dim.xqc_shop_all
                 WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'ks'
+                AND platform = 'tb'
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             )
             -- 下拉框-店铺名
@@ -149,20 +149,20 @@ FROM (
                 platform,
                 seller_nick,
                 snick,
-                cnick,
+                real_buyer_nick,
                 _id AS dialog_id,
                 'ai_s_emotion' AS tag_type,
                 arrayMap((x)->toString(x), s_emotion_type) AS tag_ids,
                 s_emotion_count AS tag_cnts
             FROM dwd.xdqc_dialog_all
             WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'ks'
+            AND platform = 'tb'
             AND seller_nick GLOBAL IN (
                 -- 查询对应企业-平台的店铺
                 SELECT DISTINCT seller_nick
                 FROM xqc_dim.xqc_shop_all
                 WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'ks'
+                AND platform = 'tb'
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             )
             -- 下拉框-店铺名
@@ -184,7 +184,7 @@ FROM (
             SELECT distinct snick
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'ks'
+            AND platform = 'tb'
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
         -- 下拉框-子账号
@@ -195,7 +195,7 @@ FROM (
         )
         -- 过滤空数据
         AND tag_cnt!=0
-        GROUP BY day, platform, seller_nick, snick, cnick, dialog_id, tag_type, tag_id
+        GROUP BY day, platform, seller_nick, snick, real_buyer_nick, dialog_id, tag_type, tag_id
     ) AS ods_ai_tag
     GLOBAL LEFT JOIN (
         -- 关联AI质检项
@@ -207,7 +207,7 @@ FROM (
         WHERE day=toYYYYMMDD(yesterday())
     ) AS dim_tag
     USING(tag_type, tag_id)
-    GROUP BY day, platform, seller_nick, snick, cnick, dialog_id
+    GROUP BY day, platform, seller_nick, snick, real_buyer_nick, dialog_id
 ) AS ods_ai_tag_stat
 GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息
@@ -220,7 +220,7 @@ GLOBAL LEFT JOIN (
             SELECT snick, department_id, employee_id
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'ks'
+            AND platform = 'tb'
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         ) AS snick_info
         GLOBAL LEFT JOIN (
