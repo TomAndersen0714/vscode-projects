@@ -1,50 +1,47 @@
-DROP TABLE sxx_ods.compensate_workorder_uniq_local ON CLUSTER cluster_3s_2r
-
-CREATE TABLE sxx_ods.compensate_workorder_uniq_local ON CLUSTER cluster_3s_2r(
-    `day` Int32,
-    `platform` String,
-    `platform_cn` String,
-    `shop_id` String,
-    `shop_name` String,
-    `raw_info` String,
-    `category` String,
-    `type` String,
-    `id` String,
-    `status` String,
-    `handler` String,
-    `priority` String,
-    `create_time` String,
-    `creator` String,
-    `description` String,
-    `finish_time` String,
-    `eval_status` String,
-    `score` String,
-    `custom_opinion` String,
-    `order_id` String,
-    `money` Int64,
-    `order_status` String,
-    `order_goods` String,
-    `custom_goods` String,
-    `delivery_id` String,
-    `paid_time` String,
-    `product_time` String,
-    `logistics_expire_limit` String,
-    `reason_full` String,
-    `reason_level_1` String,
-    `reason_level_2` String,
-    `reason_level_3` String,
-    `reason_level_4` String,
-    `compensate_cnt` Int64,
-    `unit_name` String,
-    `compensate_type` String,
-    `transfer_money` Int64,
-    `relative_pic` String,
-    `factory_code` String,
-    `is_delivery_paid` String,
-    `is_special` String
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-)
-ORDER BY (day, platform, order_id, reason_level_3, reason_level_4)
-SETTINGS index_granularity = 8192, storage_policy = 'rr'
+SELECT
+    day,
+    platform,
+    seller_nick,
+    snick_info.qc_norm_id,
+    snick_info.department_id,
+    snick,
+    dialog_id,
+    score,
+    score_add
+FROM (
+    SELECT
+        {ds_nodash} AS day,
+        platform,
+        seller_nick,
+        snick,
+        _id AS dialog_id,
+        score,
+        score_add
+    FROM dwd.xdqc_dialog_all
+    WHERE day = {ds_nodash}
+) AS dialog_info
+GLOBAL INNER JOIN (
+    SELECT
+        qc_norm_id,
+        department_id,
+        platform,
+        snick
+    FROM (
+        SELECT
+            qc_norm_id,
+            department_id
+        FROM ods.xinghuan_qc_norm_relate_all
+        WHERE day = {snapshot_ds_nodash}
+    ) AS qc_norm_binding_info
+    GLOBAL INNER JOIN (
+        SELECT
+            department_id,
+            platform,
+            snick
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = {snapshot_ds_nodash}
+    ) AS snick_info
+    USING(department_id)
+) AS snick_info
+ON dialog_info.platform = snick_info.platform
+AND dialog_info.snick = snick_info.snick

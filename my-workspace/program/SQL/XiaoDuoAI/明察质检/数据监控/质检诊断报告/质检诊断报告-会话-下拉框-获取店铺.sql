@@ -1,4 +1,4 @@
--- 质检诊断报告-下拉框-获取店铺
+-- 质检诊断报告-会话-下拉框-获取店铺
 SELECT DISTINCT
     seller_nick
 FROM xqc_dim.xqc_shop_all

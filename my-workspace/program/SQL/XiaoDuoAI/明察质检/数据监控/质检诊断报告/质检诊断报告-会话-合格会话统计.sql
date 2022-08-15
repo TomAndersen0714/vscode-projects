@@ -1,4 +1,4 @@
--- 质检诊断报告-合格会话统计
+-- 质检诊断报告-会话-合格会话统计
 SELECT
     cur_period.dialog_cnt AS `质检会话总量`,
     cur_period.qualified_dialog_cnt AS `合格会话总量`,

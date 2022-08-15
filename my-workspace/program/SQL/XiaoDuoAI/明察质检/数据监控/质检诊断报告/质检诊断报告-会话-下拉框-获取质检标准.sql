@@ -1,4 +1,4 @@
--- 质检诊断报告-下拉框-获取质检标准
+-- 质检诊断报告-会话-下拉框-获取质检标准
 SELECT DISTINCT
     CONCAT(name, '//', _id) AS qc_norm_name_id
 FROM ods.xinghuan_qc_norm_all

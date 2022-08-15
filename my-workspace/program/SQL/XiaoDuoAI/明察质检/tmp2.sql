@@ -1,94 +1,27 @@
-select `day`,
-    `platform`,
-    `platform_cn`,
-    `shop_id`,
-    `shop_name`,
-    `raw_info`,
-    `category`,
-    `type`,
-    `id`,
-    `status`,
-    `handler`,
-    `priority`,
-    `create_time`,
-    `creator`,
-    `description`,
-    `finish_time`,
-    `eval_status`,
-    `score`,
-    `custom_opinion`,
-    `order_id`,
-    `money`,
-    `order_status`,
-    `order_goods`,
-    `custom_goods`,
-    `delivery_id`,
-    `paid_time`,
-    `product_time`,
-    `logistics_expire_limit`,
-    `reason_full`,
-    `reason_level_1`,
-    `reason_level_2`,
-    `reason_level_3`,
-    `reason_level_4`,
-    `compensate_cnt`,
-    `unit_name`,
-    `compensate_type`,
-    `transfer_money`,
-    `relative_pic`,
-    `factory_code`,
-    `is_delivery_paid`,
-    `is_special`
-from (
-        select `day`,
-            `platform`,
-            `platform_cn`,
-            `shop_id`,
-            `shop_name`,
-            `raw_info`,
-            `category`,
-            `type`,
-            `id`,
-            `status`,
-            `handler`,
-            `priority`,
-            `create_time`,
-            `creator`,
-            `description`,
-            `finish_time`,
-            `eval_status`,
-            `score`,
-            `custom_opinion`,
-            `order_id`,
-            `money`,
-            `order_status`,
-            `order_goods`,
-            `custom_goods`,
-            `delivery_id`,
-            `paid_time`,
-            `product_time`,
-            `logistics_expire_limit`,
-            `reason_full`,
-            `reason_level_1`,
-            `reason_level_2`,
-            `reason_level_3`,
-            `reason_level_4`,
-            `compensate_cnt`,
-            `unit_name`,
-            `compensate_type`,
-            `transfer_money`,
-            `relative_pic`,
-            `factory_code`,
-            `is_delivery_paid`,
-            `is_special`,
-            row_number() over (
-                partition by id
-                order by JSONExtractString(
-                        JSONExtractString(raw_info, 'job_info'),
-                        'update_at'
-                    )
-            ) as num1
-        from sxx_ods.compensate_workorder_all
-        where day = { ds_nodash }
-    ) as t1
-where num1 = 1
+CREATE DATABASE IF NOT EXISTS xqc_dws ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary
+
+-- DROP TABLE xqc_dws.tag_group_stat_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE xqc_dws.tag_group_stat_local ON CLUSTER cluster_3s_2r
+(
+    `day` Int32,
+    `platform` String,
+    `seller_nick` String,
+    `tag_group_id` String,
+    `tag_group_level` Int64,
+    `add_score_dialog_cnt` Int64,
+    `subtract_score_dialog_cnt` Int64
+)
+ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+)
+PARTITION BY day
+ORDER BY (company_id)
+SETTINGS index_granularity = 8192, storage_policy = 'rr'
+
+
+-- DROP TABLE xqc_dws.tag_group_stat_all ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE xqc_dws.tag_group_stat_all ON CLUSTER cluster_3s_2r
+AS xqc_dws.tag_group_stat_local
+ENGINE = Distributed('cluster_3s_2r', 'xqc_dws', 'tag_group_stat_local', rand())

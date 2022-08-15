@@ -1,77 +1,50 @@
--- 质检诊断报告-合格会话统计
 SELECT
-    cur_period.dialog_cnt AS `质检会话总量`,
-    cur_period.qualified_dialog_cnt AS `合格会话总量`,
-    pre_period.dialog_cnt AS `上期质检会话总量`,
-    pre_period.qualified_dialog_cnt AS `上期合格会话总量`,
-    cur_period.dialog_cnt - pre_period.dialog_cnt AS dialog_cnt_diff,
-    cur_period.qualified_dialog_cnt - pre_period.qualified_dialog_cnt AS qualified_dialog_cnt_diff,
-    CONCAT(
-        toString(
-            if(pre_period.dialog_cnt!=0, round(pre_period.dialog_cnt/dialog_cnt_diff*100,2), 0.00)
-        ),'%'
-    ) AS `环比1`,
-    CONCAT(
-        toString(
-            if(pre_period.qualified_dialog_cnt!=0, round(pre_period.qualified_dialog_cnt/qualified_dialog_cnt_diff*100,2), 0.00)
-        ),'%'
-    ) AS `环比2`,
-    if(cur_period.qualified_dialog_cnt!=0, round(cur_period.qualified_dialog_cnt/cur_period.dialog_cnt, 4), 0.00) AS `合格会话率`
+    day,
+    platform,
+    seller_nick,
+    snick_info.qc_norm_id,
+    snick_info.department_id,
+    snick,
+    dialog_id,
+    score,
+    score_add
 FROM (
     SELECT
-        COUNT(1) AS dialog_cnt,
-        SUM(score = 0) AS qualified_dialog_cnt
+        20220813 AS day,
+        platform,
+        seller_nick,
+        snick,
+        _id AS dialog_id,
+        score,
+        score_add
     FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-    -- 筛选指定平台
-    AND platform = 'tb'
-    -- 筛选指定企业的店铺
-    AND seller_nick IN (
-        SELECT DISTINCT
-            seller_nick
-        FROM xqc_dim.xqc_shop_all
-        WHERE day = toYYYYMMDD(yesterday())
-        -- 筛选指定企业
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 下拉框-店铺主账号
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-        )
-    )
-) AS cur_period
-GLOBAL CROSS JOIN (
+    WHERE day = 20220813
+    AND seller_nick = '方太官方旗舰店'
+    LIMIT 1000
+) AS dialog_info
+GLOBAL INNER JOIN (
     SELECT
-        COUNT(1) AS dialog_cnt,
-        SUM(score = 0) AS qualified_dialog_cnt
-    FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(
-            toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
-        )
-        AND toYYYYMMDD(
-            toDate('{{ day.end=yesterday }}') - 1
-        )
-    -- 筛选指定平台
-    AND platform = 'tb'
-    -- 筛选指定企业的店铺
-    AND seller_nick IN (
+        qc_norm_id,
+        department_id,
+        platform,
+        snick
+    FROM (
+        SELECT
+            qc_norm_id,
+            department_id
+        FROM ods.xinghuan_qc_norm_relate_all
+        WHERE day = 20220813
+    ) AS qc_norm_binding_info
+    GLOBAL INNER JOIN (
         SELECT DISTINCT
-            seller_nick
-        FROM xqc_dim.xqc_shop_all
-        WHERE day = toYYYYMMDD(yesterday())
-        -- 筛选指定企业
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 下拉框-店铺主账号
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-        )
-    )
-) AS pre_period
+            department_id,
+            platform,
+            snick
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = 20220813
+        AND company_id = '5f747ba42c90fd0001254404'
+    ) AS snick_info
+    USING(department_id)
+) AS snick_info
+ON dialog_info.platform = snick_info.platform
+AND dialog_info.snick = snick_info.snick

@@ -1,4 +1,4 @@
--- 质检诊断报告-每日合格会话统计
+-- 质检诊断报告-会话-每日合格会话统计
 SELECT
     toYYYYMMDD(begin_time) AS day,
     COUNT(1) AS dialog_cnt,
