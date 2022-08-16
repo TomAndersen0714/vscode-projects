@@ -41,6 +41,7 @@ AND tag_info.group_id = group_info.group_id
 
 -- t3
 -- 会话关联质检项分组信息, 不保留未关联上的会话
+
 SELECT
     dialog_tag_info.day,
     dialog_tag_info.platform,
@@ -56,7 +57,8 @@ SELECT
     tag_group_info.level_2_group_id AS tag_level_2_group_id
 FROM (
     SELECT
-        *
+        day, platform, seller_nick, snick, dialog_id,
+        tag_id, tag_score
     FROM (
         SELECT
             {ds_nodash} AS day,
@@ -130,7 +132,13 @@ SELECT
 FROM (
     t3
 ) AS dialog_tag_group_info
-GROUP BY tag_level_1_group_id
+GROUP BY 
+    day,
+    platform,
+    seller_nick,
+    snick,
+    qc_norm_id,
+    tag_level_1_group_id
 
 UNION ALL
 
@@ -147,7 +155,13 @@ SELECT
 FROM (
     t3
 ) AS dialog_tag_group_info
-GROUP BY tag_level_2_group_id
+GROUP BY 
+    day,
+    platform,
+    seller_nick,
+    snick,
+    qc_norm_id,
+    tag_level_2_group_id
 
 -- 统计维度: 天/平台/主账号/子账号/质检标准
 -- 度量: 扣分会话数, 加分会话数, 质检会话数
@@ -157,7 +171,7 @@ GROUP BY tag_level_2_group_id
 -- xqc_dim.snick_full_info_all
 
 -- t2
--- xqc_dws.snick_stat_all 新增字段
+-- xqc_dws.snick_stat_all 新增字段 subtract_score_dialog_cnt, add_score_dialog_cnt
 SELECT
     day, platform, seller_nick, snick,
     dim_snick_department.employee_id,
@@ -187,10 +201,6 @@ SELECT
     -- 会话量统计-AI质检
     ai_subtract_score_dialog_cnt,
     ai_add_score_dialog_cnt,
-    -- abnormal_dialog_cnt,
-    -- excellent_dialog_cnt,
-    -- c_emotion_dialog_cnt,
-    -- s_emotion_dialog_cnt,
     -- 会话量统计-自定义质检
     custom_subtract_score_dialog_cnt,
     custom_add_score_dialog_cnt,

@@ -1,9 +1,9 @@
 -- xqc_dim.qc_norm_group_full_all
 ALTER TABLE xqc_dim.qc_norm_group_full_local ON CLUSTER cluster_3s_2r
-ADD COLUMN super_group_ids String AFTER `parent_id`
+ADD COLUMN super_group_ids Array(String) AFTER `parent_id`
 
 ALTER TABLE xqc_dim.qc_norm_group_full_all ON CLUSTER cluster_3s_2r
-ADD COLUMN super_group_ids String AFTER `parent_id`
+ADD COLUMN super_group_ids Array(String) AFTER `parent_id`
 
 -- INSERT INTO
 -- PS: 此处需要JOIN 3次来获取分组的完整路径, 因为分组树高为4

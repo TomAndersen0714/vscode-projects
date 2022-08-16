@@ -19,7 +19,7 @@ ENGINE = ReplicatedMergeTree(
     '{replica}'
 )
 PARTITION BY day
-ORDER BY (company_id)
+ORDER BY (platform, seller_nick, snick)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

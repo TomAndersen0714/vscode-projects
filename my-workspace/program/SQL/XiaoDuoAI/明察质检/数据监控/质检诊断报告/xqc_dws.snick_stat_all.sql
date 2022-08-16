@@ -1,9 +1,9 @@
 -- xqc_dws.snick_stat_all
-ALTER TABLE xqc_dim.snick_stat_local ON CLUSTER cluster_3s_2r
+ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r
 ADD COLUMN subtract_score_dialog_cnt Int64 AFTER `dialog_cnt`,
 ADD COLUMN add_score_dialog_cnt Int64 AFTER `subtract_score_dialog_cnt`
 
-ALTER TABLE xqc_dim.snick_stat_all ON CLUSTER cluster_3s_2r
+ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
 ADD COLUMN subtract_score_dialog_cnt Int64 AFTER `dialog_cnt`,
 ADD COLUMN add_score_dialog_cnt Int64 AFTER `subtract_score_dialog_cnt`
 
@@ -37,10 +37,6 @@ SELECT
     -- 会话量统计-AI质检
     ai_subtract_score_dialog_cnt,
     ai_add_score_dialog_cnt,
-    -- abnormal_dialog_cnt,
-    -- excellent_dialog_cnt,
-    -- c_emotion_dialog_cnt,
-    -- s_emotion_dialog_cnt,
     -- 会话量统计-自定义质检
     custom_subtract_score_dialog_cnt,
     custom_add_score_dialog_cnt,
@@ -79,11 +75,11 @@ FROM (
         add_score_sum - manual_add_score_sum - custom_add_score_sum AS ai_add_score_sum,
 
         -- 会话量统计-总计
-        COUNT(1) AS dialog_cnt,
+        uniqExact(_id) AS dialog_cnt,
         -- 会话量统计-扣分会话量
-        uniqExactIf(dialog_id, score>0) AS subtract_score_dialog_cnt,
+        uniqExactIf(_id, score>0) AS subtract_score_dialog_cnt,
         -- 会话量统计-加分会话量
-        uniqExactIf(dialog_id, score_add>0) AS add_score_dialog_cnt,
+        uniqExactIf(_id, score_add>0) AS add_score_dialog_cnt,
 
         -- 会话量统计-AI质检
         sum((

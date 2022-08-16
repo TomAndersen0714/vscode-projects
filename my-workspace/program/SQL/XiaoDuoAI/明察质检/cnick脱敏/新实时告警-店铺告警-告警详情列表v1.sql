@@ -5,7 +5,7 @@ SELECT
     superior_name AS `客服负责人`, -- 负责人
     employee_name AS `客服`, -- 客服
     snick AS `子账号`, -- 子账号
-    real_buyer_nick AS `顾客`, -- 顾客
+    cnick AS `顾客`, -- 顾客
     CASE
         WHEN level=1 THEN '初级告警'
         WHEN level=2 THEN '中级告警'
@@ -80,7 +80,7 @@ FROM (
         OR
         snick LIKE '%{{ search_string }}%'
         OR
-        real_buyer_nick LIKE '%{{ search_string }}%'
+        cnick LIKE '%{{ search_string }}%'
     )
 ) AS alert_info
 GLOBAL LEFT JOIN (
