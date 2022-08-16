@@ -5,7 +5,7 @@ SELECT
     SUM(score = 0) AS qualified_dialog_cnt,
     dialog_cnt AS `质检会话总量`,
     qualified_dialog_cnt AS `合格会话总量`,
-    if(qualified_dialog_cnt!=0, round(qualified_dialog_cnt/dialog_cnt*100, 4), 0.00) AS `合格会话率`
+    if(qualified_dialog_cnt!=0, round(qualified_dialog_cnt/dialog_cnt*100, 4), 0.00) AS `会话合格率`
 FROM dwd.xdqc_dialog_all
 WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
     AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

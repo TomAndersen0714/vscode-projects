@@ -16,7 +16,7 @@ SELECT
             if(pre_period.qualified_dialog_cnt!=0, round(pre_period.qualified_dialog_cnt/qualified_dialog_cnt_diff*100,2), 0.00)
         ),'%'
     ) AS `环比2`,
-    if(cur_period.qualified_dialog_cnt!=0, round(cur_period.qualified_dialog_cnt/cur_period.dialog_cnt, 4), 0.00) AS `合格会话率`
+    if(cur_period.qualified_dialog_cnt!=0, round(cur_period.qualified_dialog_cnt/cur_period.dialog_cnt, 4), 0.00) AS `会话合格率`
 FROM (
     SELECT
         COUNT(1) AS dialog_cnt,

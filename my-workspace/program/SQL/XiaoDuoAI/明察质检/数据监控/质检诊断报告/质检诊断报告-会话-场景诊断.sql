@@ -7,7 +7,7 @@ SELECT
         cur_period.qualified_dialog_cnt!=0,
         round(cur_period.qualified_dialog_cnt/cur_period.dialog_cnt, 4),
         0.00
-    ) AS `合格会话率`
+    ) AS `会话合格率`
 FROM (
     SELECT
         COUNT(1) AS dialog_cnt,
