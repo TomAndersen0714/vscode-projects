@@ -1,7 +1,7 @@
--- 质检诊断报告-会话-下拉框-获取质检分组
+-- 质检诊断报告-会话-质检二级分组场景诊断
 SELECT
-    qc_norm_id,
-    CONCAT(qc_norm_info.tag_group_name, '//', qc_norm_info.tag_group_id) AS qc_norm_group_name_id
+    qc_norm_info.tag_group_name AS `质检场景`,
+    tag_group_stat.subtract_score_dialog_sum AS `扣分会话数`
 FROM (
     SELECT
         qc_norm_id,
@@ -36,11 +36,14 @@ FROM (
         OR
         qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
     )
-    -- 筛选一级质检项分组
-    AND tag_group_level = 1
+    -- 筛选二级质检项分组
+    AND tag_group_level = 2
+    -- 不展示没有二级质检分组的数据
+    AND tag_group_id != ''
     GROUP BY
         qc_norm_id,
         tag_group_id
+    ORDER BY qc_norm_id
 ) AS tag_group_stat
 GLOBAL LEFT JOIN (
     SELECT
@@ -57,4 +60,6 @@ GLOBAL LEFT JOIN (
     )
 ) AS qc_norm_info
 USING(qc_norm_id, tag_group_id)
-ORDER BY qc_norm_id, qc_norm_group_name_id COLLATE 'zh'
+-- 过滤扣分会话量为0的分组, 避免展示分组数量太多
+WHERE subtract_score_dialog_sum != 0
+ORDER BY qc_norm_id, tag_group_id

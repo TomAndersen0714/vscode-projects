@@ -1,4 +1,4 @@
--- 质检诊断报告-子账号-场景诊断
+-- 质检诊断报告-子账号-质检二级分组场景诊断
 SELECT
     qc_norm_info.tag_group_name AS `质检场景`,
     tag_group_stat.subtract_score_snick_sum AS `扣分子账号数`
@@ -36,8 +36,23 @@ FROM (
         OR
         qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
     )
-    -- 筛选一级质检项分组
-    AND tag_group_level = 1
+    -- 筛选二级质检项分组
+    AND tag_group_level = 2
+    -- 不展示没有二级质检分组的数据
+    AND tag_group_id != ''
+    -- 筛选指定一级质检项分组下的二级质检项分组
+    AND (
+        '{{ tag_group_ids }}'=''
+        OR
+        tag_group_id GLOBAL IN (
+            SELECT
+                _id AS tag_group_id
+            FROM xqc_dim.qc_norm_group_full_all
+            WHERE day = toYYYYMMDD(yesterday())
+            -- 下拉框-一级质检项分组
+            AND parent_id IN splitByChar(',', '{{ tag_group_ids }}')
+        )
+    )
     GROUP BY
         qc_norm_id,
         tag_group_id
