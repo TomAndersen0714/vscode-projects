@@ -1,13 +1,13 @@
--- 质检诊断报告-会话-下拉框-获取质检分组
+-- 质检诊断报告-子账号-场景诊断
 SELECT
-    qc_norm_id,
-    CONCAT(qc_norm_info.tag_group_name, '//', qc_norm_info.tag_group_id) AS qc_norm_group_name_id
+    qc_norm_info.tag_group_name AS `质检场景`,
+    tag_group_stat.subtract_score_snick_sum AS `扣分子账号数`
 FROM (
     SELECT
         qc_norm_id,
         tag_group_id,
-        SUM(add_score_dialog_cnt) AS add_score_dialog_sum,
-        SUM(subtract_score_dialog_cnt) AS subtract_score_dialog_sum
+        uniqExactIf(snick, add_score_dialog_cnt>0) AS add_score_snick_sum,
+        uniqExactIf(snick, subtract_score_dialog_cnt>0) AS subtract_score_snick_sum
     FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -41,6 +41,7 @@ FROM (
     GROUP BY
         qc_norm_id,
         tag_group_id
+    ORDER BY qc_norm_id
 ) AS tag_group_stat
 GLOBAL LEFT JOIN (
     SELECT
@@ -57,4 +58,6 @@ GLOBAL LEFT JOIN (
     )
 ) AS qc_norm_info
 USING(qc_norm_id, tag_group_id)
-ORDER BY qc_norm_id, qc_norm_group_name_id COLLATE 'zh'
+-- 过滤扣分子账号量为0的分组, 避免展示分组数量太多
+WHERE subtract_score_snick_sum != 0
+ORDER BY qc_norm_id, tag_group_id

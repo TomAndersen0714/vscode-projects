@@ -1,28 +1,28 @@
 -- 质检诊断报告-会话-合格会话统计
 SELECT
-    cur_period.dialog_cnt AS `质检会话总量`,
-    cur_period.qualified_dialog_cnt AS `合格会话总量`,
-    pre_period.dialog_cnt AS `上期质检会话总量`,
-    pre_period.qualified_dialog_cnt AS `上期合格会话总量`,
-    cur_period.dialog_cnt - pre_period.dialog_cnt AS dialog_cnt_diff,
-    cur_period.qualified_dialog_cnt - pre_period.qualified_dialog_cnt AS qualified_dialog_cnt_diff,
+    cur_period.dialog_sum AS `质检会话总量`,
+    cur_period.qualified_dialog_sum AS `合格会话总量`,
+    pre_period.dialog_sum AS `上期质检会话总量`,
+    pre_period.qualified_dialog_sum AS `上期合格会话总量`,
+    cur_period.dialog_sum - pre_period.dialog_sum AS dialog_cnt_diff,
+    cur_period.qualified_dialog_sum - pre_period.qualified_dialog_sum AS qualified_dialog_cnt_diff,
     CONCAT(
         toString(
-            if(pre_period.dialog_cnt!=0, round(pre_period.dialog_cnt/dialog_cnt_diff*100,2), 0.00)
+            if(dialog_cnt_diff!=0, round(pre_period.dialog_sum/dialog_cnt_diff*100,2), 0.00)
         ),'%'
     ) AS `环比1`,
     CONCAT(
         toString(
-            if(pre_period.qualified_dialog_cnt!=0, round(pre_period.qualified_dialog_cnt/qualified_dialog_cnt_diff*100,2), 0.00)
+            if(qualified_dialog_cnt_diff!=0, round(pre_period.qualified_dialog_sum/qualified_dialog_cnt_diff*100,2), 0.00)
         ),'%'
     ) AS `环比2`,
-    if(cur_period.qualified_dialog_cnt!=0, round(cur_period.qualified_dialog_cnt/cur_period.dialog_cnt, 4), 0.00) AS `会话合格率`
+    if(cur_period.qualified_dialog_sum!=0, round(cur_period.qualified_dialog_sum/cur_period.dialog_sum, 4), 0.00) AS `会话合格率`
 FROM (
     SELECT
-        COUNT(1) AS dialog_cnt,
-        SUM(score = 0) AS qualified_dialog_cnt
-    FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        SUM(dialog_cnt) AS dialog_sum,
+        SUM(dialog_cnt - subtract_score_dialog_cnt) AS qualified_dialog_sum
+    FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台
     AND platform = 'tb'
@@ -66,14 +66,14 @@ FROM (
 ) AS cur_period
 GLOBAL CROSS JOIN (
     SELECT
-        COUNT(1) AS dialog_cnt,
-        SUM(score = 0) AS qualified_dialog_cnt
-    FROM dwd.xdqc_dialog_all
-    WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(
+        SUM(dialog_cnt) AS dialog_sum,
+        SUM(dialog_cnt - subtract_score_dialog_cnt) AS qualified_dialog_sum
+    FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+    WHERE day BETWEEN toYYYYMMDD(
             toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
         )
         AND toYYYYMMDD(
-            toDate('{{ day.end=yesterday }}') - 1
+            toDate('{{ day.start=week_ago }}') - 1
         )
     -- 筛选指定平台
     AND platform = 'tb'

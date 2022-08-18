@@ -1,145 +1,107 @@
-        SELECT
-            day, platform, seller_nick, snick,
-            dim_snick_department.employee_id,
-            dim_snick_department.employee_name,
-            dim_snick_department.department_id,
-            dim_snick_department.department_name,
-            -- 分值统计-总计
-            subtract_score_sum,
-            add_score_sum,
-            -- 分值统计-AI质检
-            ai_subtract_score_sum,
-            ai_add_score_sum,
-            -- 分值统计-自定义质检
-            custom_subtract_score_sum,
-            custom_add_score_sum,
-            -- 分值统计-人工质检
-            manual_subtract_score_sum,
-            manual_add_score_sum,
-            -- 会话量统计-总计
-            dialog_cnt,
-            manual_marked_dialog_cnt, -- 被人工质检会话量
-            -- 会话量统计-AI质检
-            ai_subtract_score_dialog_cnt,
-            ai_add_score_dialog_cnt,
-            -- abnormal_dialog_cnt,
-            -- excellent_dialog_cnt,
-            -- c_emotion_dialog_cnt,
-            -- s_emotion_dialog_cnt,
-            -- 会话量统计-自定义质检
-            custom_subtract_score_dialog_cnt,
-            custom_add_score_dialog_cnt,
-            -- 会话量统计-人工质检
-            manual_subtract_score_dialog_cnt, -- 人工质检扣分会话量
-            manual_add_score_dialog_cnt -- 人工质检加分会话量
-        FROM (
-            SELECT
-                toYYYYMMDD(begin_time) AS day,
-                platform,
-                seller_nick,
-                snick,
-                -- 分值统计-总计
-                sum(score) AS subtract_score_sum,
-                sum(score_add) AS add_score_sum,
-                -- 分值统计-人工质检
-                sum(mark_score) AS manual_subtract_score_sum,
-                sum(mark_score_add) AS manual_add_score_sum,
-                -- 分值统计-自定义质检
-                sum(
-                    arraySum(rule_stats_score)
-                    +
-                    negate(arraySum(arrayMap((x,y) -> x*if(y<0,y,0), xrule_stats_count, xrule_stats_score)))
-                    +
-                    negate(arraySum(arrayMap((x,y) -> x*if(y<0,y,0), top_xrules_count, top_xrules_score)))
-                ) AS custom_subtract_score_sum,
-                sum(
-                    arraySum(rule_add_stats_score)
-                    +
-                    arraySum(arrayMap((x,y) -> x*if(y>0,y,0), xrule_stats_count, xrule_stats_score))
-                    +
-                    arraySum(arrayMap((x,y) -> x*if(y>0,y,0), top_xrules_count, top_xrules_score))
-                ) AS custom_add_score_sum,
-                -- 分值统计-AI质检
-                subtract_score_sum - manual_subtract_score_sum - custom_subtract_score_sum AS ai_subtract_score_sum,
-                add_score_sum - manual_add_score_sum - custom_add_score_sum AS ai_add_score_sum,
-        
-                -- 会话量统计-总计
-                COUNT(1) AS dialog_cnt,
-                -- 会话量统计-AI质检
-                sum((
-                    score - mark_score - (
-                        arraySum(rule_stats_score)
-                        +
-                        negate(arraySum(arrayMap((x,y) -> x*if(y<0,y,0), xrule_stats_count, xrule_stats_score)))
-                        +
-                        negate(arraySum(arrayMap((x,y) -> x*if(y<0,y,0), top_xrules_count, top_xrules_score)))
-                    )) > 0
-                ) AS ai_subtract_score_dialog_cnt,
-                sum((
-                    score_add - mark_score_add - (
-                        arraySum(rule_add_stats_score)
-                        +
-                        arraySum(arrayMap((x,y) -> x*if(y>0,y,0), xrule_stats_count, xrule_stats_score))
-                        +
-                        arraySum(arrayMap((x,y) -> x*if(y>0,y,0), top_xrules_count, top_xrules_score))
-                    )) > 0
-                ) AS ai_add_score_dialog_cnt,
-                -- sum(arraySum(abnormals_count)!=0) AS abnormal_dialog_cnt,
-                -- sum(arraySum(excellents_count)!=0) AS excellent_dialog_cnt,
-                -- sum(arraySum(c_emotion_count)!=0) AS c_emotion_dialog_cnt,
-                -- sum(arraySum(s_emotion_count)!=0) AS s_emotion_dialog_cnt,
-                -- 会话量统计-自定义质检
-                sum((
-                        length(rule_stats_id)
-                        +
-                        length(arrayFilter(x->x<0, xrule_stats_score))
-                        +
-                        length(arrayFilter(x->x<0, top_xrules_score))
-                    )!=0
-                ) AS custom_subtract_score_dialog_cnt,
-                sum((
-                        length(rule_add_stats_id)
-                        +
-                        length(arrayFilter(x->x>0, xrule_stats_score))
-                        +
-                        length(arrayFilter(x->x>0, top_xrules_score))
-                    )!=0
-                ) AS custom_add_score_dialog_cnt,
-                -- 会话量统计-人工质检
-                sum(length(mark_ids)!=0) AS manual_marked_dialog_cnt, -- 被人工质检会话量
-                sum(arrayExists((x)->x>0, tag_score_stats_score)) AS manual_subtract_score_dialog_cnt, -- 人工质检扣分会话量
-                sum(arrayExists((x)->x>0, tag_score_add_stats_score)) AS manual_add_score_dialog_cnt -- 人工质检加分会话量
-            FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) = {ds_nodash}
-            GROUP BY day, platform, seller_nick, snick
-        ) AS dws_snick_stat
-        GLOBAL LEFT JOIN (
-            -- 获取维度数据快照
-            SELECT
-                snick, employee_id, employee_name, department_id, department_name
-            FROM (
-                SELECT snick, employee_id, employee_name, department_id
-                FROM (
-                    -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-                    SELECT snick, department_id, employee_id
-                    FROM ods.xinghuan_employee_snick_all
-                    WHERE day = {snapshot_ds_nodash}
-                ) AS snick_info
-                GLOBAL LEFT JOIN (
-                    SELECT
-                        _id AS employee_id, username AS employee_name
-                    FROM ods.xinghuan_employee_all
-                    WHERE day = {snapshot_ds_nodash}
-                ) AS employee_info
-                USING(employee_id)
-            ) AS snick_info
-            GLOBAL LEFT JOIN (
-                SELECT
-                    _id AS department_id,
-                    full_name AS department_name
-                FROM xqc_dim.snick_department_full_all
-                WHERE day = {snapshot_ds_nodash}
-            ) AS department_info
-            USING (department_id)
-        ) AS dim_snick_department
-        USING(snick)
+CREATE TABLE dwd.xdqc_dialog_all (
+    `_id` String,
+    `platform` String,
+    `channel` String,
+    `group` String,
+    `date` Int32,
+    `seller_nick` String,
+    `cnick` String,
+    `snick` String,
+    `begin_time` DateTime64(3),
+    `end_time` DateTime64(3),
+    `is_after_sale` UInt8,
+    `is_inside` UInt8,
+    `employee_name` String,
+    `s_emotion_type` Array(UInt16),
+    `s_emotion_rule_id` Array(String),
+    `s_emotion_score` Array(Int32),
+    `s_emotion_count` Array(UInt32),
+    `c_emotion_type` Array(UInt16),
+    `c_emotion_rule_id` Array(String),
+    `c_emotion_score` Array(Int32),
+    `c_emotion_count` Array(UInt32),
+    `emotions` Array(String),
+    `abnormals_type` Array(UInt16),
+    `abnormals_rule_id` Array(String),
+    `abnormals_score` Array(Int32),
+    `abnormals_count` Array(UInt32),
+    `excellents_type` Array(UInt16),
+    `excellents_rule_id` Array(String),
+    `excellents_score` Array(Int32),
+    `excellents_count` Array(UInt32),
+    `qc_word_source` Array(UInt8),
+    `qc_word_word` Array(String),
+    `qc_word_count` Array(UInt32),
+    `qid` Array(Int64),
+    `mark` String,
+    `mark_judge` Int32,
+    `mark_score` Int32,
+    `mark_score_add` Int32,
+    `mark_ids` Array(String),
+    `last_mark_id` String,
+    `human_check` UInt8,
+    `tag_score_stats_id` Array(String),
+    `tag_score_stats_score` Array(Int32),
+    `tag_score_stats_count` Array(UInt32),
+    `tag_score_stats_md` Array(UInt8),
+    `tag_score_stats_mm` Array(UInt8),
+    `tag_score_add_stats_id` Array(String),
+    `tag_score_add_stats_score` Array(Int32),
+    `tag_score_add_stats_count` Array(UInt32),
+    `tag_score_add_stats_md` Array(UInt8),
+    `tag_score_add_stats_mm` Array(UInt8),
+    `rule_stats_id` Array(String),
+    `rule_stats_score` Array(Int32),
+    `rule_stats_count` Array(UInt32),
+    `rule_add_stats_id` Array(String),
+    `rule_add_stats_score` Array(Int32),
+    `rule_add_stats_count` Array(UInt32),
+    `xrule_stats_id` Array(String),
+    `xrule_stats_score` Array(Int32),
+    `xrule_stats_count` Array(UInt32),
+    `top_xrules_id` Array(String),
+    `top_xrules_score` Array(Int32),
+    `top_xrules_count` Array(UInt32),
+    `score` Int32,
+    `score_add` Int32,
+    `question_count` UInt32,
+    `answer_count` UInt32,
+    `first_answer_time` DateTime64(3),
+    `qa_time_sum` UInt32,
+    `qa_round_sum` UInt32,
+    `focus_goods_id` String,
+    `is_remind` UInt8,
+    `task_list_id` String,
+    `read_mark` Array(String),
+    `last_msg_id` String,
+    `consulte_transfor_v2` Int32,
+    `order_info_id` Array(String),
+    `order_info_status` Array(String),
+    `order_info_payment` Array(Float32),
+    `order_info_time` Array(UInt64),
+    `intel_score` Int32,
+    `remind_ntype` String,
+    `first_follow_up_time` DateTime64(3),
+    `is_follow_up_remind` UInt8,
+    `emotion_detect_mode` Int32,
+    `has_withdraw_robot_msg` UInt8,
+    `is_order_matched` UInt8,
+    `suspected_positive_emotion` UInt8,
+    `suspected_problem` UInt8,
+    `suspected_excellent` UInt8,
+    `has_after` UInt8,
+    `cnick_customize_rule` Array(String),
+    `update_time` DateTime('Asia/Shanghai'),
+    `wx_rule_stats_id` Array(String),
+    `wx_rule_stats_score` Array(Int32),
+    `wx_rule_stats_count` Array(UInt32),
+    `wx_rule_add_stats_id` Array(String),
+    `wx_rule_add_stats_score` Array(Int32),
+    `wx_rule_add_stats_count` Array(UInt32),
+    `sign` Int8
+) ENGINE = Distributed(
+    'cluster_3s_2r',
+    'dwd',
+    'xdqc_dialog_local',
+    xxHash64(platform, channel, seller_nick, _id)
+)

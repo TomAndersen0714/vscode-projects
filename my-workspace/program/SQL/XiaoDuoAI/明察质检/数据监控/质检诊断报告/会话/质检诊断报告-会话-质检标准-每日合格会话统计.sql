@@ -1,13 +1,13 @@
 -- 质检诊断报告-会话-每日合格会话统计
 SELECT
-    toYYYYMMDD(begin_time) AS day,
-    COUNT(1) AS dialog_cnt,
-    SUM(score = 0) AS qualified_dialog_cnt,
-    dialog_cnt AS `质检会话总量`,
-    qualified_dialog_cnt AS `合格会话总量`,
-    if(qualified_dialog_cnt!=0, round(qualified_dialog_cnt/dialog_cnt*100, 4), 0.00) AS `会话合格率`
-FROM dwd.xdqc_dialog_all
-WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+    day,
+    SUM(dialog_cnt) AS dialog_sum,
+    SUM(dialog_cnt - subtract_score_dialog_cnt) AS qualified_dialog_sum,
+    dialog_sum AS `质检会话总量`,
+    qualified_dialog_sum AS `合格会话总量`,
+    if(qualified_dialog_sum!=0, round(qualified_dialog_sum/dialog_sum*100, 4), 0.00) AS `会话合格率`
+FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
     AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
 -- 筛选指定平台
 AND platform = 'tb'
@@ -48,5 +48,5 @@ AND (
         )
     )
 )
-GROUP BY toYYYYMMDD(begin_time)
+GROUP BY day
 ORDER BY day ASC
