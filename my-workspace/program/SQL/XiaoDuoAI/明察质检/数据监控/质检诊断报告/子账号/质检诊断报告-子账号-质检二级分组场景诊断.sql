@@ -1,13 +1,13 @@
 -- 质检诊断报告-子账号-质检二级分组场景诊断
 SELECT
     qc_norm_info.tag_group_name AS `质检场景`,
-    tag_group_stat.subtract_score_snick_sum AS `扣分子账号数`
+    tag_group_stat.subtract_score_snick_uv_sum AS `扣分子账号数`
 FROM (
     SELECT
         qc_norm_id,
         tag_group_id,
-        uniqExactIf(snick, add_score_dialog_cnt>0) AS add_score_snick_sum,
-        uniqExactIf(snick, subtract_score_dialog_cnt>0) AS subtract_score_snick_sum
+        uniqExactIf((day, snick), add_score_dialog_cnt>0) AS add_score_snick_uv_sum,
+        uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
     FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -42,7 +42,7 @@ FROM (
     AND tag_group_id != ''
     -- 筛选指定一级质检项分组下的二级质检项分组
     AND (
-        '{{ tag_group_ids }}'=''
+        '{{ tag_group_ids }}'='all'
         OR
         tag_group_id GLOBAL IN (
             SELECT
@@ -74,5 +74,5 @@ GLOBAL LEFT JOIN (
 ) AS qc_norm_info
 USING(qc_norm_id, tag_group_id)
 -- 过滤扣分子账号量为0的分组, 避免展示分组数量太多
-WHERE subtract_score_snick_sum != 0
+WHERE subtract_score_snick_uv_sum != 0
 ORDER BY qc_norm_id, tag_group_id

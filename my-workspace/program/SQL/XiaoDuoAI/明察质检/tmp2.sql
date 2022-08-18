@@ -1,7 +1,6 @@
--- 质检诊断报告-会话-质检二级分组场景诊断
+-- 质检诊断报告-会话-下拉框-获取质检一级分组
 SELECT
-    qc_norm_info.tag_group_name AS `质检场景`,
-    tag_group_stat.subtract_score_dialog_sum AS `扣分会话数`
+    CONCAT(qc_norm_info.tag_group_name, '//', qc_norm_info.tag_group_id) AS qc_norm_group_name_id
 FROM (
     SELECT
         qc_norm_id,
@@ -36,10 +35,8 @@ FROM (
         OR
         qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
     )
-    -- 筛选二级质检项分组
-    AND tag_group_level = 2
-    -- 不展示没有二级质检分组的数据
-    AND tag_group_id != ''
+    -- 筛选一级质检项分组
+    AND tag_group_level = 1
     GROUP BY
         qc_norm_id,
         tag_group_id

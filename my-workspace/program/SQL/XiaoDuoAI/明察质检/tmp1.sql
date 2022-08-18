@@ -1,65 +1,48 @@
--- 质检诊断报告-会话-质检二级分组场景诊断
 SELECT
-    qc_norm_info.tag_group_name AS `质检场景`,
-    tag_group_stat.subtract_score_dialog_sum AS `扣分会话数`
-FROM (
-    SELECT
-        qc_norm_id,
-        tag_group_id,
-        SUM(add_score_dialog_cnt) AS add_score_dialog_sum,
-        SUM(subtract_score_dialog_cnt) AS subtract_score_dialog_sum
-    FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    day,
+    uniqExact(snick) AS snick_cnt,
+    uniqExactIf(snick, subtract_score_dialog_cnt>0) AS subtract_score_snick_cnt,
+    uniqExactIf(snick, subtract_score_dialog_cnt=0) AS qualified_snick_cnt
+FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+WHERE day = 20220814
+-- 筛选指定平台
+AND platform = 'tb'
+-- 筛选指定企业的店铺
+AND seller_nick IN (
+    SELECT DISTINCT
+        seller_nick
+    FROM xqc_dim.xqc_shop_all
+    WHERE day = toYYYYMMDD(yesterday())
+    -- 筛选指定企业
+    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     -- 筛选指定平台
     AND platform = 'tb'
-    -- 筛选指定企业的店铺
-    AND seller_nick IN (
-        SELECT DISTINCT
-            seller_nick
-        FROM xqc_dim.xqc_shop_all
+    -- 下拉框-店铺主账号
+    AND (
+        '{{ seller_nicks }}'=' '
+        OR
+        seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+    )
+)
+-- 筛选指定质检标准对应的子账号
+AND (
+    '{{ qc_norm_ids }}'=' '
+    OR
+    snick GLOBAL IN (
+        -- 筛选指定子账号分组中的子账号
+        SELECT snick
+        FROM ods.xinghuan_employee_snick_all
         WHERE day = toYYYYMMDD(yesterday())
-        -- 筛选指定企业
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 下拉框-店铺主账号
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        AND department_id IN (
+            -- 筛选指定质检标准对应的子账号分组
+            SELECT department_id
+            FROM ods.xinghuan_qc_norm_relate_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         )
     )
-    -- 下拉框-质检标准
-    AND (
-        '{{ qc_norm_ids }}'=''
-        OR
-        qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-    )
-    -- 筛选二级质检项分组
-    AND tag_group_level = 2
-    -- 不展示没有二级质检分组的数据
-    AND tag_group_id != ''
-    GROUP BY
-        qc_norm_id,
-        tag_group_id
-    ORDER BY qc_norm_id
-) AS tag_group_stat
-GLOBAL LEFT JOIN (
-    SELECT
-        qc_norm_id,
-        _id AS tag_group_id,
-        name AS tag_group_name
-    FROM remote('10.22.134.218:19000', xqc_dim.qc_norm_group_all)
-    WHERE day = toYYYYMMDD(yesterday())
-    -- 下拉框-质检标准
-    AND (
-        '{{ qc_norm_ids }}'=''
-        OR
-        qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-    )
-) AS qc_norm_info
-USING(qc_norm_id, tag_group_id)
--- 过滤扣分会话量为0的分组, 避免展示分组数量太多
-WHERE subtract_score_dialog_sum != 0
-ORDER BY qc_norm_id, tag_group_id
+)
+GROUP BY day
+    

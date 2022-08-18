@@ -1,5 +1,8 @@
 -- 质检诊断报告-会话-下拉框-获取质检一级分组
 SELECT
+    '全部//all' AS qc_norm_group_name_id
+UNION ALL
+SELECT
     CONCAT(qc_norm_info.tag_group_name, '//', qc_norm_info.tag_group_id) AS qc_norm_group_name_id
 FROM (
     SELECT

@@ -1,29 +1,29 @@
 -- 质检诊断报告-子账号-质检一级分组合格子账号统计
 SELECT
-    cur_period.snick_sum AS `质检子账号总量`,
-    cur_period.qualified_snick_sum AS `合格子账号总量`,
-    pre_period.snick_sum AS `上期质检子账号总量`,
-    pre_period.qualified_snick_sum AS `上期合格子账号总量`,
-    cur_period.snick_sum - pre_period.snick_sum AS snick_cnt_diff,
-    cur_period.qualified_snick_sum - pre_period.qualified_snick_sum AS qualified_snick_cnt_diff,
+    cur_period.snick_uv_sum AS `质检子账号总量`,
+    cur_period.qualified_snick_uv_sum AS `合格子账号总量`,
+    pre_period.snick_uv_sum AS `上期质检子账号总量`,
+    pre_period.qualified_snick_uv_sum AS `上期合格子账号总量`,
+    cur_period.snick_uv_sum - pre_period.snick_uv_sum AS snick_cnt_diff,
+    cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_snick_cnt_diff,
     CONCAT(
         toString(
-            if(snick_cnt_diff!=0, round(pre_period.snick_sum/snick_cnt_diff*100,2), 0.00)
+            if(snick_cnt_diff!=0, round(pre_period.snick_uv_sum/snick_cnt_diff*100,2), 0.00)
         ),'%'
     ) AS `环比1`,
     CONCAT(
         toString(
-            if(qualified_snick_cnt_diff!=0, round(pre_period.qualified_snick_sum/qualified_snick_cnt_diff*100,2), 0.00)
+            if(qualified_snick_cnt_diff!=0, round(pre_period.qualified_snick_uv_sum/qualified_snick_cnt_diff*100,2), 0.00)
         ),'%'
     ) AS `环比2`,
-    if(cur_period.qualified_snick_sum!=0, round(cur_period.qualified_snick_sum/cur_period.snick_sum, 4), 0.00) AS `子账号合格率`
+    if(cur_period.qualified_snick_uv_sum!=0, round(cur_period.qualified_snick_uv_sum/cur_period.snick_uv_sum, 4), 0.00) AS `子账号合格率`
 FROM (
     SELECT
-        qc_norm_stat.snick_sum,
-        (qc_norm_stat.snick_sum - tag_group_level_1_stat.subtract_score_snick_sum) AS qualified_snick_sum
+        qc_norm_stat.snick_uv_sum,
+        (qc_norm_stat.snick_uv_sum - tag_group_level_1_stat.subtract_score_snick_uv_sum) AS qualified_snick_uv_sum
     FROM (
         SELECT
-            uniqExactIf(snick, subtract_score_dialog_cnt>0) AS subtract_score_snick_sum
+            uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
         FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -56,14 +56,14 @@ FROM (
         AND tag_group_level = 1
         -- 下拉框-一级质检项分组
         AND (
-            '{{ tag_group_ids }}'=''
+            '{{ tag_group_ids }}'='all'
             OR
             tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
         )
     ) AS tag_group_level_1_stat
     GLOBAL CROSS JOIN (
         SELECT
-            uniqExact(snick) AS snick_sum
+            uniqExact((day, snick)) AS snick_uv_sum
         FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -110,11 +110,11 @@ FROM (
 ) AS cur_period
 GLOBAL CROSS JOIN (
     SELECT
-        qc_norm_stat.snick_sum,
-        (qc_norm_stat.snick_sum - tag_group_level_1_stat.subtract_score_snick_sum) AS qualified_snick_sum
+        qc_norm_stat.snick_uv_sum,
+        (qc_norm_stat.snick_uv_sum - tag_group_level_1_stat.subtract_score_snick_uv_sum) AS qualified_snick_uv_sum
     FROM (
         SELECT
-            uniqExactIf(snick, subtract_score_dialog_cnt>0) AS subtract_score_snick_sum
+            uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
         FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
         WHERE day BETWEEN toYYYYMMDD(
                 toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
@@ -151,14 +151,14 @@ GLOBAL CROSS JOIN (
         AND tag_group_level = 1
         -- 下拉框-一级质检项分组
         AND (
-            '{{ tag_group_ids }}'=''
+            '{{ tag_group_ids }}'='all'
             OR
             tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
         )
     ) AS tag_group_level_1_stat
     GLOBAL CROSS JOIN (
         SELECT
-            uniqExact(snick) AS snick_sum
+            uniqExact((day, snick)) AS snick_uv_sum
         FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
         WHERE day BETWEEN toYYYYMMDD(
                 toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1

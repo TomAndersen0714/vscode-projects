@@ -56,7 +56,7 @@ FROM (
         AND tag_group_level = 1
         -- 下拉框-一级质检项分组
         AND (
-            '{{ tag_group_ids }}'=''
+            '{{ tag_group_ids }}'='all'
             OR
             tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
         )
@@ -151,7 +151,7 @@ GLOBAL CROSS JOIN (
         AND tag_group_level = 1
         -- 下拉框-一级质检项分组
         AND (
-            '{{ tag_group_ids }}'=''
+            '{{ tag_group_ids }}'='all'
             OR
             tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
         )

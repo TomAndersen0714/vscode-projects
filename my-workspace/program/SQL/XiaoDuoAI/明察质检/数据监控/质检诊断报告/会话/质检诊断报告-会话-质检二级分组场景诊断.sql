@@ -41,7 +41,7 @@ FROM (
     AND tag_group_id != ''
     -- 筛选指定一级质检项分组下的二级质检项分组
     AND (
-        '{{ tag_group_ids }}'=''
+        '{{ tag_group_ids }}'='all'
         OR
         tag_group_id GLOBAL IN (
             SELECT
