@@ -4,11 +4,11 @@ SELECT
     cur_period.qualified_snick_uv_sum AS `合格子账号总量`,
     pre_period.snick_uv_sum AS `上期质检子账号总量`,
     pre_period.qualified_snick_uv_sum AS `上期合格子账号总量`,
-    cur_period.snick_uv_sum - pre_period.snick_uv_sum AS dialog_cnt_diff,
+    cur_period.snick_uv_sum - pre_period.snick_uv_sum AS snick_uv_diff,
     cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_dialog_cnt_diff,
     CONCAT(
         toString(
-            if(dialog_cnt_diff!=0, round(pre_period.snick_uv_sum/dialog_cnt_diff*100,2), 0.00)
+            if(snick_uv_diff!=0, round(pre_period.snick_uv_sum/snick_uv_diff*100,2), 0.00)
         ),'%'
     ) AS `环比1`,
     CONCAT(
