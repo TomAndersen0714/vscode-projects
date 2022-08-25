@@ -1,4 +1,4 @@
--- 质检诊断报告-会话-场景诊断
+-- 质检诊断报告-会话-质检标准-场景诊断
 SELECT
     qc_norm_info.tag_group_name AS `质检场景`,
     tag_group_stat.subtract_score_dialog_sum AS `扣分会话数`
@@ -8,7 +8,7 @@ FROM (
         tag_group_id,
         SUM(add_score_dialog_cnt) AS add_score_dialog_sum,
         SUM(subtract_score_dialog_cnt) AS subtract_score_dialog_sum
-    FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
+    FROM xqc_dws.tag_group_stat_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台

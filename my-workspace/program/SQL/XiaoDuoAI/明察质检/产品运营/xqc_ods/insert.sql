@@ -1,4 +1,4 @@
-INSERT INTO TABLE xqc_ods.wiped_tag_all
+INSERT INTO TABLE xqc_ods.wiped_tag_new_all
 VALUES(
     '20220823',
     '612c53cb7250e1e5140faded',

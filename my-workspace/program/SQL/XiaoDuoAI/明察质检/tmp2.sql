@@ -1,307 +1,203 @@
--- 质检诊断报告-子账号-质检一级分组合格子账号统计
+-- 历史会话消息查询-数据导出-明察质检-pro
 SELECT
-    cur_period.snick_uv_sum AS `质检子账号总量`,
-    cur_period.qualified_snick_uv_sum AS `合格子账号总量`,
-    pre_period.snick_uv_sum AS `上期质检子账号总量`,
-    pre_period.qualified_snick_uv_sum AS `上期合格子账号总量`,
-    cur_period.snick_uv_sum - pre_period.snick_uv_sum AS snick_uv_diff,
-    cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_snick_cnt_diff,
-    CONCAT(
-        toString(
-            if(snick_uv_diff!=0, round(pre_period.snick_uv_sum/snick_uv_diff*100,2), 0.00)
-        ),'%'
-    ) AS `环比1`,
-    CONCAT(
-        toString(
-            if(qualified_snick_cnt_diff!=0, round(pre_period.qualified_snick_uv_sum/qualified_snick_cnt_diff*100,2), 0.00)
-        ),'%'
-    ) AS `环比2`,
-    if(cur_period.qualified_snick_uv_sum!=0, round(cur_period.qualified_snick_uv_sum/cur_period.snick_uv_sum, 4), 0.00) AS `子账号合格率`
+    day,
+    dialog_id,
+    message_id,
+    snick,
+    cnick,
+    act,
+    content,
+    create_time,
+    qid,
+    answer_explain,
+    send_from,
+    algo_emotion,
+    abnormal_model,
+    excellent_model,
+    groupArray(tag_name) AS tag_names,
+    '{{ qc_norm_ids=624e7765befbc1ec1606aa81 }}' AS qc_norm_ids,
+    '{{ qc_norm_group_ids=624e7765befbc1ec1606aa8e }}' AS qc_norm_group_ids
 FROM (
     SELECT
-        qc_norm_stat.snick_uv_sum,
-        (qc_norm_stat.snick_uv_sum - tag_group_level_1_stat.subtract_score_snick_uv_sum) AS qualified_snick_uv_sum
+        day,
+        dialog_id,
+        message_id,
+        snick,
+        cnick,
+        act,
+        content,
+        create_time,
+        qid,
+        answer_explain,
+        send_from,
+        algo_emotion,
+        abnormal_model,
+        excellent_model,
+        tag_type,
+        toString(tag_num) AS tag_id
     FROM (
-        SELECT sum(subtract_score_snick_uv_sum) AS subtract_score_snick_uv_sum
-        FROM (
-        SELECT
-            uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
-        FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}'))
-            AND toYYYYMMDD(toDate('{{ day.end }}'))
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 筛选指定企业的店铺
-        AND seller_nick IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            -- 筛选指定企业
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 筛选指定平台
-            AND platform = 'tb'
-            -- 下拉框-店铺主账号
-            AND (
-                '{{ seller_nicks }}'=' '
-                OR
-                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-            )
-        )
-        -- 下拉框-质检标准
-        AND (
-            '{{ qc_norm_ids }}'=' '
-            OR
-            qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-        )
-        -- 筛选一级质检项分组
-        AND tag_group_level = 1
-        -- 下拉框-一级质检项分组
-        AND tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
-            
-        UNION ALL
-        SELECT
-            uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}'))
-            AND toYYYYMMDD(toDate('{{ day.end }}'))
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 筛选指定企业的店铺
-        AND seller_nick IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            -- 筛选指定企业
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 筛选指定平台
-            AND platform = 'tb'
-            -- 下拉框-店铺主账号
-            AND (
-                '{{ seller_nicks }}'=' '
-                OR
-                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-            )
-        )
-        -- 筛选指定质检标准对应的子账号
-        AND (
-            '{{ qc_norm_ids }}'=' '
-            OR
-            snick GLOBAL IN (
-                -- 筛选指定子账号分组中的子账号
-                SELECT snick
-                FROM ods.xinghuan_employee_snick_all
-                WHERE day = toYYYYMMDD(yesterday())
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                AND department_id IN (
-                    -- 筛选指定质检标准对应的子账号分组
-                    SELECT department_id
-                    FROM ods.xinghuan_qc_norm_relate_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                )
-            )
-        )
-        -- 下拉框-一级质检项分组-全部
-        AND '{{ tag_group_ids }}'='all'
-        )
-    ) AS tag_group_level_1_stat
-    GLOBAL CROSS JOIN (
-        SELECT
-            uniqExact((day, snick)) AS snick_uv_sum
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}'))
-            AND toYYYYMMDD(toDate('{{ day.end }}'))
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 筛选指定企业的店铺
-        AND seller_nick IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            -- 筛选指定企业
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 筛选指定平台
-            AND platform = 'tb'
-            -- 下拉框-店铺主账号
-            AND (
-                '{{ seller_nicks }}'=' '
-                OR
-                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-            )
-        )
-        -- 筛选指定质检标准对应的子账号
-        AND (
-            '{{ qc_norm_ids }}'=' '
-            OR
-            snick GLOBAL IN (
-                -- 筛选指定子账号分组中的子账号
-                SELECT snick
-                FROM ods.xinghuan_employee_snick_all
-                WHERE day = toYYYYMMDD(yesterday())
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                AND department_id IN (
-                    -- 筛选指定质检标准对应的子账号分组
-                    SELECT department_id
-                    FROM ods.xinghuan_qc_norm_relate_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                )
-            )
-        )
-    ) AS qc_norm_stat
-) AS cur_period
-GLOBAL CROSS JOIN (
-    SELECT
-        qc_norm_stat.snick_uv_sum,
-        (qc_norm_stat.snick_uv_sum - tag_group_level_1_stat.subtract_score_snick_uv_sum) AS qualified_snick_uv_sum
-    FROM (
-        SELECT sum(subtract_score_snick_uv_sum) AS subtract_score_snick_uv_sum
-        FROM (
-        SELECT
-            uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
-        FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
-        WHERE day BETWEEN toYYYYMMDD(
-                toDate('{{ day.start }}') - (toDate('{{ day.end }}') - toDate('{{ day.start }}')) - 1
-            )
-            AND toYYYYMMDD(
-                toDate('{{ day.start }}') - 1
-            )
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 筛选指定企业的店铺
-        AND seller_nick IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            -- 筛选指定企业
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 筛选指定平台
-            AND platform = 'tb'
-            -- 下拉框-店铺主账号
-            AND (
-                '{{ seller_nicks }}'=' '
-                OR
-                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-            )
-        )
-        -- 下拉框-质检标准
-        AND (
-            '{{ qc_norm_ids }}'=' '
-            OR
-            qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-        )
-        -- 筛选一级质检项分组
-        AND tag_group_level = 1
-        -- 下拉框-一级质检项分组
-        AND tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
+        WITH (
+            -- 筛选满足条件的dialog_id
+            SELECT groupUniqArray(dialog_id) AS dialog_id_list
+            FROM (
+                SELECT
+                    _id AS dialog_id,
+                    -- 质检项ID
+                    arrayConcat(
+                        -- AI质检-非情绪扣分项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            abnormals_rule_id,
+                            abnormals_count
+                        ),
+                        -- AI质检-非情绪加分项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            excellents_rule_id,
+                            excellents_count
+                        ),
+                        -- AI质检-买家情绪项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            c_emotion_rule_id,
+                            c_emotion_count
+                        ),
+                        -- AI质检-客服情绪项
+                        arrayFilter(
+                            (x, y) -> y>0,
+                            s_emotion_rule_id,
+                            s_emotion_count
+                        ),
 
-        UNION ALL
+                        -- 自定义质检-消息质检项
+                        xrule_stats_id,
+                        -- -- 自定义质检-会话质检项
+                        -- top_xrules_id,
+
+                        -- 人工质检-扣分标签ID
+                        tag_score_stats_id,
+                        -- 人工质检-加分标签ID
+                        tag_score_add_stats_id
+                    ) AS tag_ids
+                FROM dwd.xdqc_dialog_all
+                WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}'))
+                    AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
+                -- 下拉框-平台
+                AND platform = 'tb'
+                -- 下拉框-店铺主账号
+                AND seller_nick = '{{ seller_nick=方太官方旗舰店 }}'
+                -- 过滤空数据
+                AND tag_ids!=[]
+                -- 下拉框-质检项
+                AND hasAny(tag_ids, splitByChar(',','{{ tag_ids=624e7765befbc1ec1606aa96 }}'))
+                -- 下拉框-限制会话数量
+                LIMIT {{ dialog_limit_num=1 }}
+            ) AS dialog_tag_info
+        ) AS dialog_id_list
+        -- AI质检-旧版本AI质检项
         SELECT
-            uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
-        WHERE day BETWEEN toYYYYMMDD(
-                toDate('{{ day.start }}') - (toDate('{{ day.end }}') - toDate('{{ day.start }}')) - 1
-            )
-            AND toYYYYMMDD(
-                toDate('{{ day.start }}') - 1
-            )
-        -- 筛选指定平台
+            day,
+            dialog_id,
+            _id AS message_id,
+            snick,
+            cnick,
+            if(source=1, 'send_msg', 'recv_msg') AS act,
+            content,
+            toString(toDateTime64(create_time, 0, 'UTC') + 8*3600) AS create_time,
+            qid,
+            answer_explain,
+            send_from,
+            algo_emotion,
+            abnormal_model,
+            excellent_model,
+
+            -- 质检项类型
+            arrayConcat(
+                -- AI质检项类型
+                arrayResize(['ai_abnormal'], length(abnormal), 'ai_abnormal'),
+                arrayResize(['ai_excellent'], length(excellent), 'ai_excellent'),
+                [if(source=1, 'ai_s_emotion', 'ai_c_emotion')],
+
+                -- 自定义质检项
+                arrayResize(['not_ai'], length(rule_stats.id), 'not_ai'),
+                arrayResize(['not_ai'], length(rule_add_stats.id), 'not_ai'),
+
+                -- 人工质检项
+                arrayResize(['not_ai'], length(tags.tag_id), 'not_ai')
+
+            ) AS tag_types,
+
+            -- 质检项ID
+            arrayConcat(
+                -- AI质检-
+                arrayMap(x->toString(x), abnormal),
+                arrayMap(x->toString(x), excellent),
+                [toString(emotion)],
+
+                -- 自定义质检
+                rule_stats.id,
+                rule_add_stats.id,
+
+                -- 人工质检
+                tags.tag_id
+            ) AS tag_nums
+        FROM xqc_ods.message_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=31-day-ago }}')) 
+            AND toYYYYMMDD(toDate('{{ day.end=31-day-ago }}'))
         AND platform = 'tb'
-        -- 筛选指定企业的店铺
-        AND seller_nick IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            -- 筛选指定企业
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 筛选指定平台
-            AND platform = 'tb'
-            -- 下拉框-店铺主账号
-            AND (
-                '{{ seller_nicks }}'=' '
-                OR
-                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-            )
-        )
-        -- 筛选指定质检标准对应的子账号
-        AND (
-            '{{ qc_norm_ids }}'=' '
-            OR
-            snick GLOBAL IN (
-                -- 筛选指定子账号分组中的子账号
-                SELECT snick
-                FROM ods.xinghuan_employee_snick_all
-                WHERE day = toYYYYMMDD(yesterday())
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                AND department_id IN (
-                    -- 筛选指定质检标准对应的子账号分组
-                    SELECT department_id
-                    FROM ods.xinghuan_qc_norm_relate_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                )
-            )
-        )
-        -- 下拉框-一级质检项分组-全部
-        AND '{{ tag_group_ids }}'='all'
-        )
-    ) AS tag_group_level_1_stat
-    GLOBAL CROSS JOIN (
-        SELECT
-            uniqExact((day, snick)) AS snick_uv_sum
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
-        WHERE day BETWEEN toYYYYMMDD(
-                toDate('{{ day.start }}') - (toDate('{{ day.end }}') - toDate('{{ day.start }}')) - 1
-            )
-            AND toYYYYMMDD(
-                toDate('{{ day.start }}') - 1
-            )
-        -- 筛选指定平台
-        AND platform = 'tb'
-        -- 筛选指定企业的店铺
-        AND seller_nick IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            -- 筛选指定企业
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            -- 筛选指定平台
-            AND platform = 'tb'
-            -- 下拉框-店铺主账号
-            AND (
-                '{{ seller_nicks }}'=' '
-                OR
-                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
-            )
-        )
-        -- 筛选指定质检标准对应的子账号
-        AND (
-            '{{ qc_norm_ids }}'=' '
-            OR
-            snick GLOBAL IN (
-                -- 筛选指定子账号分组中的子账号
-                SELECT snick
-                FROM ods.xinghuan_employee_snick_all
-                WHERE day = toYYYYMMDD(yesterday())
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                AND department_id IN (
-                    -- 筛选指定质检标准对应的子账号分组
-                    SELECT department_id
-                    FROM ods.xinghuan_qc_norm_relate_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                )
-            )
-        )
-    ) AS qc_norm_stat
-) AS pre_period
+        -- 下拉框-店铺名
+        AND seller_nick = '{{ seller_nick=方太官方旗舰店 }}'
+        -- 过滤指定会话
+        AND has(dialog_id_list, dialog_id)
+
+    ) AS msg_ai_tags
+    ARRAY JOIN
+        tag_types AS tag_type,
+        tag_nums AS tag_num
+) AS msg_ai_tag
+GLOBAL LEFT JOIN (
+    -- AI质检项标签信息
+    SELECT
+        qc_rule_type AS tag_type,
+        qc_rule_id AS tag_id,
+        qc_rule_name AS tag_name
+    FROM xqc_dim.qc_rule_constant_all
+    WHERE day = toYYYYMMDD(yesterday())
+    
+    UNION ALL
+    SELECT
+        'ai_s_emotion' AS tag_type,
+        '0' AS tag_id,
+        '中性' AS tag_name
+    
+    -- 非AI质检项标签信息-人工质检标签+自定义质检标签
+    UNION ALL
+    SELECT
+        'not_ai' AS tag_type,
+        _id AS tag_id,
+        name AS tag_name
+    FROM xqc_dim.qc_rule_all
+    WHERE day = toYYYYMMDD(yesterday())
+    -- 筛选非AI质检项
+    AND rule_category != 1
+    -- 下拉框-质检项
+    AND _id IN splitByChar(',','{{ tag_ids=624e7765befbc1ec1606aa96 }}')
+
+) AS dim_tags
+USING(tag_type, tag_id)
+GROUP BY
+    day,
+    dialog_id,
+    message_id,
+    snick,
+    cnick,
+    act,
+    content,
+    create_time,
+    qid,
+    answer_explain,
+    send_from,
+    algo_emotion,
+    abnormal_model,
+    excellent_model
+ORDER BY day, dialog_id, create_time

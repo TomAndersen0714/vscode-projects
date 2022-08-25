@@ -5,15 +5,15 @@ SELECT
     pre_period.snick_uv_sum AS `上期质检子账号总量`,
     pre_period.qualified_snick_uv_sum AS `上期合格子账号总量`,
     cur_period.snick_uv_sum - pre_period.snick_uv_sum AS snick_uv_diff,
-    cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_dialog_cnt_diff,
+    cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_snick_uv_diff,
     CONCAT(
         toString(
-            if(snick_uv_diff!=0, round(pre_period.snick_uv_sum/snick_uv_diff*100,2), 0.00)
+            if(snick_uv_diff!=0, round(snick_uv_diff / pre_period.snick_uv_sum*100,2), 0.00)
         ),'%'
     ) AS `环比1`,
     CONCAT(
         toString(
-            if(qualified_dialog_cnt_diff!=0, round(pre_period.qualified_snick_uv_sum/qualified_dialog_cnt_diff*100,2), 0.00)
+            if(qualified_snick_uv_diff!=0, round(qualified_snick_uv_diff / pre_period.qualified_snick_uv_sum*100,2), 0.00)
         ),'%'
     ) AS `环比2`,
     if(cur_period.qualified_snick_uv_sum!=0, round(cur_period.qualified_snick_uv_sum/cur_period.snick_uv_sum, 4), 0.00) AS `子账号合格率`
@@ -26,7 +26,7 @@ FROM (
             day,
             uniqExact(snick) AS snick_uv,
             uniqExactIf(snick, subtract_score_dialog_cnt=0) AS qualified_snick_uv
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+        FROM xqc_dws.snick_stat_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         -- 筛选指定平台
@@ -80,7 +80,7 @@ GLOBAL CROSS JOIN (
             day,
             uniqExact(snick) AS snick_uv,
             uniqExactIf(snick, subtract_score_dialog_cnt=0) AS qualified_snick_uv
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+        FROM xqc_dws.snick_stat_all
         WHERE day BETWEEN toYYYYMMDD(
                 toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
             )

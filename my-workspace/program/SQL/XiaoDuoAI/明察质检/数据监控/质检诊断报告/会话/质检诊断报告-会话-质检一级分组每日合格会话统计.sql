@@ -12,7 +12,7 @@ FROM (
         SUM(subtract_score_dialog_cnt) AS subtract_score_dialog_sum
     FROM (
         SELECT day, subtract_score_dialog_cnt
-        FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
+        FROM xqc_dws.tag_group_stat_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         -- 筛选指定平台
@@ -47,7 +47,7 @@ FROM (
 
         UNION ALL
         SELECT day, subtract_score_dialog_cnt
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+        FROM xqc_dws.snick_stat_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         -- 筛选指定平台
@@ -98,7 +98,7 @@ GLOBAL FULL OUTER JOIN (
     SELECT
         day,
         SUM(dialog_cnt) AS dialog_sum
-    FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+    FROM xqc_dws.snick_stat_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台

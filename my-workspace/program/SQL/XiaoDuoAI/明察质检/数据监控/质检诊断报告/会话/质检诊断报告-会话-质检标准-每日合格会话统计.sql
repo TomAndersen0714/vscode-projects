@@ -1,4 +1,4 @@
--- 质检诊断报告-会话-每日合格会话统计
+-- 质检诊断报告-会话-质检标准-每日合格会话统计
 SELECT
     day,
     SUM(dialog_cnt) AS dialog_sum,
@@ -6,7 +6,7 @@ SELECT
     dialog_sum AS `质检会话总量`,
     qualified_dialog_sum AS `合格会话总量`,
     if(qualified_dialog_sum!=0, round(qualified_dialog_sum/dialog_sum*100, 4), 0.00) AS `会话合格率`
-FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+FROM xqc_dws.snick_stat_all
 WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
     AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
 -- 筛选指定平台

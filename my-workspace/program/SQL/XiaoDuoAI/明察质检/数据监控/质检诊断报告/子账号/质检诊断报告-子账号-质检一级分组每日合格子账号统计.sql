@@ -12,7 +12,7 @@ FROM (
         uniqExactIf(snick, subtract_score_dialog_cnt>0) AS subtract_score_snick_uv
     FROM (
         SELECT day, snick, subtract_score_dialog_cnt
-        FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
+        FROM xqc_dws.tag_group_stat_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         -- 筛选指定平台
@@ -47,7 +47,7 @@ FROM (
 
         UNION ALL
         SELECT day, snick, subtract_score_dialog_cnt
-        FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+        FROM xqc_dws.snick_stat_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
         -- 筛选指定平台
@@ -98,7 +98,7 @@ GLOBAL FULL OUTER JOIN (
     SELECT
         day,
         uniqExact(snick) AS snick_uv
-    FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+    FROM xqc_dws.snick_stat_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台

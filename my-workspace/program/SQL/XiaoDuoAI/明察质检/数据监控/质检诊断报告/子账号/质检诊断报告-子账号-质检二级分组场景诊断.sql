@@ -8,7 +8,7 @@ FROM (
         tag_group_id,
         uniqExactIf((day, snick), add_score_dialog_cnt>0) AS add_score_snick_uv_sum,
         uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
-    FROM remote('10.22.134.218:19000', xqc_dws.tag_group_stat_all)
+    FROM xqc_dws.tag_group_stat_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台

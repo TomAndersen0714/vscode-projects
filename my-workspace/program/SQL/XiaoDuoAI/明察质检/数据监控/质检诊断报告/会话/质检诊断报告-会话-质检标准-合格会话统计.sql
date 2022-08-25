@@ -1,4 +1,4 @@
--- 质检诊断报告-会话-合格会话统计
+-- 质检诊断报告-会话-质检标准-合格会话统计
 SELECT
     cur_period.dialog_sum AS `质检会话总量`,
     cur_period.qualified_dialog_sum AS `合格会话总量`,
@@ -8,12 +8,12 @@ SELECT
     cur_period.qualified_dialog_sum - pre_period.qualified_dialog_sum AS qualified_dialog_cnt_diff,
     CONCAT(
         toString(
-            if(dialog_cnt_diff!=0, round(pre_period.dialog_sum/dialog_cnt_diff*100,2), 0.00)
+            if(dialog_cnt_diff!=0, round(dialog_cnt_diff/pre_period.dialog_sum*100,2), 0.00)
         ),'%'
     ) AS `环比1`,
     CONCAT(
         toString(
-            if(qualified_dialog_cnt_diff!=0, round(pre_period.qualified_dialog_sum/qualified_dialog_cnt_diff*100,2), 0.00)
+            if(qualified_dialog_cnt_diff!=0, round(qualified_dialog_cnt_diff/pre_period.qualified_dialog_sum*100,2), 0.00)
         ),'%'
     ) AS `环比2`,
     if(cur_period.qualified_dialog_sum!=0, round(cur_period.qualified_dialog_sum/cur_period.dialog_sum, 4), 0.00) AS `会话合格率`
@@ -21,7 +21,7 @@ FROM (
     SELECT
         SUM(dialog_cnt) AS dialog_sum,
         SUM(dialog_cnt - subtract_score_dialog_cnt) AS qualified_dialog_sum
-    FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+    FROM xqc_dws.snick_stat_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台
@@ -68,7 +68,7 @@ GLOBAL CROSS JOIN (
     SELECT
         SUM(dialog_cnt) AS dialog_sum,
         SUM(dialog_cnt - subtract_score_dialog_cnt) AS qualified_dialog_sum
-    FROM remote('10.22.134.218:19000', xqc_dws.snick_stat_all)
+    FROM xqc_dws.snick_stat_all
     WHERE day BETWEEN toYYYYMMDD(
             toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
         )
