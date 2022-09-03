@@ -10,7 +10,7 @@ SELECT
     snick AS `客服子账号`,
     department_name AS `子账号分组`,
 
-    real_buyer_nick AS `顾客名称`,
+    cnick AS `顾客名称`,
     if(is_invited, send_time, '-') AS `邀评时间`,
     if(latest_eval_time != '', latest_eval_time, '-') AS `最新评价时间`,
     CASE
@@ -47,7 +47,7 @@ FROM (
         day,
         seller_nick,
         snick,
-        real_buyer_nick,
+        cnick,
         dialog_id,
         source,
         send_time,
@@ -63,7 +63,7 @@ FROM (
         SELECT
             seller_nick,
             snick,
-            real_buyer_nick,
+            cnick,
             dialog_id,
             eval_code,
             eval_time,
@@ -122,7 +122,7 @@ FROM (
             )
         )
     ) AS ods_dialog_eval
-    GROUP BY day, seller_nick, snick, real_buyer_nick, dialog_id, source, send_time, is_invited
+    GROUP BY day, seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
     -- 单选-评价类型
     HAVING (
         ('{{ type=全部 }}'='全部')

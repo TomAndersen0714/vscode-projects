@@ -1,8 +1,13 @@
-[{
-  "$match": {
-    "create_time": {
-      "$gte": begin_utc_datetime,
-      "$lt": end_utc_datetime
-    }
-  }
-}]
+{
+  _id: ObjectId("62bfe3d735da128cda19f25d"),
+  create_time: ISODate("2022-07-02T06:21:11.378Z"),
+  update_time: ISODate("2022-07-02T06:21:11.378Z"),
+  company_id: ObjectId("6273ad06d54236d7388cd070"),
+  platform: 'tb',
+  qc_norm_id: ObjectId("6273bb7bd54236d7388cfabb"),
+  word: '发票',
+  check_custom: true,
+  check_service: true,
+  group_id: ObjectId("62baa2a1b1557bd62683ff76"),
+  check_labor_only: false,
+}

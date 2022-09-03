@@ -1,8 +1,29 @@
-[{
-  "$match": {
-    "created_time": {
-      "$gte": "{{ ds }}",
-      "$lt": "{{ tomorrow_ds }}"
-    }
-  }
-}]
+{
+  "_id" : ObjectId("62a878e26741dc36322ba1c1"),
+  "operator" : {
+    "_id" : ObjectId("5f73e9c1684bf7000141363d"),
+    "name" : "测试",
+    "platform" : "jd",
+    "company_id" : ObjectId("5f73e9c1684bf70001413636")
+  },
+  "action" : {
+    "verb" : 2,
+    "noun" : "qc_rule",
+    "object" : {
+      "id" : "61b6f554130c40817c387b34",
+      "name" : "错别字7",
+      "from" : {
+        "qc_norm_name" : "淘系规则",
+        "qc_norm_id" : ObjectId("61b6f554130c40817c387ae2")
+      },
+      "condition" : BinData(0,"FgAAAAdfaWQAYbb1VBMMQIF8OHs0AA=="),
+      "operation" : BinData(0,"rQAAAAMkc2V0AKIAAAAIY2hlY2sAARBhbGVydF9sZXZlbAAAAAAAEG5vdGlmeV93YXkAAgAAABBub3RpZnlfdGFyZ2V0AAEAAAABdGhyZXNob2xkAAAAAAAAAAAAEGNoZWNrX3RhcmdldAABAAAAEHNjb3JlAPb///8JdXBkYXRlX3RpbWUAjjQYYoEBAAAHdXBkYXRlX2FjY291bnQAX3PpwWhL9wABQTY+AAA="),
+      "raw_data" : BinData(0,"eyJpZCI6IjYxYjZmNTU0MTMwYzQwODE3YzM4N2IzNCIsImNyZWF0ZV90aW1lIjoiMjAyMi0wMy0zMVQxOToyMTo0MC45M1oiLCJ1cGRhdGVfdGltZSI6IjIwMjItMDMtMzFUMTk6MjE6NDAuOTNaIiwiY29tcGFueV9pZCI6IjVmNzNlOWMxNjg0YmY3MDAwMTQxMzYzNiIsInBsYXRmb3JtIjoiamQiLCJxY19ub3JtX2lkIjoiNjFiNmY1NTQxMzBjNDA4MTdjMzg3YWUyIiwicWNfbm9ybV9ncm91cF9pZCI6IjYxYjZmNTU0MTMwYzQwODE3YzM4N2IzMyIsInRlbXBsYXRlX2lkIjoiNjI0NWZmODMyZTYxZWVmN2Y5NWI0YzNhIiwibmFtZSI6IumUmeWIq+WtlzciLCJzZWxsZXJfbmljayI6IiIsInJ1bGVfY2F0ZWdvcnkiOjIsInJ1bGVfdHlwZSI6MCwic2V0dGluZ3MiOm51bGwsImNoZWNrIjpmYWxzZSwiY2hlY2tfdGFyZ2V0IjoxLCJhbGVydF9sZXZlbCI6MCwibm90aWZ5X3dheSI6Miwibm90aWZ5X3RhcmdldCI6MSwic2NvcmUiOi0xMCwidGhyZXNob2xkIjowLCJzcGVjaWFsX3NldHRpbmdzIjpudWxsLCJTdGF0dXMiOjF9"),
+      "diff_data" : BinData(0,"eyJjaGVjayI6dHJ1ZSwidXBkYXRlX3RpbWUiOiIyMDIyLTA2LTE0VDEyOjAyOjQyLjQ0NloifQ=="),
+      "ext" : null
+    },
+    "field" : "qc_norm/qc_rule"
+  },
+  "create_time" : NumberLong(1655208162),
+  "cause" : null
+}

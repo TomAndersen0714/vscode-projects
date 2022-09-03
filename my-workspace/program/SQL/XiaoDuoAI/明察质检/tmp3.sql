@@ -1,49 +1,57 @@
-  {
-    _id: ObjectId("63047d76167101c0ef9e8ffc"),
-    wipe_content: '快捷短语重复',
-    wipe_type: 2,
-    wipe_index: 7,
-    wiper_id: ObjectId("612c53cb7250e1e5140fadf7"),
-    wiper_name: '新测试',
-    company_id: ObjectId("612c53cb7250e1e5140faded"),
-    employee_superior_id: ObjectId("000000000000000000000000"),
-    employee_superior_name: '',
-    employee_department_path: '',
-    platform: '淘宝',
-    dialog_id: ObjectId("630478fe9c7d63000113f2b9"),
-    cnick: 'tb423265458940',
-    snick: '邓锐zero:dr',
-    seller_nick: '邓锐zero',
-    messages: [
-      { source: 1, content: '很了解', timestamp: Long("1661237501") },
-      { source: 0, content: '都不睡觉', timestamp: Long("1661237546") },
-      {
-        source: 1,
-        content: 'test-mini-cond(小程序线下） 亮黄的回复???',
-        timestamp: Long("1661237669")
-      },
-      {
-        source: 1,
-        content: 'test-mini-cond(小程序线下） 亮黄的回复???',
-        timestamp: Long("1661237673")
-      },
-      { source: 0, content: '你好', timestamp: Long("1661237741") },
-      {
-        source: 1,
-        content: 'test-min-cond 一点也不好??',
-        timestamp: Long("1661237743")
-      },
-      { source: 0, content: '你好', timestamp: Long("1661237748") },
-      {
-        source: 1,
-        content: 'test-min-cond 一点也不好??',
-        timestamp: Long("1661237750")
-      }
-    ],
-    wipe_message_content: 'test-min-cond 一点也不好??',
-    wipe_message_source: 1,
-    wipe_message_timestamp: Long("1661237750"),
-    create_time: ISODate("2022-08-23T07:10:46.831Z"),
-    begin_timestamp: Long("1661237501"),
-    end_timestamp: Long("1661237750")
-  }
+from datetime import datetime
+
+TIME_FM = '%Y-%m-%d %H:%M:%S.%f'
+TIME_FM_NO_DOT = '%Y-%m-%d %H:%M:%S'
+
+
+# 时间格式化函数，去掉+8和T，考虑到+8
+# 格式化分为带小数点和不带的
+def time_format(time_str):
+    standard_time_str = time_str.replace("T", " ").replace("+08:00", "")
+    if '.' in standard_time_str:
+        standard_time_str = standard_time_str[:26] if len(standard_time_str) > 26 else standard_time_str
+        dt = datetime.strptime(standard_time_str, TIME_FM)
+    else:
+        dt = datetime.strptime(standard_time_str, TIME_FM_NO_DOT)
+    return dt.strftime(TIME_FM)
+
+
+def parse(dic, logger):
+    # "2020-10-22T21:21:55.233825142+08:00"
+    if dic.get("status", "") in ("TradeChanged", "TradeMemoModified", "TradeModifyAddress", "TradeModifyFee"):
+        return []
+    try:
+        trade_dict = dic.get('trade', {})
+        modified = trade_dict.get("modified", '1970-01-01 00:00:00.000')
+        modified = time_format(modified)
+        # if "+08:00" not in modified and len(modified) >= 19:
+        #     modified = modified[0:19] + ".000000000+08:00"
+    except Exception as e:
+        logger.info(str(e))
+        logger.info("error data " + str(dic))
+        return []
+    if not trade_dict:
+        return []
+    inner_status = str(trade_dict.get('status', ''))
+    if dic.get("status", "") == "shipped":
+        inner_status = 'WAIT_BUYER_CONFIRM_GOODS'
+    if dic.get("status", "") == "part_shipped":
+        inner_status = 'part_shipped'
+    res_dic = dict(
+        buyer_nick=str(trade_dict.get('buyer_nick', '')),
+        #新增脱敏字段real_buyer_nick 2022-08-04
+        # by:yangboxiao@xiaoduotech.com
+        real_buyer_nick=dic.get("real_buyer_nick", ""),
+        iid=str(trade_dict.get('iid', '')),
+        modified=modified,
+        oid=str(trade_dict.get('oid', '')),
+        pay_ment=int(float(trade_dict.get('payment', 0)) * 100),
+        post_fee=str(trade_dict.get('post_fee', '')),
+        seller_nick=str(trade_dict.get('seller_nick', '')),
+        status=inner_status,
+        store_code=str(trade_dict.get('store_code', '')),
+        tid=str(trade_dict.get('tid', '')),
+        type=str(trade_dict.get('type', '')),
+        day=int(modified[0:10].replace("-", "")),
+    )
+    return [res_dic]
