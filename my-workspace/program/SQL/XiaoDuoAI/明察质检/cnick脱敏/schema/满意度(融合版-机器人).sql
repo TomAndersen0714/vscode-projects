@@ -3,6 +3,8 @@ CREATE TABLE ods.kefu_eval_detail_local ON CLUSTER cluster_3s_2r
     `user_nick` String,
     `eval_code` Int32,
     `eval_recer` String,
+    `real_buyer_nick` String,
+    `open_uid` String,
     `eval_sender` String,
     `eval_time` String,
     `send_time` String,
