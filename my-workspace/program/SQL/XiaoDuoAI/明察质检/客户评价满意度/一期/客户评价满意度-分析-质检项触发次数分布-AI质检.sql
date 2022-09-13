@@ -12,6 +12,7 @@ FROM (
         SUM(tag_cnt) AS tag_cnt_sum
     FROM (
         SELECT
+            toYYYYMMDD(begin_time) AS day,
             platform,
             seller_nick,
             snick,
@@ -56,7 +57,7 @@ FROM (
                 employee_id IN splitByChar(',','{{ employee_ids }}')
             )
         )
-        AND (toYYYYMMDD(begin_time), snick, cnick) GLOBAL IN (
+        AND (day, snick, cnick) GLOBAL IN (
             -- 查询已有评价的子账号
             SELECT DISTINCT
                 toUInt32(day), snick, cnick

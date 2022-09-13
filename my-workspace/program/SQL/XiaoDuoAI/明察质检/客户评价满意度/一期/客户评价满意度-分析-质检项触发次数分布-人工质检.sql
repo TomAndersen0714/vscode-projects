@@ -80,13 +80,13 @@ FROM (
                     toUInt32(day), snick, cnick
                 FROM (
                     SELECT
-                        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
-                        replaceOne(user_nick, 'cntaobao', '') AS snick,
+                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                        replaceOne(eval_sender,'cntaobao','') AS snick,
                         replaceOne(eval_recer,'cntaobao','') AS cnick,
                         eval_code,
                         day
                     FROM ods.kefu_eval_detail_all
-                    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+                    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                     -- 过滤买家已评价记录
                     AND eval_time != ''
                     -- 下拉框-评价等级
@@ -223,13 +223,13 @@ FROM (
                     toUInt32(day), snick, cnick
                 FROM (
                     SELECT
-                        replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
-                        replaceOne(user_nick, 'cntaobao', '') AS snick,
+                        replaceOne(splitByChar(':',user_nick)[1],'cntaobao','') AS seller_nick,
+                        replaceOne(eval_sender,'cntaobao','') AS snick,
                         replaceOne(eval_recer,'cntaobao','') AS cnick,
                         eval_code,
                         day
                     FROM ods.kefu_eval_detail_all
-                    WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+                    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
                     -- 过滤买家已评价记录
                     AND eval_time != ''
                     -- 下拉框-评价等级
