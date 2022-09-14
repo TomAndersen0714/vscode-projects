@@ -1,8 +1,8 @@
 -- 客户评价满意度-分析-客服满意率分布
 SELECT
-    CONCAT('{{ day.start=week_ago }}',' - ','{{ day.end=yesterday }}') AS `时间`,
+    CONCAT('{{ day.start=yesterday }}',' - ','{{ day.end=yesterday }}') AS `时间`,
     platform AS `平台`,
-    seller_nick AS `店铺`,
+    seller_nick AS `主账号`,
     snick AS `子账号`,
     employee_name AS `客服`,
     dialog_cnt AS `总会话量`,
@@ -39,18 +39,28 @@ FROM (
             snick,
             COUNT(1) AS dialog_cnt
         FROM dwd.xdqc_dialog_all
-        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND channel = 'tb' AND platform = 'tb'
+        WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=yesterday }}'))
+            AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND platform = 'tb'
+        -- 筛选指定店铺
         AND seller_nick GLOBAL IN (
-            SELECT DISTINCT seller_nick
+            SELECT DISTINCT
+                seller_nick
             FROM xqc_dim.xqc_shop_all
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 下拉框-主账号
+            AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',','{{ seller_nicks }}')
+            )
         )
+        -- 筛选指定子账号
         AND snick GLOBAL IN (
             -- 获取最新版本的维度数据(T+1)
-            SELECT distinct snick
+            SELECT DISTINCT snick
             FROM ods.xinghuan_employee_snick_all
             WHERE day = toYYYYMMDD(yesterday())
             AND platform = 'tb'
@@ -61,12 +71,6 @@ FROM (
                 OR
                 department_id IN splitByChar(',','{{ department_ids }}')
             )
-        )
-        -- 下拉框-店铺名
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',','{{ seller_nicks }}')
         )
         GROUP BY platform, seller_nick, snick
     ) AS snick_dialog_stat_info
@@ -86,44 +90,36 @@ FROM (
             if(eval_sum!=0, round((eval_code_0_cnt + eval_code_1_cnt)/eval_sum*100,2), 0.00) AS satisfy_pct
         FROM (
             SELECT
-                replaceOne(splitByChar(':', user_nick)[1], 'cntaobao', '') AS seller_nick,
-                replaceOne(user_nick, 'cntaobao', '') AS snick,
+                seller_nick,
+                snick,
                 eval_code,
                 source
-            FROM ods.kefu_eval_detail_all
-            WHERE day BETWEEN toYYYYMMDD(toDate('{{day.start=week_ago}}')) AND toYYYYMMDD(toDate('{{day.end=yesterday}}'))
+            FROM xqc_ods.dialog_eval_all
+            WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=yesterday }}'))
+                AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
             -- 过滤买家已评价记录
             AND eval_time != ''
-            -- 下拉框-店铺
+            -- 下拉框-主账号
             AND (
                 '{{ seller_nicks }}'=''
                 OR
                 seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
             )
+            -- 筛选指定子账号
             AND snick IN (
                 -- 当前企业对应的子账号
-                SELECT DISTINCT snick
-                FROM (
-                    SELECT distinct snick, username
-                    FROM ods.xinghuan_employee_snick_all AS snick_info
-                    GLOBAL LEFT JOIN (
-                        SELECT distinct
-                            _id AS employee_id, username
-                        FROM ods.xinghuan_employee_all
-                        WHERE day = toYYYYMMDD(yesterday())
-                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                    ) AS employee_info
-                    USING(employee_id)
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND platform = 'tb'
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                    -- 下拉框-子账号分组id
-                    AND (
-                        '{{ department_ids }}'=''
-                        OR
-                        department_id IN splitByChar(',','{{ department_ids }}')
-                    )
-                ) AS snick_employee_info
+                SELECT DISTINCT
+                    snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND platform = 'tb'
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 下拉框-子账号分组id
+                AND (
+                    '{{ department_ids }}'=''
+                    OR
+                    department_id IN splitByChar(',','{{ department_ids }}')
+                )
             )
         ) AS satisfy_info
         GROUP BY seller_nick, snick
@@ -131,23 +127,19 @@ FROM (
     USING(seller_nick, snick)
 ) AS snick_stat_info
 GLOBAL LEFT JOIN (
-    SELECT snick, employee_name
-    FROM (
-        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-        SELECT snick, employee_id
-        FROM ods.xinghuan_employee_snick_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND platform = 'tb'
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS snick_info
-    GLOBAL LEFT JOIN (
-        SELECT
-            _id AS employee_id, username AS employee_name
-        FROM ods.xinghuan_employee_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS employee_info
-    USING(employee_id)
+    -- 查询子账号信息
+    SELECT DISTINCT
+        snick, employee_name
+    FROM xqc_dim.snick_full_info_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND platform = 'tb'
+    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    -- 下拉框-子账号分组id
+    AND (
+        '{{ department_ids }}'=''
+        OR
+        department_id IN splitByChar(',','{{ department_ids }}')
+    )
 ) AS employee_info
 USING(snick)
 ORDER BY satisfy_pct

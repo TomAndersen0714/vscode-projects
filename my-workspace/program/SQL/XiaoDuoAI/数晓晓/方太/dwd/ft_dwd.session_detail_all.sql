@@ -48,7 +48,7 @@ ENGINE = Buffer('ft_dwd', 'session_detail_all', 16, 15, 35, 81920, 409600, 16777
 INSERT INTO buffer.ft_dwd_session_detail_buffer
 SELECT
     day, platform, shop_id,
-    lower(hex(MD5(concat(cnick, snick, real_buyer_nick, toString(min(msg_time)))))) AS session_id,
+    session_id,
     snick, cnick, real_buyer_nick,
     groupUniqArrayIf(plat_goods_id, plat_goods_id!='') AS focus_goods_ids,
     toString(min(msg_time)) AS session_start_time,
@@ -64,4 +64,4 @@ SELECT
     '' AS transfer_to_snick
 FROM ft_dwd.session_msg_detail_all
 WHERE day BETWEEN 20220801 AND 20220910
-GROUP BY day, platform, shop_id, snick, cnick, real_buyer_nick
+GROUP BY day, platform, shop_id, snick, cnick, real_buyer_nick, session_id
