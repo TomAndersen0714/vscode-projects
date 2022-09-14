@@ -141,7 +141,10 @@ GLOBAL LEFT JOIN (
         dialog_id,
         groupArray(tag_name) AS dialog_tag_names
     FROM (
-        SELECT *,tag_id FROM (
+        SELECT
+            *,
+            tag_id
+        FROM (
             SELECT
                 _id AS dialog_id,
                 -- 会话级别质检项

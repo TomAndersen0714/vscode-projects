@@ -1,6 +1,7 @@
 -- 新实时告警-店铺告警-告警详情列表
 SELECT
     seller_nick AS `店铺`, -- 店铺
+    department_name AS `子账号分组`,
     superior_name AS `客服负责人`, -- 负责人
     employee_name AS `客服`, -- 客服
     snick AS `子账号`, -- 子账号
@@ -24,36 +25,82 @@ SELECT
     message_id, -- 消息ID(反查)
     id AS alert_id, -- 告警ID(反查)
     platform,day,shop_id
-FROM xqc_ods.alert_all FINAL
+FROM (
+    SELECT *
+    FROM xqc_ods.alert_all FINAL
+        -- 已订阅店铺
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
+        AND toYYYYMMDD(toDate('{{ day.end=today }}'))
+    -- 过滤旧版标准
+    AND level IN [1,2,3]
     -- 已订阅店铺
-WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
-    AND toYYYYMMDD(toDate('{{ day.end=today }}'))
--- 过滤旧版标准
-AND level IN [1,2,3]
-AND shop_id GLOBAL IN (
-    SELECT tenant_id AS shop_id
-    FROM xqc_dim.company_tenant
-    WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
-    AND platform = '{{ platform=tb }}'
-)
+    AND shop_id GLOBAL IN (
+        SELECT tenant_id AS shop_id
+        FROM xqc_dim.company_tenant
+        WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        AND platform = '{{ platform=tb }}'
+    )
     -- 权限隔离
-AND (
-        shop_id IN splitByChar(',','{{ shop_id_list=5f73e9c1684bf70001413636 }}')
+    AND (
+        shop_id IN splitByChar(',','{{ shop_id_list=5f747ba42c90fd0001254404 }}')
         OR
         snick IN splitByChar(',','{{ snick_list=null }}')
     )
-    -- 下拉框筛选
-AND platform = '{{ platform=tb }}'
-AND seller_nick='{{ shop_name=杜可风按 }}'
-AND if({{ level=-1 }}!=-1,level = {{ level=-1 }}, level >=1)
-AND if('{{ warning_type=全部 }}'!='全部',warning_type = '{{ warning_type=全部 }}', warning_type !='')
-AND if('{{ is_finished=全部 }}'!='全部',is_finished = '{{ is_finished=全部 }}', is_finished!='')
-    -- 文本框内容筛选
-AND (
-    superior_name LIKE '%{{ search_string }}%'
-    OR
-    snick LIKE '%{{ search_string }}%'
-    OR
-    cnick LIKE '%{{ search_string }}%'
-)
+    -- 下拉框-平台
+    AND platform = '{{ platform=tb }}'
+    -- 下拉框-店铺
+    AND (
+        '{{ shop_ids }}' = ''
+        OR
+        shop_id IN splitByChar(',','{{ shop_ids }}')
+    )
+    -- 下拉框-告警等级
+    AND (
+        '{{ levels }}' = ''
+        OR
+        toString(level) IN splitByChar(',','{{ levels }}')
+    )
+    -- 下拉框-告警项
+    AND (
+        '{{ warning_types }}' = ''
+        OR
+        warning_type IN splitByChar(',','{{ warning_types }}')
+    )
+    -- 下拉框-告警项处理状态
+    AND (
+        '{{ alert_state }}' = ''
+        OR
+        is_finished IN splitByChar(',','{{ alert_state }}')
+    )
+    -- 筛选框-文本框内容
+    AND (
+        superior_name LIKE '%{{ search_string }}%'
+        OR
+        snick LIKE '%{{ search_string }}%'
+        OR
+        cnick LIKE '%{{ search_string }}%'
+    )
+) AS alert_info
+GLOBAL LEFT JOIN (
+    -- 关联子账号分组/子账号员工信息
+    SELECT
+        snick, department_id, department_name
+    FROM (
+        -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
+        SELECT snick, department_id
+        FROM ods.xinghuan_employee_snick_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND platform = '{{ platform=tb }}'
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    ) AS snick_info
+    GLOBAL LEFT JOIN (
+        SELECT
+            _id AS department_id, full_name AS department_name
+        FROM xqc_dim.snick_department_full_all
+        WHERE day = toYYYYMMDD(yesterday())
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    ) AS department_info
+    USING (department_id)
+) AS dim_snick_department
+USING(snick)
 order by time desc

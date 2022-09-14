@@ -9,7 +9,7 @@ FROM (
         seller_nick,
         snick,
         cnick,
-        dialog_id,
+        max(dialog_id) AS dialog_id,
         source,
         send_time,
         is_invited,
@@ -88,7 +88,7 @@ FROM (
             )
         )
     ) AS ods_snick_eval
-    GROUP BY day, seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
+    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
     -- 下拉框-最新评价等级
     HAVING (
         '{{ latest_eval_codes }}'=''

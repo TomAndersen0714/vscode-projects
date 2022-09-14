@@ -44,7 +44,6 @@ CREATE TABLE xqc_ods.qc_norm_operation_log_local ON CLUSTER cluster_3s_2r
     `object_id` String,
     `object_name` String,
     `create_time` Int64,
-    `cause` String,
     `day` Int32
 )
 ENGINE = ReplicatedMergeTree(

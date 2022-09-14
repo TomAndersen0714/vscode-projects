@@ -14,7 +14,7 @@ FROM (
         seller_nick,
         snick,
         cnick,
-        dialog_id,
+        max(dialog_id) AS dialog_id,
         source,
         send_time,
         is_invited,
@@ -87,5 +87,5 @@ FROM (
             )
         )
     ) AS ods_snick_eval
-    GROUP BY seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
+    GROUP BY seller_nick, snick, cnick, source, send_time, is_invited
 ) AS dialog_eval_info

@@ -7,6 +7,11 @@ CREATE TABLE xqc_ads.company_stat_local ON CLUSTER cluster_3s_2r
     `day` Int32,
     `company_id` String,
     `company_name` String,
+    `company_short_name` String,
+    `is_active` String,
+    `pv` Int64,
+    `uv` Int64,
+    `platforms` Array(String),
     `platform_cnt` String,
     `shop_cnt` Int64,
     `snick_cnt` Int64,
@@ -21,6 +26,12 @@ CREATE TABLE xqc_ads.company_stat_local ON CLUSTER cluster_3s_2r
     `manual_subtract_score_sum` Int64,
     `manual_add_score_sum` Int64,
     `dialog_cnt` Int64,
+    `tagged_dialog_cnt` Int64,
+    `ai_tagged_dialog_cnt` Int64,
+    `custom_tagged_dialog_cnt` Int64,
+    `manual_tagged_dialog_cnt` Int64,
+    `subtract_score_dialog_cnt` Int64,
+    `add_score_dialog_cnt` Int64,
     `manual_marked_dialog_cnt` Int64,
     `ai_subtract_score_dialog_cnt` Int64,
     `ai_add_score_dialog_cnt` Int64,
@@ -58,8 +69,11 @@ CREATE TABLE xqc_ads.company_stat_local ON CLUSTER cluster_3s_2r
     `custom_tag_opened_cnt` Int64,
     `manual_tag_cnt` Int64,
     `manual_tag_opened_cnt` Int64,
+    `qc_word_cnt` Int64,
+    `qc_word_opened_cnt` Int64,
     `appeal_task_cnt` Int64,
-    `qt_task_cnt` Int64
+    `qt_task_cnt` Int64,
+    `dialog_case_cnt` Int64
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',

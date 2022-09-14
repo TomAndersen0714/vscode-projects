@@ -35,7 +35,7 @@ FROM (
         seller_nick,
         snick,
         cnick,
-        dialog_id,
+        max(dialog_id) AS dialog_id,
         source,
         send_time,
         is_invited,
@@ -84,37 +84,27 @@ FROM (
         )
         -- 当前企业对应的子账号
         AND snick GLOBAL IN (
-            SELECT DISTINCT snick
-            FROM (
-                SELECT DISTINCT snick, username
-                FROM ods.xinghuan_employee_snick_all AS snick_info
-                GLOBAL LEFT JOIN (
-                    SELECT distinct
-                        _id AS employee_id, username
-                    FROM ods.xinghuan_employee_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                ) AS employee_info
-                USING(employee_id)
-                WHERE day = toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                -- 下拉框-子账号分组id
-                AND (
-                    '{{ department_ids }}'=''
-                    OR
-                    department_id IN splitByChar(',','{{ department_ids }}')
-                )
-            ) AS snick_employee_info
+            SELECT DISTINCT
+                snick
+            FROM xqc_dim.snick_full_info_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            AND platform = 'tb'
+            -- 下拉框-子账号分组id
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
             -- 下拉框-客服姓名
-            WHERE (
+            AND (
                 '{{ usernames }}'=''
                 OR
-                username IN splitByChar(',','{{ usernames }}')
+                employee_name IN splitByChar(',','{{ usernames }}')
             )
         )
     ) AS ods_snick_eval
-    GROUP BY day, seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
+    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
     -- 下拉框-最新评价等级
     HAVING (
         '{{ latest_eval_codes }}'=''

@@ -48,7 +48,7 @@ FROM (
         seller_nick,
         snick,
         cnick,
-        dialog_id,
+        max(dialog_id) AS dialog_id,
         source,
         send_time,
         is_invited,
@@ -122,7 +122,7 @@ FROM (
             )
         )
     ) AS ods_dialog_eval
-    GROUP BY day, seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
+    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
     -- 单选-评价类型
     HAVING (
         ('{{ type=全部 }}'='全部')

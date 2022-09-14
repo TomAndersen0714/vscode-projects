@@ -1,4 +1,4 @@
--- 平台告警统计-统计列表
+-- 新实时告警-平台告警-统计列表
 SELECT
     platform AS `平台`,
     seller_nick AS `店铺`,
@@ -20,8 +20,11 @@ FROM (
         count(DISTINCT day) AS interval, -- 告警天数
         if(interval>0, round(count(1)/interval,2), 0.00) AS platform_shop_warning_cnt_daily_avg
         -- 指定平台指定时间段内各个店铺的日均告警量
-    FROM xqc_ods.alert_all FINAL
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) 
+    FROM (
+        SELECT DISTINCT
+            day, platform, seller_nick, id
+        FROM xqc_ods.alert_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) 
         AND toYYYYMMDD(toDate('{{ day.end=today }}'))
         -- 已订阅店铺
         AND shop_id GLOBAL IN (
@@ -39,6 +42,7 @@ FROM (
         AND if({{ level=-1 }}!=-1,level={{ level=-1 }},level!=0) -- 告警等级
         AND if('{{ warning_type=全部 }}'!='全部',warning_type='{{ warning_type=全部 }}',warning_type!='') -- 告警内容
         AND platform = '{{ platform=tb }}'
+    ) AS alert_info
     GROUP BY day,seller_nick,platform
 )
 GLOBAL JOIN(
@@ -83,26 +87,30 @@ GLOBAL JOIN(
         sum(warning_type='顾客骂人') AS `顾客骂人`,
         sum(warning_type='客服骂人') AS `客服骂人`,
         sum(warning_type='对收货少件不满') AS `对收货少件不满`
-    FROM xqc_ods.alert_all FINAL
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) 
-        AND toYYYYMMDD(toDate('{{ day.end=today }}'))
-    -- 已订阅店铺
-    AND shop_id GLOBAL IN (
-        SELECT tenant_id AS shop_id
-        FROM xqc_dim.company_tenant
-        WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
-            AND platform = '{{ platform=tb }}'
-    )
-    -- 权限隔离
-    AND (
-            shop_id IN splitByChar(',','{{ shop_id_list=5bfe7a6a89bc4612f16586a5 }}') 
-            OR
-            snick IN splitByChar(',','{{ snick_list=null }}')
+    FROM (
+        SELECT DISTINCT
+            day, platform, seller_nick, id, warning_type
+        FROM xqc_ods.alert_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}')) 
+            AND toYYYYMMDD(toDate('{{ day.end=today }}'))
+        -- 已订阅店铺
+        AND shop_id GLOBAL IN (
+            SELECT tenant_id AS shop_id
+            FROM xqc_dim.company_tenant
+            WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+                AND platform = '{{ platform=tb }}'
         )
-    -- 下拉框筛选
-    AND if({{ level=-1 }}!=-1,level={{ level=-1 }},level!=0) -- 告警等级
-    AND if('{{ warning_type=全部 }}'!='全部',warning_type='{{ warning_type=全部 }}',warning_type!='') -- 告警内容
-    AND platform = '{{ platform=tb }}'
+        -- 权限隔离
+        AND (
+                shop_id IN splitByChar(',','{{ shop_id_list=5bfe7a6a89bc4612f16586a5 }}') 
+                OR
+                snick IN splitByChar(',','{{ snick_list=null }}')
+            )
+        -- 下拉框筛选
+        AND if({{ level=-1 }}!=-1,level={{ level=-1 }},level!=0) -- 告警等级
+        AND if('{{ warning_type=全部 }}'!='全部',warning_type='{{ warning_type=全部 }}',warning_type!='') -- 告警内容
+        AND platform = '{{ platform=tb }}'
+    ) AS alert_info
     GROUP BY day, seller_nick,platform
 )
 USING (platform, seller_nick, day)

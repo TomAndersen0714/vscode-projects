@@ -35,24 +35,28 @@ GLOBAL LEFT JOIN (
         sum(level=2) AS level_2_cnt, -- 中级告警总量
         sum(level=3) AS level_3_cnt, -- 高级告警总量
         (level_2_cnt + level_3_cnt) AS level_2_3_sum -- 中高级告警总和
-    FROM xqc_ods.alert_all FINAL
-    WHERE day BETWEEN month_ago AND today
-    -- 组织架构包含店铺
-    AND shop_id GLOBAL IN (
-        SELECT department_id AS shop_id
-        FROM xqc_dim.group_all
-        WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
-        AND is_shop = 'True'
-        -- AND platform = '{{ platform=jd }}'
-    )
-    -- 权限隔离
-    AND (
-            shop_id IN splitByChar(',','{{ shop_id_list=6139c118e16787000fb8a1cf }}')
-            OR
-            snick IN splitByChar(',','{{ snick_list=NULL }}')
+    FROM (
+        SELECT DISTINCT
+            day, id, level
+        FROM xqc_ods.alert_all
+        WHERE day BETWEEN month_ago AND today
+        -- 组织架构包含店铺
+        AND shop_id GLOBAL IN (
+            SELECT department_id AS shop_id
+            FROM xqc_dim.group_all
+            WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
+            AND is_shop = 'True'
+            -- AND platform = '{{ platform=jd }}'
         )
-    -- 筛选新版本告警
-    AND `level` IN [1,2,3]
+        -- 权限隔离
+        AND (
+                shop_id IN splitByChar(',','{{ shop_id_list=6139c118e16787000fb8a1cf }}')
+                OR
+                snick IN splitByChar(',','{{ snick_list=NULL }}')
+            )
+        -- 筛选新版本告警
+        AND `level` IN [1,2,3]
+    )
     GROUP BY day
 ) AS level_2_3_sum_daily
 USING day

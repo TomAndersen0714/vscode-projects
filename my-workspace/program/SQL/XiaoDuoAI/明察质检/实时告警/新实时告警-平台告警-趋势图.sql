@@ -1,3 +1,4 @@
+-- 新实时告警-平台告警-趋势图
 SELECT
     day,
     seller_nick,
@@ -15,7 +16,7 @@ FROM (
     GLOBAL CROSS JOIN (
         SELECT DISTINCT
             seller_nick
-        FROM xqc_ods.alert_all FINAL
+        FROM xqc_ods.alert_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=today }}'))
         AND shop_id GLOBAL IN (
@@ -41,8 +42,8 @@ GLOBAL LEFT JOIN (
     SELECT
         day,
         seller_nick,
-        count() as cnt
-    FROM xqc_ods.alert_all FINAL
+        count(DISTINCT id) as cnt
+    FROM xqc_ods.alert_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=today }}'))
     AND shop_id GLOBAL IN (

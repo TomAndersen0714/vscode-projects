@@ -1,4 +1,4 @@
--- 客户评价满意度(二期)-分析-评价列表
+-- 客户评价满意度(二期)-统计-评价列表
 SELECT
     eval_info.*,
     dim_snick_department.department_name AS department_name,
@@ -34,9 +34,9 @@ SELECT
     END AS `评价修改记录`,
     if(
         (
-            latest_eval_time = ''
+            send_time = ''
             OR
-            dateDiff('hour', toDateTime(toDateTime64(latest_eval_time, 0)), now()) <= 24
+            dateDiff('hour', toDateTime(toDateTime64(send_time, 0)), now()) < 24
         ),
         '是',
         '否'
@@ -48,7 +48,7 @@ FROM (
         seller_nick,
         snick,
         cnick,
-        dialog_id,
+        max(dialog_id) AS dialog_id,
         source,
         send_time,
         is_invited,
@@ -92,37 +92,27 @@ FROM (
         )
         -- 当前企业对应的子账号
         AND snick GLOBAL IN (
-            SELECT DISTINCT snick
-            FROM (
-                SELECT DISTINCT snick, username
-                FROM ods.xinghuan_employee_snick_all AS snick_info
-                GLOBAL LEFT JOIN (
-                    SELECT distinct
-                        _id AS employee_id, username
-                    FROM ods.xinghuan_employee_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                ) AS employee_info
-                USING(employee_id)
-                WHERE day = toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                -- 下拉框-子账号分组id
-                AND (
-                    '{{ department_ids }}'=''
-                    OR
-                    department_id IN splitByChar(',','{{ department_ids }}')
-                )
-            ) AS snick_employee_info
+            SELECT DISTINCT
+                snick
+            FROM xqc_dim.snick_full_info_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            AND platform = 'tb'
+            -- 下拉框-子账号分组id
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
+            )
             -- 下拉框-客服姓名
-            WHERE (
+            AND (
                 '{{ usernames }}'=''
                 OR
-                username IN splitByChar(',','{{ usernames }}')
+                employee_name IN splitByChar(',','{{ usernames }}')
             )
         )
     ) AS ods_dialog_eval
-    GROUP BY day, seller_nick, snick, cnick, dialog_id, source, send_time, is_invited
+    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
     -- 单选-评价类型
     HAVING (
         ('{{ type=全部 }}'='全部')
@@ -140,32 +130,9 @@ GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息
     SELECT
         snick, employee_name, superior_name, department_id, department_name
-    FROM (
-        SELECT snick, employee_name, superior_name, department_id
-        FROM (
-            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-            SELECT snick, department_id, employee_id
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS snick_info
-        GLOBAL LEFT JOIN (
-            SELECT
-                _id AS employee_id, username AS employee_name, superior_name
-            FROM ods.xinghuan_employee_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS employee_info
-        USING(employee_id)
-    ) AS snick_info
-    GLOBAL RIGHT JOIN (
-        SELECT
-            _id AS department_id, full_name AS department_name
-        FROM xqc_dim.snick_department_full_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS department_info
-    USING (department_id)
+    FROM xqc_dim.snick_full_info_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    AND platform = 'tb'
 ) AS dim_snick_department
 USING(snick)
