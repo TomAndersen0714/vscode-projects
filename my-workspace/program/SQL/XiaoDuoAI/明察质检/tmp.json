@@ -1,29 +1,47 @@
 {
-  "_id" : ObjectId("62a878e26741dc36322ba1c1"),
-  "operator" : {
-    "_id" : ObjectId("5f73e9c1684bf7000141363d"),
-    "name" : "测试",
-    "platform" : "jd",
-    "company_id" : ObjectId("5f73e9c1684bf70001413636")
-  },
-  "action" : {
-    "verb" : 2,
-    "noun" : "qc_rule",
-    "object" : {
-      "id" : "61b6f554130c40817c387b34",
-      "name" : "错别字7",
-      "from" : {
-        "qc_norm_name" : "淘系规则",
-        "qc_norm_id" : ObjectId("61b6f554130c40817c387ae2")
-      },
-      "condition" : BinData(0,"FgAAAAdfaWQAYbb1VBMMQIF8OHs0AA=="),
-      "operation" : BinData(0,"rQAAAAMkc2V0AKIAAAAIY2hlY2sAARBhbGVydF9sZXZlbAAAAAAAEG5vdGlmeV93YXkAAgAAABBub3RpZnlfdGFyZ2V0AAEAAAABdGhyZXNob2xkAAAAAAAAAAAAEGNoZWNrX3RhcmdldAABAAAAEHNjb3JlAPb///8JdXBkYXRlX3RpbWUAjjQYYoEBAAAHdXBkYXRlX2FjY291bnQAX3PpwWhL9wABQTY+AAA="),
-      "raw_data" : BinData(0,"eyJpZCI6IjYxYjZmNTU0MTMwYzQwODE3YzM4N2IzNCIsImNyZWF0ZV90aW1lIjoiMjAyMi0wMy0zMVQxOToyMTo0MC45M1oiLCJ1cGRhdGVfdGltZSI6IjIwMjItMDMtMzFUMTk6MjE6NDAuOTNaIiwiY29tcGFueV9pZCI6IjVmNzNlOWMxNjg0YmY3MDAwMTQxMzYzNiIsInBsYXRmb3JtIjoiamQiLCJxY19ub3JtX2lkIjoiNjFiNmY1NTQxMzBjNDA4MTdjMzg3YWUyIiwicWNfbm9ybV9ncm91cF9pZCI6IjYxYjZmNTU0MTMwYzQwODE3YzM4N2IzMyIsInRlbXBsYXRlX2lkIjoiNjI0NWZmODMyZTYxZWVmN2Y5NWI0YzNhIiwibmFtZSI6IumUmeWIq+WtlzciLCJzZWxsZXJfbmljayI6IiIsInJ1bGVfY2F0ZWdvcnkiOjIsInJ1bGVfdHlwZSI6MCwic2V0dGluZ3MiOm51bGwsImNoZWNrIjpmYWxzZSwiY2hlY2tfdGFyZ2V0IjoxLCJhbGVydF9sZXZlbCI6MCwibm90aWZ5X3dheSI6Miwibm90aWZ5X3RhcmdldCI6MSwic2NvcmUiOi0xMCwidGhyZXNob2xkIjowLCJzcGVjaWFsX3NldHRpbmdzIjpudWxsLCJTdGF0dXMiOjF9"),
-      "diff_data" : BinData(0,"eyJjaGVjayI6dHJ1ZSwidXBkYXRlX3RpbWUiOiIyMDIyLTA2LTE0VDEyOjAyOjQyLjQ0NloifQ=="),
-      "ext" : null
-    },
-    "field" : "qc_norm/qc_rule"
-  },
-  "create_time" : NumberLong(1655208162),
-  "cause" : null
+    'data': [{
+        'created_at': 1659443155404, //创建时间 毫秒时间戳
+        'created_by': '7112333401763397633', //创建者userKey
+        'current_nodes': [{
+            'id': 'state_0', //节点id
+            'name': '产品设计中', //节点名称
+            'owners': ['7114222743955996673'] //节点负责人userKey列表
+        }]
+        'deleted_at': 0, //删除时间戳，毫秒精度
+        'deleted_by': '', //删除人user_key
+        'id': 1118772, //工作项id
+        'multi_texts': None, //富文本详细信息
+        'name': '测试拉群', //工作项名称
+        'pattern': 'Node', //工作流模式;Node节点流，State状态流
+        'project_key': '62b9a391218847b5d28c7648', //空间id
+        'simple_name': 'zljs-2', //空间域名
+        'sub_stage': 'sub_stage_1656575253455', //需求状态(仅需求有值)
+        'template_id': 39912, //使用的模板id
+        'template_type': '62b9a391218847b5d28c7648_template_1656333478512106307', //模板类型
+        'updated_at': 1660880073189, //更新时间 毫秒时间戳
+        'updated_by': '7114196166513868802', //更新者userKey
+        'work_item_status': { //工作项状态(除需求外有值)
+            'history': None
+        },
+        'work_item_type_key': 'story', //工作项类型
+        'workflow_infos': None， //工作项节点流信息(仅在获取工作项详情接口指定了额外参数时返回)
+        'state_times': [{ //节点时间
+            'end_time': 1659443162536,
+            'name': '未开始',
+            'start_time': 1659443155601,
+            'state_key': 'start' //节点key
+        }]
+        'fields': [{ //工作项字段，字段格式可查看
+            'field_alias': 'template',
+            'field_key': 'template',
+            'field_type_key': 'work_item_template',
+            'field_value': { //官方文档还包含其他参数 这边测试的项目未涉及到
+                'id': 39912,
+                'version': 128
+            }
+        }]
+    }]
+    'err': {},
+    'err_code': 0,
+    'err_msg': ''
 }

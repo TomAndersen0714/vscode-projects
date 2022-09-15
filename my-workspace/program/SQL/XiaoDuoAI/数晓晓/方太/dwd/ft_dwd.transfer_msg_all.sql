@@ -4,6 +4,7 @@ ENGINE=Ordinary
 -- DROP TABLE ft_dwd.transfer_msg_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE ft_dwd.transfer_msg_local ON CLUSTER cluster_3s_2r
 (
+    `id` String,
     `day` Int32,
     `platform` String,
     `shop_id` String,
@@ -36,6 +37,7 @@ ENGINE = Buffer('ft_dwd', 'transfer_msg_all', 16, 15, 35, 81920, 409600, 1677721
 -- ETL
 INSERT INTO buffer.ft_dwd_transfer_msg_buffer
 SELECT
+    lower(hex(MD5(concat(shop_id, from_snick, to_snick, cnick, real_buyer_nick, create_time)))) AS id,
     day,
     platform,
     shop_id,
