@@ -1,18 +1,43 @@
-SELECT
-   day,
-   platform,
-   shop_id,
-   session_id,
-   buyer_nick,
-   snick,
-   focus_goods_id,
-   c_recv_start_time,
-   c_recv_end_time,
-   s_send_start_time,
-   s_send_end_time,
-   session_recv_cnt,
-   session_send_cnt,
-   has_transfer,
-   transfer_from_snick,
-   transfer_to_snick
-FROM ft_ods.xdrs_logs_all
+question_type
+send_msg_from
+snick
+act
+mode
+ms_msg_time
+msg
+msg_id
+task_id
+answer_explain
+intent
+mp_category
+shop_id
+create_time
+mp_version
+qa_id
+question_b_proba
+question_b_standard_q
+is_identified
+current_sale_stage
+question_b_qid
+remind_answer
+cnick
+real_buyer_nick
+platform
+msg_time
+plat_goods_id
+answer_id
+robot_answer
+transfer_type
+transfer_to
+transfer_from
+shop_question_type
+shop_question_id
+no_reply_reason
+no_reply_sub_reason
+msg_scenes_source
+msg_content_type
+trace_id
+day
+precise_intent_id
+precise_intent_standard_q
+cond_answer_id

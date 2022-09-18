@@ -83,7 +83,7 @@ FROM (
         SUM(act = 'recv_msg') AS session_recv_cnt,
         SUM(act = 'send_msg') AS session_send_cnt
     FROM ft_dwd.session_msg_detail_all
-    WHERE day BETWEEN 20220910 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220910
     GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
 ) AS session_info
 GLOBAL INNER JOIN (
@@ -96,7 +96,7 @@ GLOBAL INNER JOIN (
         cnick,
         create_time
     FROM ft_dwd.transfer_msg_all
-    WHERE day BETWEEN 20220910 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220910
 ) AS transfer_msg_info
 ON session_info.day = transfer_msg_info.day
 AND session_info.shop_id = transfer_msg_info.shop_id
@@ -142,12 +142,12 @@ FROM (
         SUM(act = 'recv_msg') AS session_recv_cnt,
         SUM(act = 'send_msg') AS session_send_cnt
     FROM ft_dwd.session_msg_detail_all
-    WHERE day BETWEEN 20220910 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220910
     AND session_id GLOBAL NOT IN (
         SELECT DISTINCT
             session_id
         FROM ft_tmp.session_detail_all
-        WHERE day BETWEEN 20220910 AND 20220910
+        WHERE day BETWEEN 20220801 AND 20220910
     )
     GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
 ) AS session_info
@@ -161,7 +161,7 @@ GLOBAL INNER JOIN (
         cnick,
         create_time
     FROM ft_dwd.transfer_msg_all
-    WHERE day BETWEEN 20220910 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220910
 ) AS transfer_msg_info
 ON session_info.day = transfer_msg_info.day
 AND session_info.shop_id = transfer_msg_info.shop_id
@@ -192,12 +192,12 @@ SELECT
     '' AS transfer_to_snick,
     '' AS transfer_time
 FROM ft_dwd.session_msg_detail_all
-WHERE day BETWEEN 20220910 AND 20220910
+WHERE day BETWEEN 20220801 AND 20220910
 AND session_id GLOBAL NOT IN (
     SELECT DISTINCT
         session_id
     FROM ft_tmp.session_detail_all
-    WHERE day BETWEEN 20220910 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220910
 )
 GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
 

@@ -32,13 +32,13 @@ FROM (
             -- AI质检项触发次数
             arrayConcat(
                 -- AI质检项-扣分项
-                arrayFilter(x->x!=0, abnormals_count),
+                arrayFilter((x,y)->y!='', abnormals_count, abnormals_rule_id),
                 -- AI质检项-加分项
-                arrayFilter(x->x!=0, excellents_count),
+                arrayFilter((x,y)->y!='', excellents_count, excellents_rule_id),
                 -- AI质检项-买家情绪项
-                arrayFilter(x->x!=0, c_emotion_count),
+                arrayFilter((x,y)->y!='', c_emotion_count, c_emotion_rule_id),
                 -- AI质检项-客服情绪项
-                arrayFilter(x->x!=0, s_emotion_count)
+                arrayFilter((x,y)->y!='', s_emotion_count, s_emotion_rule_id)
             ) AS tag_cnts
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=yesterday }}')) AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

@@ -59,15 +59,73 @@ CREATE TABLE ft_ods.xdrs_logs_all ON CLUSTER cluster_3s_2r
 AS ft_ods.xdrs_logs_local
 ENGINE = Distributed('cluster_3s_2r', 'ft_ods', 'xdrs_logs_local', rand())
 
--- DROP TABLE buffer.ft_dwd_xdrs_logs_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE buffer.ft_dwd_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
+-- DROP TABLE buffer.ft_ods_xdrs_logs_buffer ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE buffer.ft_ods_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
 AS ft_ods.xdrs_logs_all
 ENGINE = Buffer('ft_ods', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
 
 -- INSERT INTO
 -- DROP TABLE ft_ods.xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY
-INSERT INTO buffer.ft_dwd_xdrs_logs_buffer
+INSERT INTO buffer.ft_ods_xdrs_logs_buffer
 SELECT *
 FROM remote('10.22.113.168:19000', ods.xdrs_logs_all)
-WHERE day BETWEEN 20220901 AND 20220910
+WHERE day BETWEEN 20220821 AND 20220831
+AND platform = 'tb'
 AND shop_id = '5cac112e98ef4100118a9c9f'
+
+
+-- JD
+INSERT INTO buffer.ft_ods_xdrs_logs_buffer
+SELECT
+    question_type,
+    send_msg_from,
+    snick,
+    act,
+    mode,
+    ms_msg_time,
+    msg,
+    msg_id,
+    task_id,
+    answer_explain,
+    intent,
+    mp_category,
+    shop_id,
+    toDateTime64(create_time, 6) AS create_time,
+    mp_version,
+    qa_id,
+    question_b_proba,
+    question_b_standard_q,
+    is_identified,
+    current_sale_stage,
+    question_b_qid,
+    remind_answer,
+    cnick,
+    real_buyer_nick,
+    platform,
+    toDateTime(msg_time) AS msg_time,
+    plat_goods_id,
+    answer_id,
+    robot_answer,
+    transfer_type,
+    transfer_to,
+    transfer_from,
+    shop_question_type,
+    shop_question_id,
+    no_reply_reason,
+    no_reply_sub_reason,
+    msg_scenes_source,
+    msg_content_type,
+    trace_id,
+    day,
+    precise_intent_id,
+    precise_intent_standard_q,
+    cond_answer_id
+FROM ft_tmp.xdrs_logs_all
+WHERE day BETWEEN 20220821 AND 20220831
+AND platform = 'jd'
+AND shop_id IN [
+    '5e9d390d68283c002457b52f',
+    '5edfa47c8f591c00163ef7d6',
+    '5e9d350bcff5ed002486ded8',
+    '5eb8acf16119f0001cbdaa5f'
+]

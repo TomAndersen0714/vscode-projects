@@ -43,8 +43,18 @@ CREATE TABLE buffer.ods_transfer_msg_buffer ON CLUSTER cluster_3s_2r
 AS ods.transfer_msg_all
 ENGINE = Buffer('ods', 'transfer_msg_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
 
--- INSERT INTO
+-- INSERT INTO(tb)
 INSERT INTO buffer.ods_transfer_msg_buffer
 SELECT *
 FROM remote('10.22.113.168:19000', ods.transfer_msg_all)
 WHERE day BETWEEN 20220904 AND 20220910
+
+-- EXPORT(jd)
+docker exec -i a84c1cadd048 clickhouse-client --port=19000 --query=\
+"SELECT * FROM ods.transfer_msg_all WHERE day BETWEEN 20220904 AND 20220910 FORMAT Avro" \
+> /opt/bigdata/bigdata/avro/transfer_msg_20220904_20220910.Avro
+
+-- INSERT INTO(jd)
+docker exec -i 42198f0fe342 clickhouse-client --port=19000 --query=\
+"INSERT INTO buffer.ods_transfer_msg_buffer FORMAT Avro" \
+< /opt/bigdata/bigdata/avro/transfer_msg_20220904_20220910.Avro

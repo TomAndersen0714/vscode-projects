@@ -70,16 +70,3 @@ SELECT
 FROM ft_dwd.session_msg_detail_all
 WHERE day BETWEEN 20220801 AND 20220910
 GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
-
-
--- 方案一:
--- 1. 同一天中, 对于snick和cnick匹配, 且会话结束时间小于转接时间的会话, 进行打标
--- 2. 抽取会话num最大的会话, 保留打标记录
--- 3. 抽取会话num非最大的会话, 清除打标记录 
-
-
--- 方案二:
--- Query 1: 先对所有的会话按照, 会话开始时间小于转接时间、day/snick/cnick 匹配进行打标, 然后按照 session_id 以及 transfer_msg_time 降序排序, 同一个 session_id 取
---          transfer_msg_time 值最大的一个保留
--- Query 2. 另起一个子查询, 将 Query 1结果中的 session_id 进行剔除, 剩余的 session 记录全部写入到最终表中
-
