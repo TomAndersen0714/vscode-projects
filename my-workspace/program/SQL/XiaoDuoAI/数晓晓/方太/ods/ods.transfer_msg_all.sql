@@ -47,11 +47,11 @@ ENGINE = Buffer('ods', 'transfer_msg_all', 16, 15, 35, 81920, 409600, 16777216, 
 INSERT INTO buffer.ods_transfer_msg_buffer
 SELECT *
 FROM remote('10.22.113.168:19000', ods.transfer_msg_all)
-WHERE day BETWEEN 20220904 AND 20220910
+WHERE day BETWEEN 20220914 AND 20220918
 
 -- EXPORT(jd)
 docker exec -i a84c1cadd048 clickhouse-client --port=19000 --query=\
-"SELECT * FROM ods.transfer_msg_all WHERE day BETWEEN 20220904 AND 20220910 FORMAT Avro" \
+"SELECT * FROM ods.transfer_msg_all WHERE day BETWEEN 20220914 AND 20220918 FORMAT Avro" \
 > /opt/bigdata/bigdata/avro/transfer_msg_20220904_20220910.Avro
 
 -- INSERT INTO(jd)

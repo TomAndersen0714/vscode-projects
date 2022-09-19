@@ -53,7 +53,7 @@ FROM (
                 day,
                 platform,
                 shop_id,
-                '方太官方旗舰店' AS shop_name,
+                '{{shop_name}}' AS shop_name,
                 replaceOne(snick,'cntaobao','') AS snick,
                 replaceOne(cnick,'cntaobao','') AS cnick,
                 real_buyer_nick,
@@ -63,9 +63,9 @@ FROM (
                 msg,
                 msg_id
             FROM ft_ods.xdrs_logs_all
-            WHERE day BETWEEN 20220911 AND 20220918
+            WHERE day = {{ds_nodash}}
             AND platform = 'tb'
-            AND shop_id = '5cac112e98ef4100118a9c9f'
+            AND shop_id = '{{shop_id}}'
             AND act IN ['send_msg', 'recv_msg']
             ORDER BY day, platform, shop_id, snick, cnick, real_buyer_nick, msg_time
         ) AS message_info

@@ -45,28 +45,3 @@ ENGINE = Distributed('cluster_3s_2r', 'ft_dwd', 'session_detail_local', rand())
 CREATE TABLE buffer.ft_dwd_session_detail_buffer ON CLUSTER cluster_3s_2r
 AS ft_dwd.session_detail_all
 ENGINE = Buffer('ft_dwd', 'session_detail_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
-
--- INSERT INTO
--- TRUNCATE TABLE ft_dwd.session_detail_local ON CLUSTER cluster_3s_2r NO DELAY
-INSERT INTO buffer.ft_dwd_session_detail_buffer
-SELECT
-    day, platform, shop_id, shop_name,
-    session_id,
-    snick, cnick, real_buyer_nick,
-    groupUniqArrayIf(plat_goods_id, plat_goods_id!='') AS focus_goods_ids,
-    toString(min(msg_time)) AS session_start_time,
-    toString(max(msg_time)) AS session_end_time,
-    toString(minIf(msg_time, act='recv_msg')) AS recv_msg_start_time,
-    toString(maxIf(msg_time, act='recv_msg')) AS recv_msg_end_time,
-    toString(minIf(msg_time, act='send_msg')) AS send_msg_start_time,
-    toString(maxIf(msg_time, act='send_msg')) AS send_msg_end_time,
-    SUM(act = 'recv_msg') AS session_recv_cnt,
-    SUM(act = 'send_msg') AS session_send_cnt,
-    0 AS has_transfer,
-    '' AS transfer_id,
-    '' AS transfer_from_snick,
-    '' AS transfer_to_snick,
-    '' AS transfer_time
-FROM ft_dwd.session_msg_detail_all
-WHERE day BETWEEN 20220801 AND 20220910
-GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick

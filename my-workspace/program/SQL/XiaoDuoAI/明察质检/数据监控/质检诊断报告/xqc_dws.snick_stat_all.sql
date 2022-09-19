@@ -1,11 +1,11 @@
 -- xqc_dws.snick_stat_all
 ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r
-ADD COLUMN subtract_score_dialog_cnt Int64 AFTER `dialog_cnt`,
-ADD COLUMN add_score_dialog_cnt Int64 AFTER `subtract_score_dialog_cnt`
+ADD COLUMN IF NOT EXISTS subtract_score_dialog_cnt Int64 AFTER `dialog_cnt`,
+ADD COLUMN IF NOT EXISTS add_score_dialog_cnt Int64 AFTER `subtract_score_dialog_cnt`
 
 ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
-ADD COLUMN subtract_score_dialog_cnt Int64 AFTER `dialog_cnt`,
-ADD COLUMN add_score_dialog_cnt Int64 AFTER `subtract_score_dialog_cnt`
+ADD COLUMN IF NOT EXISTS subtract_score_dialog_cnt Int64 AFTER `dialog_cnt`,
+ADD COLUMN IF NOT EXISTS add_score_dialog_cnt Int64 AFTER `subtract_score_dialog_cnt`
 
 -- INSERT INTO
 SELECT

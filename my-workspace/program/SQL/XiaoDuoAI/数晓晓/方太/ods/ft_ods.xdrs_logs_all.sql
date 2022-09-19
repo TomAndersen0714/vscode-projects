@@ -69,7 +69,7 @@ ENGINE = Buffer('ft_ods', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 
 INSERT INTO buffer.ft_ods_xdrs_logs_buffer
 SELECT *
 FROM remote('10.22.113.168:19000', ods.xdrs_logs_all)
-WHERE day BETWEEN 20220821 AND 20220831
+WHERE day BETWEEN 20220911 AND 20220918
 AND platform = 'tb'
 AND shop_id = '5cac112e98ef4100118a9c9f'
 
@@ -121,7 +121,7 @@ SELECT
     precise_intent_standard_q,
     cond_answer_id
 FROM ft_tmp.xdrs_logs_all
-WHERE day BETWEEN 20220821 AND 20220831
+WHERE day BETWEEN 20220911 AND 20220918
 AND platform = 'jd'
 AND shop_id IN [
     '5e9d390d68283c002457b52f',

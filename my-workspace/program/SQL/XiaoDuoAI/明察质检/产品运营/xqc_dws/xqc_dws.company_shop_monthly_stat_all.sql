@@ -16,8 +16,8 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY (month, platform)
-ORDER BY seller_nick
+PARTITION BY month
+ORDER BY (company_id, shop_id)
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

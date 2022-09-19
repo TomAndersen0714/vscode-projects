@@ -46,6 +46,8 @@ CREATE TABLE buffer.ft_tmp_session_detail_buffer ON CLUSTER cluster_3s_2r
 AS ft_tmp.session_detail_all
 ENGINE = Buffer('ft_tmp', 'session_detail_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
 
+-- ETL(tb)
+-- TRUNCATE TABLE ft_dwd.session_detail_local ON CLUSTER cluster_3s_2r NO DELAY
 -- INSERT INTO
 -- TRUNCATE TABLE ft_tmp.session_detail_local ON CLUSTER cluster_3s_2r NO DELAY
 -- 会话匹配转出记录标签
@@ -83,25 +85,32 @@ FROM (
         SUM(act = 'recv_msg') AS session_recv_cnt,
         SUM(act = 'send_msg') AS session_send_cnt
     FROM ft_dwd.session_msg_detail_all
-    WHERE day BETWEEN 20220801 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220810
+    AND platform = 'jd'
     GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
 ) AS session_info
 GLOBAL INNER JOIN (
     SELECT
         id,
         day,
+        platform,
         shop_id,
         from_snick,
         to_snick,
         cnick,
+        real_buyer_nick,
         create_time
     FROM ft_dwd.transfer_msg_all
-    WHERE day BETWEEN 20220801 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220810
+    AND platform = 'jd'
 ) AS transfer_msg_info
 ON session_info.day = transfer_msg_info.day
 AND session_info.shop_id = transfer_msg_info.shop_id
 AND session_info.snick = transfer_msg_info.from_snick
-AND session_info.cnick = transfer_msg_info.cnick
+-- tb使用cnick关联
+-- AND session_info.cnick = transfer_msg_info.cnick
+-- jd使用real_buyer_nick关联
+AND session_info.cnick = transfer_msg_info.real_buyer_nick
 WHERE toDateTime64(create_time, 0) >= toDateTime64(session_end_time, 0)
 AND toDateTime64(create_time, 0) <= toDateTime64(session_end_time, 0) + 600
 ORDER BY session_id, transfer_time DESC
@@ -142,12 +151,14 @@ FROM (
         SUM(act = 'recv_msg') AS session_recv_cnt,
         SUM(act = 'send_msg') AS session_send_cnt
     FROM ft_dwd.session_msg_detail_all
-    WHERE day BETWEEN 20220801 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220810
+    AND platform = 'jd'
     AND session_id GLOBAL NOT IN (
         SELECT DISTINCT
             session_id
         FROM ft_tmp.session_detail_all
-        WHERE day BETWEEN 20220801 AND 20220910
+        WHERE day BETWEEN 20220801 AND 20220810
+        AND platform = 'jd'
     )
     GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
 ) AS session_info
@@ -155,18 +166,24 @@ GLOBAL INNER JOIN (
     SELECT
         id,
         day,
+        platform,
         shop_id,
         from_snick,
         to_snick,
         cnick,
+        real_buyer_nick,
         create_time
     FROM ft_dwd.transfer_msg_all
-    WHERE day BETWEEN 20220801 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220810
+    AND platform = 'jd'
 ) AS transfer_msg_info
 ON session_info.day = transfer_msg_info.day
 AND session_info.shop_id = transfer_msg_info.shop_id
 AND session_info.snick = transfer_msg_info.to_snick
-AND session_info.cnick = transfer_msg_info.cnick
+-- tb使用cnick关联
+-- AND session_info.cnick = transfer_msg_info.cnick
+-- jd使用real_buyer_nick关联
+AND session_info.cnick = transfer_msg_info.real_buyer_nick
 WHERE toDateTime64(create_time, 0) <= toDateTime64(session_start_time, 0)
 AND toDateTime64(create_time, 0) >= toDateTime64(session_start_time, 0) - 600
 ORDER BY session_id, transfer_time DESC
@@ -192,12 +209,13 @@ SELECT
     '' AS transfer_to_snick,
     '' AS transfer_time
 FROM ft_dwd.session_msg_detail_all
-WHERE day BETWEEN 20220801 AND 20220910
+WHERE day BETWEEN 20220801 AND 20220810
 AND session_id GLOBAL NOT IN (
     SELECT DISTINCT
         session_id
     FROM ft_tmp.session_detail_all
-    WHERE day BETWEEN 20220801 AND 20220910
+    WHERE day BETWEEN 20220801 AND 20220810
+    AND platform = 'jd'
 )
 GROUP BY day, platform, shop_id, shop_name, session_id, snick, cnick, real_buyer_nick
 

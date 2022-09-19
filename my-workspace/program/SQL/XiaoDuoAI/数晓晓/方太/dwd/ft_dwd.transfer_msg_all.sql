@@ -58,7 +58,7 @@ FROM (
         pin AS real_buyer_nick,
         create_time
     FROM ods.transfer_msg_all
-    WHERE day BETWEEN 20220904 AND 20220910
+    WHERE day BETWEEN 20220911 AND 20220918
     AND platform = 'tb'
     AND plat_user_id = '方太官方旗舰店'
 ) AS transfer_msg_info
@@ -96,7 +96,7 @@ FROM (
         pin AS real_buyer_nick,
         create_time
     FROM ods.transfer_msg_all
-    WHERE day BETWEEN 20220904 AND 20220910
+    WHERE day BETWEEN 20220911 AND 20220918
     AND platform = 'jd'
     AND plat_user_id IN [
         '方太京东自营旗舰店',

@@ -66,7 +66,8 @@ CREATE TABLE buffer.ft_tmp_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
 AS ft_tmp.xdrs_logs_all
 ENGINE = Buffer('ft_tmp', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
 
--- INSERT INTO
+
+-- ETL(tb)
 -- DROP TABLE ft_tmp.xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY
 INSERT INTO buffer.ft_tmp_xdrs_logs_buffer
 SELECT *
@@ -75,11 +76,67 @@ WHERE day BETWEEN 20220901 AND 20220910
 AND shop_id = '5cac112e98ef4100118a9c9f'
 
 
+
+-- ETL(jd)
+docker exec -i a84c1cadd048 clickhouse-client --port=19000 --query "
+SELECT
+    question_type,
+    send_msg_from,
+    snick,
+    act,
+    mode,
+    ms_msg_time,
+    msg,
+    msg_id,
+    task_id,
+    answer_explain,
+    intent,
+    mp_category,
+    shop_id,
+    toString(create_time) AS create_time,
+    mp_version,
+    qa_id,
+    question_b_proba,
+    question_b_standard_q,
+    is_identified,
+    current_sale_stage,
+    question_b_qid,
+    remind_answer,
+    cnick,
+    '' AS real_buyer_nick,
+    platform,
+    toString(msg_time) AS msg_time,
+    plat_goods_id,
+    answer_id,
+    robot_answer,
+    transfer_type,
+    transfer_to,
+    transfer_from,
+    shop_question_type,
+    shop_question_id,
+    no_reply_reason,
+    no_reply_sub_reason,
+    '' AS msg_scenes_source,
+    '' AS msg_content_type,
+    '' AS trace_id,
+    day,
+    precise_intent_id,
+    precise_intent_standard_q,
+    cond_answer_id
+FROM ods.xdrs_logs_all
+WHERE day BETWEEN {start_ds_nodash} AND {end_ds_nodash}
+AND platform = 'jd'
+AND shop_id IN [
+    '5e9d390d68283c002457b52f',
+    '5edfa47c8f591c00163ef7d6',
+    '5e9d350bcff5ed002486ded8',
+    '5eb8acf16119f0001cbdaa5f'
+]
+FORMAT Avro
+" > {output_file}
+
 docker exec -i 42198f0fe342 clickhouse-client --port=19000 --query=\
 "INSERT INTO buffer.ft_tmp_xdrs_logs_buffer FORMAT Avro" \
 < /opt/bigdata/bigdata/avro/
 
-docker exec -i a84c1cadd048 clickhouse-client --port=19000 --query=\
-"INSERT INTO buffer.ft_tmp_xdrs_logs_buffer FORMAT Avro" \
-< /data1/code_workplace/tools/export/20220901_20220901.Avro
 

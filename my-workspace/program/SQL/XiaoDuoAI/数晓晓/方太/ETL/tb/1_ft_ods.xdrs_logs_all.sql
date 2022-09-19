@@ -1,0 +1,53 @@
+-- 方太淘宝聊天日志抽取
+INSERT INTO ft_ods.xdrs_logs_all
+SELECT
+    question_type,
+    send_msg_from,
+    snick,
+    act,
+    mode,
+    ms_msg_time,
+    msg,
+    msg_id,
+    task_id,
+    answer_explain,
+    intent,
+    mp_category,
+    shop_id,
+    create_time,
+    mp_version,
+    qa_id,
+    question_b_proba,
+    question_b_standard_q,
+    is_identified,
+    current_sale_stage,
+    question_b_qid,
+    remind_answer,
+    cnick,
+    real_buyer_nick,
+    platform,
+    msg_time,
+    plat_goods_id,
+    answer_id,
+    robot_answer,
+    transfer_type,
+    transfer_to,
+    transfer_from,
+    shop_question_type,
+    shop_question_id,
+    no_reply_reason,
+    no_reply_sub_reason,
+    msg_scenes_source,
+    msg_content_type,
+    trace_id,
+    day,
+    precise_intent_id,
+    precise_intent_standard_q,
+    cond_answer_id
+FROM ods.xdrs_logs_all
+WHERE day = {{ds_nodash}}
+AND platform = 'tb'
+AND shop_id = '{{shop_id}}';
+
+-- 等待数据写入
+SELECT sleep(3);
