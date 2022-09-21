@@ -66,7 +66,7 @@ ENGINE = Buffer('ft_ods', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 
 
 -- INSERT INTO
 -- DROP TABLE ft_ods.xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY
-INSERT INTO buffer.ft_ods_xdrs_logs_buffer
+INSERT INTO ods.xdrs_logs_all
 SELECT *
 FROM remote('10.22.113.168:19000', ods.xdrs_logs_all)
 WHERE day BETWEEN 20220911 AND 20220918

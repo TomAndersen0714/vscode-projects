@@ -1,4 +1,8 @@
 -- 方太京东会话切分
+ALTER TABLE ft_dwd.session_msg_detail_local ON CLUSTER cluster_3s_2r DROP PARTITION {{ds_nodash}};
+
+SELECT sleep(3);
+
 INSERT INTO ft_dwd.session_msg_detail_all
 SELECT
     day, platform, shop_id, shop_name,
@@ -57,7 +61,7 @@ FROM (
                 replaceOne(snick,'cnjd','') AS snick,
                 replaceOne(cnick,'cnjd','') AS cnick,
                 real_buyer_nick,
-                plat_goods_id,
+                IF(act='send_msg', extract(extract(msg, '[^a-z_]*id=[0-9]+'),'[0-9]+'), plat_goods_id) AS plat_goods_id,
                 act,
                 msg_time,
                 msg,

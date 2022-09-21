@@ -1,4 +1,8 @@
 -- 方太淘宝聊天日志抽取
+ALTER TABLE ft_ods.xdrs_logs_local ON CLUSTER cluster_3s_2r DROP PARTITION {{ds_nodash}};
+
+SELECT sleep(3);
+
 INSERT INTO ft_ods.xdrs_logs_all
 SELECT
     question_type,
@@ -47,7 +51,8 @@ SELECT
 FROM ods.xdrs_logs_all
 WHERE day = {{ds_nodash}}
 AND platform = 'tb'
-AND shop_id = '{{shop_id}}';
+AND shop_id IN {{shop_ids}};
+
 
 -- 等待数据写入
 SELECT sleep(3);

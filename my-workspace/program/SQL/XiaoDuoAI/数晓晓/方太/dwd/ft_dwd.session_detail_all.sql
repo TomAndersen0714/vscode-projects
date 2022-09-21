@@ -13,6 +13,8 @@ CREATE TABLE ft_dwd.session_detail_local ON CLUSTER cluster_3s_2r
     `cnick` String,
     `real_buyer_nick` String,
     `focus_goods_ids` Array(String),
+    `c_active_send_goods_ids` Array(String),
+    `s_active_send_goods_ids` Array(String),
     `session_start_time` String,
     `session_end_time` String,
     `recv_msg_start_time` String,
@@ -31,8 +33,8 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY day
-ORDER BY (platform, shop_id)
+PARTITION BY (day, platform)
+ORDER BY shop_id
 SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 

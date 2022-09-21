@@ -1,4 +1,8 @@
 -- 方太淘宝转接记录
+ALTER TABLE ft_dwd.transfer_msg_local ON CLUSTER cluster_3s_2r DROP PARTITION {{ds_nodash}};
+
+SELECT sleep(3);
+
 INSERT INTO ft_dwd.transfer_msg_all
 SELECT
     lower(hex(MD5(concat(shop_id, from_snick, to_snick, cnick, real_buyer_nick, create_time)))) AS id,

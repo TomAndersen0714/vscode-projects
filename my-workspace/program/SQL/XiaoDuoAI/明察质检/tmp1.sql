@@ -1,88 +1,47 @@
--- 方太淘宝会话切分
-INSERT INTO ft_dwd.session_msg_detail_all
+-- 方太淘宝转接记录
+ALTER TABLE ft_dwd.transfer_msg_local ON CLUSTER cluster_3s_2r DROP PARTITION {{ds_nodash}};
+
+SELECT sleep(3);
+
+INSERT INTO ft_dwd.transfer_msg_all
 SELECT
-    day, platform, shop_id, shop_name,
-    lower(hex(MD5(concat(toString(day), shop_id, snick, cnick, real_buyer_nick, toString(session_num))))) AS session_id,
-    snick,
+    lower(hex(MD5(concat(shop_id, from_snick, to_snick, cnick, real_buyer_nick, create_time)))) AS id,,
+    day,
+    platform,
+    shop_info.shop_id AS shop_id,
+    shop_name,
+    from_snick,
+    to_snick,
     cnick,
     real_buyer_nick,
-    act,
-    msg_id,
-    msg_time,
-    msg,
-    plat_goods_id,
-    is_first_msg_within_session
+    create_time
 FROM (
     SELECT
         day,
         platform,
+        plat_user_id AS shop_name,
+        from_spin AS from_snick,
+        to_spin AS to_snick,
+        buyer_one_id AS cnick,
+        pin AS real_buyer_nick,
+        create_time
+    FROM ods.transfer_msg_all
+    WHERE day = {{ds_nodash}}
+    AND platform = 'tb'
+    AND plat_user_id IN {{shop_names}}
+) AS transfer_msg
+GLOBAL LEFT JOIN (
+    SELECT
+        platform,
         shop_id,
-        shop_name,
-        snick,
-        cnick,
-        real_buyer_nick,
-        plat_goods_ids,
-        acts,
-        msg_times,
-        pre_msg_times,
-        msg_time_delta_mins,
-        is_first_msg_within_sessions,
-        session_nums,
-        msgs,
-        msg_ids
-    FROM (
-        SELECT
-            day,
-            platform,
-            shop_id,
-            shop_name,
-            snick,
-            cnick,
-            real_buyer_nick,
-            groupArray(plat_goods_id) AS plat_goods_ids,
-            groupArray(act) AS acts,
-            groupArray(msg_time) AS msg_times,
-            arrayPushFront(arrayPopBack(msg_times), toDateTime(1)) AS pre_msg_times,
-            arrayMap((x,y)->( (toDateTime(x)-toDateTime(y))/60 ), msg_times, pre_msg_times) AS msg_time_delta_mins,
-            arrayMap((x) -> (IF(x>10, 1, 0)), msg_time_delta_mins) AS is_first_msg_within_sessions,
-            arrayMap((x,y)->(arraySum(arraySlice(is_first_msg_within_sessions, 1, y))), is_first_msg_within_sessions, arrayEnumerate(is_first_msg_within_sessions)) AS session_nums,
-            groupArray(msg) AS msgs,
-            groupArray(msg_id) AS msg_ids
-        FROM (
-            SELECT
-                day,
-                platform,
-                shop_id,
-                '方太官方旗舰店' AS shop_name,
-                replaceOne(snick,'cntaobao','') AS snick,
-                replaceOne(cnick,'cntaobao','') AS cnick,
-                real_buyer_nick,
-                plat_goods_id,
-                act,
-                msg_time,
-                msg,
-                msg_id
-            FROM ft_ods.xdrs_logs_all
-            WHERE day BETWEEN 20220911 AND 20220918
-            AND platform = 'tb'
-            AND shop_id = '5cac112e98ef4100118a9c9f'
-            AND act IN ['send_msg', 'recv_msg']
-            ORDER BY day, platform, shop_id, snick, cnick, real_buyer_nick, msg_time
-        ) AS message_info
-        GROUP BY day, platform, shop_id, shop_name, snick, cnick, real_buyer_nick
-    ) AS session_info
-) AS session_detail_info
-ARRAY JOIN
-    plat_goods_ids AS plat_goods_id,
-    acts AS act,
-    msg_times AS msg_time,
-    pre_msg_times AS pre_msg_time,
-    msg_time_delta_mins AS msg_time_delta_min,
-    is_first_msg_within_sessions AS is_first_msg_within_session,
-    session_nums AS session_num,
-    msgs AS msg,
-    msg_ids AS msg_id
-;
+        shop_name
+    FROM numbers(1)
+    ARRAY JOIN
+        {{platforms}} AS platform,
+        {{shop_ids}} AS shop_id,
+        {{shop_names}} AS shop_name
+) AS shop_info
+USING(platform, shop_name)
 
 -- 等待数据写入
 SELECT sleep(3);

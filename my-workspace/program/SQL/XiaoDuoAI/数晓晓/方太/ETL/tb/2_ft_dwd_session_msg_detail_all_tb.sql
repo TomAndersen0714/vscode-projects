@@ -1,4 +1,8 @@
 -- 方太淘宝会话切分
+ALTER TABLE ft_dwd.session_msg_detail_local ON CLUSTER cluster_3s_2r DROP PARTITION {ds_nodash};
+
+SELECT sleep(3);
+
 INSERT INTO ft_dwd.session_msg_detail_all
 SELECT
     day, platform, shop_id, shop_name,
@@ -53,19 +57,19 @@ FROM (
                 day,
                 platform,
                 shop_id,
-                '{{shop_name}}' AS shop_name,
+                '{shop_name}' AS shop_name,
                 replaceOne(snick,'cntaobao','') AS snick,
                 replaceOne(cnick,'cntaobao','') AS cnick,
                 real_buyer_nick,
-                plat_goods_id,
+                IF(act='send_msg', extract(extract(msg, '[^a-z_]*id=[0-9]+'),'[0-9]+'), plat_goods_id) AS plat_goods_id,
                 act,
                 msg_time,
                 msg,
                 msg_id
             FROM ft_ods.xdrs_logs_all
-            WHERE day = {{ds_nodash}}
+            WHERE day = {ds_nodash}
             AND platform = 'tb'
-            AND shop_id = '{{shop_id}}'
+            AND shop_id = '{shop_id}'
             AND act IN ['send_msg', 'recv_msg']
             ORDER BY day, platform, shop_id, snick, cnick, real_buyer_nick, msg_time
         ) AS message_info
