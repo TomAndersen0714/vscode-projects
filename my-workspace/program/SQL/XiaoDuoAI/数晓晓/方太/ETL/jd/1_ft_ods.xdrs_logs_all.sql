@@ -51,7 +51,7 @@ SELECT
 FROM ods.xdrs_logs_all
 WHERE day = {{ds_nodash}}
 AND platform = 'jd'
-AND shop_id IN '{{shop_ids}}';
+AND shop_id IN {{shop_ids}};
 
 
 -- 等待数据写入
