@@ -27,7 +27,7 @@ SELECT
     platform,day,shop_id
 FROM (
     SELECT *
-    FROM xqc_ods.alert_all FINAL
+    FROM xqc_ods.alert_all
         -- 已订阅店铺
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
         AND toYYYYMMDD(toDate('{{ day.end=today }}'))
@@ -80,6 +80,8 @@ FROM (
         OR
         cnick LIKE '%{{ search_string }}%'
     )
+    ORDER BY update_time DESC
+    LIMIT 1 BY id
 ) AS alert_info
 GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息

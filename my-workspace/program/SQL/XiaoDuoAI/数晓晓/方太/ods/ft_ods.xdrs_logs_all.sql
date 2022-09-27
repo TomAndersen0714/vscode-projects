@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS ft_ods ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary
+
 -- DROP TABLE ft_ods.xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE ft_ods.xdrs_logs_local ON CLUSTER cluster_3s_2r
 (

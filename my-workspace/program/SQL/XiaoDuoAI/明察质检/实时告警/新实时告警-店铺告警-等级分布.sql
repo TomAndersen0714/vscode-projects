@@ -11,7 +11,7 @@ FROM (
     SELECT
         id,
         if(level>3, 4, level) AS level
-    FROM xqc_ods.alert_all FINAL
+    FROM xqc_ods.alert_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
         AND toYYYYMMDD(toDate('{{ day.end=today }}'))
         -- 过滤旧版标准
@@ -20,7 +20,7 @@ FROM (
         AND shop_id GLOBAL IN (
             SELECT tenant_id AS shop_id
             FROM xqc_dim.company_tenant
-            WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+            WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             AND platform = '{{ platform=tb }}'
         )
         -- 权限隔离
@@ -37,6 +37,20 @@ FROM (
             OR
             shop_id IN splitByChar(',','{{ shop_ids }}')
         )
+        -- 下拉框-告警等级
+        AND (
+            '{{ levels }}' = ''
+            OR
+            toString(level) IN splitByChar(',','{{ levels }}')
+        )
+        -- 下拉框-告警项
+        AND (
+            '{{ warning_types }}' = ''
+            OR
+            warning_type IN splitByChar(',','{{ warning_types }}')
+        )
+    ORDER BY update_time DESC
+    LIMIT 1 BY id
 ) AS alert_info
 group by level
 order by level DESC, alert_cnt desc
