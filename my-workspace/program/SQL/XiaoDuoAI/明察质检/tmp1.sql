@@ -1,30 +1,88 @@
-SELECT
-    msg_time_delta_min_within_session,
-    COUNT(1) AS cnt
-FROM (
-    SELECT
-        day, platform, shop_id, snick, cnick,
-        groupArray(msg_time) AS msg_times,
-        arrayPushFront(arrayPopBack(msg_times), msg_times[1]) AS pre_msg_times,
-        arrayMap((x,y)->( toInt32((toDateTime(x)-toDateTime(y))/60) ), msg_times, pre_msg_times) AS msg_time_delta_mins_within_session
-    FROM (
-        SELECT 
-            day, platform, shop_id, snick, cnick, msg_time
-        FROM ods.xdrs_logs_all
-        WHERE day = {{ds_nodash}}
+-- 新实时告警-店铺告警-实时告警项
+WITH (
+    -- 告警总量
+    SELECT COUNT(1)
+    FROM xqc_ods.alert_all FINAL
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) AND toYYYYMMDD(toDate('{{ day.end=today }}')) -- 已订阅店铺
         AND shop_id GLOBAL IN (
-            SELECT DISTINCT
-                shop_id
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id }}'
-            AND platform = 'tb'
+            SELECT tenant_id AS shop_id
+            FROM xqc_dim.company_tenant
+            WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+            AND platform = '{{ platform=tb }}'
+        ) -- 权限隔离
+        AND (
+            shop_id IN splitByChar(',','{{ shop_id_list=5bfe7a6a89bc4612f16586a5,5e7dbfa6e4f3320016e9b7d1 }}')
+            OR
+            snick IN splitByChar(',', '{{ snick_list=null }}')
+        ) -- 下拉框筛选
+        AND platform = '{{ platform=tb }}'
+        AND seller_nick = '{{ shop_name=杜可风按 }}'
+        AND if(
+            {{ level=-1 }} != -1,
+            level = {{ level=-1 }},
+            level IN [1,2,3]
         )
-        ORDER BY day, platform, shop_id, snick, cnick, msg_time ASC
-    ) AS msg_info
-    GROUP BY day, platform, shop_id, snick, cnick
-) AS msg_time_info
-ARRAY JOIN
-    msg_time_delta_mins_within_session AS msg_time_delta_min_within_session
-GROUP BY msg_time_delta_min_within_session
-ORDER BY msg_time_delta_min_within_session
+        AND if(
+            '{{ warning_type }}' != '全部',
+            warning_type = '{{ warning_type }}',
+            warning_type != ''
+        )
+) AS all_alert_sum
+SELECT
+    `level`,
+    warning_type as `告警项`,
+    sum(1) AS level_type_alert_cnt,
+    level_type_alert_cnt AS `告警量`,
+    CONCAT(
+        toString(
+            if(
+                all_alert_sum != 0,
+                round(level_type_alert_cnt / all_alert_sum * 100, 2),
+                0.00
+            )
+        ),
+        '%'
+    ) AS `告警占比`,
+    sum(is_finished = 'False') AS not_finished_level_type_alert_cnt,
+    not_finished_level_type_alert_cnt AS `未处理量`,
+    CONCAT(
+        toString(
+            if(
+                level_type_alert_cnt != 0,
+                round((level_type_alert_cnt - not_finished_level_type_alert_cnt) / level_type_alert_cnt * 100,2),
+                0.00
+            )
+        ),
+        '%'
+    ) AS `完结率`
+FROM xqc_ods.alert_all FINAL
+WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) AND toYYYYMMDD(toDate('{{ day.end=today }}')) -- 已订阅店铺
+    AND shop_id GLOBAL IN (
+        SELECT tenant_id AS shop_id
+        FROM xqc_dim.company_tenant
+        WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
+            AND platform = '{{ platform=tb }}'
+    ) -- 权限隔离
+    AND (
+        shop_id IN splitByChar(
+            ',',
+            '{{ shop_id_list=5bfe7a6a89bc4612f16586a5,5e7dbfa6e4f3320016e9b7d1 }}'
+        )
+        OR snick IN splitByChar(',', '{{ snick_list=null }}')
+    ) -- 下拉框筛选
+    AND platform = '{{ platform=tb }}'
+    AND seller_nick = '{{ shop_name=杜可风按 }}'
+    AND if(
+        {{ level=-1 }} != -1,
+        level = {{ level=-1 }},
+        level IN [1,2,3]
+    ) -- 告警等级
+    AND if(
+        '{{ warning_type }}' != '全部',
+        warning_type = '{{ warning_type }}',
+        warning_type != ''
+    ) -- 告警内容
+GROUP BY `level`,
+    warning_type
+ORDER BY `level` DESC,
+    warning_type ASC

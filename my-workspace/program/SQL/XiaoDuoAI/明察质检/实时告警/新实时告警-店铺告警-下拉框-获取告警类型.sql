@@ -1,8 +1,7 @@
--- 新实时告警-店铺告警-会话总量
-SELECT
-    COUNT(1) AS `会话总量`
-FROM
-    xqc_ods.dialog_all
+-- 新实时告警-店铺告警-下拉框-获取告警类型
+SELECT DISTINCT
+    warning_type
+FROM xqc_ods.alert_all
 WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
     AND toYYYYMMDD(toDate('{{ day.end=today }}'))
     -- 已订阅店铺
@@ -10,11 +9,12 @@ WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}'))
         SELECT tenant_id AS shop_id
         FROM xqc_dim.company_tenant
         WHERE company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 下拉框-平台
         AND platform = '{{ platform=tb }}'
     )
     -- 权限隔离
     AND (
-        shop_id IN splitByChar(',','{{ shop_id_list=5cac112e98ef4100118a9c9f,60e4192bf7d2f001ca988e52 }}')
+        shop_id IN splitByChar(',','{{ shop_id_list=5bfe7a6a89bc4612f16586a5,5e7dbfa6e4f3320016e9b7d1 }}')
         OR
         snick IN splitByChar(',','{{ snick_list=null }}')
     )
@@ -26,3 +26,10 @@ WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}'))
         OR
         shop_id IN splitByChar(',','{{ shop_ids }}')
     )
+    -- 下拉框-告警等级
+    AND (
+        '{{ levels }}' = ''
+        OR
+        toString(level) IN splitByChar(',','{{ levels }}')
+    )
+ORDER BY level ASC

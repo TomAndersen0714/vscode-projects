@@ -1,4 +1,4 @@
--- 新实时告警-店铺告警-获取平台
+-- 新实时告警-平台告警-下拉框-获取平台
 SELECT
     plat_info.platform AS platform,
     CASE

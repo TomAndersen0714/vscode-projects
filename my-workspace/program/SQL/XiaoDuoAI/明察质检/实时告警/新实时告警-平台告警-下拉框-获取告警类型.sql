@@ -1,4 +1,4 @@
--- 新实时告警-平台告警-获取告警类型
+-- 新实时告警-平台告警-下拉框-获取告警类型
 SELECT DISTINCT 
     warning_type as `告警类型`
 FROM xqc_ods.alert_all
