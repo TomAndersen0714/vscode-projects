@@ -1,88 +1,30 @@
--- 新实时告警-店铺告警-实时告警项
-WITH (
-    -- 告警总量
-    SELECT COUNT(1)
-    FROM xqc_ods.alert_all FINAL
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) AND toYYYYMMDD(toDate('{{ day.end=today }}')) -- 已订阅店铺
-        AND shop_id GLOBAL IN (
-            SELECT tenant_id AS shop_id
-            FROM xqc_dim.company_tenant
-            WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
-            AND platform = '{{ platform=tb }}'
-        ) -- 权限隔离
-        AND (
-            shop_id IN splitByChar(',','{{ shop_id_list=5bfe7a6a89bc4612f16586a5,5e7dbfa6e4f3320016e9b7d1 }}')
-            OR
-            snick IN splitByChar(',', '{{ snick_list=null }}')
-        ) -- 下拉框筛选
-        AND platform = '{{ platform=tb }}'
-        AND seller_nick = '{{ shop_name=杜可风按 }}'
-        AND if(
-            {{ level=-1 }} != -1,
-            level = {{ level=-1 }},
-            level IN [1,2,3]
-        )
-        AND if(
-            '{{ warning_type }}' != '全部',
-            warning_type = '{{ warning_type }}',
-            warning_type != ''
-        )
-) AS all_alert_sum
-SELECT
-    `level`,
-    warning_type as `告警项`,
-    sum(1) AS level_type_alert_cnt,
-    level_type_alert_cnt AS `告警量`,
-    CONCAT(
-        toString(
-            if(
-                all_alert_sum != 0,
-                round(level_type_alert_cnt / all_alert_sum * 100, 2),
-                0.00
-            )
-        ),
-        '%'
-    ) AS `告警占比`,
-    sum(is_finished = 'False') AS not_finished_level_type_alert_cnt,
-    not_finished_level_type_alert_cnt AS `未处理量`,
-    CONCAT(
-        toString(
-            if(
-                level_type_alert_cnt != 0,
-                round((level_type_alert_cnt - not_finished_level_type_alert_cnt) / level_type_alert_cnt * 100,2),
-                0.00
-            )
-        ),
-        '%'
-    ) AS `完结率`
-FROM xqc_ods.alert_all FINAL
-WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) AND toYYYYMMDD(toDate('{{ day.end=today }}')) -- 已订阅店铺
-    AND shop_id GLOBAL IN (
-        SELECT tenant_id AS shop_id
-        FROM xqc_dim.company_tenant
-        WHERE company_id = '{{ company_id=5f73e9c1684bf70001413636 }}'
-            AND platform = '{{ platform=tb }}'
-    ) -- 权限隔离
-    AND (
-        shop_id IN splitByChar(
-            ',',
-            '{{ shop_id_list=5bfe7a6a89bc4612f16586a5,5e7dbfa6e4f3320016e9b7d1 }}'
-        )
-        OR snick IN splitByChar(',', '{{ snick_list=null }}')
-    ) -- 下拉框筛选
-    AND platform = '{{ platform=tb }}'
-    AND seller_nick = '{{ shop_name=杜可风按 }}'
-    AND if(
-        {{ level=-1 }} != -1,
-        level = {{ level=-1 }},
-        level IN [1,2,3]
-    ) -- 告警等级
-    AND if(
-        '{{ warning_type }}' != '全部',
-        warning_type = '{{ warning_type }}',
-        warning_type != ''
-    ) -- 告警内容
-GROUP BY `level`,
-    warning_type
-ORDER BY `level` DESC,
-    warning_type ASC
+CREATE DATABASE IF NOT EXISTS cdp_ods ON CLUSTER cluster_3s_2r ENGINE = Ordinary
+
+-- DROP TABLE cdp_ods.ownership_snapshot_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE cdp_ods.ownership_snapshot_local ON CLUSTER cluster_3s_2r
+(
+    `platform` String,
+    `shop_id` String,
+    `cnick_id` String,
+    `cnick` String,
+    `snick` String,
+    `level` Int32,
+    `day` Int32
+) ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+)
+PARTITION BY day
+ORDER BY (platform, shop_id)
+SETTINGS index_granularity = 8192, storage_policy='rr'
+
+
+-- DROP TABLE cdp_ods.ownership_snapshot_all ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE cdp_ods.ownership_snapshot_all ON CLUSTER cluster_3s_2r
+AS cdp_ods.ownership_snapshot_local
+ENGINE = Distributed('cluster_3s_2r', 'cdp_ods', 'ownership_snapshot_local', rand())
+
+-- DROP TABLE buffer.cdp_ods_ownership_snapshot_buffer ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE buffer.cdp_ods_ownership_snapshot_buffer ON CLUSTER cluster_3s_2r
+AS cdp_ods.ownership_snapshot_all
+ENGINE = Buffer('cdp_ods', 'ownership_snapshot_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
