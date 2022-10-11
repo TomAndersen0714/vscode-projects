@@ -27,9 +27,9 @@ SELECT
     platform,day,shop_id
 FROM (
     SELECT *
-    FROM xqc_ods.alert_all
+    FROM xqc_ods.alert_all FINAL
         -- 已订阅店铺
-    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
+    PREWHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=today }}')) 
         AND toYYYYMMDD(toDate('{{ day.end=today }}'))
     -- 过滤旧版标准
     AND level IN [1,2,3]
@@ -66,12 +66,6 @@ FROM (
         OR
         warning_type IN splitByChar(',','{{ warning_types }}')
     )
-    -- 下拉框-告警项处理状态
-    AND (
-        '{{ alert_state }}' = ''
-        OR
-        is_finished IN splitByChar(',','{{ alert_state }}')
-    )
     -- 筛选框-文本框内容
     AND (
         superior_name LIKE '%{{ search_string }}%'
@@ -80,8 +74,12 @@ FROM (
         OR
         cnick LIKE '%{{ search_string }}%'
     )
-    ORDER BY update_time DESC
-    LIMIT 1 BY id
+    -- 下拉框-告警项处理状态
+    WHERE (
+        '{{ alert_state }}' = ''
+        OR
+        is_finished IN splitByChar(',','{{ alert_state }}')
+    )
 ) AS alert_info
 GLOBAL LEFT JOIN (
     -- 关联子账号分组/子账号员工信息

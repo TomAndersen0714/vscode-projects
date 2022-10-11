@@ -60,7 +60,7 @@ CREATE TABLE tmp.xdqc_kefu_stat_daily_local(
 ) ENGINE = MergeTree()
 PARTITION BY (`date`,`platform`)
 ORDER BY (`shop_id`,`snick`) 
-SETTINGS index_granularity=8192,storage_policy='rr'
+SETTINGS index_granularity=8192, storage_policy='rr'
 
 -- Create xqc_ods local table
 CREATE TABLE xqc_ods.xdqc_kefu_stat_local
