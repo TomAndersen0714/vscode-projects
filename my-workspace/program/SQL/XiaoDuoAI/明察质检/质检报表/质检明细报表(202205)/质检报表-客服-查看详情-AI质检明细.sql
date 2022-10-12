@@ -105,6 +105,9 @@ FROM (
                     OR
                     seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
+            -- 筛选AI质检已打标数据
+            AND arraySum(tag_cnts) != 0
+
         ) AS ods_ai_tag
         ARRAY JOIN
             tag_types AS tag_type,

@@ -16,7 +16,7 @@ SELECT
     seller_nick AS `店铺`,
     department_name AS `子账号分组`,
     snick AS `客服子账号`,
-    cnick AS `顾客名称`,
+    if(real_buyer_nick!='', real_buyer_nick, cnick) AS `顾客名称`,
     employee_name AS `客服姓名`,
     superior_name AS `上级姓名`,
 
@@ -31,6 +31,7 @@ FROM (
         seller_nick,
         snick,
         cnick,
+        real_buyer_nick,
         dialog_id,
         arrayMap(x->toString(x), groupArray(tag_name)) AS custom_tag_names,
         arrayMap(x->toString(x), groupArray(tag_sum)) AS custom_tag_cnts
@@ -41,6 +42,7 @@ FROM (
             seller_nick,
             snick,
             cnick,
+            real_buyer_nick,
             dialog_id,
             tag_id,
             SUM(tag_cnt) AS tag_sum
@@ -52,12 +54,41 @@ FROM (
                 seller_nick,
                 snick,
                 cnick,
+                real_buyer_nick,
                 _id AS dialog_id,
-                'custom_subtract' AS tag_type,
-                rule_stats_id AS tag_ids,
-                rule_stats_count AS tag_cnts
+                arrayConcat(
+                    -- 旧版本自定义质检项-扣分项-质检类型
+                    arrayResize(['custom_subtract'], length(rule_stats_id), 'custom_subtract'),
+                    -- 旧版本自定义质检项-加分项-质检类型
+                    arrayResize(['custom_add'], length(rule_add_stats_id), 'custom_add'),
+                    -- 新版本自定义质检项-消息质检项
+                    arrayResize(['custom_message'], length(xrule_stats_id), 'custom_message'),
+                    -- 新版本自定义质检项-会话质检项
+                    arrayResize(['custom_dialog'], length(top_xrules_id), 'custom_dialog')
+                ) AS tag_types,
+                arrayConcat(
+                    -- 旧版本自定义质检项-扣分项-质检项ID
+                    rule_stats_id,
+                    -- 旧版本自定义质检项-加分项-质检项ID
+                    rule_add_stats_id,
+                    -- 新版本自定义质检项-消息质检项-质检项ID
+                    xrule_stats_id,
+                    -- 新版本自定义质检项-会话质检项-质检项ID
+                    top_xrules_id
+                ) AS tag_ids,
+                arrayConcat(
+                    -- 旧版本自定义质检项-扣分项-质检项触发次数
+                    rule_stats_count,
+                    -- 旧版本自定义质检项-加分项-质检项触发次数
+                    rule_add_stats_count,
+                    -- 新版本自定义质检项-消息质检项-质检项触发次数
+                    xrule_stats_count,
+                    -- 新版本自定义质检项-会话质检项-质检项触发次数
+                    top_xrules_count
+                ) AS tag_cnts
             FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
+            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}'))
+                AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
             AND platform = 'tb'
             AND seller_nick GLOBAL IN (
                 -- 查询对应企业-平台的店铺
@@ -73,105 +104,6 @@ FROM (
                     OR
                     seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
             )
-            -- 过滤空数据
-            AND rule_stats_id != []
-    
-            -- 旧版本自定义质检项-加分项
-            UNION ALL
-            SELECT
-                toYYYYMMDD(begin_time) AS day,
-                platform,
-                seller_nick,
-                snick,
-                cnick,
-                _id AS dialog_id,
-                'custom_add' AS tag_type,
-                rule_add_stats_id AS tag_ids,
-                rule_add_stats_count AS tag_cnts
-            FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'tb'
-            AND seller_nick GLOBAL IN (
-                -- 查询对应企业-平台的店铺
-                SELECT DISTINCT seller_nick
-                FROM xqc_dim.xqc_shop_all
-                WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            )
-            -- 下拉框-店铺名
-            AND (
-                    '{{ seller_nicks_ }}'=''
-                    OR
-                    seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
-            )
-            -- 过滤空数据
-            AND rule_add_stats_id != []
-    
-            -- 新版本自定义质检项-消息质检项
-            UNION ALL
-            SELECT
-                toYYYYMMDD(begin_time) AS day,
-                platform,
-                seller_nick,
-                snick,
-                cnick,
-                _id AS dialog_id,
-                'custom_message' AS tag_type,
-                xrule_stats_id AS tag_ids,
-                xrule_stats_count AS tag_cnts
-            FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'tb'
-            AND seller_nick GLOBAL IN (
-                -- 查询对应企业-平台的店铺
-                SELECT DISTINCT seller_nick
-                FROM xqc_dim.xqc_shop_all
-                WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            )
-            -- 下拉框-店铺名
-            AND (
-                    '{{ seller_nicks_ }}'=''
-                    OR
-                    seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
-            )
-            -- 过滤空数据
-            AND xrule_stats_id != []
-    
-            -- 新版本自定义质检项-会话质检项
-            UNION ALL
-            SELECT
-                toYYYYMMDD(begin_time) AS day,
-                platform,
-                seller_nick,
-                snick,
-                cnick,
-                _id AS dialog_id,
-                'custom_dialog' AS tag_type,
-                top_xrules_id AS tag_ids,
-                top_xrules_count AS tag_cnts
-            FROM dwd.xdqc_dialog_all
-            WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start_=week_ago }}')) AND toYYYYMMDD(toDate('{{ day.end_=yesterday }}'))
-            AND platform = 'tb'
-            AND seller_nick GLOBAL IN (
-                -- 查询对应企业-平台的店铺
-                SELECT DISTINCT seller_nick
-                FROM xqc_dim.xqc_shop_all
-                WHERE day=toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            )
-            -- 下拉框-店铺名
-            AND (
-                    '{{ seller_nicks_ }}'=''
-                    OR
-                    seller_nick IN splitByChar(',','{{ seller_nicks_ }}')
-            )
-            -- 过滤空数据
-            AND top_xrules_id != []
-    
         ) AS ods_custom_tag
         ARRAY JOIN
             tag_ids AS tag_id,
@@ -192,8 +124,8 @@ FROM (
             snick IN splitByChar(',','{{ snicks_ }}')
         )
         -- 排除空数据
-        AND tag_id!='' AND tag_cnt!=0
-        GROUP BY day, platform, seller_nick, snick, cnick, dialog_id, tag_id 
+        AND tag_cnt!=0
+        GROUP BY day, platform, seller_nick, snick, cnick, real_buyer_nick, dialog_id, tag_id 
     ) AS ods_custom_tag
     GLOBAL LEFT JOIN (
         -- 查询自定义质检项
@@ -202,42 +134,19 @@ FROM (
             name AS tag_name
         FROM xqc_dim.qc_rule_all
         WHERE day = toYYYYMMDD(yesterday())
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         AND rule_category = 3
     ) AS dim_tag
     USING(tag_id)
-    GROUP BY day, platform, seller_nick, snick, cnick, dialog_id
+    GROUP BY day, platform, seller_nick, snick, cnick, real_buyer_nick, dialog_id
 ) AS ods_custom_tag_stat
 GLOBAL LEFT JOIN (
-    -- 关联子账号分组/子账号员工信息
+    -- 获取子账号完整信息
     SELECT
         snick, employee_name, superior_name, department_id, department_name
-    FROM (
-        SELECT snick, employee_name, superior_name, department_id
-        FROM (
-            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-            SELECT snick, department_id, employee_id
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS snick_info
-        GLOBAL LEFT JOIN (
-            SELECT
-                _id AS employee_id, username AS employee_name, superior_name
-            FROM ods.xinghuan_employee_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS employee_info
-        USING(employee_id)
-    ) AS snick_info
-    GLOBAL RIGHT JOIN (
-        SELECT
-            _id AS department_id, full_name AS department_name
-        FROM xqc_dim.snick_department_full_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS department_info
-    USING (department_id)
+    FROM xqc_dim.snick_full_info_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
 ) AS dim_snick_department
 USING(snick)
 -- 下拉框-客服姓名
