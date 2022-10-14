@@ -49,7 +49,7 @@ CREATE TABLE trino.xdrs_logs_local ON CLUSTER cluster_3s_2r
     `cond_answer_id` String
 )
 ENGINE = ReplicatedMergeTree(
-    '/clickhouse/trino/tables/{layer}_{shard}/xdrs_logs_local',
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
 PARTITION BY day
