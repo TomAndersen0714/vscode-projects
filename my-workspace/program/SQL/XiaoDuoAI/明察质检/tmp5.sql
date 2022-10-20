@@ -1,110 +1,325 @@
--- BG实时概况(会话总量+告警分布+日环比+中高级告警比例+告警完结率) -- PS: 对于BG部门新增/更名的问题,由于所有统计都是下钻到了店铺维度,因此即使BG变更,其环比计算依旧不受影响
-WITH (
-    SELECT toYYYYMMDD(today())
-) AS today,
-(
-    SELECT toYYYYMMDD(yesterday())
-) AS yesterday
-SELECT -- BG部门维度聚合统计
-    bg_name,
-    sum(
-        if(
-            isNull(snick_today_dialog_cnt),
-            0,
-            snick_today_dialog_cnt
-        )
-    ) AS bg_today_dialog_cnt,
-    -- BG当天当前的会话总量
-    sum(
-        if(
-            isNull(snick_yesterday_dialog_cnt),
-            0,
-            snick_yesterday_dialog_cnt
-        )
-    ) AS bg_yesterday_dialog_cnt,
-    -- BG昨天同时刻的会话总量
-    if(
-        bg_yesterday_dialog_cnt != 0,
-        round(
-            sum(diff_dialog_cnt) / bg_yesterday_dialog_cnt * 100,
-            1
-        ),
-        0.0
-    ) AS bg_dialog_relative_ratio,
-    -- BG会话总量日环比(秒级)
-    sum(
-        if(
-            isNull(snick_today_level_1_cnt),
-            0,
-            snick_today_level_1_cnt
-        )
-    ) AS bg_today_level_1_cnt,
-    -- BG当天当前初级告警总量 -- BG告警分布
-    sum(
-        if(
-            isNull(snick_today_level_2_cnt),
-            0,
-            snick_today_level_2_cnt
-        )
-    ) AS bg_today_level_2_cnt,
-    -- BG当天当前中级告警总量 -- BG告警分布
-    sum(
-        if(
-            isNull(snick_today_level_3_cnt),
-            0,
-            snick_today_level_3_cnt
-        )
-    ) AS bg_today_level_3_cnt,
-    -- BG当天当前高级告警总量 -- BG告警分布
-    (
-        bg_today_level_1_cnt + bg_today_level_2_cnt + bg_today_level_3_cnt
-    ) AS bg_today_warning_cnt,
-    -- BG当天当前告警总量
-    if(
-        bg_today_dialog_cnt != 0,
-        round(
-            (bg_today_level_2_cnt + bg_today_level_3_cnt) / bg_today_dialog_cnt * 100,
-            1
-        ),
-        0.0
-    ) AS bg_level_2_3_ratio,
-    -- BG当天当前中高级告警比例
-    sum(
-        if(
-            isNull(snick_today_level_2_finished_cnt),
-            0,
-            snick_today_level_2_finished_cnt
-        )
-    ) AS bg_today_level_2_finished_cnt,
-    -- BG当天当前已完结中级告警总量
-    sum(
-        if(
-            isNull(snick_today_level_3_finished_cnt),
-            0,
-            snick_today_level_3_finished_cnt
-        )
-    ) AS bg_today_level_3_finished_cnt,
-    -- BG当天当前已完结高级告警总量
-    if(
-        bg_today_level_2_cnt != 0,
-        round(
-            bg_today_level_2_finished_cnt / bg_today_level_2_cnt * 100,
-            1
-        ),
-        0.0
-    ) AS bg_level_2_finished_ratio,
-    -- BG当天当前中级告警完结率
-    if(
-        bg_today_level_3_cnt != 0,
-        round(
-            bg_today_level_3_finished_cnt / bg_today_level_3_cnt * 100,
-            1
-        ),
-        0.0
-    ) AS bg_level_3_finished_ratio -- BG当天当前高级告警完结率
+-- SELECT "店铺id",
+--        "组别",
+--        "昵称",
+--        "姓名",
+--        "咨询顾客数",
+--        "有效打标顾客数",
+--        "新增顾客打标率",
+--        "日期",
+--       --  arrayStringConcat(groupArray("标签组"),'$$') AS "标签组",
+--        arrayStringConcat(groupArray("标签"),'$$') AS "标签",
+--        arrayStringConcat(groupArray("数量"),'$$') AS "数量"
+-- FROM
+--   (SELECT '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' AS "店铺id",
+--           t1.`day` AS "日期",
+--           t4.name AS "组别",
+--           t1.snick AS "昵称",
+--           t3.name AS "姓名",
+--           t1.uv AS "咨询顾客数",
+--           t1.effective_tag_uv AS "有效打标顾客数",
+--           t1.effective_tag_rat AS "新增顾客打标率",
+--           t2.group_name AS "标签组",
+--           if ("标签组" = '产品需求',concat(t2.tag_name,'(自动)'),concat(t2.tag_name,'(人工)')) as "标签",
+--           -- t2.tag_name AS "标签",
+--           toString(t2.tag_cnt) AS "数量"
+--    FROM
+--      (SELECT t1.`day` AS `day`,
+--              t1.snick,
+--              t1.uv AS uv,
+--              t2.effective_tag_uv AS effective_tag_uv,
+--              concat(toString(round(effective_tag_uv*100/uv,2)),'%') AS effective_tag_rat
+--       FROM
+--         (SELECT `day`,
+--                 snick,
+--                 uniqExact(cnick) AS uv
+--          FROM sxx_dws.snick_new_ask_detail_daily_all
+--          WHERE  `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+--         AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+--            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+--          GROUP BY `day`,
+--                   snick
+--          ORDER BY `day`,
+--                   snick)t1
+--       INNER JOIN
+--         (SELECT t1.`day` AS `day`,
+--                 t1.snick AS snick,
+--                 uniqExact(t1.cnick) AS effective_tag_uv
+--          FROM
+--            (SELECT `day`,
+--                    snick,
+--                    shop_id,
+--                    cnick
+--             FROM sxx_dws.snick_new_ask_detail_daily_all
+--             WHERE  `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+--         AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+--               AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' )t1
+--          JOIN
+--            (SELECT `day`,
+--                    cnick,
+--                    shop_id,
+--                    tag_id
+--             FROM cdp_ods.tag_snapshot_all)t2 ON t1.`day`=t2.`day`
+--          AND t1.shop_id=t2.shop_id
+--          AND t1.cnick=t2.cnick
+--          JOIN
+--            (SELECT tag_id,
+--                    shop_id,
+--                    group_name
+--             FROM cdp_dim.wt_tag_all
+--             WHERE group_name IN ('意向等级',
+--                                  '无效咨询'))t3 ON t2.tag_id=t3.tag_id
+--          AND t2.shop_id=t3.shop_id
+--          GROUP BY t1.`day`,
+--                   t1.snick
+--          ORDER BY t1.`day`,
+--                   t1.snick)t2 USING (`day`,
+--                                      snick)
+--       ORDER BY t1.`day`,
+--                snick)t1
+--    LEFT JOIN
+--      (SELECT t1.`day` AS `day`,
+--              t1.snick AS snick,
+--              t3.group_name AS group_name,
+--              t3.tag_name AS tag_name,
+--              uniqExact(t1.cnick) AS tag_cnt
+--       FROM
+--         (SELECT `day`,
+--                 snick,
+--                 shop_id,
+--                 cnick
+--          FROM sxx_dws.snick_new_ask_detail_daily_all
+--          WHERE  `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+--         AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+--            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' )t1
+--       JOIN
+--         (SELECT `day`,
+--                 shop_id,
+--                 cnick,
+--                 tag_id
+--          FROM cdp_ods.tag_snapshot_all)t2 ON t1.`day`=t2.`day`
+--       AND t1.shop_id=t2.shop_id
+--       AND t1.cnick=t2.cnick
+--       JOIN
+--         (SELECT tag_id,
+--                 shop_id,
+--                 group_name,
+--                 tag_name
+--          FROM cdp_dim.wt_tag_all)t3 ON t2.tag_id=t3.tag_id
+--       AND t2.shop_id=t3.shop_id
+--       GROUP BY t1.`day`,
+--                t1.snick,
+--                t3.group_name,
+--                t3.tag_name
+--       ORDER BY t1.`day`,
+--                t1.snick,
+--                t3.group_name,
+--                t3.tag_name)t2 ON t1.`day`=t2.`day`
+--    AND t1.snick=t2.snick
+--    LEFT JOIN
+--      (SELECT snick,
+--              argMax(name, `day`) AS name
+--       FROM sxx_ods.snick_relation_daily_all
+--       WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+--       GROUP BY snick)t3 ON t1.snick=t3.snick
+--    LEFT JOIN
+--      (SELECT splitByChar(':',subnick)[2] AS snick,
+--              argMax(name, `day`) AS name
+--       FROM ods.sub_user_group_all
+--       WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+--       GROUP BY subnick)t4 ON t1.snick=t4.snick
+--    ORDER BY t1.`day`,
+--             t1.snick,
+--             t2.group_name,
+--             t2.tag_name)
+-- GROUP BY "店铺id",
+--          "组别",
+--          "昵称",
+--          "姓名",
+--          "咨询顾客数",
+--          "有效打标顾客数",
+--          "新增顾客打标率",
+--          "日期"
+-- order by "日期" desc
+SELECT "店铺id",
+    "组别",
+    "昵称",
+    "姓名",
+    "新增咨询人数",
+    "有效打标顾客数",
+    "新增顾客打标率",
+    "日期",
+    --  arrayStringConcat(groupArray("标签组"),'$$') AS "标签组",
+    arrayStringConcat(groupArray("标签"), '$$') AS "标签",
+    arrayStringConcat(groupArray("数量"), '$$') AS "数量"
 FROM (
-        -- bg_name--shop_id
-        SELECT bg_name,
-            shop_id
+        SELECT '6143f37218f6b6000e173bc3' AS "店铺id",
+            t1.`day` AS "日期",
+            t4.name AS "组别",
+            t1.snick AS "昵称",
+            t3.name AS "姓名",
+            t1.uv AS "新增咨询人数",
+            t1.effective_tag_uv AS "有效打标顾客数",
+            t1.effective_tag_rat AS "新增顾客打标率",
+            t2.group_name AS "标签组",
+            if (
+                "标签组" = '产品需求',
+                concat(t2.tag_name, '(自动)'),
+                concat(t2.tag_name, '(人工)')
+            ) as "标签",
+            --   t2.tag_name AS "标签",
+            toString(t2.tag_cnt) AS "数量"
         FROM (
-                -- bg_name--bg_id SELECT department_name AS bg_name, department_id AS bg_id FROM xqc_dim.group_all WHERE company_id = '6131e6554524490001fc6825' AND level = 1 AND is_shop = 'False' ) GLOBAL LEFT JOIN ( -- bg_id--shop_id SELECT DISTINCT parent_department_path[1] AS bg_id, department_id AS shop_id FROM xqc_dim.group_all WHERE company_id = '6131e6554524490001fc6825' AND is_shop = 'True' ) USING bg_id ) AS bg_shop GLOBAL LEFT JOIN ( -- 子账号维度聚合统计 -- shop_id--snick--statistic SELECT * FROM ( -- 子账号维度今天和昨天会话数据聚合统计 -- shop_id--snick--statistic SELECT shop_id, snick, sum(day = yesterday AND substr(`time`,11)<=substr(toString(now()),11)) AS snick_yesterday_dialog_cnt, -- 子账号昨天同时刻会话总量 sum(day = today) AS snick_today_dialog_cnt, -- 子账号当天当前会话总量 (snick_today_dialog_cnt - snick_yesterday_dialog_cnt) AS diff_dialog_cnt -- 子账号当天和昨天同时刻会话总量差值(后续上卷聚合) FROM xqc_ods.dialog_all WHERE day BETWEEN yesterday AND today -- 组织架构包含店铺 AND shop_id GLOBAL IN ( SELECT department_id AS shop_id FROM xqc_dim.group_all WHERE company_id = '6131e6554524490001fc6825' AND is_shop = 'True' -- AND platform = 'jd' ) -- 权限隔离 AND ( shop_id IN splitByChar(',','61d6a38716bbc36cb34dfd4c,61d6a38716bbc36cb34dfd56,61d6a38716bbc36cb34dfd52,61c193262ba76f001d769b90,6170ddb2abefdb000c773b0a,616d2b651ffab50014d6f922,6172894009841b000fafffc9,616d49b11ffab50016d6fa49,616fccff269ebf000e1b88b0,616e207da08ae900109dcf33,616e1b70abefdb0010773a23,616d282d1ffab50012d6f485,61d6a38716bbc36cb34dfd46,61d6a38716bbc36cb34dfd48,61d6a38716bbc36cb34dfd58,61d6a38716bbc36cb34dfd54,61d6a38716bbc36cb34dfd50,61d6a38716bbc36cb34dfd4a,61d6a38716bbc36cb34dfd4e,616face4a08ae9000e9dd0a9,616f7c6d09841b000eaff41e,61c94f4f6383be001deb8e21,6139c3c96ebd17000e94b5b5,6139e720fb530f0010c19481,613af5f56ebd17000f942ca2,6131c3766ebd17000a93c0cd,614ae633fb530f0010c1b33f,5cd268e42bf9a8000f9301d7,614c21b16ebd170010947761,6139c118e16787000fb8a1cf,618ca3649416a3001c5f413d') OR snick IN splitByChar(',','') ) GROUP BY shop_id, snick ) AS snick_dialog_stat -- 各个子账号两天内的会话统计 GLOBAL LEFT JOIN ( -- 子账号维度当天告警数据聚合统计 -- shop_id--snick--statistic SELECT shop_id, snick, count(1) AS snick_today_warning_cnt, -- 子账号当天当前的告警总量 sum(`level` = 1) AS snick_today_level_1_cnt, -- 子账号当天初级告警量 sum(`level` = 2) AS snick_today_level_2_cnt, -- 子账号当天中级告警量 sum(`level` = 3) AS snick_today_level_3_cnt, -- 子账号当天高级告警量 sum(`level` = 2 AND is_finished = 'True') AS snick_today_level_2_finished_cnt, -- 子账号当天中级已处理告警量 sum(`level` = 3 AND is_finished = 'True') AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量 FROM xqc_ods.alert_all WHERE day = today -- 组织架构包含店铺 AND shop_id GLOBAL IN ( SELECT department_id AS shop_id FROM xqc_dim.group_all WHERE company_id = '6131e6554524490001fc6825' AND is_shop = 'True' -- AND platform = 'jd' ) -- 权限隔离 AND ( shop_id IN splitByChar(',','61d6a38716bbc36cb34dfd4c,61d6a38716bbc36cb34dfd56,61d6a38716bbc36cb34dfd52,61c193262ba76f001d769b90,6170ddb2abefdb000c773b0a,616d2b651ffab50014d6f922,6172894009841b000fafffc9,616d49b11ffab50016d6fa49,616fccff269ebf000e1b88b0,616e207da08ae900109dcf33,616e1b70abefdb0010773a23,616d282d1ffab50012d6f485,61d6a38716bbc36cb34dfd46,61d6a38716bbc36cb34dfd48,61d6a38716bbc36cb34dfd58,61d6a38716bbc36cb34dfd54,61d6a38716bbc36cb34dfd50,61d6a38716bbc36cb34dfd4a,61d6a38716bbc36cb34dfd4e,616face4a08ae9000e9dd0a9,616f7c6d09841b000eaff41e,61c94f4f6383be001deb8e21,6139c3c96ebd17000e94b5b5,6139e720fb530f0010c19481,613af5f56ebd17000f942ca2,6131c3766ebd17000a93c0cd,614ae633fb530f0010c1b33f,5cd268e42bf9a8000f9301d7,614c21b16ebd170010947761,6139c118e16787000fb8a1cf,618ca3649416a3001c5f413d') OR snick IN splitByChar(',','') ) -- 筛选新版本告警 AND `level` IN [1,2,3] GROUP BY shop_id, snick ) AS snick_warning_stat -- 各个子账号当天当前的告警统计 USING shop_id, snick ) AS shop_snick_stat USING shop_id GROUP BY bg_name ORDER BY bg_name ASC LIMIT 8 -- 因为前端UI长度限制,在查询时写死限制8条记录-- trace:40ff107b9a22a7b1fadec0c3f509b1f5
+                SELECT t1.`day` AS `day`,
+                    t1.snick,
+                    t1.uv AS uv,
+                    t2.effective_tag_uv AS effective_tag_uv,
+                    concat(toString(round(effective_tag_uv * 100 / uv, 2)), '%') AS effective_tag_rat
+                FROM (
+                        SELECT `day`,
+                            snick,
+                            uniqExact(cnick) AS uv
+                        FROM sxx_dws.snick_new_ask_detail_daily_all
+                        WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                            AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                        GROUP BY `day`,
+                            snick
+                        ORDER BY `day`,
+                            snick
+                    ) t1
+                    INNER JOIN (
+                        SELECT t1.`day` AS `day`,
+                            t1.snick AS snick,
+                            uniqExact(t1.cnick) AS effective_tag_uv
+                        FROM (
+                                SELECT `day`,
+                                    snick,
+                                    shop_id,
+                                    cnick
+                                FROM sxx_dws.snick_new_ask_detail_daily_all
+                                WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                                    AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                                    AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                            ) t1
+                            JOIN (
+                                SELECT `day`,
+                                    cnick,
+                                    shop_id,
+                                    tag_id
+                                FROM cdp_ods.tag_snapshot_all
+                                WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                                    AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                                    AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                                    AND tag_id GLOBAL IN (
+                                        SELECT DISTINCT tag_id
+                                        FROM cdp_dim.wt_tag_all
+                                        WHERE group_name IN('意向等级', '无效咨询')
+                                            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                                    )
+                                    AND (`day`, cnick) GLOBAL IN (
+                                        SELECT DISTINCT `day`,
+                                            cnick
+                                        FROM sxx_dws.snick_new_ask_detail_daily_all
+                                        WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                                            AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                                            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                                    )
+                            ) t2 ON t1.`day` = t2.`day`
+                            AND t1.shop_id = t2.shop_id
+                            AND t1.cnick = t2.cnick
+                        GROUP BY t1.`day`,
+                            t1.snick
+                        ORDER BY t1.`day`,
+                            t1.snick
+                    ) t2 USING (`day`, snick)
+                ORDER BY t1.`day`,
+                    snick
+            ) t1
+            LEFT JOIN (
+                SELECT t1.`day` AS `day`,
+                    t1.snick AS snick,
+                    t3.group_name AS group_name,
+                    t3.tag_name AS tag_name,
+                    uniqExact(t1.cnick) AS tag_cnt
+                FROM (
+                        SELECT `day`,
+                            snick,
+                            shop_id,
+                            cnick
+                        FROM sxx_dws.snick_new_ask_detail_daily_all
+                        WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                            AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                    ) t1
+                    JOIN (
+                        SELECT `day`,
+                            shop_id,
+                            cnick,
+                            tag_id
+                        FROM cdp_ods.tag_snapshot_all
+                        WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                            AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                            AND (`day`, cnick) GLOBAL IN (
+                                SELECT DISTINCT `day`,
+                                    cnick
+                                FROM sxx_dws.snick_new_ask_detail_daily_all
+                                WHERE `day` >= toYYYYMMDD(toDate('{{ tmp_day.start=7-day-ago }}'))
+                                    AND `day` <= toYYYYMMDD(toDate('{{ tmp_day.start=1-day-ago }}'))
+                                    AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                            )
+                    ) t2 ON t1.`day` = t2.`day`
+                    AND t1.shop_id = t2.shop_id
+                    AND t1.cnick = t2.cnick
+                    JOIN (
+                        SELECT tag_id,
+                            shop_id,
+                            group_name,
+                            tag_name
+                        FROM cdp_dim.wt_tag_all
+                        WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                    ) t3 ON t2.tag_id = t3.tag_id
+                    AND t2.shop_id = t3.shop_id
+                GROUP BY t1.`day`,
+                    t1.snick,
+                    t3.group_name,
+                    t3.tag_name
+                ORDER BY t1.`day`,
+                    t1.snick,
+                    t3.group_name,
+                    t3.tag_name
+            ) t2 ON t1.`day` = t2.`day`
+            AND t1.snick = t2.snick
+            INNER JOIN (
+                SELECT snick,
+                    argMax(name, `day`) AS name
+                FROM sxx_ods.snick_relation_daily_all
+                WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                GROUP BY snick
+            ) t3 ON t1.snick = t3.snick
+            INNER JOIN (
+                SELECT snick,
+                    name1 as name
+                FROM (
+                        SELECT splitByChar(':', subnick) [2] AS snick,
+                            argMax(name, `day`) AS name1
+                        FROM ods.sub_user_group_all
+                        WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+                            and name = '售前全员'
+                        GROUP BY subnick
+                    ) --  WHERE name='售前全员'
+            ) t4 ON t1.snick = t4.snick
+        ORDER BY t1.`day`,
+            t1.snick,
+            t2.group_name,
+            t2.tag_name
+    )
+GROUP BY "店铺id",
+    "组别",
+    "昵称",
+    "姓名",
+    "新增咨询人数",
+    "有效打标顾客数",
+    "新增顾客打标率",
+    "日期"
+order by "日期" desc

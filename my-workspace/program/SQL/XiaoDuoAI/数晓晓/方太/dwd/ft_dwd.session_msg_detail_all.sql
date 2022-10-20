@@ -17,7 +17,8 @@ CREATE TABLE ft_dwd.session_msg_detail_local ON CLUSTER cluster_3s_2r
     `msg_time` DateTime,
     `msg` String,
     `plat_goods_id` String,
-    `is_first_msg_within_session` UInt8
+    `is_first_msg_within_session` UInt8,
+    `send_msg_from` Int32
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',

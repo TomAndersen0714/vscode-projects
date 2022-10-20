@@ -1,47 +1,75 @@
 {
-    'data': [{
-        'created_at': 1659443155404, //创建时间 毫秒时间戳
-        'created_by': '7112333401763397633', //创建者userKey
-        'current_nodes': [{
-            'id': 'state_0', //节点id
-            'name': '产品设计中', //节点名称
-            'owners': ['7114222743955996673'] //节点负责人userKey列表
-        }]
-        'deleted_at': 0, //删除时间戳，毫秒精度
-        'deleted_by': '', //删除人user_key
-        'id': 1118772, //工作项id
-        'multi_texts': None, //富文本详细信息
-        'name': '测试拉群', //工作项名称
-        'pattern': 'Node', //工作流模式;Node节点流，State状态流
-        'project_key': '62b9a391218847b5d28c7648', //空间id
-        'simple_name': 'zljs-2', //空间域名
-        'sub_stage': 'sub_stage_1656575253455', //需求状态(仅需求有值)
-        'template_id': 39912, //使用的模板id
-        'template_type': '62b9a391218847b5d28c7648_template_1656333478512106307', //模板类型
-        'updated_at': 1660880073189, //更新时间 毫秒时间戳
-        'updated_by': '7114196166513868802', //更新者userKey
-        'work_item_status': { //工作项状态(除需求外有值)
-            'history': None
-        },
-        'work_item_type_key': 'story', //工作项类型
-        'workflow_infos': None， //工作项节点流信息(仅在获取工作项详情接口指定了额外参数时返回)
-        'state_times': [{ //节点时间
-            'end_time': 1659443162536,
-            'name': '未开始',
-            'start_time': 1659443155601,
-            'state_key': 'start' //节点key
-        }]
-        'fields': [{ //工作项字段，字段格式可查看
-            'field_alias': 'template',
-            'field_key': 'template',
-            'field_type_key': 'work_item_template',
-            'field_value': { //官方文档还包含其他参数 这边测试的项目未涉及到
-                'id': 39912,
-                'version': 128
+    'common': {
+        'data_dir': '/data2/xdt/data',
+        'log_dir': '/data2/xdt/log'
+    },
+    'sink': {
+        'clickhouse': {
+            'connections': {
+                'clickhouse_bigdata_tb': {
+                    'hosts': None,
+                    'ports': None
+                }
+            },
+            'default_configs': {
+                'buffer_flush_interval_secs': 15
             }
-        }]
-    }]
-    'err': {},
-    'err_code': 0,
-    'err_msg': ''
+        },
+        'hdfs': {
+            'connections': {
+                'hdfs_bigdata_tb': None
+            },
+            'default_configs': {
+                'buffer_flush_interval_secs': 30
+            }
+        },
+        'kudu': {
+            'connections': {
+                'kudu_bigdata_tb': None
+            },
+            'default_configs': {
+                'buffer_flush_interval_secs': 15
+            }
+        }
+    },
+    'source': {
+        'pulsar': {
+            'connections': {
+                'default': {
+                    'subscription': None,
+                    'topic': None,
+                    'url': None
+                },
+                'jd_send_tb': {
+                    'subscription': None,
+                    'topic': 'persistent://bigdata/data_cross/jd_send_tb',
+                    'url': None
+                },
+                'ks_send_tb': {
+                    'subscription': None,
+                    'topic': 'persistent://bigdata/data_cross/ks_send_tb',
+                    'url': None
+                },
+                'mini_send_tb': {
+                    'subscription': None,
+                    'topic': 'persistent://bigdata/data_cross/mini_send_tb',
+                    'url': None
+                },
+                'yz_send_tb': {
+                    'subscription': None,
+                    'topic': 'persistent://bigdata/data_cross/yz_send_tb',
+                    'url': None
+                }
+            },
+            'default_configs': {
+                'concurrency': 1,
+                'subscription': 'bigdata_data_sync',
+                'timeout_millis': 15000,
+                'url': 'pulsar://pulsar-cluster01-slb:6650'
+            }
+        }
+    },
+    'test_config': 'This is a test message'
 }
+
+Process finished with exit code 0

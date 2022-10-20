@@ -1,171 +1,309 @@
--- 客户评价满意度(二期)-统计-评价列表
-SELECT
-    eval_info.*,
-    dim_snick_department.department_name AS department_name,
-    dim_snick_department.employee_name AS employee_name,
+-- SELECT "店铺id",
+--        "组别",
+--        "昵称",
+--        "姓名",
+--        "咨询顾客数",
+--        "有效打标顾客数",
+--        "新增顾客打标率",
+--        "日期",
+--       --  arrayStringConcat(groupArray("标签组"),'$$') AS "标签组",
+--        arrayStringConcat(groupArray("标签"),'$$') AS "标签",
+--        arrayStringConcat(groupArray("数量"),'$$') AS "数量"
+-- FROM
+--   (SELECT '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' AS "店铺id",
+--           t1.`day` AS "日期",
+--           t4.name AS "组别",
+--           t1.snick AS "昵称",
+--           t3.name AS "姓名",
+--           t1.uv AS "咨询顾客数",
+--           t1.effective_tag_uv AS "有效打标顾客数",
+--           t1.effective_tag_rat AS "新增顾客打标率",
+--           t2.group_name AS "标签组",
+--           if ("标签组" = '产品需求',concat(t2.tag_name,'(自动)'),concat(t2.tag_name,'(人工)')) as "标签",
+--           -- t2.tag_name AS "标签",
+--           toString(t2.tag_cnt) AS "数量"
+--    FROM
+--      (SELECT t1.`day` AS `day`,
+--              t1.snick,
+--              t1.uv AS uv,
+--              t2.effective_tag_uv AS effective_tag_uv,
+--              concat(toString(round(effective_tag_uv*100/uv,2)),'%') AS effective_tag_rat
+--       FROM
+--         (SELECT `day`,
+--                 snick,
+--                 uniqExact(cnick) AS uv
+--          FROM sxx_dws.snick_new_ask_detail_daily_all
+--          WHERE  `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+--         AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+--            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+--          GROUP BY `day`,
+--                   snick
+--          ORDER BY `day`,
+--                   snick)t1
+--       INNER JOIN
+--         (SELECT t1.`day` AS `day`,
+--                 t1.snick AS snick,
+--                 uniqExact(t1.cnick) AS effective_tag_uv
+--          FROM
+--            (SELECT `day`,
+--                    snick,
+--                    shop_id,
+--                    cnick
+--             FROM sxx_dws.snick_new_ask_detail_daily_all
+--             WHERE  `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+--         AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+--               AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' )t1
+--          JOIN
+--            (SELECT `day`,
+--                    cnick,
+--                    shop_id,
+--                    tag_id
+--             FROM cdp_ods.tag_snapshot_all)t2 ON t1.`day`=t2.`day`
+--          AND t1.shop_id=t2.shop_id
+--          AND t1.cnick=t2.cnick
+--          JOIN
+--            (SELECT tag_id,
+--                    shop_id,
+--                    group_name
+--             FROM cdp_dim.wt_tag_all
+--             WHERE group_name IN ('意向等级',
+--                                  '无效咨询'))t3 ON t2.tag_id=t3.tag_id
+--          AND t2.shop_id=t3.shop_id
+--          GROUP BY t1.`day`,
+--                   t1.snick
+--          ORDER BY t1.`day`,
+--                   t1.snick)t2 USING (`day`,
+--                                      snick)
+--       ORDER BY t1.`day`,
+--                snick)t1
+--    LEFT JOIN
+--      (SELECT t1.`day` AS `day`,
+--              t1.snick AS snick,
+--              t3.group_name AS group_name,
+--              t3.tag_name AS tag_name,
+--              uniqExact(t1.cnick) AS tag_cnt
+--       FROM
+--         (SELECT `day`,
+--                 snick,
+--                 shop_id,
+--                 cnick
+--          FROM sxx_dws.snick_new_ask_detail_daily_all
+--          WHERE  `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+--         AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+--            AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' )t1
+--       JOIN
+--         (SELECT `day`,
+--                 shop_id,
+--                 cnick,
+--                 tag_id
+--          FROM cdp_ods.tag_snapshot_all)t2 ON t1.`day`=t2.`day`
+--       AND t1.shop_id=t2.shop_id
+--       AND t1.cnick=t2.cnick
+--       JOIN
+--         (SELECT tag_id,
+--                 shop_id,
+--                 group_name,
+--                 tag_name
+--          FROM cdp_dim.wt_tag_all)t3 ON t2.tag_id=t3.tag_id
+--       AND t2.shop_id=t3.shop_id
+--       GROUP BY t1.`day`,
+--                t1.snick,
+--                t3.group_name,
+--                t3.tag_name
+--       ORDER BY t1.`day`,
+--                t1.snick,
+--                t3.group_name,
+--                t3.tag_name)t2 ON t1.`day`=t2.`day`
+--    AND t1.snick=t2.snick
+--    LEFT JOIN
+--      (SELECT snick,
+--              argMax(name, `day`) AS name
+--       FROM sxx_ods.snick_relation_daily_all
+--       WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+--       GROUP BY snick)t3 ON t1.snick=t3.snick
+--    LEFT JOIN
+--      (SELECT splitByChar(':',subnick)[2] AS snick,
+--              argMax(name, `day`) AS name
+--       FROM ods.sub_user_group_all
+--       WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+--       GROUP BY subnick)t4 ON t1.snick=t4.snick
+--    ORDER BY t1.`day`,
+--             t1.snick,
+--             t2.group_name,
+--             t2.tag_name)
+-- GROUP BY "店铺id",
+--          "组别",
+--          "昵称",
+--          "姓名",
+--          "咨询顾客数",
+--          "有效打标顾客数",
+--          "新增顾客打标率",
+--          "日期"
+-- order by "日期" desc
 
-    day AS `日期`,
-    seller_nick AS `店铺`,
-    employee_name AS `客服姓名`,
-    snick AS `客服子账号`,
-    department_name AS `子账号分组`,
 
-    cnick AS `顾客名称`,
-    if(is_invited, send_time, '-') AS `邀评时间`,
-    if(latest_eval_time != '', latest_eval_time, '-') AS `最新评价时间`,
-    CASE
-        WHEN latest_eval_code=0 THEN '非常满意'
-        WHEN latest_eval_code=1 THEN '满意'
-        WHEN latest_eval_code=2 THEN '一般'
-        WHEN latest_eval_code=3 THEN '不满意'
-        WHEN latest_eval_code=4 THEN '非常不满意'
-        ELSE '-'
-    END AS `最新评价结果`,
-    CASE
-        WHEN source=0 THEN '客服邀评'
-        WHEN source=1 THEN '消费者自主评价'
-        WHEN source=2 THEN '系统邀评'
-        ELSE '-'
-    END AS `评价来源`,
-    CASE
-        WHEN (first_eval_code IN (0, 1)) AND (latest_eval_code IN (2, 3, 4)) THEN '满意改不满意'
-        WHEN (first_eval_code IN (2, 3, 4)) AND (latest_eval_code IN (0, 1)) THEN '不满意改满意'
-        ELSE '-'
-    END AS `评价修改记录`,
-    if(
-        (
-            latest_eval_time = ''
-            OR
-            dateDiff('hour', toDateTime(toDateTime64(latest_eval_time, 0)), now()) <= 24
-        ),
-        '是',
-        '否'
-    ) AS `是否可挽回`
 
-FROM (
-    SELECT
-        day,
-        seller_nick,
-        snick,
-        cnick,
-        max(dialog_id) AS dialog_id,
-        source,
-        send_time,
-        is_invited,
 
-        arraySort(groupArrayIf(eval_time, eval_time !='')) AS eval_times,
-        arraySort((x,y)->y, groupArrayIf(eval_code, eval_time != ''), groupArrayIf(eval_time, eval_time != '')) AS eval_codes,
-        toString(eval_times[-1]) AS latest_eval_time,
-        if(latest_eval_time != '', eval_codes[-1], -1) AS latest_eval_code,
-        if(latest_eval_time != '', eval_codes[1], -1) AS first_eval_code
-
-    FROM (
-        SELECT
-            seller_nick,
-            snick,
-            cnick,
-            dialog_id,
-            eval_code,
-            eval_time,
-            send_time,
-            source,
-            if(eval_time != '' AND source = 1, 0, 1) AS is_invited,
-            day
-        FROM xqc_ods.dialog_eval_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-            AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND platform = 'tb'
-        -- 下拉框-店铺
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
-        )
-        -- 当前企业对应的店铺
-        AND seller_nick GLOBAL IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            AND platform = 'tb'
-        )
-        -- 当前企业对应的子账号
-        AND snick GLOBAL IN (
-            SELECT DISTINCT snick
-            FROM (
-                SELECT DISTINCT snick, username
-                FROM ods.xinghuan_employee_snick_all AS snick_info
-                GLOBAL LEFT JOIN (
-                    SELECT distinct
-                        _id AS employee_id, username
-                    FROM ods.xinghuan_employee_all
-                    WHERE day = toYYYYMMDD(yesterday())
-                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                ) AS employee_info
-                USING(employee_id)
-                WHERE day = toYYYYMMDD(yesterday())
-                AND platform = 'tb'
-                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-                -- 下拉框-子账号分组id
-                AND (
-                    '{{ department_ids }}'=''
-                    OR
-                    department_id IN splitByChar(',','{{ department_ids }}')
-                )
-            ) AS snick_employee_info
-            -- 下拉框-客服姓名
-            WHERE (
-                '{{ usernames }}'=''
-                OR
-                username IN splitByChar(',','{{ usernames }}')
-            )
-        )
-    ) AS ods_dialog_eval
-    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
-    -- 单选-评价类型
-    HAVING (
-        ('{{ type=全部 }}'='全部')
-        OR
-        ('{{ type=全部 }}'='未评价' AND latest_eval_time = '')
-        OR
-        ('{{ type=全部 }}'='满意' AND latest_eval_time != '' AND latest_eval_code IN (0, 1))
-        OR
-        ('{{ type=全部 }}'='不满意' AND latest_eval_time != '' AND latest_eval_code IN (2, 3, 4))
-    )
-    ORDER BY latest_eval_time DESC
-    LIMIT 15000
-) AS eval_info
-GLOBAL LEFT JOIN (
-    -- 关联子账号分组/子账号员工信息
-    SELECT
-        snick, employee_name, superior_name, department_id, department_name
-    FROM (
-        SELECT snick, employee_name, superior_name, department_id
-        FROM (
-            -- 查询对应企业-平台的所有子账号及其部门ID, 不论其是否绑定员工
-            SELECT snick, department_id, employee_id
-            FROM ods.xinghuan_employee_snick_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND platform = 'tb'
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS snick_info
-        GLOBAL LEFT JOIN (
-            SELECT
-                _id AS employee_id, username AS employee_name, superior_name
-            FROM ods.xinghuan_employee_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        ) AS employee_info
-        USING(employee_id)
-    ) AS snick_info
-    GLOBAL RIGHT JOIN (
-        SELECT
-            _id AS department_id, full_name AS department_name
-        FROM xqc_dim.snick_department_full_all
-        WHERE day = toYYYYMMDD(yesterday())
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS department_info
-    USING (department_id)
-) AS dim_snick_department
-USING(snick)
+SELECT "店铺id",
+       "组别",
+       "昵称",
+       "姓名",
+       "新增咨询人数",
+       "有效打标顾客数",
+       "新增顾客打标率",
+       "日期",
+      --  arrayStringConcat(groupArray("标签组"),'$$') AS "标签组",
+       arrayStringConcat(groupArray("标签"),'$$') AS "标签",
+       arrayStringConcat(groupArray("数量"),'$$') AS "数量"
+FROM
+  (SELECT '6143f37218f6b6000e173bc3' AS "店铺id",
+       t1.`day` AS "日期",
+       t4.name AS "组别",
+       t1.snick AS "昵称",
+       t3.name AS "姓名",
+       t1.uv AS "新增咨询人数",
+       t1.effective_tag_uv AS "有效打标顾客数",
+       t1.effective_tag_rat AS "新增顾客打标率",
+       t2.group_name AS "标签组",
+       if ("标签组" = '产品需求',concat(t2.tag_name,'(自动)'),concat(t2.tag_name,'(人工)')) as "标签",
+    --   t2.tag_name AS "标签",
+       toString(t2.tag_cnt) AS "数量"
+FROM
+  (SELECT t1.`day` AS `day`,
+          t1.snick,
+          t1.uv AS uv,
+          t2.effective_tag_uv AS effective_tag_uv,
+          concat(toString(round(effective_tag_uv*100/uv,2)),'%') AS effective_tag_rat
+   FROM
+     (SELECT `day`,
+             snick,
+             uniqExact(cnick) AS uv
+      FROM sxx_dws.snick_new_ask_detail_daily_all
+      WHERE `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+        AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+        AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+      GROUP BY `day`,
+               snick
+      ORDER BY `day`,
+               snick)t1
+   INNER JOIN
+     (SELECT t1.`day` AS `day`,
+             t1.snick AS snick,
+             uniqExact(t1.cnick) AS effective_tag_uv
+      FROM
+        (SELECT `day`,
+                snick,
+                shop_id,
+                cnick
+         FROM sxx_dws.snick_new_ask_detail_daily_all
+         WHERE `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+           AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+           AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' )t1
+      JOIN
+        (SELECT `day`,
+                cnick,
+                shop_id,
+                tag_id
+         FROM cdp_ods.tag_snapshot_all
+         WHERE `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+           AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+           AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+           AND tag_id GLOBAL IN
+             (SELECT DISTINCT tag_id
+              FROM cdp_dim.wt_tag_all
+              WHERE group_name IN('意向等级',
+                                  '无效咨询')
+                AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' ) AND (`day`,cnick) GLOBAL IN
+             (SELECT DISTINCT `day`,cnick
+              FROM sxx_dws.snick_new_ask_detail_daily_all
+              WHERE `day`>=cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+                AND `day`<=cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+                AND shop_id= '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'  ) )t2 ON t1.`day`=t2.`day`
+      AND t1.shop_id=t2.shop_id
+      AND t1.cnick=t2.cnick
+      GROUP BY t1.`day`,
+               t1.snick
+      ORDER BY t1.`day`,
+               t1.snick)t2 USING (`day`,
+                                  snick)
+   ORDER BY t1.`day`,
+            snick)t1
+LEFT JOIN
+  (SELECT t1.`day` AS `day`,
+          t1.snick AS snick,
+          t3.group_name AS group_name,
+          t3.tag_name AS tag_name,
+          uniqExact(t1.cnick) AS tag_cnt
+   FROM
+     (SELECT `day`,
+             snick,
+             shop_id,
+             cnick
+      FROM sxx_dws.snick_new_ask_detail_daily_all
+      WHERE `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+        AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+        AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}' )t1
+   JOIN
+     (SELECT `day`,
+             shop_id,
+             cnick,
+             tag_id
+      FROM cdp_ods.tag_snapshot_all
+      WHERE `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+        AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+        AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+        AND (`day`,cnick) GLOBAL IN
+          (SELECT DISTINCT `day`,cnick
+           FROM sxx_dws.snick_new_ask_detail_daily_all
+           WHERE `day` >= cast(replace('{{ tmp_day.start=7-day-ago }}', '-', '') AS int)
+             AND `day` <= cast(replace('{{ tmp_day.end=1-day-ago }}', '-', '') AS int)
+             AND shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}') )t2 ON t1.`day`=t2.`day`
+   AND t1.shop_id=t2.shop_id
+   AND t1.cnick=t2.cnick
+   JOIN
+     (SELECT tag_id,
+             shop_id,
+             group_name,
+             tag_name
+      FROM cdp_dim.wt_tag_all
+      WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}')t3 ON t2.tag_id=t3.tag_id
+   AND t2.shop_id=t3.shop_id
+   GROUP BY t1.`day`,
+            t1.snick,
+            t3.group_name,
+            t3.tag_name
+   ORDER BY t1.`day`,
+            t1.snick,
+            t3.group_name,
+            t3.tag_name)t2 ON t1.`day`=t2.`day`
+AND t1.snick=t2.snick
+INNER JOIN
+  (SELECT snick,
+          argMax(name, `day`) AS name
+   FROM sxx_ods.snick_relation_daily_all
+   WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+   GROUP BY snick)t3 ON t1.snick=t3.snick
+INNER JOIN
+  (SELECT snick,name1 as name
+  FROM
+    (SELECT splitByChar(':',subnick)[2] AS snick,
+          argMax(name, `day`) AS name1
+   FROM ods.sub_user_group_all
+   WHERE shop_id = '{{ shop_id_var=6143f37218f6b6000e173bc3 }}'
+   and name='售前全员'
+   GROUP BY subnick)
+  --  WHERE name='售前全员'
+   )t4 ON t1.snick=t4.snick
+ORDER BY t1.`day`,
+         t1.snick,
+         t2.group_name,
+         t2.tag_name)
+GROUP BY "店铺id",
+         "组别",
+         "昵称",
+         "姓名",
+         "新增咨询人数",
+         "有效打标顾客数",
+         "新增顾客打标率",
+         "日期"
+order by "日期" desc
