@@ -23,6 +23,7 @@ CREATE TABLE ft_dwd.session_detail_local ON CLUSTER cluster_3s_2r
     `send_msg_end_time` String,
     `session_recv_cnt` Int64,
     `session_send_cnt` Int64,
+    `session_m_send_cnt` Int64,
     `has_transfer` Int8,
     `transfer_id` String,
     `transfer_from_snick` String,

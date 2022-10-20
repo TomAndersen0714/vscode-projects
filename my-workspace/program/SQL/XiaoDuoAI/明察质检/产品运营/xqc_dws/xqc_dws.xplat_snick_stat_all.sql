@@ -16,7 +16,7 @@ AS xqc_dws.xplat_snick_stat_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_dws', 'xplat_snick_stat_local', rand())
 
 
--- DROP TABLE buffer.xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r
 AS xqc_dws.xplat_snick_stat_all
 ENGINE = Buffer('xqc_dws', 'xplat_snick_stat_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
