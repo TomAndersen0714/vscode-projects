@@ -23,7 +23,11 @@ CREATE TABLE ft_dwd.session_detail_local ON CLUSTER cluster_3s_2r
     `send_msg_end_time` String,
     `session_recv_cnt` Int64,
     `session_send_cnt` Int64,
-    `session_m_send_cnt` Int64,
+    `m_session_send_cnt` Int64,
+    `qa_cnt` Int32,
+    `qa_reply_intervals_secs` Array(Int32),
+    `m_qa_cnt` Int32,
+    `m_qa_reply_intervals_secs` Array(Int32),
     `has_transfer` Int8,
     `transfer_id` String,
     `transfer_from_snick` String,
@@ -48,3 +52,12 @@ ENGINE = Distributed('cluster_3s_2r', 'ft_dwd', 'session_detail_local', rand())
 CREATE TABLE buffer.ft_dwd_session_detail_buffer ON CLUSTER cluster_3s_2r
 AS ft_dwd.session_detail_all
 ENGINE = Buffer('ft_dwd', 'session_detail_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
+
+
+-- ADD COLUMN
+ALTER TABLE ft_dwd.session_detail_local ON CLUSTER cluster_3s_2r
+ADD COLUMN `m_session_send_cnt` Int64 AFTER `session_send_cnt`,
+ADD COLUMN `qa_cnt` Int32 AFTER `m_session_send_cnt`,
+ADD COLUMN `qa_reply_intervals_secs` Array(Int32) AFTER `qa_cnt`,
+ADD COLUMN `m_qa_cnt` Int32 AFTER `qa_reply_intervals_secs`,
+ADD COLUMN `m_qa_reply_intervals_secs` Array(Int32) AFTER `m_qa_cnt`
