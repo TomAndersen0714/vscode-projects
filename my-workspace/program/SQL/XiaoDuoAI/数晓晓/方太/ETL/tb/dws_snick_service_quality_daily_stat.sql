@@ -28,9 +28,9 @@ FROM (
         SUM(arraySum(qa_reply_intervals_secs)) AS reply_interval_secs_sum,
         SUM(arraySum(m_qa_reply_intervals_secs)) AS m_reply_interval_secs_sum
     FROM ft_dwd.session_detail_all
-    WHERE day = {{ds_nodash}}
-      AND platform = '{{platform}}'
-      AND shop_id = '{{shop_id}}'
+    WHERE day = {ds_nodash}
+    AND platform = '{platform}'
+    AND shop_id = '{shop_id}'
     GROUP BY day, platform, shop_id, snick
 ) AS stat_info
 ARRAY JOIN
