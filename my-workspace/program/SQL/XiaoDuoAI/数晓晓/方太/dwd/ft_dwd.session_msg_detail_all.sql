@@ -15,6 +15,7 @@ CREATE TABLE ft_dwd.session_msg_detail_local ON CLUSTER cluster_3s_2r
     `act` String,
     `msg_id` String,
     `msg_time` DateTime,
+    `create_time` DateTime64(6),
     `msg` String,
     `plat_goods_id` String,
     `is_first_msg_within_session` UInt8,
@@ -38,3 +39,8 @@ ENGINE = Distributed('cluster_3s_2r', 'ft_dwd', 'session_msg_detail_local', rand
 CREATE TABLE buffer.ft_dwd_session_msg_detail_buffer ON CLUSTER cluster_3s_2r
 AS ft_dwd.session_msg_detail_all
 ENGINE = Buffer('ft_dwd', 'session_msg_detail_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
+
+
+-- ADD COLUMN
+ALTER TABLE ft_dwd.session_msg_detail_local ON CLUSTER cluster_3s_2r
+ADD COLUMN `create_time` DateTime64(6) AFTER `msg_time`
