@@ -1,14 +1,29 @@
-    [
-        'recv_cnick_cnt','reply_cnick_cnt','m_reply_cnick_cnt','session_cnt','first_reply_within_thirty_secs_session_cnt',
-        'm_first_reply_within_thirty_secs_session_cnt','recv_msg_cnt','send_msg_cnt','m_send_msg_cnt','qa_sum',
-        'm_qa_sum','reply_interval_secs_sum','m_reply_interval_secs_sum', 
-        'reply_interval_secs_avg', 'm_reply_interval_secs_avg', 'first_reply_within_thirty_secs_session_pct', 'm_first_reply_within_thirty_secs_session_pct',
-        'send_msg_pct', 'm_send_msg_pct', 'reply_cnick_pct', 'm_reply_cnick_pct'
-    ] AS stat_label,
-    [
-        `recv_cnick_cnt`,`reply_cnick_cnt`,`m_reply_cnick_cnt`,`session_cnt`,`first_reply_within_thirty_secs_session_cnt`,
-        `m_first_reply_within_thirty_secs_session_cnt`,`recv_msg_cnt`,`send_msg_cnt`,`m_send_msg_cnt`,`qa_sum`,
-        `m_qa_sum`,`reply_interval_secs_sum`,`m_reply_interval_secs_sum`,
-        `reply_interval_secs_avg`, `m_reply_interval_secs_avg`, `first_reply_within_thirty_secs_session_pct`, `m_first_reply_within_thirty_secs_session_pct`,
-        `send_msg_pct`, `m_send_msg_pct`, `reply_cnick_pct`, `m_reply_cnick_pct`
-    ] AS stat_value
+day
+platform
+shop_id
+shop_name
+session_id
+snick
+cnick
+real_buyer_nick
+focus_goods_ids
+c_active_send_goods_ids
+s_active_send_goods_ids
+session_start_time
+session_end_time
+recv_msg_start_time
+recv_msg_end_time
+send_msg_start_time
+send_msg_end_time
+session_recv_cnt
+session_send_cnt
+m_session_send_cnt
+qa_cnt
+qa_reply_intervals_secs
+m_qa_cnt
+m_qa_reply_intervals_secs
+has_transfer
+transfer_id
+transfer_from_snick
+transfer_to_snick
+transfer_time
