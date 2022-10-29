@@ -1,29 +1,15 @@
-day
-platform
-shop_id
-shop_name
-session_id
-snick
-cnick
-real_buyer_nick
-focus_goods_ids
-c_active_send_goods_ids
-s_active_send_goods_ids
-session_start_time
-session_end_time
-recv_msg_start_time
-recv_msg_end_time
-send_msg_start_time
-send_msg_end_time
-session_recv_cnt
-session_send_cnt
-m_session_send_cnt
-qa_cnt
-qa_reply_intervals_secs
-m_qa_cnt
-m_qa_reply_intervals_secs
-has_transfer
-transfer_id
-transfer_from_snick
-transfer_to_snick
-transfer_time
+SELECT ask_count AS hot,
+    question as question_string,
+    t1.question_type AS question_type,
+    t1.question_id,
+    subcategory_name AS category,
+    msg_examples AS example_string
+FROM xd_stat.presale_day_platform_snick_goods_question AS t1
+    JOIN xd_stat.presale_day_platform_snick_goods_question_msg_example_distinct_by_week AS t2 ON t1.question_id = t2.question_id
+WHERE t1.day between 20221022 and 20221028
+    AND t1.snick_oid = '62aa7ddc1aa2d00017dcd4db'
+    AND t1.plat_goods_id = '10059256512910'
+    AND t2.day = 20221028
+    AND t2.snick_oid = '62aa7ddc1aa2d00017dcd4db'
+    AND t2.plat_goods_id = '10059256512910'
+ORDER BY ask_count DESC;
