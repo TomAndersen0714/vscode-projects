@@ -1,30 +1,112 @@
-SELECT
-    seller_nick,
-    platform,
-    count(DISTINCT snick) AS snick_uv,
-    sum(tagged_dialog_cnt) AS tagged_dialog_cnt,
-    sum(ai_tagged_dialog_cnt) AS ai_tagged_dialog_cnt,
-    sum(custom_tagged_dialog_cnt) AS custom_tagged_dialog_cnt,
-    sum(manual_tagged_dialog_cnt) AS manual_tagged_dialog_cnt,
-    sum(subtract_score_dialog_cnt) AS subtract_score_dialog_cnt,
-    sum(add_score_dialog_cnt) AS add_score_dialog_cnt,
-    sum(subtract_score_sum) AS subtract_score_sum,
-    sum(subtract_score_sum) AS subtract_score_sum,
-    sum(add_score_sum) AS add_score_sum,
-    sum(ai_subtract_score_sum) AS ai_subtract_score_sum,
-    sum(ai_add_score_sum) AS ai_add_score_sum,
-    sum(custom_subtract_score_sum) AS custom_subtract_score_sum,
-    sum(custom_add_score_sum) AS custom_add_score_sum,
-    sum(manual_subtract_score_sum) AS manual_subtract_score_sum,
-    sum(manual_add_score_sum) AS manual_add_score_sum,
-    sum(dialog_cnt) AS dialog_cnt,
-    sum(manual_marked_dialog_cnt) AS manual_marked_dialog_cnt,
-    sum(ai_subtract_score_dialog_cnt) AS ai_subtract_score_dialog_cnt,
-    sum(ai_add_score_dialog_cnt) AS ai_add_score_dialog_cnt,
-    sum(custom_subtract_score_dialog_cnt) AS custom_subtract_score_dialog_cnt,
-    sum(custom_add_score_dialog_cnt) AS custom_add_score_dialog_cnt,
-    sum(manual_subtract_score_dialog_cnt) AS manual_subtract_score_dialog_cnt,
-    sum(manual_add_score_dialog_cnt) AS manual_add_score_dialog_cnt
-FROM xqc_dws.xplat_snick_stat_all
-WHERE day = 20221001
-GROUP BY seller_nick, platform
+day
+UInt32
+platform
+String
+seller_nick
+String
+snick
+String
+abnormal_type_1_cnt
+UInt64
+abnormal_type_2_cnt
+UInt64
+abnormal_type_3_cnt
+UInt64
+abnormal_type_4_cnt
+UInt64
+abnormal_type_5_cnt
+UInt64
+abnormal_type_6_cnt
+UInt64
+abnormal_type_7_cnt
+UInt64
+abnormal_type_8_cnt
+UInt64
+abnormal_type_9_cnt
+UInt64
+abnormal_type_10_cnt
+UInt64
+abnormal_type_11_cnt
+UInt64
+abnormal_type_12_cnt
+UInt64
+abnormal_type_13_cnt
+UInt64
+abnormal_type_14_cnt
+UInt64
+abnormal_type_15_cnt
+UInt64
+abnormal_type_16_cnt
+UInt64
+abnormal_type_17_cnt
+UInt64
+abnormal_type_18_cnt
+UInt64
+abnormal_type_19_cnt
+UInt64
+abnormal_type_20_cnt
+UInt64
+abnormal_type_21_cnt
+UInt64
+abnormal_type_22_cnt
+UInt64
+abnormal_type_23_cnt
+UInt64
+abnormal_type_24_cnt
+UInt64
+abnormal_type_25_cnt
+UInt64
+abnormal_type_26_cnt
+UInt64
+abnormal_type_27_cnt
+UInt64
+abnormal_type_28_cnt
+UInt64
+abnormal_type_29_cnt
+UInt64
+excellent_type_1_cnt
+UInt64
+excellent_type_2_cnt
+UInt64
+excellent_type_3_cnt
+UInt64
+excellent_type_4_cnt
+UInt64
+excellent_type_5_cnt
+UInt64
+excellent_type_6_cnt
+UInt64
+excellent_type_7_cnt
+UInt64
+excellent_type_8_cnt
+UInt64
+excellent_type_9_cnt
+UInt64
+excellent_type_10_cnt
+UInt64
+excellent_type_11_cnt
+UInt64
+excellent_type_12_cnt
+UInt64
+excellent_type_13_cnt
+UInt64
+c_emotion_type_1_cnt
+UInt64
+c_emotion_type_2_cnt
+UInt64
+c_emotion_type_3_cnt
+UInt64
+c_emotion_type_4_cnt
+UInt64
+c_emotion_type_5_cnt
+UInt64
+c_emotion_type_6_cnt
+UInt64
+c_emotion_type_7_cnt
+UInt64
+c_emotion_type_8_cnt
+UInt64
+c_emotion_type_9_cnt
+UInt64
+s_emotion_type_8_cnt
+UInt64

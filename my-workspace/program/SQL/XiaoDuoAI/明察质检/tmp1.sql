@@ -9,3 +9,4 @@ wget znzjk-133216-prod-mini-bigdata-bigdata:19000
 wget v1mini-bigdata-002:19000
 wget v1mini-bigdata-003:19000
 wget mini-bigdata-004:19000
+
