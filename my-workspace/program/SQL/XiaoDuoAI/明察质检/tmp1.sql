@@ -1,12 +1,31 @@
-docker cp 7a6838cfcc45:/etc/hosts ./7a6838cfcc45_hosts
-docker exec -it --user root 7a6838cfcc45 bash -c "echo '10.22.133.216 znzjk-133216-prod-mini-bigdata-bigdata' >> /etc/hosts"
+CREATE DATABASE IF NOT EXISTS tmp ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary
+
+-- DROP TABLE tmp.xqc_dws_dialog_eval_stat_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE tmp.xqc_dws_dialog_eval_stat_local ON CLUSTER cluster_3s_2r
+(
+    `day` Int32,
+    `platform` String,
+    `seller_nick` String,
+    `snick` String,
+    `eval_code` Int32,
+    `eval_cnt` Int64,
+    `dialog_cnt` Int64
+)
+ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+)
+ORDER BY (day, platform, seller_nick)
+SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 
+-- DROP TABLE tmp.xqc_dws_dialog_eval_stat_all ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE tmp.xqc_dws_dialog_eval_stat_all ON CLUSTER cluster_3s_2r
+AS tmp.xqc_dws_dialog_eval_stat_local
+ENGINE = Distributed('cluster_3s_2r', 'tmp', 'xqc_dws_dialog_eval_stat_local', rand())
 
-wget znzjk-113174-prod-mini-bigdata-bigdata:19000
-wget znzjk-113175-prod-mini-bigdata-bigdata:19000
-wget znzjk-133216-prod-mini-bigdata-bigdata:19000
-wget v1mini-bigdata-002:19000
-wget v1mini-bigdata-003:19000
-wget mini-bigdata-004:19000
-
+-- DROP TABLE buffer.tmp_xqc_dws_dialog_eval_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE buffer.tmp_xqc_dws_dialog_eval_stat_buffer ON CLUSTER cluster_3s_2r
+AS tmp.xqc_dws_dialog_eval_stat_all
+ENGINE = Buffer('tmp', 'xqc_dws_dialog_eval_stat_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
