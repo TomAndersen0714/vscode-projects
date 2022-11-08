@@ -52,3 +52,32 @@ ENGINE = Distributed('cluster_3s_2r', 'tmp', 'xqc_dws_xplat_snick_stat_local', r
 CREATE TABLE buffer.tmp_xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r
 AS tmp.xqc_dws_xplat_snick_stat_all
 ENGINE = Buffer('tmp', 'xqc_dws_xplat_snick_stat_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
+
+
+docker exec -i 1b73e87dc75e clickhouse-client --port=19000 --query=\
+"select * from tmp.xqc_dws_xplat_snick_stat_all WHERE day BETWEEN 20220701 AND 20221018 FORMAT Avro" \
+> ./tmp_xqc_dws_xplat_snick_stat_all_20220701_20221018.avro
+
+docker exec -i 9043cb24167c clickhouse-client --port=19000 --query=\
+"INSERT INTO buffer.tmp_xqc_dws_xplat_snick_stat_buffer FORMAT Avro" \
+< ./tmp_xqc_dws_xplat_snick_stat_all_20220701_20221018.avro
+
+INSERT INTO xqc_dws.xplat_snick_stat_all
+SELECT *
+FROM tmp.xqc_dws_xplat_snick_stat_all
+WHERE day BETWEEN 20220701 AND 20220731
+
+INSERT INTO xqc_dws.xplat_snick_stat_all
+SELECT *
+FROM tmp.xqc_dws_xplat_snick_stat_all
+WHERE day BETWEEN 20220801 AND 20220831
+
+INSERT INTO xqc_dws.xplat_snick_stat_all
+SELECT *
+FROM tmp.xqc_dws_xplat_snick_stat_all
+WHERE day BETWEEN 20220901 AND 20220930
+
+INSERT INTO xqc_dws.xplat_snick_stat_all
+SELECT *
+FROM tmp.xqc_dws_xplat_snick_stat_all
+WHERE day BETWEEN 20221001 AND 20221018
