@@ -1,11 +1,11 @@
--- 质检诊断报告-子账号-每日合格子账号统计
+-- 质检诊断报告-子账号-质检标准-每日合格子账号统计
 SELECT
     day,
     uniqExact(snick) AS snick_uv,
     uniqExactIf(snick, subtract_score_dialog_cnt=0) AS qualified_snick_uv,
     snick_uv AS `质检子账号总量`,
     qualified_snick_uv AS `合格子账号总量`,
-    if(qualified_snick_uv!=0, round(qualified_snick_uv/snick_uv*100, 4), 0.00) AS `子账号合格率`
+    if(snick_uv!=0, round(qualified_snick_uv/snick_uv*100, 4), 0.00) AS `子账号合格率`
 FROM xqc_dws.snick_stat_all
 WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
     AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

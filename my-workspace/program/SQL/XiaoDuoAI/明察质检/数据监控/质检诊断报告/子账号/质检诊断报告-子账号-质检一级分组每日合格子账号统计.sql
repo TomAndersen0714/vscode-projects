@@ -5,7 +5,7 @@ SELECT
     (snick_uv - subtract_score_snick_uv) AS qualified_snick_sum,
     snick_uv AS `质检子账号总量`,
     qualified_snick_sum AS `合格子账号总量`,
-    if(qualified_snick_sum!=0, round(qualified_snick_sum/snick_uv*100, 4), 0.00) AS `子账号合格率`
+    if(snick_uv!=0, round(qualified_snick_sum/snick_uv*100, 4), 0.00) AS `子账号合格率`
 FROM (
     SELECT
         day,
@@ -43,7 +43,7 @@ FROM (
         -- 筛选一级质检项分组
         AND tag_group_level = 1
         -- 下拉框-一级质检项分组
-        AND tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
+        AND tag_group_id IN splitByChar(',', '{{ tag_group_ids=all }}')
 
         UNION ALL
         SELECT day, snick, subtract_score_dialog_cnt
@@ -90,7 +90,7 @@ FROM (
             )
         )
         -- 下拉框-一级质检项分组-全部
-        AND '{{ tag_group_ids }}'='all'
+        AND '{{ tag_group_ids=all }}'='all'
     )
     GROUP BY day
 ) AS tag_group_dialog_stat

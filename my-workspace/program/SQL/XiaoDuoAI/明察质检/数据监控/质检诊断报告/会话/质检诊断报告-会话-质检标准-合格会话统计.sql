@@ -6,17 +6,9 @@ SELECT
     pre_period.qualified_dialog_sum AS `上期合格会话总量`,
     cur_period.dialog_sum - pre_period.dialog_sum AS dialog_cnt_diff,
     cur_period.qualified_dialog_sum - pre_period.qualified_dialog_sum AS qualified_dialog_cnt_diff,
-    CONCAT(
-        toString(
-            if(dialog_cnt_diff!=0, round(dialog_cnt_diff/pre_period.dialog_sum*100,2), 0.00)
-        ),'%'
-    ) AS `环比1`,
-    CONCAT(
-        toString(
-            if(qualified_dialog_cnt_diff!=0, round(qualified_dialog_cnt_diff/pre_period.qualified_dialog_sum*100,2), 0.00)
-        ),'%'
-    ) AS `环比2`,
-    if(cur_period.qualified_dialog_sum!=0, round(cur_period.qualified_dialog_sum/cur_period.dialog_sum, 4), 0.00) AS `会话合格率`
+    if(pre_period.dialog_sum!=0, round(dialog_cnt_diff/pre_period.dialog_sum,4), 0.00) AS `环比1`,
+    if(pre_period.qualified_dialog_sum!=0, round(qualified_dialog_cnt_diff/pre_period.qualified_dialog_sum,4), 0.00) AS `环比2`,
+    if(cur_period.dialog_sum!=0, round(cur_period.qualified_dialog_sum/cur_period.dialog_sum, 4), 0.00) AS `会话合格率`
 FROM (
     SELECT
         SUM(dialog_cnt) AS dialog_sum,

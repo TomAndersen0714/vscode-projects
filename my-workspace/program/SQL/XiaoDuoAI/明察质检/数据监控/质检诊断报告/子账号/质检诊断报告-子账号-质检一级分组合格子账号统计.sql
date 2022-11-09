@@ -6,17 +6,9 @@ SELECT
     pre_period.qualified_snick_uv_sum AS `上期合格子账号总量`,
     cur_period.snick_uv_sum - pre_period.snick_uv_sum AS snick_uv_diff,
     cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_snick_cnt_diff,
-    CONCAT(
-        toString(
-            if(snick_uv_diff!=0, round(snick_uv_diff/pre_period.snick_uv_sum*100,2), 0.00)
-        ),'%'
-    ) AS `环比1`,
-    CONCAT(
-        toString(
-            if(qualified_snick_cnt_diff!=0, round(qualified_snick_cnt_diff/pre_period.qualified_snick_uv_sum*100,2), 0.00)
-        ),'%'
-    ) AS `环比2`,
-    if(cur_period.qualified_snick_uv_sum!=0, round(cur_period.qualified_snick_uv_sum/cur_period.snick_uv_sum, 4), 0.00) AS `子账号合格率`
+    if(pre_period.snick_uv_sum!=0, round(snick_uv_diff/pre_period.snick_uv_sum,4), 0.00) AS `环比1`,
+    if(pre_period.qualified_snick_uv_sum!=0, round(qualified_snick_cnt_diff/pre_period.qualified_snick_uv_sum,4), 0.00) AS `环比2`,
+    if(cur_period.snick_uv_sum!=0, round(cur_period.qualified_snick_uv_sum/cur_period.snick_uv_sum, 4), 0.00) AS `子账号合格率`
 FROM (
     SELECT
         qc_norm_stat.snick_uv_sum,

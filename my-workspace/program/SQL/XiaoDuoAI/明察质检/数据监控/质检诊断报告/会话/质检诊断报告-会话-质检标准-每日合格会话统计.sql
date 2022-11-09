@@ -5,7 +5,7 @@ SELECT
     SUM(dialog_cnt - subtract_score_dialog_cnt) AS qualified_dialog_sum,
     dialog_sum AS `质检会话总量`,
     qualified_dialog_sum AS `合格会话总量`,
-    if(qualified_dialog_sum!=0, round(qualified_dialog_sum/dialog_sum*100, 4), 0.00) AS `会话合格率`
+    if(dialog_sum!=0, round(qualified_dialog_sum/dialog_sum*100, 4), 0.00) AS `会话合格率`
 FROM xqc_dws.snick_stat_all
 WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
     AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

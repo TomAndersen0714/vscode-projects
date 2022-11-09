@@ -1,119 +1,299 @@
-DROP TABLE ods.xdqc_dialog_update_local ON CLUSTER cluster_3s_2r NO DELAY
+-- 质检诊断报告-子账号-质检一级分组合格子账号统计
+SELECT
+    cur_period.snick_uv_sum AS `质检子账号总量`,
+    cur_period.qualified_snick_uv_sum AS `合格子账号总量`,
+    pre_period.snick_uv_sum AS `上期质检子账号总量`,
+    pre_period.qualified_snick_uv_sum AS `上期合格子账号总量`,
+    cur_period.snick_uv_sum - pre_period.snick_uv_sum AS snick_uv_diff,
+    cur_period.qualified_snick_uv_sum - pre_period.qualified_snick_uv_sum AS qualified_snick_cnt_diff,
+    if(snick_uv_diff!=0, round(snick_uv_diff/pre_period.snick_uv_sum,4), 0.00) AS `环比1`,
+    if(qualified_snick_cnt_diff!=0, round(qualified_snick_cnt_diff/pre_period.qualified_snick_uv_sum,4), 0.00) AS `环比2`,
+    if(cur_period.qualified_snick_uv_sum!=0, round(cur_period.qualified_snick_uv_sum/cur_period.snick_uv_sum, 4), 0.00) AS `子账号合格率`
+FROM (
+    SELECT
+        qc_norm_stat.snick_uv_sum,
+        (qc_norm_stat.snick_uv_sum - tag_group_level_1_stat.subtract_score_snick_uv_sum) AS qualified_snick_uv_sum
+    FROM (
+        SELECT sum(subtract_score_snick_uv_sum) AS subtract_score_snick_uv_sum
+        FROM (
+            SELECT
+                uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
+            FROM xqc_dws.tag_group_stat_all
+            WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+                AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            -- 筛选指定平台
+            AND platform = 'open'
+            -- 筛选指定企业的店铺
+            AND seller_nick IN (
+                SELECT DISTINCT
+                    seller_nick
+                FROM xqc_dim.xqc_shop_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = 'open'
+                -- 下拉框-店铺主账号
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+                )
+            )
+            -- 下拉框-质检标准
+            AND (
+                '{{ qc_norm_ids }}'=''
+                OR
+                qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            )
+            -- 筛选一级质检项分组
+            AND tag_group_level = 1
+            -- 下拉框-一级质检项分组
+            AND tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
 
-CREATE TABLE ods.xdqc_dialog_update_local ON CLUSTER cluster_3s_2r
-(
-    `_id` String,
-    `platform` String,
-    `channel` String,
-    `group` String,
-    `date` Int32,
-    `seller_nick` String,
-    `cnick` String,
-    `real_buyer_nick` String,
-    `open_uid` String,
-    `snick` String,
-    `begin_time` DateTime64(3),
-    `end_time` DateTime64(3),
-    `is_after_sale` UInt8,
-    `is_inside` UInt8,
-    `employee_name` String,
-    `s_emotion_type` Array(UInt16),
-    `s_emotion_rule_id` Array(String),
-    `s_emotion_score` Array(Int32),
-    `s_emotion_count` Array(UInt32),
-    `c_emotion_type` Array(UInt16),
-    `c_emotion_rule_id` Array(String),
-    `c_emotion_score` Array(Int32),
-    `c_emotion_count` Array(UInt32),
-    `emotions` Array(String),
-    `abnormals_type` Array(UInt16),
-    `abnormals_rule_id` Array(String),
-    `abnormals_score` Array(Int32),
-    `abnormals_count` Array(UInt32),
-    `excellents_type` Array(UInt16),
-    `excellents_rule_id` Array(String),
-    `excellents_score` Array(Int32),
-    `excellents_count` Array(UInt32),
-    `qc_word_source` Array(UInt8),
-    `qc_word_word` Array(String),
-    `qc_word_count` Array(UInt32),
-    `qid` Array(Int64),
-    `mark` String,
-    `mark_judge` Int32,
-    `mark_score` Int32,
-    `mark_score_add` Int32,
-    `mark_ids` Array(String),
-    `last_mark_id` String,
-    `human_check` UInt8,
-    `tag_score_stats_id` Array(String),
-    `tag_score_stats_score` Array(Int32),
-    `tag_score_stats_count` Array(UInt32),
-    `tag_score_stats_md` Array(UInt8),
-    `tag_score_stats_mm` Array(UInt8),
-    `tag_score_add_stats_id` Array(String),
-    `tag_score_add_stats_score` Array(Int32),
-    `tag_score_add_stats_count` Array(UInt32),
-    `tag_score_add_stats_md` Array(UInt8),
-    `tag_score_add_stats_mm` Array(UInt8),
-    `rule_stats_id` Array(String),
-    `rule_stats_score` Array(Int32),
-    `rule_stats_count` Array(UInt32),
-    `rule_add_stats_id` Array(String),
-    `rule_add_stats_score` Array(Int32),
-    `rule_add_stats_count` Array(UInt32),
-    `xrule_stats_id` Array(String),
-    `xrule_stats_score` Array(Int32),
-    `xrule_stats_count` Array(UInt32),
-    `top_xrules_id` Array(String),
-    `top_xrules_score` Array(Int32),
-    `top_xrules_count` Array(UInt32),
-    `score` Int32,
-    `score_add` Int32,
-    `question_count` UInt32,
-    `answer_count` UInt32,
-    `first_answer_time` DateTime64(3),
-    `qa_time_sum` UInt32,
-    `qa_round_sum` UInt32,
-    `focus_goods_id` String,
-    `is_remind` UInt8,
-    `task_list_id` String,
-    `read_mark` Array(String),
-    `last_msg_id` String,
-    `consulte_transfor_v2` Int32,
-    `order_info_id` Array(String),
-    `order_info_status` Array(String),
-    `order_info_payment` Array(Float32),
-    `order_info_time` Array(UInt64),
-    `intel_score` Int32,
-    `remind_ntype` String,
-    `first_follow_up_time` DateTime64(3),
-    `is_follow_up_remind` UInt8,
-    `emotion_detect_mode` Int32,
-    `has_withdraw_robot_msg` UInt8,
-    `is_order_matched` UInt8,
-    `suspected_positive_emotion` UInt8,
-    `suspected_problem` UInt8,
-    `suspected_excellent` UInt8,
-    `has_after` UInt8,
-    `cnick_customize_rule` Array(String),
-    `update_time` DateTime('Asia/Shanghai'),
-    `wx_rule_stats_id` Array(String),
-    `wx_rule_stats_score` Array(Int32),
-    `wx_rule_stats_count` Array(UInt32),
-    `wx_rule_add_stats_id` Array(String),
-    `wx_rule_add_stats_score` Array(Int32),
-    `wx_rule_add_stats_count` Array(UInt32)
-)
-ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-)
-ORDER BY (toYYYYMMDD(begin_time), platform, seller_nick, _id)
-SETTINGS storage_policy = 'rr', index_granularity = 8192
+            UNION ALL
+            SELECT
+                uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
+            FROM xqc_dws.snick_stat_all
+            WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+                AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+            -- 筛选指定平台
+            AND platform = 'open'
+            -- 筛选指定企业的店铺
+            AND seller_nick IN (
+                SELECT DISTINCT
+                    seller_nick
+                FROM xqc_dim.xqc_shop_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = 'open'
+                -- 下拉框-店铺主账号
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+                )
+            )
+            -- 筛选指定质检标准对应的子账号
+            AND (
+                '{{ qc_norm_ids }}'=''
+                OR
+                snick GLOBAL IN (
+                    -- 筛选指定子账号分组中的子账号
+                    SELECT snick
+                    FROM ods.xinghuan_employee_snick_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    AND department_id IN (
+                        -- 筛选指定质检标准对应的子账号分组
+                        SELECT department_id
+                        FROM ods.xinghuan_qc_norm_relate_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    )
+                )
+            )
+            -- 下拉框-一级质检项分组-全部
+            AND '{{ tag_group_ids }}'='all'
+        )
+    ) AS tag_group_level_1_stat
+    GLOBAL CROSS JOIN (
+        SELECT
+            uniqExact((day, snick)) AS snick_uv_sum
+        FROM xqc_dws.snick_stat_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+            AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        -- 筛选指定平台
+        AND platform = 'open'
+        -- 筛选指定企业的店铺
+        AND seller_nick IN (
+            SELECT DISTINCT
+                seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            -- 筛选指定企业
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 筛选指定平台
+            AND platform = 'open'
+            -- 下拉框-店铺主账号
+            AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+            )
+        )
+        -- 筛选指定质检标准对应的子账号
+        AND (
+            '{{ qc_norm_ids }}'=''
+            OR
+            snick GLOBAL IN (
+                -- 筛选指定子账号分组中的子账号
+                SELECT snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                AND department_id IN (
+                    -- 筛选指定质检标准对应的子账号分组
+                    SELECT department_id
+                    FROM ods.xinghuan_qc_norm_relate_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                )
+            )
+        )
+    ) AS qc_norm_stat
+) AS cur_period
+GLOBAL CROSS JOIN (
+    SELECT
+        qc_norm_stat.snick_uv_sum,
+        (qc_norm_stat.snick_uv_sum - tag_group_level_1_stat.subtract_score_snick_uv_sum) AS qualified_snick_uv_sum
+    FROM (
+        SELECT sum(subtract_score_snick_uv_sum) AS subtract_score_snick_uv_sum
+        FROM (
+            SELECT
+                uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
+            FROM xqc_dws.tag_group_stat_all
+            WHERE day BETWEEN toYYYYMMDD(
+                    toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
+                )
+                AND toYYYYMMDD(
+                    toDate('{{ day.start=week_ago }}') - 1
+                )
+            -- 筛选指定平台
+            AND platform = 'open'
+            -- 筛选指定企业的店铺
+            AND seller_nick IN (
+                SELECT DISTINCT
+                    seller_nick
+                FROM xqc_dim.xqc_shop_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = 'open'
+                -- 下拉框-店铺主账号
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+                )
+            )
+            -- 下拉框-质检标准
+            AND (
+                '{{ qc_norm_ids }}'=''
+                OR
+                qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            )
+            -- 筛选一级质检项分组
+            AND tag_group_level = 1
+            -- 下拉框-一级质检项分组
+            AND tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
 
-
-
-SELECT count(1)
-FROM ods.xdqc_dialog_update_all
-WHERE toYYYYMMDD(begin_time) = 20221102
-AND 
+            UNION ALL
+            SELECT
+                uniqExactIf((day, snick), subtract_score_dialog_cnt>0) AS subtract_score_snick_uv_sum
+            FROM xqc_dws.snick_stat_all
+            WHERE day BETWEEN toYYYYMMDD(
+                    toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
+                )
+                AND toYYYYMMDD(
+                    toDate('{{ day.start=week_ago }}') - 1
+                )
+            -- 筛选指定平台
+            AND platform = 'open'
+            -- 筛选指定企业的店铺
+            AND seller_nick IN (
+                SELECT DISTINCT
+                    seller_nick
+                FROM xqc_dim.xqc_shop_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = 'open'
+                -- 下拉框-店铺主账号
+                AND (
+                    '{{ seller_nicks }}'=''
+                    OR
+                    seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+                )
+            )
+            -- 筛选指定质检标准对应的子账号
+            AND (
+                '{{ qc_norm_ids }}'=''
+                OR
+                snick GLOBAL IN (
+                    -- 筛选指定子账号分组中的子账号
+                    SELECT snick
+                    FROM ods.xinghuan_employee_snick_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    AND department_id IN (
+                        -- 筛选指定质检标准对应的子账号分组
+                        SELECT department_id
+                        FROM ods.xinghuan_qc_norm_relate_all
+                        WHERE day = toYYYYMMDD(yesterday())
+                        AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+                        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                    )
+                )
+            )
+            -- 下拉框-一级质检项分组-全部
+            AND '{{ tag_group_ids }}'='all'
+        )
+    ) AS tag_group_level_1_stat
+    GLOBAL CROSS JOIN (
+        SELECT
+            uniqExact((day, snick)) AS snick_uv_sum
+        FROM xqc_dws.snick_stat_all
+        WHERE day BETWEEN toYYYYMMDD(
+                toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1
+            )
+            AND toYYYYMMDD(
+                toDate('{{ day.start=week_ago }}') - 1
+            )
+        -- 筛选指定平台
+        AND platform = 'open'
+        -- 筛选指定企业的店铺
+        AND seller_nick IN (
+            SELECT DISTINCT
+                seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            -- 筛选指定企业
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            -- 筛选指定平台
+            AND platform = 'open'
+            -- 下拉框-店铺主账号
+            AND (
+                '{{ seller_nicks }}'=''
+                OR
+                seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+            )
+        )
+        -- 筛选指定质检标准对应的子账号
+        AND (
+            '{{ qc_norm_ids }}'=''
+            OR
+            snick GLOBAL IN (
+                -- 筛选指定子账号分组中的子账号
+                SELECT snick
+                FROM ods.xinghuan_employee_snick_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                AND department_id IN (
+                    -- 筛选指定质检标准对应的子账号分组
+                    SELECT department_id
+                    FROM ods.xinghuan_qc_norm_relate_all
+                    WHERE day = toYYYYMMDD(yesterday())
+                    AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+                    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                )
+            )
+        )
+    ) AS qc_norm_stat
+) AS pre_period

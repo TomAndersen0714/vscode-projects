@@ -5,7 +5,7 @@ SELECT
     (dialog_sum - subtract_score_dialog_sum) AS qualified_dialog_sum,
     dialog_sum AS `质检会话总量`,
     qualified_dialog_sum AS `合格会话总量`,
-    if(qualified_dialog_sum!=0, round(qualified_dialog_sum/dialog_sum*100, 4), 0.00) AS `会话合格率`
+    if(dialog_sum!=0, round(qualified_dialog_sum/dialog_sum*100, 4), 0.00) AS `会话合格率`
 FROM (
     SELECT
         day,
@@ -43,7 +43,7 @@ FROM (
         -- 筛选一级质检项分组
         AND tag_group_level = 1
         -- 下拉框-一级质检项分组
-        AND tag_group_id IN splitByChar(',', '{{ tag_group_ids }}')
+        AND tag_group_id IN splitByChar(',', '{{ tag_group_ids=all }}')
 
         UNION ALL
         SELECT day, subtract_score_dialog_cnt
@@ -90,7 +90,7 @@ FROM (
             )
         )
         -- 下拉框-一级质检项分组-全部
-        AND '{{ tag_group_ids }}'='all'
+        AND '{{ tag_group_ids=all }}'='all'
     )
     GROUP BY day
 ) AS tag_group_dialog_stat
