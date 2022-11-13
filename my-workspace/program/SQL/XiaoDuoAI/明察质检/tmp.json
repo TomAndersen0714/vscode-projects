@@ -1,75 +1,9 @@
-{
-    'common': {
-        'data_dir': '/data2/xdt/data',
-        'log_dir': '/data2/xdt/log'
-    },
-    'sink': {
-        'clickhouse': {
-            'connections': {
-                'clickhouse_bigdata_tb': {
-                    'hosts': None,
-                    'ports': None
-                }
-            },
-            'default_configs': {
-                'buffer_flush_interval_secs': 15
-            }
-        },
-        'hdfs': {
-            'connections': {
-                'hdfs_bigdata_tb': None
-            },
-            'default_configs': {
-                'buffer_flush_interval_secs': 30
-            }
-        },
-        'kudu': {
-            'connections': {
-                'kudu_bigdata_tb': None
-            },
-            'default_configs': {
-                'buffer_flush_interval_secs': 15
-            }
-        }
-    },
-    'source': {
-        'pulsar': {
-            'connections': {
-                'default': {
-                    'subscription': None,
-                    'topic': None,
-                    'url': None
-                },
-                'jd_send_tb': {
-                    'subscription': None,
-                    'topic': 'persistent://bigdata/data_cross/jd_send_tb',
-                    'url': None
-                },
-                'ks_send_tb': {
-                    'subscription': None,
-                    'topic': 'persistent://bigdata/data_cross/ks_send_tb',
-                    'url': None
-                },
-                'mini_send_tb': {
-                    'subscription': None,
-                    'topic': 'persistent://bigdata/data_cross/mini_send_tb',
-                    'url': None
-                },
-                'yz_send_tb': {
-                    'subscription': None,
-                    'topic': 'persistent://bigdata/data_cross/yz_send_tb',
-                    'url': None
-                }
-            },
-            'default_configs': {
-                'concurrency': 1,
-                'subscription': 'bigdata_data_sync',
-                'timeout_millis': 15000,
-                'url': 'pulsar://pulsar-cluster01-slb:6650'
-            }
-        }
-    },
-    'test_config': 'This is a test message'
-}
-
-Process finished with exit code 0
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
