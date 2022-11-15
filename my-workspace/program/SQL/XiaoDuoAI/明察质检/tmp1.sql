@@ -1,50 +1,19 @@
-with chat_measure as (
-    SELECT snick,
-        cnick,
-        act,
-        send_msg_from,
-        msg,
-        if(
-            ms_msg_time != 0,
-            ms_msg_time,
-            cast(msg_time as int) * 1000
-        ) as create_time,
-        qa_id,
-        row_number() OVER (
-            PARTITION BY snick,
-            cnick
-            ORDER BY create_time
-        ) AS rn
-    FROM ods.jd_xdrs_logs
-    WHERE day = 20221110
-        AND act IN ('send_msg', 'recv_msg')
-),
-badcase_qa_id as (
-    SELECT qa_id
-    FROM ods.badcase_report
-    WHERE day = 20221110
-        AND create_time BETWEEN "2022-11-10 22" AND "2022-11-10 23"
-),
-report_chat as (
-    SELECT c.qa_id,
-        c.snick,
-        c.cnick,
-        c.rn
-    FROM badcase_qa_id b
-        JOIN [shuffle] chat_measure c USING (qa_id)
-)
-insert into dwd.badcase_context partition(day = 20221110)
-SELECT r.qa_id as context_id,
-    c.qa_id as qa_id,
-    c.snick,
-    c.cnick,
-    c.act,
-    c.send_msg_from,
-    c.msg,
-    c.create_time as msg_time,
-    coalesce(r.qa_id = c.qa_id, false) is_reported,
-    2022111022 as hour_nodash
-FROM report_chat r
-    LEFT JOIN [shuffle] chat_measure c ON c.rn BETWEEN r.rn - 5 AND r.rn + 5
-    AND c.snick = r.snick
-    AND c.cnick = r.cnick;
+{ '_id': ObjectId('5f747be22c90fd000125440f'),
+'create_time': datetime.datetime(2020, 9, 30, 12, 36, 50, 948000),
+'update_time': datetime.datetime(2020, 9, 30, 12, 36, 50, 948000),
+'company_id': ObjectId('5f747ba42c90fd0001254404'),
+'shop_id': ObjectId('5cac112e98ef4100118a9c9f'),
+'platform': 'tb',
+'seller_nick': '方太官方旗舰店',
+'plat_shop_name': '方太官方旗舰店',
+'plat_shop_id': '64661419',
+'after_sale_days': 120,
+'expire_time': datetime.datetime(1, 1, 1, 0, 0),
+'is_close': False,
+'is_fork': False,
+'is_start_use': False,
+'real_seller_nick': '',
+'real_shop_id': ObjectId('000000000000000000000000'),
+'start_use_time': datetime.datetime(1, 1, 1, 0, 0),
+'version': 0,
+'whitelist': None }

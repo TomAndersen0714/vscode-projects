@@ -1,0 +1,13 @@
+{ '_id': ObjectId('5f73e9c1684bf70001413636'),
+'create_time': datetime.datetime(2020, 9, 30, 2, 13, 21, 189000),
+'update_time': datetime.datetime(2022, 10, 20, 9, 43, 48, 219000),
+'name': '测试',
+'shot_name': '测试',
+'logo': '',
+'url': 'https://oapi.dingtalk.com/robot/send?access_token=898cbda6d30eb77c69b84f1c8da13ea6a6ab063f4e12228755dea29477fd701d',
+'default_platform': 'tb',
+'platforms': ['tb', 'jd', 'pdd', 'dy', 'ks'],
+'pri_center_id': 'q-6195ba40cf625dcdbd5fbb54',
+'downgrade_strategy': 0,
+'expired_time': datetime.datetime(2025, 10, 10, 15, 59, 59),
+'need_init': False }
