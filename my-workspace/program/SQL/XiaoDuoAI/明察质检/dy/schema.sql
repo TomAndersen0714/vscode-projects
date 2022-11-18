@@ -1,3 +1,4 @@
+-- dwd.xdqc_backup_dialog_all
 CREATE DATABASE IF NOT EXISTS dwd ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary
 
@@ -129,6 +130,7 @@ ENGINE = Buffer('dwd', 'xdqc_backup_dialog_all', 16, 15, 35, 81920, 409600, 1677
 
 
 
+-- ods.xdqc_dialog_update_all
 CREATE DATABASE IF NOT EXISTS ods ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary
 
