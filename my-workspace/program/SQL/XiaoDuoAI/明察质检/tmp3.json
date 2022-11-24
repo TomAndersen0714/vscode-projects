@@ -1,0 +1,404 @@
+{
+  inprog: [{
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'conn366495',
+      connectionId: 366495,
+      client: '10.22.112.6:49324',
+      appName: 'qc_engine',
+      clientMetadata: {
+        os: {
+          type: 'linux',
+          architecture: 'amd64'
+        },
+        application: {
+          name: 'qc_engine'
+        },
+        driver: {
+          name: 'mgo',
+          version: 'globalsign'
+        }
+      },
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      effectiveUsers: [{
+        user: 'root',
+        db: 'admin'
+      }],
+      opid: 508294405,
+      secs_running: Long("0"),
+      microsecs_running: Long("127"),
+      op: 'update',
+      ns: 'xdqc.dialog',
+      command: {
+        q: {
+          _id: ObjectId("637f414a96440a0001c56e12")
+        },
+        u: {
+          '$set': {
+            end_time: ISODate("2022-11-24T15:58:11.929Z"),
+            update_time: ISODate("2022-11-24T15:58:13.696Z")
+          }
+        },
+        multi: false,
+        upsert: false
+      },
+      planSummary: 'IDHACK',
+      numYields: 0,
+      locks: {
+        ParallelBatchWriterMode: 'r',
+        ReplicationStateTransition: 'w',
+        Global: 'w',
+        Database: 'w',
+        Collection: 'w'
+      },
+      waitingForLock: false,
+      lockStats: {
+        ParallelBatchWriterMode: {
+          acquireCount: {
+            r: Long("1")
+          }
+        },
+        ReplicationStateTransition: {
+          acquireCount: {
+            w: Long("1")
+          }
+        },
+        Global: {
+          acquireCount: {
+            w: Long("1")
+          }
+        },
+        Database: {
+          acquireCount: {
+            w: Long("1")
+          }
+        },
+        Collection: {
+          acquireCount: {
+            w: Long("1")
+          }
+        },
+        Mutex: {
+          acquireCount: {
+            r: Long("1")
+          }
+        }
+      },
+      waitingForFlowControl: false,
+      flowControlStats: {
+        acquireCount: Long("1")
+      }
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'WT-OplogTruncaterThread-local.oplog.rs',
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      opid: 508098634,
+      op: 'none',
+      ns: '',
+      command: {},
+      numYields: 0,
+      locks: {},
+      waitingForLock: false,
+      lockStats: {
+        ReplicationStateTransition: {
+          acquireCount: {
+            w: Long("2")
+          }
+        },
+        Global: {
+          acquireCount: {
+            w: Long("2")
+          }
+        },
+        Database: {
+          acquireCount: {
+            w: Long("1")
+          }
+        }
+      },
+      waitingForFlowControl: false,
+      flowControlStats: {
+        acquireCount: Long("1")
+      }
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'rsSync-0',
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      effectiveUsers: [{
+        user: '__system',
+        db: 'local'
+      }],
+      opid: 508290865,
+      op: 'none',
+      ns: '',
+      command: {},
+      numYields: 0,
+      locks: {},
+      waitingForLock: false,
+      lockStats: {
+        ParallelBatchWriterMode: {
+          acquireCount: {
+            r: Long("1")
+          }
+        },
+        ReplicationStateTransition: {
+          acquireCount: {
+            w: Long("1")
+          }
+        },
+        Global: {
+          acquireCount: {
+            r: Long("1")
+          }
+        },
+        Database: {
+          acquireCount: {
+            r: Long("1")
+          }
+        },
+        Collection: {
+          acquireCount: {
+            r: Long("1")
+          }
+        },
+        Mutex: {
+          acquireCount: {
+            r: Long("1")
+          }
+        }
+      },
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'conn366813',
+      connectionId: 366813,
+      client: '10.22.134.220:36268',
+      appName: 'mongosh 1.1.0',
+      clientMetadata: {
+        driver: {
+          name: 'nodejs',
+          version: '4.1.3'
+        },
+        os: {
+          type: 'Linux',
+          name: 'linux',
+          architecture: 'x64',
+          version: '3.10.0-957.21.3.el7.x86_64'
+        },
+        platform: 'Node.js v14.18.0, LE (unified)|Node.js v14.18.0, LE (unified)',
+        application: {
+          name: 'mongosh 1.1.0'
+        }
+      },
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      effectiveUsers: [{
+        user: 'root',
+        db: 'admin'
+      }],
+      opid: 508294406,
+      lsid: {
+        id: UUID("58271d72-06f1-40ff-ac21-447fb1406156"),
+        uid: Binary(Buffer.from("6399ab0dac62f20bfc466753b10fb58fb7e692bec952c69b84d997021794d1f8", "hex"), 0)
+      },
+      secs_running: Long("0"),
+      microsecs_running: Long("153"),
+      op: 'command',
+      ns: 'admin.$cmd.aggregate',
+      command: {
+        currentOp: 1,
+        lsid: {
+          id: UUID("58271d72-06f1-40ff-ac21-447fb1406156")
+        },
+        '$db': 'admin'
+      },
+      numYields: 0,
+      locks: {},
+      waitingForLock: false,
+      lockStats: {},
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'ReplBatcher',
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      opid: 508291935,
+      op: 'none',
+      ns: '',
+      command: {},
+      numYields: 0,
+      locks: {},
+      waitingForLock: false,
+      lockStats: {},
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'monitoring-keys-for-HMAC',
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      opid: 57657,
+      op: 'none',
+      ns: '',
+      command: {},
+      numYields: 0,
+      waitingForLatch: {
+        timestamp: ISODate("2021-12-03T16:57:32.751Z"),
+        captureName: 'PeriodicRunner::_mutex'
+      },
+      locks: {},
+      waitingForLock: false,
+      lockStats: {},
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'waitForMajority',
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      opid: 2,
+      op: 'none',
+      ns: '',
+      command: {},
+      numYields: 0,
+      waitingForLatch: {
+        timestamp: ISODate("2021-12-03T16:56:44.983Z"),
+        captureName: 'WaitForMaorityService::_mutex'
+      },
+      locks: {},
+      waitingForLock: false,
+      lockStats: {},
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'conn366808',
+      connectionId: 366808,
+      client: '10.22.134.220:34730',
+      clientMetadata: {
+        driver: {
+          name: 'PyMongo',
+          version: '3.10.1'
+        },
+        os: {
+          type: 'Linux',
+          name: 'Linux',
+          architecture: 'x86_64',
+          version: '3.10.0-957.21.3.el7.x86_64'
+        },
+        platform: 'CPython 3.6.8.final.0'
+      },
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      effectiveUsers: [{
+        user: 'root',
+        db: 'admin'
+      }],
+      opid: 506628209,
+      lsid: {
+        id: UUID("d28cd30f-2d66-40f0-8fe3-da53862440f8"),
+        uid: Binary(Buffer.from("6399ab0dac62f20bfc466753b10fb58fb7e692bec952c69b84d997021794d1f8", "hex"), 0)
+      },
+      secs_running: Long("439"),
+      microsecs_running: Long("439544348"),
+      op: 'command',
+      ns: 'xdqc.dialog',
+      command: {
+        explain: {
+          find: 'dialog',
+          filter: {
+            '$and': [
+              [Object],
+              [Object],
+              [Object],
+              [Object],
+              [Object]
+            ]
+          },
+          hint: 'update_time_1'
+        },
+        lsid: {
+          id: UUID("d28cd30f-2d66-40f0-8fe3-da53862440f8")
+        },
+        '$db': 'xdqc',
+        '$readPreference': {
+          mode: 'primary'
+        }
+      },
+      numYields: 38628,
+      locks: {
+        ReplicationStateTransition: 'w',
+        Global: 'r',
+        Database: 'r',
+        Collection: 'r'
+      },
+      waitingForLock: false,
+      lockStats: {
+        ReplicationStateTransition: {
+          acquireCount: {
+            w: Long("38629")
+          }
+        },
+        Global: {
+          acquireCount: {
+            r: Long("38629")
+          }
+        },
+        Database: {
+          acquireCount: {
+            r: Long("38629")
+          }
+        },
+        Collection: {
+          acquireCount: {
+            r: Long("38629")
+          }
+        },
+        Mutex: {
+          acquireCount: {
+            r: Long("1")
+          }
+        }
+      },
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    },
+    {
+      type: 'op',
+      host: 'znzjk-022131022-mongodb-qc:27017',
+      desc: 'NoopWriter',
+      active: true,
+      currentOpTime: '2022-11-24T23:58:13.696+0800',
+      opid: 508265391,
+      op: 'none',
+      ns: '',
+      command: {},
+      numYields: 0,
+      locks: {},
+      waitingForLock: false,
+      lockStats: {},
+      waitingForFlowControl: false,
+      flowControlStats: {}
+    }
+  ],
+  ok: 1
+}

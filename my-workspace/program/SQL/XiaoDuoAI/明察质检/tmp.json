@@ -1,9 +1,193 @@
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
-/data2/code_workplace/data_receiver_docker:/code_workplace/data_receiver /data2/tmp/pulsar_receiver_data/data_dir:/data2/tmp/pulsar_receiver_data/data_dir
+{
+    "$and": [{
+        "seller_nick": "方太官方旗舰店"
+    }, {
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "begin_time": {
+            "$lt": ISODate("2022-11-22T16:00:00.000Z")
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    }]
+}
+
+{
+    "$and": [{
+        "seller_nick": "方太官方旗舰店"
+    }, {
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "begin_time": {
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-23T04:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T16:00:00.000Z")
+        }
+    }]
+}
+
+
+db.dialog.find(
+{
+    "$and": [{
+        "seller_nick": "方太官方旗舰店"
+    }, {
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "begin_time": {
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-23T04:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T16:00:00.000Z")
+        }
+    }]
+}
+).limit(1).explain()
+
+
+db.dialog.find({
+    "$and": [{
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    }, {
+        "seller_nick": "方太官方旗舰店"
+    }
+]
+}).limit(1).explain()
+
+
+db.dialog.find({
+    "$and": [{
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    }
+]
+}).limit(1).explain()
+
+db.dialog.find({
+    "$and": [{
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    },
+    {
+        "seller_nick": {"$ne":""}
+    }
+]
+}).limit(1).explain()
+
+db.dialog.find({
+    "$and": [{
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "update_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    },
+    {
+        "seller_nick": "方太官方旗舰店"
+    }
+]
+}).hint("update_time_1").limit(1).explain()
+
+
+db.dialog.find({
+    "$and": [{
+        "seller_nick": "方太官方旗舰店"
+    }, {
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "begin_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    },
+]
+}).limit(1).explain()
+
+db.dialog.find({
+    "$and": [{
+        "seller_nick": {"$ne":""}
+    }, {
+        "platform": {
+            "$in": ["tb"]
+        }
+    }, {
+        "channel": {
+            "$in": ["tb"]
+        }
+    }, {
+        "begin_time": {
+            "$gte": ISODate("2022-11-22T16:00:00.000Z"),
+            "$lt": ISODate("2022-11-23T04:00:00.000Z")
+        }
+    }]
+}).limit(1).explain()

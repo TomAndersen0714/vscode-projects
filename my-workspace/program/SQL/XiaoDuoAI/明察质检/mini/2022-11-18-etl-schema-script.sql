@@ -1,6 +1,6 @@
 -- dwd.xdqc_backup_dialog_all
 CREATE DATABASE IF NOT EXISTS dwd ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary
+ENGINE=Ordinary;
 
 -- DROP TABLE dwd.xdqc_backup_dialog_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS dwd.xdqc_backup_dialog_local ON CLUSTER cluster_3s_2r
@@ -115,20 +115,22 @@ ENGINE = ReplicatedMergeTree(
 PARTITION BY toYYYYMMDD(begin_time)
 PRIMARY KEY (platform, channel, seller_nick)
 ORDER BY (platform, channel, seller_nick, _id)
-SETTINGS index_granularity = 8192, storage_policy = 'rr'
+SETTINGS index_granularity = 8192, storage_policy = 'rr';
 
 -- DROP TABLE dwd.xdqc_backup_dialog_all ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS dwd.xdqc_backup_dialog_all ON CLUSTER cluster_3s_2r
 AS dwd.xdqc_backup_dialog_local
-ENGINE = Distributed('cluster_3s_2r', 'dwd', 'xdqc_backup_dialog_local', rand())
+ENGINE = Distributed('cluster_3s_2r', 'dwd', 'xdqc_backup_dialog_local', rand());
 
 
 
 -- ods.xdqc_dialog_update_all
 CREATE DATABASE IF NOT EXISTS ods ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary
+ENGINE=Ordinary;
 
--- DROP TABLE ods.xdqc_dialog_update_local ON CLUSTER cluster_3s_2r NO DELAY
+-- ods.xdqc_dialog_update_local
+DROP TABLE IF EXISTS ods.xdqc_dialog_update_local ON CLUSTER cluster_3s_2r NO DELAY;
+
 CREATE TABLE IF NOT EXISTS ods.xdqc_dialog_update_local ON CLUSTER cluster_3s_2r
 (
     `_id` String,
@@ -239,14 +241,14 @@ ENGINE = ReplicatedMergeTree(
 )
 PARTITION BY toYYYYMMDD(update_time)
 ORDER BY (toYYYYMMDD(begin_time), platform, seller_nick, _id)
-SETTINGS storage_policy = 'rr', index_granularity = 8192
+SETTINGS storage_policy = 'rr', index_granularity = 8192;
 
--- DROP TABLE ods.xdqc_dialog_update_all ON CLUSTER cluster_3s_2r NO DELAY
+-- ods.xdqc_dialog_update_all
+DROP TABLE IF EXISTS ods.xdqc_dialog_update_all ON CLUSTER cluster_3s_2r NO DELAY;
+
 CREATE TABLE IF NOT EXISTS ods.xdqc_dialog_update_all ON CLUSTER cluster_3s_2r
 AS ods.xdqc_dialog_update_local
-ENGINE = Distributed('cluster_3s_2r', 'ods', 'xdqc_dialog_update_local', rand())
-SETTINGS storage_policy = 'rr', index_granularity = 8192
-
+ENGINE = Distributed('cluster_3s_2r', 'ods', 'xdqc_dialog_update_local', rand());
 
 
 -- xqc_dim.snick_full_info_all
@@ -254,13 +256,13 @@ ALTER TABLE xqc_dim.snick_full_info_local ON CLUSTER cluster_3s_2r
 ADD COLUMN IF NOT EXISTS `company_name` String AFTER company_id,
 ADD COLUMN IF NOT EXISTS `company_short_name` String AFTER company_name,
 ADD COLUMN IF NOT EXISTS `shop_name` String AFTER shop_id,
-ADD COLUMN IF NOT EXISTS `seller_nick` String AFTER shop_name
+ADD COLUMN IF NOT EXISTS `seller_nick` String AFTER shop_name;
 
 ALTER TABLE xqc_dim.snick_full_info_all ON CLUSTER cluster_3s_2r
 ADD COLUMN IF NOT EXISTS `company_name` String AFTER company_id,
 ADD COLUMN IF NOT EXISTS `company_short_name` String AFTER company_name,
 ADD COLUMN IF NOT EXISTS `shop_name` String AFTER shop_id,
-ADD COLUMN IF NOT EXISTS `seller_nick` String AFTER shop_name
+ADD COLUMN IF NOT EXISTS `seller_nick` String AFTER shop_name;
 
 
 
@@ -269,10 +271,10 @@ ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r
 ADD COLUMN IF NOT EXISTS `tagged_dialog_cnt` Int64 AFTER `dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `ai_tagged_dialog_cnt` Int64 AFTER `tagged_dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `custom_tagged_dialog_cnt` Int64 AFTER `ai_tagged_dialog_cnt`,
-ADD COLUMN IF NOT EXISTS `manual_tagged_dialog_cnt` Int64 AFTER `custom_tagged_dialog_cnt`
+ADD COLUMN IF NOT EXISTS `manual_tagged_dialog_cnt` Int64 AFTER `custom_tagged_dialog_cnt`;
 
 ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
 ADD COLUMN IF NOT EXISTS `tagged_dialog_cnt` Int64 AFTER `dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `ai_tagged_dialog_cnt` Int64 AFTER `tagged_dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `custom_tagged_dialog_cnt` Int64 AFTER `ai_tagged_dialog_cnt`,
-ADD COLUMN IF NOT EXISTS `manual_tagged_dialog_cnt` Int64 AFTER `custom_tagged_dialog_cnt`
+ADD COLUMN IF NOT EXISTS `manual_tagged_dialog_cnt` Int64 AFTER `custom_tagged_dialog_cnt`;
