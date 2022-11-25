@@ -20,18 +20,13 @@
           }
         },
         {
-          begin_time: {
+          update_time: {
             '$lt': ISODate("2022-11-23T04:00:00.000Z")
           }
         },
         {
           update_time: {
-            '$lt': ISODate("2022-11-23T16:00:00.000Z")
-          }
-        },
-        {
-          update_time: {
-            '$gte': ISODate("2022-11-23T04:00:00.000Z")
+            '$gte': ISODate("2022-11-22T16:00:00.000Z")
           }
         }
       ]
@@ -54,12 +49,12 @@
             },
             {
               update_time: {
-                '$lt': ISODate("2022-11-23T16:00:00.000Z")
+                '$lt': ISODate("2022-11-23T04:00:00.000Z")
               }
             },
             {
               update_time: {
-                '$gte': ISODate("2022-11-23T04:00:00.000Z")
+                '$gte': ISODate("2022-11-22T16:00:00.000Z")
               }
             }
           ]
@@ -68,15 +63,17 @@
           stage: 'IXSCAN',
           keyPattern: {
             seller_nick: 1,
-            begin_time: 1,
-            snick: 1
+            cnick: 1,
+            create_time: 1,
+            'order_info.order_id': 1
           },
-          indexName: 'seller_nick_1_begin_time_1_snick_1',
+          indexName: 'seller_nick_1_cnick_1_create_time_1_order_info.order_id_1',
           isMultiKey: false,
           multiKeyPaths: {
             seller_nick: [],
-            begin_time: [],
-            snick: []
+            cnick: [],
+            create_time: [],
+            'order_info.order_id': []
           },
           isUnique: false,
           isSparse: false,
@@ -85,8 +82,9 @@
           direction: 'forward',
           indexBounds: {
             seller_nick: ['["方太官方旗舰店", "方太官方旗舰店"]'],
-            begin_time: ['(true, new Date(1669176000000))'],
-            snick: ['[MinKey, MaxKey]']
+            cnick: ['[MinKey, MaxKey]'],
+            create_time: ['[MinKey, MaxKey]'],
+            'order_info.order_id': ['[MinKey, MaxKey]']
           }
         }
       }
@@ -108,18 +106,8 @@
                 }
               },
               {
-                begin_time: {
-                  '$lt': ISODate("2022-11-23T04:00:00.000Z")
-                }
-              },
-              {
-                update_time: {
-                  '$lt': ISODate("2022-11-23T16:00:00.000Z")
-                }
-              },
-              {
-                update_time: {
-                  '$gte': ISODate("2022-11-23T04:00:00.000Z")
+                seller_nick: {
+                  '$eq': '方太官方旗舰店'
                 }
               }
             ]
@@ -127,18 +115,12 @@
           inputStage: {
             stage: 'IXSCAN',
             keyPattern: {
-              seller_nick: 1,
-              cnick: 1,
-              create_time: 1,
-              'order_info.order_id': 1
+              update_time: 1
             },
-            indexName: 'seller_nick_1_cnick_1_create_time_1_order_info.order_id_1',
+            indexName: 'update_time_1',
             isMultiKey: false,
             multiKeyPaths: {
-              seller_nick: [],
-              cnick: [],
-              create_time: [],
-              'order_info.order_id': []
+              update_time: []
             },
             isUnique: false,
             isSparse: false,
@@ -146,10 +128,7 @@
             indexVersion: 2,
             direction: 'forward',
             indexBounds: {
-              seller_nick: ['["方太官方旗舰店", "方太官方旗舰店"]'],
-              cnick: ['[MinKey, MaxKey]'],
-              create_time: ['[MinKey, MaxKey]'],
-              'order_info.order_id': ['[MinKey, MaxKey]']
+              update_time: ['[new Date(1669132800000), new Date(1669176000000))']
             }
           }
         }
@@ -171,13 +150,13 @@
                 }
               },
               {
-                seller_nick: {
-                  '$eq': '方太官方旗舰店'
+                update_time: {
+                  '$lt': ISODate("2022-11-23T04:00:00.000Z")
                 }
               },
               {
-                begin_time: {
-                  '$lt': ISODate("2022-11-23T04:00:00.000Z")
+                update_time: {
+                  '$gte': ISODate("2022-11-22T16:00:00.000Z")
                 }
               }
             ]
@@ -185,12 +164,16 @@
           inputStage: {
             stage: 'IXSCAN',
             keyPattern: {
-              update_time: 1
+              seller_nick: 1,
+              begin_time: 1,
+              snick: 1
             },
-            indexName: 'update_time_1',
+            indexName: 'seller_nick_1_begin_time_1_snick_1',
             isMultiKey: false,
             multiKeyPaths: {
-              update_time: []
+              seller_nick: [],
+              begin_time: [],
+              snick: []
             },
             isUnique: false,
             isSparse: false,
@@ -198,7 +181,9 @@
             indexVersion: 2,
             direction: 'forward',
             indexBounds: {
-              update_time: ['[new Date(1669176000000), new Date(1669219200000))']
+              seller_nick: ['["方太官方旗舰店", "方太官方旗舰店"]'],
+              begin_time: ['[MinKey, MaxKey]'],
+              snick: ['[MinKey, MaxKey]']
             }
           }
         }
