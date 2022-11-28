@@ -1,9 +1,11 @@
--- tmp.xqc_qc_report_snick_local
-CREATE DATABASE IF NOT EXISTS tmp ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary
+-- xqc_stat_mini.py
 
 -- tmp.xqc_qc_report_snick_local
--- DROP TABLE IF NOT EXISTS tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE DATABASE IF NOT EXISTS tmp ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary;
+
+-- tmp.xqc_qc_report_snick_local
+-- DROP TABLE IF NOT EXISTS tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r NO DELAY;
 CREATE TABLE IF NOT EXISTS tmp.xqc_qc_report_snick_local ON CLUSTER cluster_3s_2r
 (
     `day` Int64,
@@ -89,10 +91,10 @@ ENGINE = ReplicatedMergeTree(
 )
 PARTITION BY day
 ORDER BY (platform, seller_nick)
-SETTINGS index_granularity = 8192, storage_policy = 'rr'
+SETTINGS index_granularity = 8192, storage_policy = 'rr';
 
 -- tmp.xqc_qc_report_snick_all
--- DROP TABLE IF NOT EXISTS tmp.xqc_qc_report_snick_all ON CLUSTER cluster_3s_2r NO DELAY
+-- DROP TABLE IF NOT EXISTS tmp.xqc_qc_report_snick_all ON CLUSTER cluster_3s_2r NO DELAY;
 CREATE TABLE IF NOT EXISTS tmp.xqc_qc_report_snick_all ON CLUSTER cluster_3s_2r
 AS tmp.xqc_qc_report_snick_local
-ENGINE = Distributed('cluster_3s_2r', 'tmp', 'xqc_qc_report_snick_local', rand())
+ENGINE = Distributed('cluster_3s_2r', 'tmp', 'xqc_qc_report_snick_local', rand());

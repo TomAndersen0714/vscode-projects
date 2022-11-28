@@ -1,72 +1,32 @@
-DROP TABLE xqc_dim.snick_full_info_local ON CLUSTER cluster_3s_2r
-CREATE TABLE xqc_dim.snick_full_info_local ON CLUSTER cluster_3s_2r
-(
-    `company_id` String,
-    `platform` String,
-    `shop_id` String,
-    `department_id` String,
-    `department_name` String,
-    `snick` String,
-    `employee_id` String,
-    `employee_name` String,
-    `superior_id` String,
-    `superior_name` String,
-    `day` Int32
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-) PARTITION BY day
-ORDER BY (company_id, platform) SETTINGS index_granularity = 8192,
-    storage_policy = 'rr'
-
-DROP TABLE xqc_dim.snick_full_info_all ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE xqc_dim.snick_full_info_all ON CLUSTER cluster_3s_2r
-AS xqc_dim.snick_full_info_local
-ENGINE = Distributed(
-    'cluster_3s_2r',
-    'xqc_dim',
-    'snick_full_info_local',
-    rand()
-)
-
-DROP TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r NO DELAY;
-CREATE TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r
-(
-    `day` Int32,
-    `platform` String,
-    `seller_nick` String,
-    `snick` String,
-    `employee_id` String,
-    `employee_name` String,
-    `department_id` String,
-    `department_name` String,
-    `subtract_score_sum` Int64,
-    `add_score_sum` Int64,
-    `ai_subtract_score_sum` Int64,
-    `ai_add_score_sum` Int64,
-    `custom_subtract_score_sum` Int64,
-    `custom_add_score_sum` Int64,
-    `manual_subtract_score_sum` Int64,
-    `manual_add_score_sum` Int64,
-    `dialog_cnt` Int64,
-    `subtract_score_dialog_cnt` Int64,
-    `add_score_dialog_cnt` Int64,
-    `manual_marked_dialog_cnt` Int64,
-    `ai_subtract_score_dialog_cnt` Int64,
-    `ai_add_score_dialog_cnt` Int64,
-    `custom_subtract_score_dialog_cnt` Int64,
-    `custom_add_score_dialog_cnt` Int64,
-    `manual_subtract_score_dialog_cnt` Int64,
-    `manual_add_score_dialog_cnt` Int64
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-) PARTITION BY day
-ORDER BY (platform, seller_nick, snick)
-SETTINGS storage_policy = 'rr', index_granularity = 8192;
-
-
-DROP TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r NO DELAY;
-CREATE TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
-AS xqc_dws.snick_stat_local
-ENGINE = Distributed('cluster_3s_2r', 'xqc_dws', 'snick_stat_local', rand());
+20,221,027	4,674,702	
+20,221,028	4,560,795	
+20,221,029	4,799,090	
+20,221,030	4,808,670	
+20,221,031	11,376,393	
+20,221,101	8,082,777	
+20,221,102	7,386,093	
+20,221,103	8,841,577	
+20,221,104	5,635,673	
+20,221,105	6,118,500	
+20,221,106	5,981,415	
+20,221,107	5,728,945	
+20,221,108	5,716,785	
+20,221,109	6,430,533	
+20,221,110	12,583,116	
+20,221,111	13,757,988	
+20,221,112	6,332,724	
+20,221,113	6,294,663	
+20,221,114	6,512,563	
+20,221,115	5,914,237	
+20,221,116	5,551,110	
+20,221,117	5,168,712	
+20,221,118	4,781,533	
+20,221,119	4,495,967	
+20,221,120	4,525,636	
+20,221,121	4,854,466	
+20,221,122	4,795,903	
+20,221,123	4,566,066	
+20,221,124	4,369,820	
+20,221,125	4,007,478	
+20,221,126	3,851,719	
+20,221,127	3,790,490	

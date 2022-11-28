@@ -1,112 +1,32 @@
-DROP TABLE dwd.xdqc_dialog_local ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE dwd.xdqc_dialog_local ON CLUSTER cluster_3s_2r
-(
-    `_id` String,
-    `platform` String,
-    `channel` String,
-    `group` String,
-    `date` Int32,
-    `seller_nick` String,
-    `cnick` String,
-    `real_buyer_nick` String,
-    `open_uid` String,
-    `snick` String,
-    `begin_time` DateTime64(3),
-    `end_time` DateTime64(3),
-    `is_after_sale` UInt8,
-    `is_inside` UInt8,
-    `employee_name` String,
-    `s_emotion_type` Array(UInt16),
-    `s_emotion_rule_id` Array(String),
-    `s_emotion_score` Array(Int32),
-    `s_emotion_count` Array(UInt32),
-    `c_emotion_type` Array(UInt16),
-    `c_emotion_rule_id` Array(String),
-    `c_emotion_score` Array(Int32),
-    `c_emotion_count` Array(UInt32),
-    `emotions` Array(String),
-    `abnormals_type` Array(UInt16),
-    `abnormals_rule_id` Array(String),
-    `abnormals_score` Array(Int32),
-    `abnormals_count` Array(UInt32),
-    `excellents_type` Array(UInt16),
-    `excellents_rule_id` Array(String),
-    `excellents_score` Array(Int32),
-    `excellents_count` Array(UInt32),
-    `qc_word_source` Array(UInt8),
-    `qc_word_word` Array(String),
-    `qc_word_count` Array(UInt32),
-    `qid` Array(Int64),
-    `mark` String,
-    `mark_judge` Int32,
-    `mark_score` Int32,
-    `mark_score_add` Int32,
-    `mark_ids` Array(String),
-    `last_mark_id` String,
-    `human_check` UInt8,
-    `tag_score_stats_id` Array(String),
-    `tag_score_stats_score` Array(Int32),
-    `tag_score_stats_count` Array(UInt32),
-    `tag_score_stats_md` Array(UInt8),
-    `tag_score_stats_mm` Array(UInt8),
-    `tag_score_add_stats_id` Array(String),
-    `tag_score_add_stats_score` Array(Int32),
-    `tag_score_add_stats_count` Array(UInt32),
-    `tag_score_add_stats_md` Array(UInt8),
-    `tag_score_add_stats_mm` Array(UInt8),
-    `rule_stats_id` Array(String),
-    `rule_stats_score` Array(Int32),
-    `rule_stats_count` Array(UInt32),
-    `rule_add_stats_id` Array(String),
-    `rule_add_stats_score` Array(Int32),
-    `rule_add_stats_count` Array(UInt32),
-    `xrule_stats_id` Array(String),
-    `xrule_stats_score` Array(Int32),
-    `xrule_stats_count` Array(UInt32),
-    `top_xrules_id` Array(String),
-    `top_xrules_score` Array(Int32),
-    `top_xrules_count` Array(UInt32),
-    `score` Int32,
-    `score_add` Int32,
-    `question_count` UInt32,
-    `answer_count` UInt32,
-    `first_answer_time` DateTime64(3),
-    `qa_time_sum` UInt32,
-    `qa_round_sum` UInt32,
-    `focus_goods_id` String,
-    `is_remind` UInt8,
-    `task_list_id` String,
-    `read_mark` Array(String),
-    `last_msg_id` String,
-    `consulte_transfor_v2` Int32,
-    `order_info_id` Array(String),
-    `order_info_status` Array(String),
-    `order_info_payment` Array(Float32),
-    `order_info_time` Array(UInt64),
-    `intel_score` Int32,
-    `remind_ntype` String,
-    `first_follow_up_time` DateTime64(3),
-    `is_follow_up_remind` UInt8,
-    `emotion_detect_mode` Int32,
-    `has_withdraw_robot_msg` UInt8,
-    `is_order_matched` UInt8,
-    `suspected_positive_emotion` UInt8,
-    `suspected_problem` UInt8,
-    `suspected_excellent` UInt8,
-    `has_after` UInt8,
-    `cnick_customize_rule` Array(String),
-    `update_time` DateTime('Asia/Shanghai'),
-    `wx_rule_stats_id` Array(String),
-    `wx_rule_stats_score` Array(Int32),
-    `wx_rule_stats_count` Array(UInt32),
-    `wx_rule_add_stats_id` Array(String),
-    `wx_rule_add_stats_score` Array(Int32),
-    `wx_rule_add_stats_count` Array(UInt32),
-    `sign` Int8
-) ENGINE = ReplicatedCollapsingMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}',
-    sign
-) PARTITION BY toYYYYMMDD(begin_time) PRIMARY KEY (platform, channel, seller_nick)
-ORDER BY (platform, channel, seller_nick, _id) SETTINGS index_granularity = 8192,
-    storage_policy = 'rr'
+20,221,027	4,674,702	
+20,221,028	4,560,795	
+20,221,029	4,799,090	
+20,221,030	4,808,670	
+20,221,031	11,376,393	
+20,221,101	8,082,777	
+20,221,102	7,386,093	
+20,221,103	8,841,577	
+20,221,104	5,635,673	
+20,221,105	6,118,500	
+20,221,106	5,981,415	
+20,221,107	5,728,945	
+20,221,108	5,716,785	
+20,221,109	6,430,533	
+20,221,110	12,583,116	
+20,221,111	13,757,988	
+20,221,112	6,332,724	
+20,221,113	6,294,663	
+20,221,114	6,512,563	
+20,221,115	5,914,237	
+20,221,116	5,551,110	
+20,221,117	5,168,712	
+20,221,118	4,781,533	
+20,221,119	4,495,967	
+20,221,120	4,525,636	
+20,221,121	4,854,466	
+20,221,122	4,795,903	
+20,221,123	4,566,066	
+20,221,124	4,369,820	
+20,221,125	4,007,478	
+20,221,126	3,851,719	
+20,221,127	3,790,490	
