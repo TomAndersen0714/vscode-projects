@@ -10,6 +10,7 @@ SELECT
         WHEN platform='ks' THEN '快手'
         WHEN platform='dy' THEN '抖音'
         WHEN platform='pdd' THEN '拼多多'
+        WHEN platform='wx' THEN '企微'
         WHEN platform='open' THEN '开放平台'
         ELSE platform
     END AS `平台`,
