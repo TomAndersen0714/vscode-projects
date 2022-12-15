@@ -1,19 +1,25 @@
--- 质检诊断报告(二期)-客服质检报告-客服分组合格率
+-- 质检诊断报告(二期)-客服质检报告(人工)-客服会话合格率分布
 SELECT
-    department_name AS `客服分组`,
-    SUM(dialog_cnt) AS dialog_cnt_sum,
-    SUM(qualified_dialog_cnt) AS qualified_dialog_sum,
-    dialog_cnt_sum AS `质检会话量`,
-    if(dialog_cnt_sum!=0, round(qualified_dialog_sum/dialog_cnt_sum*100, 2), 0.00) AS qualified_dialog_pct,
-    CONCAT(toString(qualified_dialog_pct), '%') AS `会话合格率`
+    qualified_dialog_pct_level,
+    COUNT(1) AS snick_cnt,
+    qualified_dialog_pct_level AS `客服会话合格率`,
+    snick_cnt AS `客服人数`
 FROM (
     SELECT
         snick,
-        uniqExact(_id) AS dialog_cnt,
-        sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_cnt
+        COUNT(1) AS dialog_cnt,
+        sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_cnt,
+        qualified_dialog_cnt/dialog_cnt AS qualified_dialog_pct,
+        toUInt8(qualified_dialog_cnt/dialog_cnt*10)*10 AS _qualified_dialog_pct,
+        CASE
+            WHEN _qualified_dialog_pct=100 THEN '90%-100%'
+            ELSE CONCAT(toString(_qualified_dialog_pct), '%-', toString(_qualified_dialog_pct+10), '%')
+        END AS qualified_dialog_pct_level
     FROM dwd.xdqc_dialog_all
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    -- 筛选人工质检过的会话
+    AND notEmpty(last_mark_id)
     -- 筛选指定平台
     AND platform = '{{ platform=tb }}'
     -- 筛选指定店铺
@@ -90,32 +96,6 @@ FROM (
         )
     )
     GROUP BY snick
-) AS snick_stat
-GLOBAL LEFT JOIN (
-    -- 获取子账号及其对应分组
-    SELECT
-        snick, department_name
-    FROM (
-        SELECT
-            department_id, snick
-        FROM xqc_dim.snick_full_info_all
-        WHERE day = toYYYYMMDD(yesterday())
-        -- 筛选指定企业
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-        -- 筛选指定平台
-        AND platform = '{{ platform=tb }}'
-    ) AS snick_info
-    GLOBAL INNER JOIN (
-        SELECT
-            _id AS department_id,
-            full_name AS department_name
-        FROM xqc_dim.snick_department_full_all
-        WHERE day = toYYYYMMDD(yesterday())
-        -- 筛选指定企业
-        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    ) AS department_info
-    USING(department_id)
-) AS snick_department_info
-USING(snick)
-GROUP BY department_name
-ORDER BY department_name COLLATE 'zh'
+)
+GROUP BY qualified_dialog_pct_level
+ORDER BY qualified_dialog_pct_level ASC

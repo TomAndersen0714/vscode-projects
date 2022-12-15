@@ -1,5 +1,6 @@
 -- 质检诊断报告(二期)-客服质检报告-客服会话合格率
 SELECT
+    rowNumberInAllBlocks()+1 AS `排名`,
     snick AS `子账号`,
     employee_id,
     employee_name AS `客服姓名`,
@@ -17,7 +18,7 @@ FROM (
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
     -- 筛选指定平台
-    AND platform = '{{platform=tb}}'
+    AND platform = '{{ platform=tb }}'
     -- 筛选指定店铺
     AND seller_nick GLOBAL IN (
         SELECT DISTINCT
@@ -27,7 +28,7 @@ FROM (
         -- 筛选指定企业
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         -- 筛选指定平台
-        AND platform = '{{platform=tb}}'
+        AND platform = '{{ platform=tb }}'
         -- 下拉框-店铺主账号
         AND (
             '{{ seller_nicks }}'=''
@@ -46,7 +47,7 @@ FROM (
                 -- 筛选指定企业的质检标准
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 -- 筛选指定平台
-                AND platform = '{{platform=tb}}'
+                AND platform = '{{ platform=tb }}'
                 -- 下拉框-质检标准ID
                 AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
             )
@@ -60,7 +61,7 @@ FROM (
         -- 筛选指定企业
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         -- 筛选指定平台
-        AND platform = '{{platform=tb}}'
+        AND platform = '{{ platform=tb }}'
         -- 下拉框-店铺主账号
         AND (
             '{{ seller_nicks }}'=''
@@ -85,15 +86,16 @@ FROM (
                 -- 筛选指定企业的质检标准
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 -- 筛选指定平台
-                AND platform = '{{platform=tb}}'
+                AND platform = '{{ platform=tb }}'
                 -- 下拉框-质检标准ID
                 AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
             )
         )
     )
     GROUP BY snick
+    ORDER BY qualified_dialog_pct_str, snick DESC COLLATE 'zh'
 ) AS snick_stat
-GLOBAL LEFT JOIN (
+GLOBAL INNER JOIN (
     -- 获取子账号信息
     SELECT snick, employee_id, employee_name
     FROM xqc_dim.snick_full_info_all
@@ -101,7 +103,8 @@ GLOBAL LEFT JOIN (
     -- 筛选指定企业
     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     -- 筛选指定平台
-    AND platform = '{{platform=tb}}'
+    AND platform = '{{ platform }}'
+    -- 剔除未绑定员工的子账号
+    AND employee_name!=''
 ) AS snick_info
-USING(snick)
-ORDER BY snick COLLATE 'zh'
+ORDER BY qualified_dialog_pct_str, snick DESC COLLATE 'zh'

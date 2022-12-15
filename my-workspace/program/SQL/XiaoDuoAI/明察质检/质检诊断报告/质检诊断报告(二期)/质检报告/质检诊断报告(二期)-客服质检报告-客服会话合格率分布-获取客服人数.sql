@@ -1,7 +1,7 @@
--- 质检诊断报告(二期)-质检问题报告-下拉框-获取质检项
-SELECT DISTINCT
-    CONCAT(tag_name,'//',tag_id) AS tag_name_id
-FROM xqc_dws.tag_stat_all
+-- 质检诊断报告(二期)-客服质检报告-客服会话合格率分布-获取客服人数
+SELECT
+    COUNT(DISTINCT snick) AS snick_cnt
+FROM xqc_dws.snick_stat_all
 WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
     AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
 -- 筛选指定平台
@@ -79,4 +79,3 @@ AND snick GLOBAL IN (
         )
     )
 )
-ORDER BY tag_name COLLATE 'zh'

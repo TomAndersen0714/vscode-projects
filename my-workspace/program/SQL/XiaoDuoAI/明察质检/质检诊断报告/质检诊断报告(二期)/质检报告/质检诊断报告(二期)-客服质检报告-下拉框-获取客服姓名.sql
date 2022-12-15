@@ -1,4 +1,4 @@
---质检诊断报告(二期)-客服质检报告-下拉框-获取客服姓名
+-- 质检诊断报告(二期)-客服质检报告-下拉框-获取客服姓名
 SELECT DISTINCT
     employee_name
 FROM xqc_dim.snick_full_info_all
@@ -6,7 +6,7 @@ WHERE day = toYYYYMMDD(yesterday())
 -- 筛选指定企业
 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
 -- 筛选指定平台
-AND platform = '{{platform=tb}}'
+AND platform = '{{ platform=tb }}'
 -- 筛选指定店铺
 AND seller_nick GLOBAL IN (
     SELECT DISTINCT
@@ -16,7 +16,7 @@ AND seller_nick GLOBAL IN (
     -- 筛选指定企业
     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     -- 筛选指定平台
-    AND platform = '{{platform=tb}}'
+    AND platform = '{{ platform=tb }}'
     -- 下拉框-店铺主账号
     AND (
         '{{ seller_nicks }}'=''
@@ -35,7 +35,7 @@ AND seller_nick GLOBAL IN (
             -- 筛选指定企业的质检标准
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 筛选指定平台
-            AND platform = '{{platform=tb}}'
+            AND platform = '{{ platform=tb }}'
             -- 下拉框-质检标准ID
             AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
         )
@@ -49,7 +49,7 @@ AND snick GLOBAL IN (
     -- 筛选指定企业
     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
     -- 筛选指定平台
-    AND platform = '{{platform=tb}}'
+    AND platform = '{{ platform=tb }}'
     -- 下拉框-店铺主账号
     AND (
         '{{ seller_nicks }}'=''
@@ -74,7 +74,7 @@ AND snick GLOBAL IN (
             -- 筛选指定企业的质检标准
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 筛选指定平台
-            AND platform = '{{platform=tb}}'
+            AND platform = '{{ platform=tb }}'
             -- 下拉框-质检标准ID
             AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
         )

@@ -1,4 +1,4 @@
--- 质检诊断报告(二期)-会话质检报告-会话合格率趋势
+-- 质检诊断报告(二期)-会话质检报告(人工)-会话合格率趋势
 SELECT
     u_day AS day,
     dialog_sum,
@@ -9,7 +9,7 @@ SELECT
 FROM (
     SELECT
         u_day,
-        SUM(dialog_cnt) AS dialog_sum
+        SUM(manual_marked_dialog_cnt) AS dialog_sum
     FROM xqc_dws.snick_stat_all
     WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -97,6 +97,8 @@ GLOBAL LEFT JOIN (
     FROM dwd.xdqc_dialog_all
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    -- 筛选人工质检过的会话
+    AND notEmpty(last_mark_id)
     -- 筛选指定平台
     AND platform = '{{ platform=tb }}'
     -- 筛选指定店铺

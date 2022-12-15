@@ -1,4 +1,4 @@
--- 质检诊断报告(二期)-客服质检报告-客服会话合格率趋势
+-- 质检诊断报告(二期)-客服质检报告(人工)-客服会话合格率趋势
 SELECT
     day,
     SUM(dialog_sum) AS dialog_sum_sum,
@@ -23,6 +23,8 @@ FROM (
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        -- 筛选人工质检过的会话
+        AND notEmpty(last_mark_id)
         -- 筛选指定平台
         AND platform = '{{ platform=tb }}'
         -- 筛选指定店铺

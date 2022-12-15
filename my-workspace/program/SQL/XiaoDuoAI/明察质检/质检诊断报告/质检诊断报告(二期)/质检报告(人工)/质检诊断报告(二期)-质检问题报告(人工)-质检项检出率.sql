@@ -1,4 +1,4 @@
--- 质检诊断报告(二期)-质检问题报告-质检项检出率
+-- 质检诊断报告(二期)-质检问题报告(人工)-质检项检出率
 SELECT
     rowNumberInAllBlocks()+1 AS `排名`,
     tag_name AS `质检项`,
@@ -17,7 +17,7 @@ FROM (
         SELECT
             tag_id,
             tag_name,
-            -- tag_cnt_sum 待替换 tag_dialog_cnt
+            -- tag_cnt_sum 待替换 tag_manual_dialog_cnt
             SUM(tag_cnt_sum) AS tag_dialog_sum
         FROM xqc_dws.tag_stat_all
         WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))

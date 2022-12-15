@@ -1,4 +1,4 @@
--- 质检诊断报告(二期)-客服质检报告-客服分组合格率
+-- 质检诊断报告(二期)-客服质检报告(人工)-客服分组合格率
 SELECT
     department_name AS `客服分组`,
     SUM(dialog_cnt) AS dialog_cnt_sum,
@@ -14,6 +14,8 @@ FROM (
     FROM dwd.xdqc_dialog_all
     WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
         AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    -- 筛选人工质检过的会话
+    AND notEmpty(last_mark_id)
     -- 筛选指定平台
     AND platform = '{{ platform=tb }}'
     -- 筛选指定店铺

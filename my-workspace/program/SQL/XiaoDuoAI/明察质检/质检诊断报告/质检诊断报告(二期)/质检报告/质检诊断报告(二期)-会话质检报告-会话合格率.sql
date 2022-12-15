@@ -40,7 +40,7 @@ FROM (
         -- 筛选指定企业
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         -- 筛选指定平台
-        AND platform = '{{platform=tb}}'
+        AND platform = '{{ platform=tb }}'
         -- 下拉框-店铺主账号
         AND (
             '{{ seller_nicks }}'=''
@@ -59,7 +59,7 @@ FROM (
                 -- 筛选指定企业的质检标准
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 -- 筛选指定平台
-                AND platform = '{{platform=tb}}'
+                AND platform = '{{ platform=tb }}'
                 -- 下拉框-质检标准ID
                 AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
             )
@@ -73,7 +73,7 @@ FROM (
         -- 筛选指定企业
         AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
         -- 筛选指定平台
-        AND platform = '{{platform=tb}}'
+        AND platform = '{{ platform=tb }}'
         -- 下拉框-店铺主账号
         AND (
             '{{ seller_nicks }}'=''
@@ -98,7 +98,7 @@ FROM (
                 -- 筛选指定企业的质检标准
                 AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                 -- 筛选指定平台
-                AND platform = '{{platform=tb}}'
+                AND platform = '{{ platform=tb }}'
                 -- 下拉框-质检标准ID
                 AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
             )
@@ -126,7 +126,7 @@ GLOBAL CROSS JOIN (
             -- 筛选指定企业
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 筛选指定平台
-            AND platform = '{{platform=tb}}'
+            AND platform = '{{ platform=tb }}'
             -- 下拉框-店铺主账号
             AND (
                 '{{ seller_nicks }}'=''
@@ -145,7 +145,7 @@ GLOBAL CROSS JOIN (
                     -- 筛选指定企业的质检标准
                     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     -- 筛选指定平台
-                    AND platform = '{{platform=tb}}'
+                    AND platform = '{{ platform=tb }}'
                     -- 下拉框-质检标准ID
                     AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
                 )
@@ -159,7 +159,7 @@ GLOBAL CROSS JOIN (
             -- 筛选指定企业
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 筛选指定平台
-            AND platform = '{{platform=tb}}'
+            AND platform = '{{ platform=tb }}'
             -- 下拉框-店铺主账号
             AND (
                 '{{ seller_nicks }}'=''
@@ -184,7 +184,7 @@ GLOBAL CROSS JOIN (
                     -- 筛选指定企业的质检标准
                     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     -- 筛选指定平台
-                    AND platform = '{{platform=tb}}'
+                    AND platform = '{{ platform=tb }}'
                     -- 下拉框-质检标准ID
                     AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
                 )
@@ -210,7 +210,7 @@ GLOBAL CROSS JOIN (
             -- 筛选指定企业
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 筛选指定平台
-            AND platform = '{{platform=tb}}'
+            AND platform = '{{ platform=tb }}'
             -- 下拉框-店铺主账号
             AND (
                 '{{ seller_nicks }}'=''
@@ -229,7 +229,7 @@ GLOBAL CROSS JOIN (
                     -- 筛选指定企业的质检标准
                     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     -- 筛选指定平台
-                    AND platform = '{{platform=tb}}'
+                    AND platform = '{{ platform=tb }}'
                     -- 下拉框-质检标准ID
                     AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
                 )
@@ -243,7 +243,7 @@ GLOBAL CROSS JOIN (
             -- 筛选指定企业
             AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
             -- 筛选指定平台
-            AND platform = '{{platform=tb}}'
+            AND platform = '{{ platform=tb }}'
             -- 下拉框-店铺主账号
             AND (
                 '{{ seller_nicks }}'=''
@@ -268,7 +268,7 @@ GLOBAL CROSS JOIN (
                     -- 筛选指定企业的质检标准
                     AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
                     -- 筛选指定平台
-                    AND platform = '{{platform=tb}}'
+                    AND platform = '{{ platform=tb }}'
                     -- 下拉框-质检标准ID
                     AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
                 )
