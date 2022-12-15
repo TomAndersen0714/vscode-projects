@@ -1,10 +1,9 @@
---质检诊断报告(二期)-客服质检报告-下拉框-获取客服姓名
+-- 质检诊断报告(二期)-质检问题报告-下拉框-获取质检项
 SELECT DISTINCT
-    employee_name
-FROM xqc_dim.snick_full_info_all
-WHERE day = toYYYYMMDD(yesterday())
--- 筛选指定企业
-AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    CONCAT(tag_name,'//',tag_id) AS tag_name_id
+FROM xqc_dws.tag_stat_all
+WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+    AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
 -- 筛选指定平台
 AND platform = '{{platform=tb}}'
 -- 筛选指定店铺
@@ -80,4 +79,4 @@ AND snick GLOBAL IN (
         )
     )
 )
-ORDER BY employee_name COLLATE 'zh'
+ORDER BY tag_name COLLATE 'zh'
