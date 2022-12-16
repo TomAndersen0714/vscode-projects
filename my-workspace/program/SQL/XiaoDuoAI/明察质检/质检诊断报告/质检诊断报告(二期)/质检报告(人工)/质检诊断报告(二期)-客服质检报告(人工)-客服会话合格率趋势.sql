@@ -19,7 +19,7 @@ FROM (
             toYYYYMMDD(begin_time) AS day,
             snick,
             COUNT(1) AS dialog_cnt,
-            sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_cnt
+            sum((100 - score + score_add) >= toUInt8OrZero('{{ passing_score=100 }}')) AS qualified_dialog_cnt
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))

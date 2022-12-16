@@ -111,7 +111,7 @@ GLOBAL CROSS JOIN (
         pre_period.qualified_dialog_sum AS pre_period_qualified_dialog_sum
     FROM (
         SELECT
-            sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_sum
+            sum((100 - score + score_add) >= toUInt8OrZero('{{ passing_score=100 }}')) AS qualified_dialog_sum
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
             AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
@@ -195,7 +195,7 @@ GLOBAL CROSS JOIN (
     ) AS cur_period
     GLOBAL CROSS JOIN (
         SELECT
-            sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_sum
+            sum((100 - score + score_add) >= toUInt8OrZero('{{ passing_score=100 }}')) AS qualified_dialog_sum
         FROM dwd.xdqc_dialog_all
         WHERE toYYYYMMDD(begin_time) BETWEEN toYYYYMMDD(
                 toDate('{{ day.start=week_ago }}') - (toDate('{{ day.end=yesterday }}') - toDate('{{ day.start=week_ago }}')) - 1

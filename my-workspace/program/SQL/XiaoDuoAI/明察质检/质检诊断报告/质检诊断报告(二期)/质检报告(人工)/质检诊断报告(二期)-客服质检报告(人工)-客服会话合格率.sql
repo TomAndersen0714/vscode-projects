@@ -11,7 +11,7 @@ FROM (
     SELECT
         snick,
         COUNT(1) AS dialog_cnt,
-        sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_cnt,
+        sum((100 - score + score_add) >= toUInt8OrZero('{{ passing_score=100 }}')) AS qualified_dialog_cnt,
         IF(dialog_cnt!=0, round(qualified_dialog_cnt / dialog_cnt * 100, 2), 0.00) AS qualified_dialog_pct,
         CONCAT(toString(qualified_dialog_pct),'%') AS qualified_dialog_pct_str
     FROM dwd.xdqc_dialog_all
@@ -109,4 +109,5 @@ GLOBAL INNER JOIN (
     -- 剔除未绑定员工的子账号
     AND employee_name!=''
 ) AS snick_info
+USING(snick)
 ORDER BY qualified_dialog_pct_str, snick DESC COLLATE 'zh'

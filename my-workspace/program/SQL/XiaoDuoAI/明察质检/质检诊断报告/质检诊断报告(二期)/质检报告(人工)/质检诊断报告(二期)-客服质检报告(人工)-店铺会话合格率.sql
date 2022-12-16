@@ -2,7 +2,7 @@
 SELECT
     seller_nick,
     uniqExact(_id) AS dialog_cnt,
-    sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_cnt,
+    sum((100 - score + score_add) >= toUInt8OrZero('{{ passing_score=100 }}')) AS qualified_dialog_cnt,
     if(dialog_cnt!=0, round(qualified_dialog_cnt/dialog_cnt*100, 2), 0.00) AS qualified_dialog_pct,
     seller_nick AS `店铺主账号`,
     dialog_cnt AS `质检会话量`,

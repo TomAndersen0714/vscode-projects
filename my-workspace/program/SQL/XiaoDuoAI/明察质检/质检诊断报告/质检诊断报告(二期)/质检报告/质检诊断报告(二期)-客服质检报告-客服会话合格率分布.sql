@@ -8,7 +8,7 @@ FROM (
     SELECT
         snick,
         COUNT(1) AS dialog_cnt,
-        sum((100 - score + score_add) >= toUInt8OrZero('{{passing_score=100}}')) AS qualified_dialog_cnt,
+        sum((100 - score + score_add) >= toUInt8OrZero('{{ passing_score=100 }}')) AS qualified_dialog_cnt,
         qualified_dialog_cnt/dialog_cnt AS qualified_dialog_pct,
         toUInt8(qualified_dialog_cnt/dialog_cnt*10)*10 AS _qualified_dialog_pct,
         CASE
