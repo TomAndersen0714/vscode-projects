@@ -1,0 +1,77 @@
+version: '2'
+x-redash-service: &redash-service
+  image: redash/redash:8.0.0.b32245
+  mem_limit: 1024m
+  depends_on:
+    - postgres
+    - redis
+  env_file: /opt/redash/env
+  restart: always
+services:
+  server:
+    <<: *redash-service
+    command: server
+    #container_name: redash
+    env_file: /opt/redash/env
+    ports:
+      - "5000:5000"
+    extra_hosts:
+      - "redis:10.0.2.1"
+      - "postgres:10.0.2.1"
+    environment:
+      REDASH_WEB_WORKERS: 4
+  scheduler:
+    <<: *redash-service
+    command: scheduler
+    env_file: /opt/redash/env
+    extra_hosts:
+      - "redis:10.0.2.1"
+      - "postgres:10.0.2.1"
+    environment:
+      QUEUES: "celery"
+      WORKERS_COUNT: 1
+  scheduled_worker:
+    <<: *redash-service
+    command: worker
+    env_file: /opt/redash/env
+    extra_hosts:
+       - "redis:10.0.2.1"
+       - "postgres:10.0.2.1"
+    environment:
+      QUEUES: "scheduled_queries,schemas"
+      WORKERS_COUNT: 1
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
+    env_file: /opt/redash/env
+    extra_hosts:
+      - "redis:10.0.2.1"
+      - "postgres:10.0.2.1"
+    environment:
+      QUEUES: "queries"
+      WORKERS_COUNT: 2
+  redis:
+    image: redis:5.0-alpine
+    ports:
+      - "6379:6379"
+    restart: always
+  postgres:
+    image: postgres:9.5-alpine
+    env_file: /opt/redash/env
+    container_name: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - /data1/redash-postgres-data:/var/lib/postgresql/data
+    restart: always
+  nginx:
+    image: redash/nginx:latest
+    ports:
+      - "8070:80"
+    depends_on:
+      - server
+    links:
+      - server:redash
+    restart: always
+    extra_hosts:
+      - "redash:10.0.2.1"
