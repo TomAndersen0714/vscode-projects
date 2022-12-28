@@ -1,0 +1,224 @@
+::1	localhost	localhost.localdomain	localhost6	localhost6.localdomain6
+
+127.0.0.1	localhost	localhost.localdomain	localhost4	localhost4.localdomain4
+
+10.20.2.130 jstzjk-002130-prod-tb-bigdata-bigdata
+
+#pulsar-cluster
+10.20.0.155     pulsar-slb
+10.20.0.152     zjk-pulsar001   pulsar001
+10.20.0.153     zjk-pulsar002   pulsar002
+10.20.0.154     zjk-pulsar003   pulsar003
+
+10.200.0.31     zjk-tbp-qa-02   pulsar-test-1
+10.200.0.32     zjk-tbp-qa-03   pulsar-test-2
+10.200.0.33     zjk-tbp-qa-04   pulsar-test-3
+
+10.20.134.186   pulsar-cluster01-slb-test-yxz
+
+10.20.0.149     zjk-zookeeper001
+10.20.0.150     zjk-zookeeper002
+10.20.0.151     zjk-zookeeper003
+
+#etcd
+10.20.0.125     etcd001
+
+#es
+10.20.0.169     es001
+
+#task-center
+10.20.0.97      task-center001
+
+#monitor
+10.20.0.87      prometheus
+
+#high
+10.20.0.92      high-01
+10.20.0.94      high-02
+10.20.0.91      high-03
+10.20.0.89      high-04
+10.20.0.93      high-05
+10.20.0.90      high-06
+10.20.0.95      high-offline-01
+10.20.0.95      high-forbidden
+
+#low
+10.20.0.96      low-01
+10.20.0.97      low-02
+
+#ms
+10.20.0.118     ms-01
+10.20.0.119     ms-02
+
+#reminder
+10.20.0.102     reminder-01
+10.20.0.98      reminder-02
+10.20.0.100     reminder-03
+10.20.0.99      reminder-04
+10.20.0.101     reminder-05
+
+#qc-tb
+10.20.0.120     xd-qc-tb
+
+#tf-server
+10.20.0.115     tf-server001
+10.20.0.116     tf-server002
+10.20.0.117     tf-server003
+10.20.0.113     tf-server004
+10.20.0.114     tf-server005
+
+#zhike
+10.20.0.121     internal.zhike.xiaoduoai.com
+10.20.0.121     zhike
+
+#nlu-server
+10.20.0.108     nlu001
+10.20.0.111     nlu002
+10.20.0.106     nlu003
+10.20.0.110     nlu004
+10.20.0.112     nlu005
+10.20.0.103     nlu006
+10.20.0.104     nlu007
+10.20.0.109     nlu008
+10.20.0.105     nlu009
+10.20.0.107     nlu010
+
+#log-server
+10.111.11.169   logserver
+
+#confluence
+10.117.11.192   xd-jst2
+
+#db-redis-zjk
+#standlone
+10.20.0.143     new-xd-jst-cache2
+10.20.0.142     new-xd-jst-cache4
+10.20.0.143     xd-redis-jst
+
+#cluster
+10.20.0.129     xd-redis-cluster001
+10.20.0.130     xd-redis-cluster002
+10.20.0.131     xd-redis-cluster003
+10.20.0.134     xd-redis-cluster004
+10.20.0.135     xd-redis-cluster005
+10.20.0.136     xd-redis-cluster006
+10.20.0.168     zjk-reminder-v2-redis001
+10.20.0.166     zjk-reminder-v2-redis002
+10.20.0.165     zjk-reminder-v2-redis003
+10.20.0.167     zjk-reminder-v2-redis004
+10.20.0.164     zjk-reminder-v2-redis005
+10.20.0.156     trade-server-redis-cluster01
+10.20.0.157     trade-server-redis-cluster02
+10.20.0.137     reminder-fishpond-redis
+10.20.0.138     reminder-stat-redis
+10.20.0.147     xd-redis-zhike
+
+#db-mongo-zjk
+10.20.0.159     mongo-online-pri
+10.20.0.146     mongo-online-sec
+10.20.0.172     mongo-offline-pri
+10.20.0.144     offline-mongo-02        mongo-offline-sec
+10.20.0.163     mongo-reminder-pri
+10.20.0.162     mongo-reminder-sec
+10.20.0.160     mongo-zhike-pri
+10.20.0.147     mongo-zhike-sec
+10.20.111.83    zjk-mongo-fishpond-pri
+10.20.111.82    zjk-mongo-fishpond-sec
+
+#bigdata
+10.20.0.141     zjk-bigdata001
+10.20.0.140     zjk-bigdata002
+10.20.0.139     zjk-bigdata003
+10.20.0.193     zjk-bigdata004
+10.20.2.28      zjk-bigdata006
+10.20.2.29      zjk-bigdata007
+10.20.133.149   zjk-bigdata008
+10.20.133.150   zjk-bigdata009
+10.20.133.159   zjk-bigdata010
+10.20.133.176 jstzjk-133176-prod-tb-bigdata-bigdata
+10.20.133.177 jstzjk-133177-prod-tb-bigdata-cdh
+10.20.2.129 jstzjk-002129-prod-tb-bigdata-bigdata
+10.20.2.130 jstzjk-002130-prod-tb-bigdata-bigdata
+
+#618
+10.20.133.164   zjk-bigdata-20200618-001
+10.20.133.167   zjk-bigdata-20201021-001
+10.20.133.166   zjk-bigdata-20201021-002
+
+10.20.121.237   zjk-bigdata-20201207-001
+
+#es
+10.20.0.169     zjk-es001
+10.20.0.170     zjk-es002
+10.20.0.198     goproxy.xiaoduoai.com
+
+10.19.0.201     zjk-pulsar1-node001
+10.19.0.200     zjk-pulsar1-node002
+10.19.0.202     zjk-pulsar1-node003
+10.19.0.204     zjk-pulsar1-node004
+10.19.0.209     zjk-pulsar2-node001
+10.19.0.210     zjk-pulsar2-node002
+10.19.0.208     zjk-pulsar2-node003
+10.19.0.211     zjk-pulsar2-node004
+10.19.0.212     pulsar-cluster02-slb
+10.19.0.203     pulsar-cluster01-slb
+
+10.19.0.203 pulsar-pro
+
+10.20.0.218     pulsar-slb-2
+10.20.2.11      zjk-temp-pulsar002
+10.20.2.7       zjk-temp-pulsar006
+10.20.2.8       zjk-temp-pulsar003
+10.20.2.12      zjk-temp-pulsar008
+10.20.2.6       zjk-temp-pulsar004
+10.20.2.10      zjk-temp-pulsar005
+10.20.2.9       zjk-temp-pulsar007
+10.20.2.5       zjk-temp-pulsar001
+10.20.2.121     zjk-temp2-pulsar007
+10.20.2.116     zjk-temp2-pulsar001
+10.20.2.120     zjk-temp2-pulsar008
+10.20.2.115     zjk-temp2-pulsar010
+10.20.2.122     zjk-temp2-pulsar003
+10.20.2.117     zjk-temp2-pulsar002
+10.20.2.124     zjk-temp2-pulsar004
+10.20.2.119     zjk-temp2-pulsar006
+10.20.2.118     zjk-temp2-pulsar005
+10.20.2.123     zjk-temp2-pulsar009
+10.20.111.88    zjk-consul-node
+10.20.132.147   zjk-consul-midd
+10.20.0.87      zjk-consul-mix
+10.20.133.151   bigdata-do-003
+10.20.133.153   bigdata-do-002
+10.20.133.152   bigdata-do-001
+10.20.112.130   pulsar-cluster01-slb-pre
+
+10.19.0.2       grpc-query-sdk.xiaoduoai.com
+
+
+10.19.0.2       grpc-general-query-sdk.xiaoduoai.com
+10.20.2.30      zjk-bigdata005
+10.20.2.30      bigdata-new001  bigdata-new001
+
+
+
+
+39.103.128.11 galaxy-mini.1yangai.com
+39.99.209.0 airflow-mini.1yangai.com
+
+# pdd mongo
+10.20.0.159 pdd-mongo-prod-pri
+10.20.0.146 pdd-mongo-prod-sec
+
+
+172.16.226.50 cloud-mongodb-xdqc-pri
+172.16.226.51 cloud-mongodb-xdqc-sec
+
+# pdd clickhouse
+172.16.226.27 pdd-bigdata-clickhouse01
+# dy mongo
+10.23.131.1 dy-mongo-prod-pri-01
+10.23.131.2 dy-mongo-prod-pri-02
+# dy clickhouse
+10.23.111.97 dy-bigdata-clickhouse
+# ks clickhouse
+10.23.111.66 ks-023111066-bigdata-clickhouse

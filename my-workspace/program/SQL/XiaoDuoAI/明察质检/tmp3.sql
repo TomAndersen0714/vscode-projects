@@ -1,101 +1,129 @@
-SELECT platform,
-    BG,
-    BU,
-    shop_name,
-    superior_name,
-    employee_name,
-    snick,
-    cnick,
-    dialog_id,
-    message_id,
-    alert_info.id AS alert_id,
-    level,
-    warning_type,
-    time,
-    time as warning_time,
-    toInt64(
-        if(
-            is_finished = 'True',
-            round(
-                (
-                    parseDateTimeBestEffort(if(finish_time != '', finish_time, toString(now()))) - parseDateTimeBestEffort(time)
-                ) / 60
-            ),
-            round((now() - parseDateTimeBestEffort(time)) / 60)
-        )
-    ) AS warning_duration,
-    finish_time,
-    is_finished,
-    if(notify_time != '', 'True', 'False') AS is_notified,
-    notify_time,
-    toInt64(
-        if(
-            notify_time != '',
-            if(
-                finish_time != '',
-                toString(
-                    round(
-                        (
-                            parseDateTimeBestEffort(if(notify_time != '', notify_time, toString(now()))) - parseDateTimeBestEffort(if(finish_time != '', finish_time, toString(now())))
-                        ) / 60
-                    )
-                ),
-                toString(
-                    round(
-                        (
-                            now() - parseDateTimeBestEffort(if(notify_time != '', notify_time, toString(now())))
-                        ) / 60
-                    )
-                )
-            ),
-            '0'
-        )
-    ) AS notify_duration
-FROM (
-        SELECT shop_info.company_id AS company_id,
-            shop_info.bg_id AS bg_id,
-            bg_info.department_name AS BG,
-            shop_info.bu_id AS bu_id,
-            bu_info.department_name AS BU,
-            shop_info.department_id AS shop_id,
-            shop_info.department_name AS shop_name
-        FROM (
-                SELECT parent_department_path [1] AS bg_id,
-                    parent_department_path [2] AS bu_id,
-                    parent_department_path,
-                    company_id,
-                    department_id,
-                    department_name
-                FROM xqc_dim.group_all
-                WHERE is_shop = 'True'
-            ) AS shop_info GLOBAL
-            LEFT JOIN (
-                SELECT department_id,
-                    department_name
-                FROM xqc_dim.group_all
-                WHERE is_shop = 'False'
-            ) AS bg_info ON shop_info.bg_id = bg_info.department_id GLOBAL
-            LEFT JOIN (
-                SELECT department_id,
-                    department_name
-                FROM xqc_dim.group_all
-                WHERE is_shop = 'False'
-            ) AS bu_info ON shop_info.bu_id = bu_info.department_id
-        WHERE company_id = '6131e6554524490001fc6825'
-    ) GLOBAL
-    INNER JOIN(
-        SELECT *
-        FROM (
-                SELECT alert_id,
-                    time AS notify_time
-                FROM xqc_ods.alert_remind_all
-                WHERE shop_id IN ['61d6a38716bbc36cb34dfd4c','61d6a38716bbc36cb34dfd56','61d6a38716bbc36cb34dfd52','61c193262ba76f001d769b90','5f3cd79bb7fba70017c854bb','61de9efadba7c00020cfd5f5','61dd56c1df229d00176cdce8','6170ddb2abefdb000c773b0a','616d2b651ffab50014d6f922','6172894009841b000fafffc9','61ee6acf09f2f12c5f2f1852','61ee6acf09f2f12c5f2f182a','61ee6acf09f2f12c5f2f1839','616d49b11ffab50016d6fa49','616fccff269ebf000e1b88b0','616e207da08ae900109dcf33','616e1b70abefdb0010773a23','616d282d1ffab50012d6f485','61d6a38716bbc36cb34dfd48','61d6a38716bbc36cb34dfd58','61ee6acf09f2f12c5f2f1843','61d6a38716bbc36cb34dfd4a','61d6a38716bbc36cb34dfd4e','61e5018858da510015331810','61e5044057e4bb0013e7c8f2','61e504cc90454f001656481e','61e50a34614e070018f45a8e','616face4a08ae9000e9dd0a9','616f7c6d09841b000eaff41e','61c94f4f6383be001deb8e21','61ee6acf09f2f12c5f2f1834','61d6a38716bbc36cb34dfd46','61d6a38716bbc36cb34dfd50','61d6a38716bbc36cb34dfd54','61ee6acf09f2f12c5f2f1848','61ee6acf09f2f12c5f2f184d','61ee6acf09f2f12c5f2f182f','61ee6acf09f2f12c5f2f183e','6139c3c96ebd17000e94b5b5','6139e720fb530f0010c19481','613af5f56ebd17000f942ca2','6131c3766ebd17000a93c0cd','627b9d832ea7ee00179fc09d','614ae633fb530f0010c1b33f','5cd268e42bf9a8000f9301d7','614c21b16ebd170010947761','6139c118e16787000fb8a1cf','618ca3649416a3001c5f413d','62d65787e506f30018791b29']
-                    and resp_code = 0
-            ) AS alert_remind GLOBAL
-            RIGHT JOIN (
-                SELECT id AS alert_id,
-                    *
-                FROM xqc_ods.alert_all FINAL
-                WHERE day BETWEEN 20220909 AND 20221207
-                    AND (
-                        shop_id IN ['61d6a38716bbc36cb34dfd4c','61d6a38716bbc36cb34dfd56','61d6a38716bbc36cb34dfd52','61c193262ba76f001d769b90','5f3cd79bb7fba70017c854bb
+CREATE DATABASE IF NOT EXISTS dwd ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary
+
+-- DROP TABLE dwd.xdqc_dialog_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE dwd.xdqc_dialog_local ON CLUSTER cluster_3s_2r
+(
+    `_id` String,
+    `platform` String,
+    `channel` String,
+    `group` String,
+    `date` Int32,
+    `seller_nick` String,
+    `cnick` String,
+    `real_buyer_nick` String,
+    `open_uid` String,
+    `snick` String,
+    `begin_time` DateTime64(3),
+    `end_time` DateTime64(3),
+    `is_after_sale` UInt8,
+    `is_inside` UInt8,
+    `employee_name` String,
+    `s_emotion_type` Array(UInt16),
+    `s_emotion_rule_id` Array(String),
+    `s_emotion_score` Array(Int32),
+    `s_emotion_count` Array(UInt32),
+    `c_emotion_type` Array(UInt16),
+    `c_emotion_rule_id` Array(String),
+    `c_emotion_score` Array(Int32),
+    `c_emotion_count` Array(UInt32),
+    `emotions` Array(String),
+    `abnormals_type` Array(UInt16),
+    `abnormals_rule_id` Array(String),
+    `abnormals_score` Array(Int32),
+    `abnormals_count` Array(UInt32),
+    `excellents_type` Array(UInt16),
+    `excellents_rule_id` Array(String),
+    `excellents_score` Array(Int32),
+    `excellents_count` Array(UInt32),
+    `qc_word_source` Array(UInt8),
+    `qc_word_word` Array(String),
+    `qc_word_count` Array(UInt32),
+    `qid` Array(Int64),
+    `mark` String,
+    `mark_judge` Int32,
+    `mark_score` Int32,
+    `mark_score_add` Int32,
+    `mark_ids` Array(String),
+    `last_mark_id` String,
+    `human_check` UInt8,
+    `tag_score_stats_id` Array(String),
+    `tag_score_stats_score` Array(Int32),
+    `tag_score_stats_count` Array(UInt32),
+    `tag_score_stats_md` Array(UInt8),
+    `tag_score_stats_mm` Array(UInt8),
+    `tag_score_add_stats_id` Array(String),
+    `tag_score_add_stats_score` Array(Int32),
+    `tag_score_add_stats_count` Array(UInt32),
+    `tag_score_add_stats_md` Array(UInt8),
+    `tag_score_add_stats_mm` Array(UInt8),
+    `rule_stats_id` Array(String),
+    `rule_stats_score` Array(Int32),
+    `rule_stats_count` Array(UInt32),
+    `rule_add_stats_id` Array(String),
+    `rule_add_stats_score` Array(Int32),
+    `rule_add_stats_count` Array(UInt32),
+    `xrule_stats_id` Array(String),
+    `xrule_stats_score` Array(Int32),
+    `xrule_stats_count` Array(UInt32),
+    `top_xrules_id` Array(String),
+    `top_xrules_score` Array(Int32),
+    `top_xrules_count` Array(UInt32),
+    `score` Int32,
+    `score_add` Int32,
+    `question_count` UInt32,
+    `answer_count` UInt32,
+    `first_answer_time` DateTime64(3),
+    `qa_time_sum` UInt32,
+    `qa_round_sum` UInt32,
+    `focus_goods_id` String,
+    `is_remind` UInt8,
+    `task_list_id` String,
+    `read_mark` Array(String),
+    `last_msg_id` String,
+    `consulte_transfor_v2` Int32,
+    `order_info_id` Array(String),
+    `order_info_status` Array(String),
+    `order_info_payment` Array(Float32),
+    `order_info_time` Array(UInt64),
+    `intel_score` Int32,
+    `remind_ntype` String,
+    `first_follow_up_time` DateTime64(3),
+    `is_follow_up_remind` UInt8,
+    `emotion_detect_mode` Int32,
+    `has_withdraw_robot_msg` UInt8,
+    `is_order_matched` UInt8,
+    `suspected_positive_emotion` UInt8,
+    `suspected_problem` UInt8,
+    `suspected_excellent` UInt8,
+    `has_after` UInt8,
+    `cnick_customize_rule` Array(String),
+    `update_time` DateTime('Asia/Shanghai'),
+    `wx_rule_stats_id` Array(String),
+    `wx_rule_stats_score` Array(Int32),
+    `wx_rule_stats_count` Array(UInt32),
+    `wx_rule_add_stats_id` Array(String),
+    `wx_rule_add_stats_score` Array(Int32),
+    `wx_rule_add_stats_count` Array(UInt32),
+    `sign` Int8
+)
+ENGINE = ReplicatedCollapsingMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}',
+    sign
+)
+PARTITION BY toYYYYMMDD(begin_time)
+PRIMARY KEY (platform, channel, seller_nick)
+ORDER BY (platform, channel, seller_nick, _id)
+SETTINGS index_granularity = 8192, storage_policy = 'rr'
+
+
+-- DROP TABLE dwd.xdqc_dialog_all ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE dwd.xdqc_dialog_all ON CLUSTER cluster_3s_2r
+AS dwd.xdqc_dialog_local
+ENGINE = Distributed('cluster_3s_2r', 'dwd', 'xdqc_dialog_local', xxHash64(platform, channel, seller_nick, _id))
+
+-- DROP TABLE buffer.dwd_xdqc_dialog_buffer ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE buffer.dwd_xdqc_dialog_buffer ON CLUSTER cluster_3s_2r
+AS dwd.xdqc_dialog_all
+ENGINE = Buffer('dwd', 'xdqc_dialog_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
