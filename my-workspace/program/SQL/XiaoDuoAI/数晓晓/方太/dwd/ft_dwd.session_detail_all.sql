@@ -61,3 +61,10 @@ ADD COLUMN `qa_cnt` Int32 AFTER `m_session_send_cnt`,
 ADD COLUMN `qa_reply_intervals_secs` Array(Int32) AFTER `qa_cnt`,
 ADD COLUMN `m_qa_cnt` Int32 AFTER `qa_reply_intervals_secs`,
 ADD COLUMN `m_qa_reply_intervals_secs` Array(Int32) AFTER `m_qa_cnt`
+
+ALTER TABLE ft_dwd.session_detail_all ON CLUSTER cluster_3s_2r
+ADD COLUMN `m_session_send_cnt` Int64 AFTER `session_send_cnt`,
+ADD COLUMN `qa_cnt` Int32 AFTER `m_session_send_cnt`,
+ADD COLUMN `qa_reply_intervals_secs` Array(Int32) AFTER `qa_cnt`,
+ADD COLUMN `m_qa_cnt` Int32 AFTER `qa_reply_intervals_secs`,
+ADD COLUMN `m_qa_reply_intervals_secs` Array(Int32) AFTER `m_qa_cnt`
