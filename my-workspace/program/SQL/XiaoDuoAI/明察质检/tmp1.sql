@@ -1,10 +1,6 @@
-SELECT hostName(),
-    getMacro('replica'),
-    user,
-    query_id,
-    query,
-    elapsed,
-    memory_usage
-FROM clusterAllReplicas('cluster_3s_2r', system.processes)
-ORDER BY memory_usage DESC
-LIMIT 10
+SELECT con.*
+FROM pg_catalog.pg_constraint con
+    INNER JOIN pg_catalog.pg_class rel ON rel.oid = con.conrelid
+    INNER JOIN pg_catalog.pg_namespace nsp ON nsp.oid = connamespace
+WHERE nsp.nspname = 'sxx'
+    AND rel.relname = 'shop_day_stats'
