@@ -1,70 +1,215 @@
-2_ask_order_cnt
-2_ask_order_created_amt
-2_ask_order_created_cnt
-2_ask_order_created_uv
-2_ask_order_paid_amt
-2_ask_order_paid_cnt
-2_ask_order_paid_order_uv
-2_ask_order_paid_uv
-2_ask_order_uv
-2_goods_recommend_paid_cnt
-2_goods_recommend_paid_uv
-2_out_of_stock_cnt
-2_out_of_stock_cnt_rat
-2_out_of_stock_uv
-2_out_of_stock_uv_rat
-7_ask_order_cnt
-7_ask_order_created_amt
-7_ask_order_created_cnt
-7_ask_order_created_uv
-7_ask_order_paid_amt
-7_ask_order_paid_cnt
-7_ask_order_paid_order_uv
-7_ask_order_paid_uv
-7_ask_order_uv
-7_goods_recommend_paid_cnt
-7_goods_recommend_paid_uv
-7_out_of_stock_cnt
-7_out_of_stock_cnt_rat
-7_out_of_stock_uv
-7_out_of_stock_uv_rat
-ask_cnt
-ask_uv
-c_recv_cnt
-c_recv_uv
-first_reply_within_thirty_secs_session_cnt
-first_reply_within_thirty_secs_session_rat
-goods_recommend_cnt
-goods_recommend_cnt_rat
-goods_recommend_uv
-goods_recommend_uv_rat
-m_first_reply_within_thirty_secs_session_cnt
-m_first_reply_within_thirty_secs_session_rat
-m_qa_sum
-m_reply_cnick_cnt
-m_reply_cnick_rat
-m_reply_interval_secs_avg
-m_reply_interval_secs_sum
-m_send_msg_cnt
-m_send_msg_rat
-qa_sum
-recv_cnick_cnt
-recv_msg_cnt
-reply_cnick_cnt
-reply_cnick_rat
-reply_interval_secs_avg
-reply_interval_secs_sum
-s_recv_cnt
-s_recv_uv
-s_service_duration_avg
-satisfied_cnt
-satisfied_rat
-send_msg_cnt
-send_msg_rat
-session_cnt
-total_eval_cnt
-trsf_cnt
-trsf_in_cnt
-trsf_out_cnt
-very_satisfied_cnt
-very_unsatisfied_cnt
+-- 质检诊断报告(二期)-质检问题报告(人工)-质检项检出率趋势
+SELECT
+    day,
+    tag_dialog_sum,
+    dialog_sum,
+    IF(dialog_sum!=0, round(tag_dialog_sum / dialog_sum * 100, 2), 0.00) AS tag_dialog_pct,
+    dialog_sum AS `质检会话量`,
+    tag_dialog_pct AS `检出率`
+FROM (
+    SELECT
+        day,
+        SUM(tag_manual_dialog_cnt) AS tag_dialog_sum
+    FROM xqc_dws.tag_stat_all
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    -- 筛选指定平台
+    AND platform = '{{ platform }}'
+    -- 筛选指定店铺
+    AND seller_nick GLOBAL IN (
+        SELECT DISTINCT
+            seller_nick
+        FROM xqc_dim.xqc_shop_all
+        WHERE day = toYYYYMMDD(yesterday())
+        -- 筛选指定企业
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 筛选指定平台
+        AND platform = '{{ platform }}'
+        -- 下拉框-店铺主账号
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        )
+        -- 下拉框-质检标准
+        AND (
+            '{{ qc_norm_ids }}'=''
+            OR
+            seller_nick GLOBAL IN (
+                SELECT DISTINCT
+                    seller_nick
+                FROM ods.xinghuan_qc_norm_relate_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = '{{ platform }}'
+                -- 下拉框-质检标准ID
+                AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            )
+        )
+    )
+    -- 筛选指定子账号
+    AND snick GLOBAL IN (
+        SELECT snick
+        FROM xqc_dim.snick_full_info_all
+        WHERE day = toYYYYMMDD(yesterday())
+        -- 筛选指定企业
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 筛选指定平台
+        AND platform = '{{ platform }}'
+        -- 下拉框-店铺主账号
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号分组
+        AND (
+            '{{ department_ids }}'=''
+            OR
+            department_id IN splitByChar(',','{{ department_ids }}')
+        )
+        -- 下拉框-质检标准
+        AND (
+            '{{ qc_norm_ids }}'=''
+            OR
+            department_id GLOBAL IN (
+                SELECT DISTINCT
+                    department_id
+                FROM ods.xinghuan_qc_norm_relate_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = '{{ platform }}'
+                -- 下拉框-质检标准ID
+                AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            )
+        )
+    )
+    -- 筛选指定质检项关联分组
+    AND (
+        -- 下拉框-质检标准
+        '{{ qc_norm_ids }}'=''
+        OR
+        tag_group_id GLOBAL IN (
+            SELECT DISTINCT
+                _id AS tag_group_id
+            FROM xqc_dim.qc_norm_group_full_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+        )
+    )
+     -- 筛选指定一级质检项分组下的二级质检项分组
+    AND (
+        '{{ tag_group_ids }}'=''
+        OR
+        tag_group_id GLOBAL IN (
+            SELECT
+                _id AS tag_group_id
+            FROM xqc_dim.qc_norm_group_full_all
+            WHERE day = toYYYYMMDD(yesterday())
+            -- 下拉框-一级质检项分组
+            AND (
+                parent_id IN splitByChar(',', '{{ tag_group_ids }}')
+                OR
+                _id IN splitByChar(',', '{{ tag_group_ids }}')
+            )
+        )
+    )
+    -- 筛选指定质检项
+    AND (
+        -- 下拉框-质检标准
+        '{{ tag_ids }}'=''
+        OR
+        tag_id IN splitByChar(',','{{ tag_ids }}')
+    )
+    GROUP BY day
+) AS tag_stat
+GLOBAL RIGHT JOIN (
+    SELECT
+        day,
+        sum(manual_marked_dialog_cnt) AS dialog_sum
+    FROM xqc_dws.snick_stat_all
+    WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+        AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+    -- 筛选指定平台
+    AND platform = '{{ platform }}'
+    -- 筛选指定店铺
+    AND seller_nick GLOBAL IN (
+        SELECT DISTINCT
+            seller_nick
+        FROM xqc_dim.xqc_shop_all
+        WHERE day = toYYYYMMDD(yesterday())
+        -- 筛选指定企业
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 筛选指定平台
+        AND platform = '{{ platform }}'
+        -- 下拉框-店铺主账号
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        )
+        -- 下拉框-质检标准
+        AND (
+            '{{ qc_norm_ids }}'=''
+            OR
+            seller_nick GLOBAL IN (
+                SELECT DISTINCT
+                    seller_nick
+                FROM ods.xinghuan_qc_norm_relate_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业的质检标准
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = '{{ platform }}'
+                -- 下拉框-质检标准ID
+                AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            )
+        )
+    )
+    -- 筛选指定子账号
+    AND snick GLOBAL IN (
+        SELECT snick
+        FROM xqc_dim.snick_full_info_all
+        WHERE day = toYYYYMMDD(yesterday())
+        -- 筛选指定企业
+        AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+        -- 筛选指定平台
+        AND platform = '{{ platform }}'
+        -- 下拉框-店铺主账号
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',', '{{ seller_nicks }}')
+        )
+        -- 下拉框-子账号分组
+        AND (
+            '{{ department_ids }}'=''
+            OR
+            department_id IN splitByChar(',','{{ department_ids }}')
+        )
+        -- 下拉框-质检标准
+        AND (
+            '{{ qc_norm_ids }}'=''
+            OR
+            department_id GLOBAL IN (
+                SELECT DISTINCT
+                    department_id
+                FROM ods.xinghuan_qc_norm_relate_all
+                WHERE day = toYYYYMMDD(yesterday())
+                -- 筛选指定企业的质检标准
+                AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+                -- 筛选指定平台
+                AND platform = '{{ platform }}'
+                -- 下拉框-质检标准ID
+                AND qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
+            )
+        )
+    )
+    GROUP BY day
+) AS dialog_stat
+USING(day)
+ORDER BY day ASC
