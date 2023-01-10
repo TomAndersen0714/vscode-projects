@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS sxx_dws ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary
 
 -- DROP TABLE trino.xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE trino.xdrs_logs_local ON CLUSTER cluster_3s_2r
+CREATE TABLE IF NOT EXISTS trino.xdrs_logs_local ON CLUSTER cluster_3s_2r
 (
     `question_type` Int32,
     `send_msg_from` Int32,
@@ -58,11 +58,11 @@ SETTINGS index_granularity = 8192, storage_policy = 'rr'
 
 
 -- DROP TABLE trino.xdrs_logs_all ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE trino.xdrs_logs_all ON CLUSTER cluster_3s_2r
+CREATE TABLE IF NOT EXISTS trino.xdrs_logs_all ON CLUSTER cluster_3s_2r
 AS trino.xdrs_logs_local
 ENGINE = Distributed('cluster_3s_2r', 'trino', 'xdrs_logs_local', rand())
 
 -- DROP TABLE buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
+CREATE TABLE IF NOT EXISTS buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
 AS trino.xdrs_logs_all
 ENGINE = Buffer('trino', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
