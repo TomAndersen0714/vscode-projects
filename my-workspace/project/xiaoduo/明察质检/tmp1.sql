@@ -1,118 +1,310 @@
-SELECT corp_id,
-    shop_num as "店铺数",
-    external_user_count as "下单顾客人数",
-    bind_nick_count as "下单账号数",
-    payment_sum as "支付总额",
-    order_count as "订单数",
-    per_payment as "客单价",
-    new_payment_sum as "首购支付总额",
-    new_order_count as "首购订单数",
-    new_per_payment as "首购客单价",
-    old_payment_sum as "复购支付总额",
-    old_order_count as "复购订单数",
-    old_per_payment as "复购客单价"
+-- 店铺*客服*产品粒度-出库量（不含静默）
+-- 店铺*客服*产品粒度-付款量（不含静默）
+-- 店铺*客服*产品粒度-出库率（出库量 / 付款量）（不含静默）
+-- 店铺*客服*产品粒度-出库人数（不含静默）
+-- 店铺*客服*产品粒度-付款人数（不含静默）
+-- 店铺*客服*产品粒度-出库率（出库人数 / 付款人数）（不含静默）
+SELECT
+    `day`,
+    shop_id,
+    '{{platform}}' as platform,
+    snick,
+    goods_id,
+    stat_label,
+    stat_value,
+    toString(now64(3, 'Asia/Shanghai')) as update_at
 FROM (
-    SELECT corp_id,
-        count(DISTINCT shop_id) as shop_num,
-        count(DISTINCT external_user_id) as external_user_count,
-        count(DISTINCT bind_nick) as bind_nick_count,
-        arraySum(
-            arrayConcat(new_payments, old_payments) as payments
-        ) / 100 as payment_sum,
-        length(payments) as order_count,
-        floor(if(order_count > 0, payment_sum / order_count, 0), 2) as per_payment,
-        arraySum(
-            arrayFilter(
-                (p, o, i)->arrayFirstIndex((x)->(x = o), new_order_ids) = i,
-                groupArrayIf(payment, tag = 0),
-                groupArrayIf(order_id, tag = 0) as new_order_ids,
-                arrayEnumerate(new_order_ids)
-            ) as new_payments
-        ) / 100 as new_payment_sum,
-        length(new_payments) as new_order_count,
-        floor(
-            if(
-                new_order_count > 0,
-                new_payment_sum / new_order_count,
-                0
-            ),
+    select `day`,
+        shop_id,
+        snick,
+        goods_id,
+        ask_order_paid_cnt,
+        ask_order_paid_uv,
+        out_of_stock_cnt,
+        out_of_stock_uv,
+        round(
+            (
+                if(
+                    isNull(ask_order_paid_cnt)
+                    or ask_order_paid_cnt = 0,
+                    0,
+                    out_of_stock_cnt / ask_order_paid_cnt
+                )
+            ) * 100,
             2
-        ) as new_per_payment,
-        arraySum(
-            arrayFilter(
-                (p, o, i)->arrayFirstIndex((x)->(x = o), old_order_ids) = i,
-                groupArrayIf(payment, tag = 1),
-                groupArrayIf(order_id, tag = 1) as old_order_ids,
-                arrayEnumerate(old_order_ids)
-            ) as old_payments
-        ) / 100 as old_payment_sum,
-        length(old_payments) as old_order_count,
-        floor(
-            if(
-                old_order_count > 0,
-                old_payment_sum / old_order_count,
-                0
-            ),
+        ) as out_of_stock_cnt_rat,
+        round(
+            (
+                if(
+                    isNull(ask_order_paid_uv)
+                    or ask_order_paid_uv = 0,
+                    0,
+                    out_of_stock_uv / ask_order_paid_uv
+                )
+            ) * 100,
             2
-        ) as old_per_payment
-    FROM (
-            SELECT day,
-                corp_id,
-                shop_id,
-                bind_nick,
-                external_user_id,
-                tupleElement(arrayJoin(tmps) as tmp, 1) as order_id,
-                tupleElement(tmp, 2) as payment,
-                tupleElement(tmp, 3) as order_time,
-                before.first_order_time,
-                before.first_order_time > 0 AND before.first_order_time < order_time as tag
-            FROM (
-                WITH
-                    toYYYYMMDD(toDate('2023-01-05')) AS starts,
-                    toYYYYMMDD(toDate('2023-01-11')) AS ends
-                SELECT day,
-                    platform,
-                    corp_id,
-                    shop_id,
-                    bind_nick,
-                    external_user_id,
-                    arrayMap(
-                        (x, y, z)->tuple(x, y, z),
-                        order_ids,
-                        payments,
-                        order_times
-                    ) as tmps
-                FROM app_corp.corp_shop_nick_bind_order_stat_2_all
-                WHERE day BETWEEN starts AND ends -- AND platform='tb'
-                    AND corp_id = 'ww07ca2dcba6ae4bc9'
-                    AND length(order_ids) > 0
-                    AND bind_nick not like '%*%'
-            )
-            LEFT JOIN (
-                WITH toYYYYMMDD(
-                        date_add(
-                            DAY,
-                            toInt64('-7'),
-                            addDays(toDate('2023-01-05'), -1)
+        ) as out_of_stock_uv_rat
+    from (
+        select shop_id,
+            `day`,
+            snick,
+            goods_id,
+            ask_order_paid_cnt,
+            out_of_stock_cnt
+        from (
+                select shop_id,
+                    `day`,
+                    snick,
+                    goods_id,
+                    sum(goods_count) as ask_order_paid_cnt
+                from (
+                        SELECT shop_id,
+                            `day`,
+                            snick,
+                            goods_id,
+                            goods_num,
+                            count(1) * goods_num as goods_count
+                        FROM (
+                            SELECT DISTINCT shop_id,
+                                `day`,
+                                order_id,
+                                goods_id,
+                                goods_num
+                            FROM ft_dwd.order_detail_all
+                            WHERE shop_id = '{{shop_id}}'
+                                AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                                AND status IN ('paid', 'deposited')
+                                AND goods_id GLOBAL NOT IN (
+                                    SELECT goods_id
+                                    FROM ft_dim.goods_info_all
+                                )
                         )
-                    ) AS compare_starts,
-                    toYYYYMMDD(addDays(toDate('2023-01-05'), -1)) AS compare_ends
-                SELECT platform,
-                    corp_id,
-                    shop_id,
-                    bind_nick,
-                    arrayMin(groupArrayArray(order_times)) as first_order_time
-                FROM app_corp.corp_shop_nick_bind_order_stat_2_all
-                WHERE day BETWEEN compare_starts AND compare_ends
-                    AND corp_id = 'ww07ca2dcba6ae4bc9' -- AND platform='tb'
-                    AND length(order_ids) > 0
-                    AND bind_nick not like '%*%'
-                GROUP BY platform,
-                    corp_id,
-                    shop_id,
-                    bind_nick
-            ) AS before
-            using (platform, corp_id, shop_id, bind_nick)
+                        LEFT JOIN (
+                                    SELECT DISTINCT shop_id,
+                                        `day`,
+                                        order_id,
+                                        snick
+                                    FROM ft_dwd.ask_order_cov_detail_all
+                                    WHERE shop_id = '{{shop_id}}'
+                                        AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                                        AND cycle = {{cycle}}
+                                        AND paid_time != ''
+                        )
+                        USING shop_id,
+                            `day`,
+                            order_id
+                        where (
+                                    snick != ''
+                                    OR snick IS NULL
+                                )
+                        group by shop_id,
+                            `day`,
+                            snick,
+                            goods_id,
+                            goods_num
+                )
+                group by shop_id,
+                    `day`,
+                    snick,
+                    goods_id
         )
-    GROUP BY corp_id
-) -- trace:05428cd180aae09b6e2275abd324a495
+        full outer join (
+                select shop_id,
+                    `day`,
+                    snick,
+                    goods_id,
+                    sum(goods_count) as out_of_stock_cnt
+                from (
+                    SELECT shop_id,
+                        `day`,
+                        snick,
+                        goods_id,
+                        goods_num,
+                        count(1) * goods_num as goods_count
+                    FROM (
+                            SELECT DISTINCT shop_id,
+                                `day`,
+                                order_id,
+                                goods_id,
+                                goods_num
+                            FROM ft_dwd.order_detail_all
+                            WHERE shop_id = '{{shop_id}}'
+                                AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                                AND status IN ('shipped')
+                                AND goods_id GLOBAL NOT IN (
+                                    SELECT goods_id
+                                    FROM ft_dim.goods_info_all
+                                )
+                    )
+                    LEFT JOIN (
+                            SELECT DISTINCT shop_id,
+                                `day`,
+                                order_id,
+                                snick
+                            FROM ft_dwd.ask_order_cov_detail_all
+                            WHERE shop_id = '{{shop_id}}'
+                                AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                                AND cycle = {{cycle}}
+                                AND paid_time != ''
+                    )
+                    USING shop_id,
+                        `day`,
+                        order_id
+                    where (
+                            snick != ''
+                            OR snick IS NULL
+                        )
+                    group by shop_id,
+                        `day`,
+                        snick,
+                        goods_id,
+                        goods_num
+                )
+                group by shop_id,
+                    `day`,
+                    snick,
+                    goods_id
+        )
+        using shop_id,
+            `day`,
+            snick,
+            goods_id
+    )
+    full outer join (
+        select shop_id,
+            `day`,
+            snick,
+            goods_id,
+            ask_order_paid_uv,
+            out_of_stock_uv
+        from (
+            select shop_id,
+                `day`,
+                snick,
+                goods_id,
+                count(distinct buyer_nick) as ask_order_paid_uv
+            from (
+                    select shop_id,
+                        `day`,
+                        buyer_nick,
+                        snick,
+                        goods_id,
+                        goods_num,
+                        status_arr
+                    from (
+                            select shop_id,
+                                `day`,
+                                order_id,
+                                goods_id,
+                                goods_num,
+                                buyer_nick,
+                                groupArray(status) as status_arr
+                            from (
+                                SELECT distinct shop_id,
+                                    `day`,
+                                    order_id,
+                                    buyer_nick,
+                                    goods_id,
+                                    goods_num,
+                                    status
+                                FROM ft_dwd.order_detail_all
+                                WHERE shop_id = '{{shop_id}}'
+                                    AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                            )
+                            group by shop_id,
+                                `day`,
+                                order_id,
+                                goods_id,
+                                goods_num,
+                                buyer_nick
+                    )
+                    left join (
+                            select distinct shop_id,
+                                `day`,
+                                order_id,
+                                snick,
+                                goods_id
+                            from ft_dwd.ask_order_cov_detail_all
+                            WHERE shop_id = '{{shop_id}}'
+                                and `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                                and cycle = {{cycle}}
+                                and paid_time != ''
+                    ) using (shop_id, `day`, order_id)
+                    where snick != ''
+            )
+            where has(status_arr, 'paid')
+            group by shop_id,
+                `day`,
+                snick,
+                goods_id
+        )
+        full outer join (
+            select shop_id,
+                `day`,
+                snick,
+                goods_id,
+                count(distinct buyer_nick) as out_of_stock_uv
+            from (
+                select shop_id,
+                    `day`,
+                    buyer_nick,
+                    snick,
+                    goods_id,
+                    goods_num,
+                    status_arr
+                from (
+                        select shop_id,
+                            `day`,
+                            order_id,
+                            goods_id,
+                            goods_num,
+                            buyer_nick,
+                            groupArray(status) as status_arr
+                        from (
+                            SELECT distinct shop_id,
+                                `day`,
+                                order_id,
+                                buyer_nick,
+                                goods_id,
+                                goods_num,
+                                status
+                            FROM ft_dwd.order_detail_all
+                            WHERE shop_id = '{{shop_id}}'
+                                AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                        )
+                        group by shop_id,
+                            `day`,
+                            order_id,
+                            goods_id,
+                            goods_num,
+                            buyer_nick
+                    )
+                    left join (
+                        select distinct shop_id,
+                            `day`,
+                            order_id,
+                            snick,
+                            goods_id
+                        from ft_dwd.ask_order_cov_detail_all
+                        WHERE shop_id = '{{shop_id}}'
+                            and `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1))
+                            and cycle = {{cycle}}
+                            and paid_time != ''
+                    ) using (shop_id, `day`, order_id)
+                where snick != ''
+            )
+            where has(status_arr, 'shipped')
+            group by shop_id,
+                `day`,
+                snick,
+                goods_id
+        )
+        using (shop_id, `day`, snick, goods_id)
+    )
+    using (shop_id, `day`, snick, goods_id)
+)
+ARRAY JOIN
+    ['{{cycle}}_ask_order_paid_cnt','{{cycle}}_out_of_stock_cnt','{{cycle}}_out_of_stock_cnt_rat',
+     '{{cycle}}_ask_order_paid_order_uv','{{cycle}}_out_of_stock_uv','{{cycle}}_out_of_stock_uv_rat'] AS stat_label,
+     [ask_order_paid_cnt, out_of_stock_cnt, out_of_stock_cnt_rat,
+      ask_order_paid_uv, out_of_stock_uv, out_of_stock_uv_rat] AS stat_value;
