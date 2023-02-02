@@ -64,3 +64,4 @@ ARRAY JOIN
         `reply_interval_secs_avg`, `m_reply_interval_secs_avg`, `first_reply_within_thirty_secs_session_pct`, `m_first_reply_within_thirty_secs_session_pct`,
         `send_msg_pct`, `m_send_msg_pct`, `reply_cnick_pct`, `m_reply_cnick_pct`
     ] AS stat_value
+
