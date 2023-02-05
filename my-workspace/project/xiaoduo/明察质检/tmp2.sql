@@ -1,20 +1,10 @@
-CREATE TABLE dim.platform_shop_nick_local ON CLUSTER cluster_3s_2r (
-    `shop_id` String,
-    `plat_user_id` String,
-    `platform` String
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-)
-ORDER BY shop_id SETTINGS index_granularity = 8192 
-CREATE TABLE dim.platform_shop_nick_all ON CLUSTER cluster_3s_2r
-(
-        `shop_id` String,
-        `plat_user_id` String,
-        `platform` String
-    ) ENGINE = Distributed(
-        'cluster_3s_2r',
-        'dim',
-        'platform_shop_nick_local',
-        rand()
-    )
+客服询单人数, {{cycle}}_ask_order_uv
+在线销售额, {{cycle}}_ask_order_paid_amt
+已售产品台数-出库, {{cycle}}_out_of_stock_goods_sale_count
+已售产品台数-销售, {{cycle}}_paid_goods_sale_count
+客服销售人数-下单人数, {{cycle}}_ask_order_created_uv
+客服销售订单数-下单量, {{cycle}}_ask_order_created_cnt
+出库人数（不含静默）, {{cycle}}_out_of_stock_uv
+在线销售额（不含静默）, {{cycle}}_ask_order_paid_amt
+出库金额-出库销售额， {{cycle}}_out_of_stock_amt
+出库量， {{cycle}}_out_of_stock_cnt

@@ -1,71 +1,45 @@
---客服维度_出库状态
-SELECT `day`,
-    shop_id,
-    '{{platform}}' AS platform,
-    snick,
-    'all' AS goods_id,
-    '{{cycle}}_out_of_stock_buyer_distribution' AS stat_label,
-    toString(
-        array(groupArray(toInt64(sales_count)), groupArray(toInt64(buyer_distribution)))
-    ) AS stat_value,
-    toString(now64(3, 'Asia/Shanghai')) AS update_at
-FROM (
-    SELECT `day`,
-        shop_id,
-        snick,
-        sales_count,
-        count(distinct real_buyer_nick) AS buyer_distribution
-    FROM (
-            SELECT `day`,
-                shop_id,
-                snick,
-                real_buyer_nick,
-                sum(goods_num) AS sales_count
-            FROM (
-                    SELECT DISTINCT order_id,
-                        snick,
-                        real_buyer_nick,
-                        goods_payment,
-                        `day`,
-                        goods_id,
-                        goods_num,
-                        shop_id,
-                        `day`,
-                        platform
-                    FROM ft_dwd.ask_order_cov_detail_all
-                    WHERE shop_id = '{{shop_id}}'
-                        AND `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
-                        AND cycle = {{cycle}}
-                        AND goods_id GLOBAL NOT IN (
-                            SELECT DISTINCT goods_id
-                            FROM ft_dim.goods_info_all
-                            WHERE shop_id = '{{shop_id}}'
-                                AND `type` IN (
-                                    '1',
-                                    '2',
-                                    '3',
-                                    '4'
-                                )
-                        )
-                        and order_id in (
-                            SELECT distinct order_id
-                            FROM ft_dwd.order_detail_all
-                            where shop_id = '{{shop_id}}'
-                                and `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
-                                and status = 'shipped'
-                        )
-                )
-            GROUP BY `day`,
-                shop_id,
-                snick,
-                real_buyer_nick
-        )
-    GROUP BY `day`,
-        shop_id,
-        snick,
-        sales_count
-    ORDER BY sales_count ASC
-)
-GROUP BY `day`,
-    shop_id,
-    snick;
+2_new_ask_order_paid_rat
+2_new_ask_order_paid_uv
+2_new_ask_order_uv
+2_out_of_stock_amt
+7_new_ask_order_paid_rat
+7_new_ask_order_paid_uv
+7_new_ask_order_uv
+7_out_of_stock_amt
+ask_cnt
+ask_uv
+c_recv_cnt
+c_recv_uv
+first_reply_within_thirty_secs_session_cnt
+first_reply_within_thirty_secs_session_rat
+goods_recommend_cnt
+goods_recommend_uv
+m_first_reply_within_thirty_secs_session_cnt
+m_first_reply_within_thirty_secs_session_rat
+m_qa_sum
+m_reply_cnick_cnt
+m_reply_cnick_rat
+m_reply_interval_secs_avg
+m_reply_interval_secs_sum
+m_send_msg_cnt
+m_send_msg_rat
+qa_sum
+recv_cnick_cnt
+recv_msg_cnt
+reply_cnick_cnt
+reply_cnick_rat
+reply_interval_secs_avg
+reply_interval_secs_sum
+s_recv_cnt
+s_recv_uv
+s_service_duration_avg
+send_msg_cnt
+send_msg_rat
+session_cnt
+trsf_cnt
+trsf_in_cnt
+trsf_out_cnt
+satisfied_rat
+total_eval_cnt
+very_satisfied_cnt
+wx_add_person_cnt

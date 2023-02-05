@@ -1,38 +1,21 @@
-SELECT `day`,
-    shop_id,
-    '{{platform}}' AS platform,
-    snick,
-    'all' AS goods_id,
-    'out_of_stock_amt' AS stat_label,
-    toFloat64(sum(goods_payment)) AS stat_value,
-    toString(now64(3, 'Asia/Shanghai')) as update_at
-FROM (
-    SELECT *
-    FROM (
-        SELECT shop_id,
-            toYYYYMMDD(toDate('{{ds}}')) AS `day`,
-            buyer_nick as cnick,
-            order_id,
-            goods_id,
-            goods_payment,
-            goods_num
-        FROM ft_dwd.order_detail_all
-        WHERE `day` <= toYYYYMMDD(addDays(toDate('{{ds}}'), {{cycle}} - 1))
-            AND `day` >= toYYYYMMDD(toDate('{{ds}}'))
-            AND shop_id = '{{shop_id}}'
-            AND status IN ('shipped')
-    )
-    JOIN (
-        SELECT DISTINCT order_id,
-            snick
-        FROM ft_dwd.ask_order_cov_detail_all
-        WHERE `day` = toYYYYMMDD(toDate('{{ds}}'))
-            AND cycle = {{cycle}}
-            AND paid_time != ''
-            AND shop_id = '{{shop_id}}'
-    )
-    USING order_id
-)
-GROUP BY shop_id,
-    `day`,
-    snick
+recv_cnick_cnt, 咨询买家数
+reply_cnick_cnt, 回复买家数
+m_reply_cnick_cnt, 人工回复买家数
+session_cnt, 会话数
+first_reply_within_thirty_secs_session_cnt, 
+m_first_reply_within_thirty_secs_session_cnt
+recv_msg_cnt
+send_msg_cnt
+m_send_msg_cnt
+qa_sum
+m_qa_sum
+reply_interval_secs_sum
+m_reply_interval_secs_sum
+reply_interval_secs_avg
+m_reply_interval_secs_avg
+first_reply_within_thirty_secs_session_rat
+m_first_reply_within_thirty_secs_session_rat
+send_msg_rat
+m_send_msg_rat
+reply_cnick_rat
+m_reply_cnick_rat
