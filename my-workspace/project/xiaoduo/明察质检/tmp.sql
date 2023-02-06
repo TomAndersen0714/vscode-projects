@@ -1,45 +1,28 @@
-2_new_ask_order_paid_rat
-2_new_ask_order_paid_uv
-2_new_ask_order_uv
-2_out_of_stock_amt
-7_new_ask_order_paid_rat
-7_new_ask_order_paid_uv
-7_new_ask_order_uv
-7_out_of_stock_amt
-ask_cnt
-ask_uv
-c_recv_cnt
-c_recv_uv
-first_reply_within_thirty_secs_session_cnt
-first_reply_within_thirty_secs_session_rat
-goods_recommend_cnt
-goods_recommend_uv
-m_first_reply_within_thirty_secs_session_cnt
-m_first_reply_within_thirty_secs_session_rat
-m_qa_sum
-m_reply_cnick_cnt
-m_reply_cnick_rat
-m_reply_interval_secs_avg
-m_reply_interval_secs_sum
-m_send_msg_cnt
-m_send_msg_rat
-qa_sum
-recv_cnick_cnt
-recv_msg_cnt
-reply_cnick_cnt
-reply_cnick_rat
-reply_interval_secs_avg
-reply_interval_secs_sum
-s_recv_cnt
-s_recv_uv
-s_service_duration_avg
-send_msg_cnt
-send_msg_rat
-session_cnt
-trsf_cnt
-trsf_in_cnt
-trsf_out_cnt
-satisfied_rat
-total_eval_cnt
-very_satisfied_cnt
-wx_add_person_cnt
+CREATE DATABASE IF NOT EXISTS ft_dim ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary
+
+-- DROP TABLE ft_dim.product_info_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE IF NOT EXISTS ft_dim.product_info_local ON CLUSTER cluster_3s_2r
+(
+    `platform` String,
+    `shop_name` String,
+    `sku_id` String,
+    `pkg_code` String,
+    `pkg_name` String,
+    `product_code` String,
+    `product_name` String,
+    `product_class` String,
+    `other_fields` String
+)
+ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+)
+ORDER BY (platform, shop_name)
+SETTINGS index_granularity = 8192, storage_policy = 'rr'
+
+
+-- DROP TABLE ft_dim.product_info_all ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE IF NOT EXISTS ft_dim.product_info_all ON CLUSTER cluster_3s_2r
+AS ft_dim.product_info_local
+ENGINE = Distributed('cluster_3s_2r', 'ft_dim', 'product_info_local', rand())

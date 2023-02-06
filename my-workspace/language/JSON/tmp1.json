@@ -1,38 +1,91 @@
-{
-    "mp_category": "",
-    "plat_goods_id": "",
-    "shop_id": "620e0190b5f1680018442ffd",
-    "snick": "cntaobao\u516c\u725b\u6167\u7535\u4e13\u5356\u5e97:\u987a\u98ce\u8033",
-    "answer_explain": "",
-    "create_time": "2022-06-04 16:14:33.160565",
-    "question_type": 0,
-    "remind_answer": "",
-    "cnick": "cntaobao\u60f3\u8d77\u4f60\u7a81\u7136",
-    "mode": "HYBRID",
-    "msg": "\u4ea7\u54c1\u8fd8\u662f\u5907\u6ce8\u7684",
-    "robot_answer": "",
-    "act": "send_msg",
-    "intent": "",
-    "msg_id": "1323206796874.PNM",
-    "task_id": "None",
-    "platform": "tb",
-    "msg_time": 1654330472,
-    "qa_id": "None",
-    "question_b_qid": "",
-    "question_b_proba": "",
-    "question_b_standard_q": "",
-    "is_identified": 0,
-    "current_sale_stage": "",
-    "transfer_from": "",
-    "transfer_to": "",
-    "transfer_type": "",
-    "send_msg_from": 2,
-    "answer_id": "",
-    "mp_version": 0,
-    "ms_msg_time": 0,
-    "shop_question_type": "",
-    "shop_question_id": "",
-    "no_reply_reason": -1,
-    "no_reply_sub_reason": -1,
-    "day": 20220604
-}
+"report_type": "product_mapping_jd",
+        "type_meta": [{
+            "column_name": "shopcode",
+            "column_comment": "店铺编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "shopname",
+            "column_comment": "店铺名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "sku",
+            "column_comment": "sku",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeCode",
+            "column_comment": "套餐编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeName",
+            "column_comment": "套餐名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "productCode",
+            "column_comment": "产品编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "productName",
+            "column_comment": "产品名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "name",
+            "column_comment": "产品类别",
+            "data_type": "varchar"
+        }]
+        {
+            "shopcode": "99999999",
+            "shopname": "京东自营",
+            "sku": "100012052046",
+            "packAgeCode": "TC013008",
+            "packAgeName": "JQD6T+HA7B.D-12T",
+            "productCode": "1002001900388",
+            "productName": "JZT-HA7B.D-12T",
+            "name": "灶具"
+        }
+
+
+"report_type": "product_mapping_tm",
+        "type_meta": [{
+            "column_name": "shop",
+            "column_comment": "店铺名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "num_iid",
+            "column_comment": "num_iid",
+            "data_type": "varchar"
+        }, {
+            "column_name": "sku_id",
+            "column_comment": "sku",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeCode",
+            "column_comment": "套餐编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeName",
+            "column_comment": "套餐名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "code",
+            "column_comment": "产品编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "productName",
+            "column_comment": "产品名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "name",
+            "column_comment": "产品类别",
+            "data_type": "varchar"
+        }]
+
+        {
+            "shop": "天猫",
+            "num_iid": "38212604453",
+            "sku_id": "4490908735777",
+            "packagecode": "TC012953",
+            "packagename": "JQD11T+HC8BE-20Y+J78S",
+            "code": "1003000500023",
+            "productName": "ZTD100J-J78S",
+            "name": "消毒柜"
+        }
