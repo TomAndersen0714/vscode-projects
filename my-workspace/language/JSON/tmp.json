@@ -1,0 +1,91 @@
+"report_type": "product_mapping_jd",
+        "type_meta": [{
+            "column_name": "shopcode",
+            "column_comment": "店铺编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "shopname",
+            "column_comment": "店铺名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "sku",
+            "column_comment": "sku",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeCode",
+            "column_comment": "套餐编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeName",
+            "column_comment": "套餐名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "productCode",
+            "column_comment": "产品编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "productName",
+            "column_comment": "产品名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "name",
+            "column_comment": "产品类别",
+            "data_type": "varchar"
+        }]
+        {
+            "shopcode": "99999999",
+            "shopname": "京东自营",
+            "sku": "100012052046",
+            "packAgeCode": "TC013008",
+            "packAgeName": "JQD6T+HA7B.D-12T",
+            "productCode": "1002001900388",
+            "productName": "JZT-HA7B.D-12T",
+            "name": "灶具"
+        }
+
+
+"report_type": "product_mapping_tm",
+        "type_meta": [{
+            "column_name": "shop",
+            "column_comment": "店铺名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "num_iid",
+            "column_comment": "num_iid",
+            "data_type": "varchar"
+        }, {
+            "column_name": "sku_id",
+            "column_comment": "sku",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeCode",
+            "column_comment": "套餐编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "packAgeName",
+            "column_comment": "套餐名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "code",
+            "column_comment": "产品编码",
+            "data_type": "varchar"
+        }, {
+            "column_name": "productName",
+            "column_comment": "产品名称",
+            "data_type": "varchar"
+        }, {
+            "column_name": "name",
+            "column_comment": "产品类别",
+            "data_type": "varchar"
+        }]
+
+        {
+            "shop": "天猫",
+            "num_iid": "38212604453",
+            "sku_id": "4490908735777",
+            "packagecode": "TC012953",
+            "packagename": "JQD11T+HC8BE-20Y+J78S",
+            "code": "1003000500023",
+            "productName": "ZTD100J-J78S",
+            "name": "消毒柜"
+        }

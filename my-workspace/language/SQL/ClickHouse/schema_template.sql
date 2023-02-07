@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS sxx_dws ON CLUSTER cluster_3s_2r
+CREATE DATABASE IF NOT EXISTS trino ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary
 
 -- DROP TABLE trino.xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY
