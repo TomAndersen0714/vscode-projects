@@ -3,56 +3,61 @@
         "Node Type": "Expression",
         "Description": "(Projection + Before ORDER BY)",
         "Plans": [{
-            "Node Type": "MergingAggregated",
+            "Node Type": "Limit",
+            "Description": "preliminary LIMIT (without OFFSET)",
             "Plans": [{
-                "Node Type": "SettingQuotaAndLimits",
-                "Description": "Set limits and quota after reading from storage",
+                "Node Type": "MergingAggregated",
                 "Plans": [{
-                    "Node Type": "Union",
+                    "Node Type": "SettingQuotaAndLimits",
+                    "Description": "Set limits and quota after reading from storage",
                     "Plans": [{
-                        "Node Type": "Aggregating",
+                        "Node Type": "Union",
                         "Plans": [{
-                            "Node Type": "Expression",
-                            "Description": "Before GROUP BY",
+                            "Node Type": "Aggregating",
                             "Plans": [{
-                                "Node Type": "Filter",
-                                "Description": "WHERE",
+                                "Node Type": "Expression",
+                                "Description": "Before GROUP BY",
                                 "Plans": [{
-                                    "Node Type": "SettingQuotaAndLimits",
-                                    "Description": "Set limits and quota after reading from storage",
+                                    "Node Type": "Filter",
+                                    "Description": "WHERE",
                                     "Plans": [{
-                                        "Node Type": "ReadFromMergeTree",
-                                        "Indexes": [{
-                                            "Type": "MinMax",
-                                            "Keys": ["day"],
-                                            "Condition": "and((day in [20230205, 20230205]), (day in [20230205, 20230205]))",
-                                            "Initial Parts": 268,
-                                            "Selected Parts": 1,
-                                            "Initial Granules": 268,
-                                            "Selected Granules": 1
-                                        }, {
-                                            "Type": "Partition",
-                                            "Keys": ["day"],
-                                            "Condition": "and((day in [20230205, 20230205]), (day in [20230205, 20230205]))",
-                                            "Initial Parts": 1,
-                                            "Selected Parts": 1,
-                                            "Initial Granules": 1,
-                                            "Selected Granules": 1
-                                        }, {
-                                            "Type": "PrimaryKey",
-                                            "Condition": "true",
-                                            "Initial Parts": 1,
-                                            "Selected Parts": 1,
-                                            "Initial Granules": 1,
-                                            "Selected Granules": 1
+                                        "Node Type": "SettingQuotaAndLimits",
+                                        "Description": "Set limits and quota after reading from storage",
+                                        "Plans": [{
+                                            "Node Type": "ReadFromMergeTree",
+                                            "Indexes": [{
+                                                "Type": "MinMax",
+                                                "Keys": ["day"],
+                                                "Condition": "and(and((day in (-inf, 20230206]), (day in [20230201, +inf))), and((day in (-inf, 20230206]), (day in [20230201, +inf))))",
+                                                "Initial Parts": 274,
+                                                "Selected Parts": 11,
+                                                "Initial Granules": 274,
+                                                "Selected Granules": 11
+                                            }, {
+                                                "Type": "Partition",
+                                                "Keys": ["day"],
+                                                "Condition": "and(and((day in (-inf, 20230206]), (day in [20230201, +inf))), and((day in (-inf, 20230206]), (day in [20230201, +inf))))",
+                                                "Initial Parts": 11,
+                                                "Selected Parts": 11,
+                                                "Initial Granules": 11,
+                                                "Selected Granules": 11
+                                            }, {
+                                                "Type": "PrimaryKey",
+                                                "Keys": ["platform"],
+                                                "Condition": "(platform in ['jd', 'jd'])",
+                                                "Initial Parts": 11,
+                                                "Selected Parts": 11,
+                                                "Initial Granules": 11,
+                                                "Selected Granules": 11
+                                            }]
                                         }]
                                     }]
                                 }]
                             }]
+                        }, {
+                            "Node Type": "ReadFromPreparedSource",
+                            "Description": "Read from remote replica"
                         }]
-                    }, {
-                        "Node Type": "ReadFromPreparedSource",
-                        "Description": "Read from remote replica"
                     }]
                 }]
             }]
