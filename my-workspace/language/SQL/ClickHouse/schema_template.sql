@@ -62,6 +62,10 @@ CREATE TABLE IF NOT EXISTS trino.xdrs_logs_all ON CLUSTER cluster_3s_2r
 AS trino.xdrs_logs_local
 ENGINE = Distributed('cluster_3s_2r', 'trino', 'xdrs_logs_local', rand())
 
+
+CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary
+
 -- DROP TABLE buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
 AS trino.xdrs_logs_all
