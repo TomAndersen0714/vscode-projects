@@ -1,66 +1,24 @@
-[{
-    "Plan": {
-        "Node Type": "Expression",
-        "Description": "(Projection + Before ORDER BY)",
-        "Plans": [{
-            "Node Type": "Limit",
-            "Description": "preliminary LIMIT (without OFFSET)",
-            "Plans": [{
-                "Node Type": "MergingAggregated",
-                "Plans": [{
-                    "Node Type": "SettingQuotaAndLimits",
-                    "Description": "Set limits and quota after reading from storage",
-                    "Plans": [{
-                        "Node Type": "Union",
-                        "Plans": [{
-                            "Node Type": "Aggregating",
-                            "Plans": [{
-                                "Node Type": "Expression",
-                                "Description": "Before GROUP BY",
-                                "Plans": [{
-                                    "Node Type": "Filter",
-                                    "Description": "WHERE",
-                                    "Plans": [{
-                                        "Node Type": "SettingQuotaAndLimits",
-                                        "Description": "Set limits and quota after reading from storage",
-                                        "Plans": [{
-                                            "Node Type": "ReadFromMergeTree",
-                                            "Indexes": [{
-                                                "Type": "MinMax",
-                                                "Keys": ["day"],
-                                                "Condition": "and(and((day in (-inf, 20230206]), (day in [20230201, +inf))), and((day in (-inf, 20230206]), (day in [20230201, +inf))))",
-                                                "Initial Parts": 274,
-                                                "Selected Parts": 11,
-                                                "Initial Granules": 274,
-                                                "Selected Granules": 11
-                                            }, {
-                                                "Type": "Partition",
-                                                "Keys": ["day"],
-                                                "Condition": "and(and((day in (-inf, 20230206]), (day in [20230201, +inf))), and((day in (-inf, 20230206]), (day in [20230201, +inf))))",
-                                                "Initial Parts": 11,
-                                                "Selected Parts": 11,
-                                                "Initial Granules": 11,
-                                                "Selected Granules": 11
-                                            }, {
-                                                "Type": "PrimaryKey",
-                                                "Keys": ["platform"],
-                                                "Condition": "(platform in ['jd', 'jd'])",
-                                                "Initial Parts": 11,
-                                                "Selected Parts": 11,
-                                                "Initial Granules": 11,
-                                                "Selected Granules": 11
-                                            }]
-                                        }]
-                                    }]
-                                }]
-                            }]
-                        }, {
-                            "Node Type": "ReadFromPreparedSource",
-                            "Description": "Read from remote replica"
-                        }]
-                    }]
-                }]
-            }]
-        }]
+{
+    "cvt_ts": "2023-02-12 15:00:03.35",
+    "input": {
+        "is_delete": false,
+        "attr": "13",
+        "cate_lv2": "11",
+        "enable": 8,
+        "title": "2",
+        "id": "2c90a9108362e725018363bfabaf0001",
+        "create_time": 1663825849000,
+        "update_time": 1663825849000,
+        "cate_lv1": "0",
+        "goods_id": "1",
+        "goods_url": "9",
+        "price": 7,
+        "shop": "4",
+        "type": "6",
+        "cate_lv3": "12",
+        "shop_id": "3",
+        "create_by": "lilingh",
+        "last_update_by": "lilingh",
+        "platform": "5"
     }
-}]
+}
