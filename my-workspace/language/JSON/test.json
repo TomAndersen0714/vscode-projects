@@ -2,66 +2,110 @@
     {
         "Plan": {
             "Node Type": "Expression",
-            "Description": "Projection",
+            "Description": "(Projection + Before ORDER BY)",
             "Plans": [
                 {
-                    "Node Type": "SettingQuotaAndLimits",
-                    "Description": "Set limits and quota after reading from storage",
+                    "Node Type": "MergingAggregated",
                     "Plans": [
                         {
-                            "Node Type": "Limit",
-                            "Description": "preliminary LIMIT (without OFFSET)",
+                            "Node Type": "SettingQuotaAndLimits",
+                            "Description": "Set limits and quota after reading from storage",
                             "Plans": [
                                 {
                                     "Node Type": "Union",
                                     "Plans": [
                                         {
-                                            "Node Type": "Expression",
-                                            "Description": "( + Before ORDER BY)",
+                                            "Node Type": "Aggregating",
                                             "Plans": [
                                                 {
-                                                    "Node Type": "SettingQuotaAndLimits",
-                                                    "Description": "Set limits and quota after reading from storage",
+                                                    "Node Type": "Expression",
+                                                    "Description": "Before GROUP BY",
                                                     "Plans": [
                                                         {
-                                                            "Node Type": "Limit",
-                                                            "Description": "preliminary LIMIT (with OFFSET)",
+                                                            "Node Type": "Join",
+                                                            "Description": "JOIN",
                                                             "Plans": [
                                                                 {
-                                                                    "Node Type": "ReadFromMergeTree",
-                                                                    "Indexes": [
+                                                                    "Node Type": "Expression",
+                                                                    "Description": "Before JOIN",
+                                                                    "Plans": [
                                                                         {
-                                                                            "Type": "MinMax",
-                                                                            "Keys": [
-                                                                                "begin_time"
-                                                                            ],
-                                                                            "Condition": "(toYYYYMMDD(begin_time) in [20230219, 20230219])",
-                                                                            "Initial Parts": 1977,
-                                                                            "Selected Parts": 1,
-                                                                            "Initial Granules": 58922,
-                                                                            "Selected Granules": 42
-                                                                        },
+                                                                            "Node Type": "SettingQuotaAndLimits",
+                                                                            "Description": "Set limits and quota after reading from storage",
+                                                                            "Plans": [
+                                                                                {
+                                                                                    "Node Type": "ReadFromMergeTree",
+                                                                                    "Indexes": [
+                                                                                        {
+                                                                                            "Type": "MinMax",
+                                                                                            "Keys": [
+                                                                                                "day"
+                                                                                            ],
+                                                                                            "Condition": "(day in [20230220, 20230220])",
+                                                                                            "Initial Parts": 2,
+                                                                                            "Selected Parts": 0,
+                                                                                            "Initial Granules": 2,
+                                                                                            "Selected Granules": 0
+                                                                                        },
+                                                                                        {
+                                                                                            "Type": "Partition",
+                                                                                            "Keys": [
+                                                                                                "day"
+                                                                                            ],
+                                                                                            "Condition": "(day in [20230220, 20230220])",
+                                                                                            "Initial Parts": 0,
+                                                                                            "Selected Parts": 0,
+                                                                                            "Initial Granules": 0,
+                                                                                            "Selected Granules": 0
+                                                                                        },
+                                                                                        {
+                                                                                            "Type": "PrimaryKey",
+                                                                                            "Condition": "true",
+                                                                                            "Initial Parts": 0,
+                                                                                            "Selected Parts": 0,
+                                                                                            "Initial Granules": 0,
+                                                                                            "Selected Granules": 0
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "Node Type": "Expression",
+                                                                    "Description": "(Joined actions + (Rename joined columns + Projection))",
+                                                                    "Plans": [
                                                                         {
-                                                                            "Type": "Partition",
-                                                                            "Keys": [
-                                                                                "toYYYYMMDD(begin_time)"
-                                                                            ],
-                                                                            "Condition": "(toYYYYMMDD(begin_time) in [20230219, 20230219])",
-                                                                            "Initial Parts": 1,
-                                                                            "Selected Parts": 1,
-                                                                            "Initial Granules": 42,
-                                                                            "Selected Granules": 42
-                                                                        },
-                                                                        {
-                                                                            "Type": "PrimaryKey",
-                                                                            "Keys": [
-                                                                                "seller_nick"
-                                                                            ],
-                                                                            "Condition": "(seller_nick in ['方太官方旗舰店', '方太官方旗舰店'])",
-                                                                            "Initial Parts": 1,
-                                                                            "Selected Parts": 1,
-                                                                            "Initial Granules": 42,
-                                                                            "Selected Granules": 4
+                                                                            "Node Type": "SettingQuotaAndLimits",
+                                                                            "Description": "Set limits and quota after reading from storage",
+                                                                            "Plans": [
+                                                                                {
+                                                                                    "Node Type": "Union",
+                                                                                    "Plans": [
+                                                                                        {
+                                                                                            "Node Type": "Expression",
+                                                                                            "Description": "Before ORDER BY",
+                                                                                            "Plans": [
+                                                                                                {
+                                                                                                    "Node Type": "SettingQuotaAndLimits",
+                                                                                                    "Description": "Set limits and quota after reading from storage",
+                                                                                                    "Plans": [
+                                                                                                        {
+                                                                                                            "Node Type": "ReadFromPreparedSource",
+                                                                                                            "Description": "Read from NullSource"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "Node Type": "ReadFromPreparedSource",
+                                                                                            "Description": "Read from remote replica"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
                                                                         }
                                                                     ]
                                                                 }

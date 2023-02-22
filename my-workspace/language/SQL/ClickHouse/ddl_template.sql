@@ -70,3 +70,7 @@ ENGINE=Ordinary;
 CREATE TABLE IF NOT EXISTS buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
 AS trino.xdrs_logs_all
 ENGINE = Buffer('trino', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
+
+
+CREATE DATABASE IF NOT EXISTS trino ON CLUSTER cluster_3s_2r
+ENGINE=Ordinary;
