@@ -1,55 +1,53 @@
-SELECT t.`day`,
-    t.shop_id,
-    t.platform,
-    transfer_cnick_count,
-    recv_uv
-FROM (
-        SELECT `day`,
-            shop_id,
-            platform,
-            shop_name,
-            count(DISTINCT t2.cnick) AS transfer_cnick_count
-        FROM (
-                SELECT msgid,
-                    transfer_state
-                FROM ods.assistant_transfer_all
-                WHERE day = 20230206
-            ) t1
-            JOIN (
-                SELECT `day`,
+                --付定金订单
+                SELECT DISTINCT
+                    order_id,
                     shop_id,
-                    platform,
-                    replace(splitByString(':', snick) [1], 'cntaobao', '') AS shop_name,
-                    msg,
-                    cnick,
-                    create_time,
-                    question_b_standard_q,
-                    msg_id
-                FROM ods.xdrs_logs_all
-                WHERE day = 20230206
-                    AND act = 'recv_msg'
-            ) t2 ON t1.msgid = t2.msg_id
-        GROUP BY `day`,
-            shop_id,
-            platform,
-            shop_name
-    ) t
-    FULL OUTER JOIN (
-        SELECT `day`,
-            shop_id,
-            platform,
-            replace(splitByString(':', snick) [1], 'cntaobao', '') AS shop_name,
-            count(DISTINCT cnick) AS recv_uv
-        FROM ods.xdrs_logs_all
-        WHERE day = 20230206
-            AND platform = 'tb'
-            AND snick LIKE '%服务助手%'
-            AND act = 'recv_msg'
-        GROUP BY `day`,
-            shop_id,
-            platform,
-            shop_name
-    ) x ON t.`day` = x.`day`
-    AND t.shop_id = x.shop_id
-    AND t.platform = x.platform
-    AND t.shop_name = x.shop_name
+                    buyer_nick,
+                    real_buyer_nick,
+                    payment,
+                    if(
+                        toFloat64OrZero(order_seller_price) = 0,
+                        toString(payment),
+                        order_seller_price
+                    ) AS order_seller_price,
+                    post_fee,
+                    'deposited' AS status,
+                    original_status,
+                    modified,
+                    plat_goods_ids,
+                    plat_goods_price_arr,
+                    plat_goods_num_arr,
+                    plat_goods_title_arr,
+                    'FRONT_PAID_FINAL_NOPAID' AS step_trade_status,
+                    goods_step_fee AS step_paid_fee,
+                    'step' AS order_type,
+                    `day`,
+                    if(
+                        g_info.goods_id != ''
+                        AND step_deposit_start <= toDateTime(splitByString('.', modified)[1])
+                        AND step_deposit_end >= toDateTime(splitByString('.', modified)[1]),
+                        1,
+                        0
+                    ) AS step_flag,
+                    goods_id
+                FROM (
+                        SELECT *,
+                            arrayJoin(plat_goods_ids) AS goods_id
+                        FROM ft_ods.order_event_all
+                        WHERE `day` = {ds_nodash}
+                            AND shop_id = '{shop_id}'
+                            AND status = 'created'
+                    ) AS o_info
+                    LEFT JOIN (
+                        SELECT goods_id,
+                            toDateTime(step_deposit_start_time) AS step_deposit_start,
+                            toDateTime(step_deposit_end_time) AS step_deposit_end,
+                            goods_step_fee
+                        FROM ft_ods.presell_goods_config_all
+                        WHERE shop_id = '{shop_id}'
+                            AND toDate(step_deposit_start_time) <= toDate('{ds}')
+                            AND toDate(step_deposit_end_time) >= toDate('{ds}')
+                    ) AS g_info USING(goods_id)
+                HAVING g_info.goods_id != ''
+                    AND step_deposit_start <= toDateTime(splitByString('.', modified)[1])
+                    AND step_deposit_end >= toDateTime(splitByString('.', modified)[1])

@@ -1,131 +1,348 @@
-[
-    {
-        "Plan": {
-            "Node Type": "Expression",
-            "Description": "(Projection + Before ORDER BY)",
-            "Plans": [
-                {
-                    "Node Type": "MergingAggregated",
-                    "Plans": [
-                        {
-                            "Node Type": "SettingQuotaAndLimits",
-                            "Description": "Set limits and quota after reading from storage",
-                            "Plans": [
-                                {
-                                    "Node Type": "Union",
-                                    "Plans": [
-                                        {
-                                            "Node Type": "Aggregating",
-                                            "Plans": [
-                                                {
-                                                    "Node Type": "Expression",
-                                                    "Description": "Before GROUP BY",
-                                                    "Plans": [
-                                                        {
-                                                            "Node Type": "Join",
-                                                            "Description": "JOIN",
-                                                            "Plans": [
-                                                                {
-                                                                    "Node Type": "Expression",
-                                                                    "Description": "Before JOIN",
-                                                                    "Plans": [
-                                                                        {
-                                                                            "Node Type": "SettingQuotaAndLimits",
-                                                                            "Description": "Set limits and quota after reading from storage",
-                                                                            "Plans": [
-                                                                                {
-                                                                                    "Node Type": "ReadFromMergeTree",
-                                                                                    "Indexes": [
-                                                                                        {
-                                                                                            "Type": "MinMax",
-                                                                                            "Keys": [
-                                                                                                "day"
-                                                                                            ],
-                                                                                            "Condition": "(day in [20230220, 20230220])",
-                                                                                            "Initial Parts": 2,
-                                                                                            "Selected Parts": 0,
-                                                                                            "Initial Granules": 2,
-                                                                                            "Selected Granules": 0
-                                                                                        },
-                                                                                        {
-                                                                                            "Type": "Partition",
-                                                                                            "Keys": [
-                                                                                                "day"
-                                                                                            ],
-                                                                                            "Condition": "(day in [20230220, 20230220])",
-                                                                                            "Initial Parts": 0,
-                                                                                            "Selected Parts": 0,
-                                                                                            "Initial Granules": 0,
-                                                                                            "Selected Granules": 0
-                                                                                        },
-                                                                                        {
-                                                                                            "Type": "PrimaryKey",
-                                                                                            "Condition": "true",
-                                                                                            "Initial Parts": 0,
-                                                                                            "Selected Parts": 0,
-                                                                                            "Initial Granules": 0,
-                                                                                            "Selected Granules": 0
-                                                                                        }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "Node Type": "Expression",
-                                                                    "Description": "(Joined actions + (Rename joined columns + Projection))",
-                                                                    "Plans": [
-                                                                        {
-                                                                            "Node Type": "SettingQuotaAndLimits",
-                                                                            "Description": "Set limits and quota after reading from storage",
-                                                                            "Plans": [
-                                                                                {
-                                                                                    "Node Type": "Union",
-                                                                                    "Plans": [
-                                                                                        {
-                                                                                            "Node Type": "Expression",
-                                                                                            "Description": "Before ORDER BY",
-                                                                                            "Plans": [
-                                                                                                {
-                                                                                                    "Node Type": "SettingQuotaAndLimits",
-                                                                                                    "Description": "Set limits and quota after reading from storage",
-                                                                                                    "Plans": [
-                                                                                                        {
-                                                                                                            "Node Type": "ReadFromPreparedSource",
-                                                                                                            "Description": "Read from NullSource"
-                                                                                                        }
-                                                                                                    ]
-                                                                                                }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            "Node Type": "ReadFromPreparedSource",
-                                                                                            "Description": "Read from remote replica"
-                                                                                        }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "Node Type": "ReadFromPreparedSource",
-                                            "Description": "Read from remote replica"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+{
+    "_id": ObjectId("63cce0401b0dab0001695467"),
+    "create_time": ISODate("2023-01-22T07:05:36.024Z"),
+    "update_time": ISODate("2023-01-22T07:06:13.316Z"),
+    "platform": "pdd",
+    "channel": "pdd",
+    "cnick": "5286079721",
+    "open_uid": "",
+    "real_buyer_nick": "",
+    "snick": "文轩图书旗舰店:wb13458968064",
+    "seller_nick": "文轩图书旗舰店",
+    "begin_time": ISODate("2023-01-22T07:05:36Z"),
+    "end_time": ISODate("2023-01-22T07:06:13Z"),
+    "is_after_sale": true,
+    "origin_is_after_sale": true,
+    "is_inside": false,
+    "s_emotion": [
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
         }
-    }
-]
+    ],
+    "c_emotion": [
+        {
+            "type": 1,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 2,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 3,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 4,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 5,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 6,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 7,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 9,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 10,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 11,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "emotions": [],
+    "abnormals": [
+        {
+            "type": 1,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 2,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 3,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 4,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 5,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 6,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 7,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 9,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 10,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 11,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 12,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 13,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 14,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 15,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 16,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 17,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 18,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 19,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 20,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 21,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 22,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 23,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 24,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 25,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 26,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 27,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 28,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 29,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "excellents": [
+        {
+            "type": 1,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 2,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 3,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 4,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 5,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 6,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 7,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 9,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 10,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 11,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 12,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 13,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 14,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "score": 0,
+    "score_add": 0,
+    "mark_judge": 0,
+    "mark_score": 0,
+    "mark_score_add": 0,
+    "mark": "",
+    "suspected_problem": false,
+    "answer_count": NumberLong(3),
+    "question_count": NumberLong(2),
+    "first_answer_time": 1674371136,
+    "qa_time_sum": 1,
+    "qa_round_sum": 2,
+    "focus_goods_id": "",
+    "order_info": {
+        "order_id": "230122-349160140343305",
+        "status": "paid",
+        "payment": 0,
+        "order_time": NumberLong(1674360138),
+        "status_history": [
+            {
+                "status": "paid",
+                "time": NumberLong(1674360138)
+            }
+        ]
+    },
+    "origin_order_info": {
+        "order_id": "230122-349160140343305",
+        "status": "paid",
+        "payment": 0,
+        "order_time": NumberLong(1674360138),
+        "status_history": [
+            {
+                "status": "paid",
+                "time": NumberLong(1674360138)
+            }
+        ]
+    },
+    "is_order_matched": true,
+    "emotion_detect_mode": 0,
+    "consulte_transfor_v2": 0,
+    "date": 20230122,
+    "qc_task_flag": 0,
+    "after_sale_days": NumberLong(30),
+    "qid": [
+		NumberLong(0),
+		NumberLong(404860292)
+    ]
+}

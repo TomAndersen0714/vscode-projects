@@ -46,8 +46,6 @@ SELECT `day`,
     order_type,
     modified
 FROM (
-        -- 要学会信任上游, 出问题线上反馈即可, 不必强行兜底, 即便是兜底也应该是上游兜底, 而不是下游
-        -- 否则下游的支流会出现很多很多重复开发, 或者不同的修复逻辑
         SELECT *,
             length(plat_goods_ids) AS l_goods,
             if(
@@ -113,14 +111,11 @@ FROM (
                     goods_id
                 FROM (
                         SELECT *,
-                            goods_id
+                            arrayJoin(plat_goods_ids) AS goods_id
                         FROM ft_ods.order_event_all
                         WHERE `day` = {ds_nodash}
                             AND shop_id = '{shop_id}'
                             AND status = 'created'
-                        ARRAY JOIN
-                            plat_goods_ids AS goods_id,
-                            arrayEnumerate(plat_goods_ids) AS goods_num
                     ) AS o_info
                     LEFT JOIN (
                         SELECT goods_id,
@@ -135,118 +130,11 @@ FROM (
                 HAVING g_info.goods_id != ''
                     AND step_deposit_start <= toDateTime(splitByString('.', modified)[1])
                     AND step_deposit_end >= toDateTime(splitByString('.', modified)[1])
-                UNION ALL
-
-                -- created订单
-                SELECT DISTINCT
-                    order_id,
-                    shop_id,
-                    buyer_nick,
-                    real_buyer_nick,
-                    payment,
-                    if(
-                        toFloat64OrZero(order_seller_price) = 0,
-                        toString(payment),
-                        order_seller_price
-                    ) AS order_seller_price,
-                    post_fee,
-                    status,
-                    original_status,
-                    modified,
-                    plat_goods_ids,
-                    plat_goods_price_arr,
-                    plat_goods_num_arr,
-                    plat_goods_title_arr,
-                    if(step_flag = 1, 'FRONT_NOPAID_FINAL_NOPAID', '') AS step_trade_status,
-                    if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
-                    if(step_flag = 1, 'step', order_type) AS order_type,
-                    `day`,
-                    if(
-                        g_info.goods_id != ''
-                        AND step_deposit_start <= toDateTime(splitByString('.', modified)[1])
-                        AND step_deposit_end >= toDateTime(splitByString('.', modified)[1]),
-                        1,
-                        0
-                    ) AS step_flag,
-                    goods_id
-                FROM (
-                        SELECT *,
-                            arrayJoin(plat_goods_ids) AS goods_id
-                        FROM ft_ods.order_event_all
-                        WHERE `day` = {ds_nodash}
-                            AND shop_id = '{shop_id}'
-                            AND status = 'created'
-                    ) AS o_info
-                    LEFT JOIN (
-                        SELECT goods_id,
-                            toDateTime(step_deposit_start_time) AS step_deposit_start,
-                            toDateTime(step_deposit_end_time) AS step_deposit_end,
-                            goods_step_fee
-                        FROM ft_ods.presell_goods_config_all
-                        WHERE shop_id = '{shop_id}'
-                            AND toDate(step_deposit_start_time) <= toDate('{ds}')
-                            AND toDate(step_deposit_end_time) >= toDate('{ds}')
-                    ) AS g_info USING(goods_id)
-                UNION ALL
-
-                -- 付尾款 订单
-                SELECT DISTINCT
-                    order_id,
-                    shop_id,
-                    buyer_nick,
-                    real_buyer_nick,
-                    payment,
-                    if(
-                        toFloat64OrZero(order_seller_price) = 0,
-                        toString(payment),
-                        order_seller_price
-                    ) AS order_seller_price,
-                    post_fee,
-                    status,
-                    original_status,
-                    modified,
-                    plat_goods_ids,
-                    plat_goods_price_arr,
-                    plat_goods_num_arr,
-                    plat_goods_title_arr,
-                    if(step_flag = 1, 'FRONT_PAID_FINAL_PAID', '') AS step_trade_status,
-                    if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
-                    if(step_flag = 1, 'step', order_type) AS order_type,
-                    `day`,
-                    if(
-                        g_info.goods_id != ''
-                        AND step_final_start <= toDateTime(splitByString('.', modified)[1])
-                        AND step_final_end >= toDateTime(splitByString('.', modified)[1]),
-                        1,
-                        0
-                    ) AS step_flag,
-                    goods_id
-                FROM (
-                        SELECT *,
-                            arrayJoin(plat_goods_ids) AS goods_id
-                        FROM ft_ods.order_event_all
-                        WHERE `day` = {ds_nodash}
-                            AND shop_id = '{shop_id}'
-                            AND status != 'created'
-                    ) AS o_info
-                    LEFT JOIN (
-                        SELECT goods_id,
-                            toDateTime(step_final_start_time) AS step_final_start,
-                            toDateTime(step_final_end_time) AS step_final_end,
-                            goods_step_fee
-                        FROM ft_ods.presell_goods_config_all
-                        WHERE shop_id = '{shop_id}'
-                            AND toDate(step_final_start_time) <= toDate('{ds}')
-                            AND toDate(step_final_end_time) >= toDate('{ds}')
-                    ) AS g_info USING(goods_id)
             )
-        WHERE `day` = {ds_nodash}
-            AND shop_id = '{shop_id}'
-            AND length(plat_goods_ids) != 0
+
     )
     ARRAY JOIN
         plat_goods_ids AS goods_id,
         join_plat_goods_price_arr AS goods_price,
         join_plat_goods_title_arr AS goods_title,
         join_plat_goods_num_arr AS goods_num
-        """
