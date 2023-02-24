@@ -46,9 +46,85 @@ SELECT `day`,
     order_type,
     modified
 FROM (
-        --付定金状态订单
-        SELECT DISTINCT
-            *,
+        -- 已创建状态订单
+        SELECT DISTINCT *,
+            if(step_flag = 1, 'FRONT_NOPAID_FINAL_NOPAID', '') AS step_trade_status,
+            if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
+            if(step_flag = 1, 'step', order_type) AS order_type,
+            `day`,
+            if(
+                g_info.goods_id != ''
+                AND step_deposit_start <= toDateTime(splitByString('.', modified) [1])
+                AND step_deposit_end >= toDateTime(splitByString('.', modified) [1]),
+                1,
+                0
+            ) AS step_flag,
+            goods_id
+        FROM (
+                SELECT *,
+                    goods_id,
+                    goods_price,
+                    goods_title,
+                    goods_num
+                FROM (
+                        SELECT DISTINCT day,
+                            order_id,
+                            order_type,
+                            shop_id,
+                            buyer_nick,
+                            real_buyer_nick,
+                            payment,
+                            if(
+                                toFloat64OrZero(order_seller_price) = 0,
+                                toString(payment),
+                                order_seller_price
+                            ) AS order_seller_price,
+                            post_fee,
+                            status AS new_status,
+                            original_status,
+                            splitByString('.', modified) [1] AS modified,
+                            plat_goods_ids,
+                            plat_goods_price_arr,
+                            plat_goods_num_arr,
+                            plat_goods_title_arr,
+                            toFloat64(
+                                if(order_seller_price = '', '0', order_seller_price)
+                            ) AS new_order_seller_price,
+                            arrayMap(
+                                (x, y)->toFloat64(if(x = '', '0', x)) * toFloat64(y),
+                                plat_goods_price_arr,
+                                plat_goods_num_arr
+                            ) AS new_plat_goods_price_arr,
+                            arraySum(new_plat_goods_price_arr) AS goods_payment_sum,
+                            length(plat_goods_ids) AS goods_id_cnt
+                        FROM ft_ods.order_event_all
+                        WHERE `day` = {ds_nodash}
+                            AND shop_id = '{shop_id}'
+                            AND status = 'created'
+                            AND length(plat_goods_ids) != 0
+                    )
+                    ARRAY JOIN
+                        plat_goods_ids AS goods_id,
+                        plat_goods_price_arr AS goods_price,
+                        plat_goods_title_arr AS goods_title,
+                        plat_goods_num_arr AS goods_num
+            ) AS o_info
+            LEFT JOIN (
+                SELECT goods_id,
+                    toDateTime(step_deposit_start_time) AS step_deposit_start,
+                    toDateTime(step_deposit_end_time) AS step_deposit_end,
+                    goods_step_fee
+                FROM ft_ods.presell_goods_config_all
+                WHERE shop_id = '{shop_id}'
+                    AND toDate(step_deposit_start_time) <= toDate('{ds}')
+                    AND toDate(step_deposit_end_time) >= toDate('{ds}')
+                    ORDER BY step_deposit_start_time ASC
+                    LIMIT 1 BY goods_id
+            ) AS g_info USING(goods_id)
+
+        -- 待付定金状态订单-仅预售订单
+        UNION ALL
+        SELECT DISTINCT *,
             'FRONT_PAID_FINAL_NOPAID' AS step_trade_status,
             goods_step_fee AS step_paid_fee,
             'step' AS order_type,
@@ -62,15 +138,15 @@ FROM (
             ) AS step_flag,
             goods_id
         FROM (
-            SELECT *,
-                goods_id,
-                goods_price,
-                goods_title,
-                goods_num
-            FROM (
-                        SELECT DISTINCT
-                            day,
+                SELECT *,
+                    goods_id,
+                    goods_price,
+                    goods_title,
+                    goods_num
+                FROM (
+                        SELECT DISTINCT day,
                             order_id,
+                            order_type,
                             shop_id,
                             buyer_nick,
                             real_buyer_nick,
@@ -103,38 +179,39 @@ FROM (
                             AND shop_id = '{shop_id}'
                             AND status = 'created'
                             AND length(plat_goods_ids) != 0
-            )
+                    ) 
                     ARRAY JOIN
                         plat_goods_ids AS goods_id,
                         plat_goods_price_arr AS goods_price,
                         plat_goods_title_arr AS goods_title,
                         plat_goods_num_arr AS goods_num
-        ) AS o_info
-        LEFT JOIN (
-            SELECT goods_id,
-                toDateTime(step_deposit_start_time) AS step_deposit_start,
-                toDateTime(step_deposit_end_time) AS step_deposit_end,
-                goods_step_fee
-            FROM ft_ods.presell_goods_config_all
-            WHERE shop_id = '{shop_id}'
-                AND toDate(step_deposit_start_time) <= toDate('{ds}')
-                AND toDate(step_deposit_end_time) >= toDate('{ds}')
-        ) AS g_info USING(goods_id)
-        -- 筛选包含预售商品的订单记录
+            ) AS o_info
+            LEFT JOIN (
+                SELECT goods_id,
+                    toDateTime(step_deposit_start_time) AS step_deposit_start,
+                    toDateTime(step_deposit_end_time) AS step_deposit_end,
+                    goods_step_fee
+                FROM ft_ods.presell_goods_config_all
+                WHERE shop_id = '{shop_id}'
+                    AND toDate(step_deposit_start_time) <= toDate('{ds}')
+                    AND toDate(step_deposit_end_time) >= toDate('{ds}')
+                    ORDER BY step_deposit_start_time ASC
+                    LIMIT 1 BY goods_id
+            ) AS g_info USING(goods_id)
+        -- 仅筛选包含预售商品的订单记录, 即仅筛选预售订单
         WHERE step_flag = 1
 
         UNION ALL
-        -- 已创建但未付款订单(包含预售)
-        SELECT DISTINCT
-            *,
-            if(step_flag = 1, 'FRONT_NOPAID_FINAL_NOPAID', '') AS step_trade_status,
+        -- 已付款以及后续状态订单, PS: 包括预售相关订单
+        SELECT DISTINCT *,
+            if(step_flag = 1, 'FRONT_PAID_FINAL_PAID', '') AS step_trade_status,
             if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
             if(step_flag = 1, 'step', order_type) AS order_type,
             `day`,
             if(
                 g_info.goods_id != ''
-                AND step_deposit_start <= toDateTime(splitByString('.', modified)[1])
-                AND step_deposit_end >= toDateTime(splitByString('.', modified)[1]),
+                AND step_final_start <= toDateTime(splitByString('.', modified) [1])
+                AND step_final_end >= toDateTime(splitByString('.', modified) [1]),
                 1,
                 0
             ) AS step_flag,
@@ -146,9 +223,9 @@ FROM (
                     goods_title,
                     goods_num
                 FROM (
-                        SELECT DISTINCT
-                            day,
+                        SELECT DISTINCT day,
                             order_id,
+                            order_type,
                             shop_id,
                             buyer_nick,
                             real_buyer_nick,
@@ -159,7 +236,7 @@ FROM (
                                 order_seller_price
                             ) AS order_seller_price,
                             post_fee,
-                            status,
+                            status AS new_status,
                             original_status,
                             splitByString('.', modified) [1] AS modified,
                             plat_goods_ids,
@@ -179,55 +256,25 @@ FROM (
                         FROM ft_ods.order_event_all
                         WHERE `day` = {ds_nodash}
                             AND shop_id = '{shop_id}'
-                            AND status = 'created'
+                            AND status != 'created'
                             AND length(plat_goods_ids) != 0
-                )
+                    )
                     ARRAY JOIN
                         plat_goods_ids AS goods_id,
                         plat_goods_price_arr AS goods_price,
                         plat_goods_title_arr AS goods_title,
                         plat_goods_num_arr AS goods_num
-        ) AS o_info
-        LEFT JOIN (
-            SELECT goods_id,
-                toDateTime(step_deposit_start_time) AS step_deposit_start,
-                toDateTime(step_deposit_end_time) AS step_deposit_end,
-                goods_step_fee
-            FROM ft_ods.presell_goods_config_all
-            WHERE shop_id = '{shop_id}'
-                AND toDate(step_deposit_start_time) <= toDate('{ds}')
-                AND toDate(step_deposit_end_time) >= toDate('{ds}')
-        ) AS g_info USING(goods_id)
-        -- 剔除包含预售商品的订单记录
-        WHERE step_flag != 1
-
-        UNION ALL
-        -- 付尾款订单
-        SELECT DISTINCT
-            *,
-            if(step_flag = 1, 'FRONT_PAID_FINAL_PAID', '') AS step_trade_status,
-            if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
-            if(step_flag = 1, 'step', order_type) AS order_type,
-            `day`,
-            if(
-                g_info.goods_id != ''
-                AND step_final_start <= toDateTime(splitByString('.', modified)[1])
-                AND step_final_end >= toDateTime(splitByString('.', modified)[1]),
-                1,
-                0
-            ) AS step_flag,
-            goods_id
-        FROM (
-
-        ) AS o_info
-        LEFT JOIN (
-            SELECT goods_id,
-                toDateTime(step_deposit_start_time) AS step_deposit_start,
-                toDateTime(step_deposit_end_time) AS step_deposit_end,
-                goods_step_fee
-            FROM ft_ods.presell_goods_config_all
-            WHERE shop_id = '{shop_id}'
-                AND toDate(step_deposit_start_time) <= toDate('{ds}')
-                AND toDate(step_deposit_end_time) >= toDate('{ds}')
-        ) AS g_info USING(goods_id)
+            ) AS o_info
+            LEFT JOIN (
+                SELECT goods_id,
+                    toDateTime(step_final_start_time) AS step_final_start,
+                    toDateTime(step_final_end_time) AS step_final_end,
+                    goods_step_fee
+                FROM ft_ods.presell_goods_config_all
+                WHERE shop_id = '{shop_id}'
+                    AND toDate(step_final_start_time) <= toDate('{ds}')
+                    AND toDate(step_final_end_time) >= toDate('{ds}')
+                    ORDER BY step_final_start_time ASC
+                    LIMIT 1 BY goods_id
+            ) AS g_info USING(goods_id)
     )
