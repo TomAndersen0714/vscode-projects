@@ -1,280 +1,33 @@
-INSERT INTO {sink_table}
-SELECT `day`,
-    '{platform}' AS platform,
+select day,
     shop_id,
-    order_id,
-    toFloat64(if(post_fee = '', '0', post_fee)),
+    'jd' as platform,
     buyer_nick,
     real_buyer_nick,
-    new_status,
-    original_status,
-    payment AS order_payment,
-    new_order_seller_price,
+    snick,
+    session_id,
+    session_start_time,
+    session_end_time,
+    is_start_by_cnick,
+    is_end_by_cnick,
+    focus_goods_ids,
+    c_active_send_goods_ids,
+    s_active_send_goods_ids,
+    order_id,
     goods_id,
-    goods_title,
-    toFloat64(if(goods_price = '', '0', goods_price)) AS f_goods_price,
-    toInt32(if(goods_num = '', '0', goods_num)) AS i_goods_num,
-    if(
-        goods_payment_sum = 0,
-        if(
-            length(new_plat_goods_price_arr) = 0,
-            order_payment,
-            order_payment / goods_id_cnt
-        ),
-        order_payment * (
-            (f_goods_price * i_goods_num) / goods_payment_sum
-        )
-    ) AS goods_payment,
-    if(
-        goods_payment_sum = 0,
-        if(
-            length(new_plat_goods_price_arr) = 0,
-            new_order_seller_price,
-            new_order_seller_price *(1 / length(new_plat_goods_price_arr))
-        ),
-        new_order_seller_price * (
-            (f_goods_price * i_goods_num) / goods_payment_sum
-        )
-    ) AS goods_seller_price,
+    created_time,
+    deposited_time as paid_time,
+    order_payment,
+    goods_payment,
     step_trade_status,
-    if(
-        order_type = 'step'
-        and toInt64(goods_payment) = 0,
-        '0',
-        step_paid_fee
-    ) as step_paid_fee,
+    step_paid_fee,
     order_type,
-    modified
-FROM (
-        -- 已创建状态订单
-        SELECT DISTINCT *,
-            if(step_flag = 1, 'FRONT_NOPAID_FINAL_NOPAID', '') AS step_trade_status,
-            if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
-            if(step_flag = 1, 'step', order_type) AS order_type,
-            `day`,
-            if(
-                g_info.goods_id != ''
-                AND step_deposit_start <= toDateTime(splitByString('.', modified) [1])
-                AND step_deposit_end >= toDateTime(splitByString('.', modified) [1]),
-                1,
-                0
-            ) AS step_flag,
-            goods_id
-        FROM (
-                SELECT *,
-                    goods_id,
-                    goods_price,
-                    goods_title,
-                    goods_num
-                FROM (
-                        SELECT DISTINCT day,
-                            order_id,
-                            order_type,
-                            shop_id,
-                            buyer_nick,
-                            real_buyer_nick,
-                            payment,
-                            if(
-                                toFloat64OrZero(order_seller_price) = 0,
-                                toString(payment),
-                                order_seller_price
-                            ) AS order_seller_price,
-                            post_fee,
-                            status AS new_status,
-                            original_status,
-                            splitByString('.', modified) [1] AS modified,
-                            plat_goods_ids,
-                            plat_goods_price_arr,
-                            plat_goods_num_arr,
-                            plat_goods_title_arr,
-                            toFloat64(
-                                if(order_seller_price = '', '0', order_seller_price)
-                            ) AS new_order_seller_price,
-                            arrayMap(
-                                (x, y)->toFloat64(if(x = '', '0', x)) * toFloat64(y),
-                                plat_goods_price_arr,
-                                plat_goods_num_arr
-                            ) AS new_plat_goods_price_arr,
-                            arraySum(new_plat_goods_price_arr) AS goods_payment_sum,
-                            length(plat_goods_ids) AS goods_id_cnt
-                        FROM ft_ods.order_event_all
-                        WHERE `day` = {ds_nodash}
-                            AND shop_id = '{shop_id}'
-                            AND status = 'created'
-                            AND length(plat_goods_ids) != 0
-                    )
-                    ARRAY JOIN
-                        plat_goods_ids AS goods_id,
-                        plat_goods_price_arr AS goods_price,
-                        plat_goods_title_arr AS goods_title,
-                        plat_goods_num_arr AS goods_num
-            ) AS o_info
-            LEFT JOIN (
-                SELECT goods_id,
-                    toDateTime(step_deposit_start_time) AS step_deposit_start,
-                    toDateTime(step_deposit_end_time) AS step_deposit_end,
-                    goods_step_fee
-                FROM ft_ods.presell_goods_config_all
-                WHERE shop_id = '{shop_id}'
-                    AND toDate(step_deposit_start_time) <= toDate('{ds}')
-                    AND toDate(step_deposit_end_time) >= toDate('{ds}')
-                    ORDER BY step_deposit_start_time ASC
-                    LIMIT 1 BY goods_id
-            ) AS g_info USING(goods_id)
-
-        -- 待付定金状态订单-仅预售订单
-        UNION ALL
-        SELECT DISTINCT *,
-            'FRONT_PAID_FINAL_NOPAID' AS step_trade_status,
-            goods_step_fee AS step_paid_fee,
-            'step' AS order_type,
-            `day`,
-            if(
-                g_info.goods_id != ''
-                AND step_deposit_start <= toDateTime(modified)
-                AND step_deposit_end >= toDateTime(modified),
-                1,
-                0
-            ) AS step_flag,
-            goods_id
-        FROM (
-                SELECT *,
-                    goods_id,
-                    goods_price,
-                    goods_title,
-                    goods_num
-                FROM (
-                        SELECT DISTINCT day,
-                            order_id,
-                            order_type,
-                            shop_id,
-                            buyer_nick,
-                            real_buyer_nick,
-                            payment,
-                            if(
-                                toFloat64OrZero(order_seller_price) = 0,
-                                toString(payment),
-                                order_seller_price
-                            ) AS order_seller_price,
-                            post_fee,
-                            'deposited' AS new_status,
-                            original_status,
-                            splitByString('.', modified) [1] AS modified,
-                            plat_goods_ids,
-                            plat_goods_price_arr,
-                            plat_goods_num_arr,
-                            plat_goods_title_arr,
-                            toFloat64(
-                                if(order_seller_price = '', '0', order_seller_price)
-                            ) AS new_order_seller_price,
-                            arrayMap(
-                                (x, y)->toFloat64(if(x = '', '0', x)) * toFloat64(y),
-                                plat_goods_price_arr,
-                                plat_goods_num_arr
-                            ) AS new_plat_goods_price_arr,
-                            arraySum(new_plat_goods_price_arr) AS goods_payment_sum,
-                            length(plat_goods_ids) AS goods_id_cnt
-                        FROM ft_ods.order_event_all
-                        WHERE `day` = {ds_nodash}
-                            AND shop_id = '{shop_id}'
-                            AND status = 'created'
-                            AND length(plat_goods_ids) != 0
-                    ) 
-                    ARRAY JOIN
-                        plat_goods_ids AS goods_id,
-                        plat_goods_price_arr AS goods_price,
-                        plat_goods_title_arr AS goods_title,
-                        plat_goods_num_arr AS goods_num
-            ) AS o_info
-            LEFT JOIN (
-                SELECT goods_id,
-                    toDateTime(step_deposit_start_time) AS step_deposit_start,
-                    toDateTime(step_deposit_end_time) AS step_deposit_end,
-                    goods_step_fee
-                FROM ft_ods.presell_goods_config_all
-                WHERE shop_id = '{shop_id}'
-                    AND toDate(step_deposit_start_time) <= toDate('{ds}')
-                    AND toDate(step_deposit_end_time) >= toDate('{ds}')
-                    ORDER BY step_deposit_start_time ASC
-                    LIMIT 1 BY goods_id
-            ) AS g_info USING(goods_id)
-        -- 仅筛选包含预售商品的订单记录, 即仅筛选预售订单
-        WHERE step_flag = 1
-
-        UNION ALL
-        -- 已付款以及后续状态订单, PS: 包括预售相关订单
-        SELECT DISTINCT *,
-            if(step_flag = 1, 'FRONT_PAID_FINAL_PAID', '') AS step_trade_status,
-            if(step_flag = 1, goods_step_fee, '') AS step_paid_fee,
-            if(step_flag = 1, 'step', order_type) AS order_type,
-            `day`,
-            if(
-                g_info.goods_id != ''
-                AND step_final_start <= toDateTime(splitByString('.', modified) [1])
-                AND step_final_end >= toDateTime(splitByString('.', modified) [1]),
-                1,
-                0
-            ) AS step_flag,
-            goods_id
-        FROM (
-                SELECT *,
-                    goods_id,
-                    goods_price,
-                    goods_title,
-                    goods_num
-                FROM (
-                        SELECT DISTINCT day,
-                            order_id,
-                            order_type,
-                            shop_id,
-                            buyer_nick,
-                            real_buyer_nick,
-                            payment,
-                            if(
-                                toFloat64OrZero(order_seller_price) = 0,
-                                toString(payment),
-                                order_seller_price
-                            ) AS order_seller_price,
-                            post_fee,
-                            status AS new_status,
-                            original_status,
-                            splitByString('.', modified) [1] AS modified,
-                            plat_goods_ids,
-                            plat_goods_price_arr,
-                            plat_goods_num_arr,
-                            plat_goods_title_arr,
-                            toFloat64(
-                                if(order_seller_price = '', '0', order_seller_price)
-                            ) AS new_order_seller_price,
-                            arrayMap(
-                                (x, y)->toFloat64(if(x = '', '0', x)) * toFloat64(y),
-                                plat_goods_price_arr,
-                                plat_goods_num_arr
-                            ) AS new_plat_goods_price_arr,
-                            arraySum(new_plat_goods_price_arr) AS goods_payment_sum,
-                            length(plat_goods_ids) AS goods_id_cnt
-                        FROM ft_ods.order_event_all
-                        WHERE `day` = {ds_nodash}
-                            AND shop_id = '{shop_id}'
-                            AND status != 'created'
-                            AND length(plat_goods_ids) != 0
-                    )
-                    ARRAY JOIN
-                        plat_goods_ids AS goods_id,
-                        plat_goods_price_arr AS goods_price,
-                        plat_goods_title_arr AS goods_title,
-                        plat_goods_num_arr AS goods_num
-            ) AS o_info
-            LEFT JOIN (
-                SELECT goods_id,
-                    toDateTime(step_final_start_time) AS step_final_start,
-                    toDateTime(step_final_end_time) AS step_final_end,
-                    goods_step_fee
-                FROM ft_ods.presell_goods_config_all
-                WHERE shop_id = '{shop_id}'
-                    AND toDate(step_final_start_time) <= toDate('{ds}')
-                    AND toDate(step_final_end_time) >= toDate('{ds}')
-                    ORDER BY step_final_start_time ASC
-                    LIMIT 1 BY goods_id
-            ) AS g_info USING(goods_id)
-    )
+    goods_num,
+    is_refund,
+    0 as is_transf,
+    cycle,
+    1
+FROM ft_dwd.persell_ask_order_cov_detail_all
+where `day` = toYYYYMMDD(subtractDays(toDate('2023-02-26'), 2 - 1))
+    AND shop_id = '5edfa47c8f591c00163ef7d6'
+    and `cycle` = 2
+    and order_id != ''
