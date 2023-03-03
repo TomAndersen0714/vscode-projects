@@ -328,7 +328,7 @@ FROM tmp.session_filter_all
 WHERE `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
     AND shop_id = '{{shop_id}}'
     AND `cycle` = {{cycle}}
-    -- 剔除已经关联上会话的
+    -- 剔除已经关联上会话的询单记录
     AND session_id NOT IN (
         SELECT DISTINCT session_id
         FROM ft_dwd.ask_order_cov_detail_all

@@ -1,17 +1,6 @@
-SELECT tmp.*
-FROM (
-        SELECT *
-        FROM { tmp_table }
-        WHERE `day` = { ds_nodash }
-    ) AS tmp
-    LEFT JOIN (
-        SELECT *
-        FROM { sink_table }
-        WHERE `day` = { ds_nodash }
-    ) AS ods USING(
-        `day`,
-        shop_id,
-        order_id,
-        order_status
-    )
-HAVING ods.order_id = ''
+SELECT DISTINCT buyer_nick
+FROM ft_dwd.order_detail_all
+WHERE `day` BETWEEN toYYYYMMDD(
+        subtractDays(subtractDays(toDate('{{ds}}'), { { cycle } } - 1), 180)
+    ) AND toYYYYMMDD(subtractDays(toDate('{{ds}}'), { { cycle } } - 1))
+    AND shop_id = '{{shop_id}}'
