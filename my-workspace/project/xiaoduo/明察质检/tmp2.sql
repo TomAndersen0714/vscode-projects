@@ -347,6 +347,8 @@ WHERE `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
     AND buyer_nick != '';
 
 
+
+
 -- 订单*状态*产品粒度询单记录-询单未转化记录-预售订单相关
 -- 询单周期内
 INSERT INTO tmp.persell_ask_order_cov_detail_all
@@ -517,7 +519,6 @@ GROUP BY `day`,
     order_id,
     goods_id,
     snick;
-
 
 
 -- 订单*状态*产品粒度询单记录-询单未转化记录-预售订单相关
@@ -731,34 +732,6 @@ FROM (
                     c_active_send_goods_ids_arr [index_v] AS c_active_send_goods_ids,
                     s_active_send_goods_ids_arr [index_v] AS s_active_send_goods_ids
                 FROM (
-                        SELECT `day`,
-                            shop_id,
-                            order_id,
-                            toDateTime(
-                                splitByString('.', arrayReduce('min', groupArray(modified))) [1]
-                            ) AS new_modified,
-                            argMin(buyer_nick, modified) AS buyer_nick,
-                            argMin(real_buyer_nick, modified) AS real_buyer_nick,
-                            goods_id,
-                            argMin(goods_payment, modified) AS goods_payment,
-                            argMin(order_payment, modified) AS order_payment,
-                            argMin(step_trade_status, modified) AS step_trade_status,
-                            argMin(step_paid_fee, modified) AS step_paid_fee,
-                            argMin(order_type, modified) AS new_order_type,
-                            argMin(goods_num, modified) AS goods_num,
-                            status
-                        FROM ft_dwd.order_detail_all
-                        WHERE `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
-                            AND shop_id = '{{shop_id}}'
-                            AND status = 'paid'
-                            AND order_type = 'step'
-                        GROUP BY shop_id,
-                            order_id,
-                            status,
-                            goods_id,
-                            `day`
-                    ) AS order_info
-                    LEFT JOIN (
                         SELECT shop_id,
                             buyer_nick,
                             groupArray(snick) AS snick_arr,
@@ -788,8 +761,8 @@ FROM (
                                     s_active_send_goods_ids
                                 FROM tmp.session_filter_all
                                 WHERE `day` BETWEEN toYYYYMMDD(
-                                        subtractDays(toDate('{{ds}}'), {{cycle}} - 1 + {{cycle}} - 1)
-                                    ) AND toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
+                                        subtractDays(toDate('{{ds}}'), {{cycle}} - 1)
+                                    ) AND toYYYYMMDD(subtractDays(toDate('{{ds}}'))
                                     AND shop_id = '{{shop_id}}'
                                     AND `cycle` = {{cycle}}
                                     -- 筛选询单周期首日, 付过预售订单尾款的买家
@@ -805,7 +778,35 @@ FROM (
                             )
                         GROUP BY shop_id,
                             buyer_nick
-                    ) AS session USING(
+                    ) AS session
+                    LEFT JOIN (
+                        SELECT `day`,
+                            shop_id,
+                            order_id,
+                            toDateTime(
+                                splitByString('.', arrayReduce('min', groupArray(modified))) [1]
+                            ) AS new_modified,
+                            argMin(buyer_nick, modified) AS buyer_nick,
+                            argMin(real_buyer_nick, modified) AS real_buyer_nick,
+                            goods_id,
+                            argMin(goods_payment, modified) AS goods_payment,
+                            argMin(order_payment, modified) AS order_payment,
+                            argMin(step_trade_status, modified) AS step_trade_status,
+                            argMin(step_paid_fee, modified) AS step_paid_fee,
+                            argMin(order_type, modified) AS new_order_type,
+                            argMin(goods_num, modified) AS goods_num,
+                            status
+                        FROM ft_dwd.order_detail_all
+                        WHERE `day` = toYYYYMMDD(subtractDays(toDate('{{ds}}'), {{cycle}} - 1))
+                            AND shop_id = '{{shop_id}}'
+                            AND status = 'paid'
+                            AND order_type = 'step'
+                        GROUP BY shop_id,
+                            order_id,
+                            status,
+                            goods_id,
+                            `day`
+                    ) AS order_info USING(
                         shop_id,
                         buyer_nick
                     )
