@@ -1,21 +1,76 @@
 {
-    "id": "b94bb7541d37c9fca72d076a05b27afd",
-    "level": 1,
-    "warning_type": "冷淡回复",
-    "company_id": "623b27450707ce52b813c741",
-    "dialog_id": "63fec370d2d0be000131188f",
-    "message_id": "63fec3a26c98270001c91da4",
-    "time": "2023-03-01 11:16:49",
-    "date": 20230301,
-    "is_finish": false,
-    "finish_time": "",
-    "platform": "tb",
-    "seller_nick": "卡牛家居专营店",
-    "shop_id": "5971a48e89bc46414dc0d7ad",
-    "snick": "卡牛家居专营店:艳艳",
-    "cnick": "凹凸曼_小五",
-    "open_uid": "AAHIZosOAKdpZ1hrVDjQqKiv",
-    "buyer_one_id": "one_id_202934217",
-    "employee_name": "夏艳",
-    "superior_name": ""
+    "core": {
+        "data_dir": "./data",
+        "log_dir": "./log"
+    },
+    "connection": {
+        "defaults": {
+            "source": {
+                "pulsar": {
+                    "timeout_millis": 15000,
+                    "concurrency": 1
+                }
+            },
+            "sink": {
+                "impala": {
+                    "buffer_flush_interval_secs": 30
+                },
+                "clickhouse": {
+                    "buffer_flush_interval_secs": 30
+                }
+            }
+        },
+        "source": {
+            "mini_send_tb": {
+                "type": "pulsar",
+                "url": "pulsar://pulsar-cluster01-slb:6650",
+                "topic": "persistent://bigdata/data_cross/mini_send_tb",
+                "subscription": "bigdata_data_sync",
+                "timeout_millis": 15000,
+                "concurrency": 1
+            },
+            "ks_send_tb": {
+                "type": "pulsar",
+                "url": "pulsar://pulsar-cluster01-slb:6650",
+                "topic": "persistent://bigdata/data_cross/ks_send_tb",
+                "subscription": "bigdata_data_sync",
+                "timeout_millis": 15000,
+                "concurrency": 1
+            },
+            "jd_send_tb": {
+                "type": "pulsar",
+                "url": "pulsar://pulsar-cluster01-slb:6650",
+                "topic": "persistent://bigdata/data_cross/jd_send_tb",
+                "subscription": "bigdata_data_sync",
+                "timeout_millis": 15000,
+                "concurrency": 1
+            },
+            "yz_send_tb": {
+                "type": "pulsar",
+                "url": "pulsar://pulsar-cluster01-slb:6650",
+                "topic": "persistent://bigdata/data_cross/yz_send_tb",
+                "subscription": "bigdata_data_sync",
+                "timeout_millis": 15000,
+                "concurrency": 1
+            }
+        },
+        "sink": {
+            "clickhouse_tb": {
+                "type": "clickhouse",
+                "hosts": "10.0.2.1",
+                "ports": 19000,
+                "username": None,
+                "password": None,
+                "buffer_flush_interval_secs": 30
+            },
+            "impala_tb": {
+                "type": "impala",
+                "hosts": "10.0.2.1",
+                "ports": 21050,
+                "username": None,
+                "password": None,
+                "buffer_flush_interval_secs": 30
+            }
+        }
+    }
 }
