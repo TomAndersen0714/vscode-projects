@@ -1,156 +1,255 @@
-insert into etl_tmp.ask_order_detail_all
-select buyer_info.*
-from (
-        select shop_id,
-            order_id,
-            shop_name,
-            groupArray(snick) [1] as snick,
-            buyer_nick as buyer_name,
-            status,
-            toString(order_time) as order_time,
-            payment,
-            goods_count,
-            day
-        from(
-                select chat_info.day,
-                    chat_info.shop_id,
-                    chat_info.shop_name,
-                    chat_info.snick,
-                    chat_info.buyer_nick,
-                    mode,
-                    act,
-                    chat_time,
-                    status,
-                    order_time,
-                    send_msg_from,
-                    order_id,
-                    payment,
-                    goods_count,
-                    abs (chat_time - order_time) as time_abs
-                from (
-                        select day,
-                            shop_id,
-                            replaceAll(splitByChar(':', snick) [1], 'cnjd', '') as shop_name,
-                            replaceAll(snick, 'cnjd', '') as snick,
-                            replaceAll(cnick, 'cnjd', '') as buyer_nick,
-                            mode,
-                            act,
-                            if(act = 'recv_msg', '-1', send_msg_from) as send_msg_from,
-                            parseDateTimeBestEffortOrNull(toString(create_time)) as chat_time
-                        from pub_dwd.chat_all
-                        where day = { day }
-                            and abs(xxHash64(shop_id)) % { hash_part } = { hast_no }
-                            and act = 'recv_msg'
-                    ) as chat_info
-                    left join (
-                        select shop_id,
-                            order_id,
-                            buyer_nick,
-                            payment,
-                            status,
-                            arraySum(goods_count) AS goods_count,
-                            parseDateTimeBestEffortOrNull(toString(time)) as order_time
-                        from pub_dwd.order_event_all
-                        where day = { day }
-                            and status in ('created', 'paid')
-                            and abs(xxHash64(shop_id)) % { hash_part } = { hast_no }
-                    ) as order_info using (shop_id, buyer_nick)
-                where status != ''
-                order by time_abs asc
-            ) as ask_order_info
-        where act = 'recv_msg'
-        group by day,
-            shop_id,
-            order_id,
-            payment,
-            goods_count,
-            shop_name,
-            buyer_nick,
-            order_time,
-            status
-    ) as buyer_info
-    left join (
-        select shop_id,
-            shop_name,
-            snick,
-            buyer_name
-        from etl_tmp.ask_order_buyers_all
-        where day = { day }
-    ) as ask_info using(shop_id, snick, buyer_name)
-where ask_info.buyer_name != ''
-
-
-
-insert into pub_dws.ask_order_detail_all
-select a.*
-from (
-        select chat_info.shop_id as shop_id,
-            detail.order_id as order_id,
-            chat_info.shop_name as shop_name,
-            chat_info.snick as snk_name,
-            chat_info.buyer_nick as buyer_name,
-            detail.status as status,
-            detail.payment as payment,
-            detail.goods_count as goods_cnt,
-            detail.order_time as order_time,
-            groupArray(send_msg_from) as send_msg_from_array,
-            if(
-                send_msg_from_array [-1] in ('0', '3'),
-                'True',
-                'False'
-            ) as last_is_robot_send,
-            if(has(send_msg_from_array, '2') = 1, 'False', 'True') as is_robot_serve,
-            sum(if(send_msg_from in ('0', '3'), 1, 0)) as robot_send_msg_pv,
-            sum(if(send_msg_from = '2', 1, 0)) as human_send_msg_pv,
-            count(1) - countEqual(send_msg_from_array, '-1') send_msg_pv,
-            chat_info.day as day
-        from (
-                select { day } as day,
-                    shop_id,
-                    replaceAll(splitByChar(':', snick) [1], 'cnjd', '') as shop_name,
-                    replaceAll(snick, 'cnjd', '') as snick,
-                    replaceAll(cnick, 'cnjd', '') as buyer_nick,
-                    mode,
-                    if(act = 'recv_msg', '-1', send_msg_from) as send_msg_from,
-                    parseDateTimeBestEffortOrNull(toString(create_time)) as chat_time
-                from pub_dwd.chat_all
-                where day between toYYYYMMDD(
-                        subtractDays(
-                            parseDateTimeBestEffortOrNull(toString({ day })),
-                            1
-                        )
-                    )
-                    and { day }
-            ) as chat_info
-            left join (
-                select shop_id,
-                    order_id,
-                    shop_name,
-                    snick,
-                    buyer_nick,
-                    status,
-                    parseDateTimeBestEffortOrNull(order_time) as order_time,
-                    payment,
-                    goods_count
-                from etl_tmp.ask_order_detail_all
-                where day = { day }
-            ) as detail using(shop_id, snick, buyer_nick)
-        where detail.order_id != ''
-        group by day,
-            shop_id,
-            shop_name,
-            status,
-            snk_name,
-            buyer_name,
-            order_id,
-            order_time,
-            payment,
-            goods_count
-    ) as a
-    left join (
-        select distinct shop_id,
-            buyer_name
-        from etl_tmp.ask_order_buyers_all
-        where day = { day }
-    ) as b using (shop_id, buyer_name)
-where b.buyer_name != ''
+{
+    "http_endpoint": ":8155",
+    "grpc_endpoint": ":8156",
+    "pprof_endpoint": ":8157",
+    "stream_step_size": 1000,
+    "std_log": {
+        "level": "info",
+        "file": "/var/log/xiaoduo/query-sdk.log",
+        "err_file": "/var/log/xiaoduo/query-sdk.err.log",
+        "app_name": "query-sdk",
+        "auto_init": true
+    },
+    "api_log": {
+        "level": "info",
+        "file": "/var/log/xiaoduo/query-sdk.api.log",
+        "app_name": "query-sdk",
+        "auto_init": true
+    },
+    "switcher": ["10.20.0.125:2379"],
+    "rate_limit": {
+        "default": {
+            "impala": {
+                "qpm": 600,
+                "max": 10
+            },
+            "clickhouse": {
+                "qpm": 600,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            },
+            "postgres":{
+                "qpm": 1200,
+                "qps": 20,
+                "max": 10
+            }
+        },
+        "config-check": {
+            "impala": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            },
+            "postgres":{
+                "qpm": 1200,
+                "qps": 20,
+                "max": 10
+            }
+        },
+        "data-visual":{
+            "impala": {
+                "qpm": 600,
+                "max": 10
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 41
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "csm":{
+            "impala": {
+                "qpm": 240,
+                "max": 4
+            },
+            "clickhouse": {
+                "qpm": 240,
+                "max": 4
+            },
+            "mysql": {
+                "qpm": 240,
+                "max": 4
+            }
+        },  
+        "snowball":{
+            "impala": {
+                "qpm": 2,
+                "max": 1
+            },
+            "clickhouse": {
+                "qpm": 2,
+                "max": 1
+            },
+            "mysql": {
+                "qpm": 100,
+                "max": 20
+            }
+        },      
+        "x-data-x-data": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-screen": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-shandian": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 600,
+                "max": 10
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xcm": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xz": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-jd": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1800,
+                "max": 30
+            }
+        },
+        "x-data-csm": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-x-data-trans": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xqc": {
+            "impala": {
+                "qpm": 600,
+                "max": 5
+            },
+            "clickhouse": {
+                "qps": 900,
+                "max": 10
+            }
+        },
+        "keban-group": {
+            "impala": {
+                "qpm": 10, 
+                "max": 3
+            },
+            "clickhouse": {
+                "qpm": 10,
+                "max": 10
+            }
+        }
+    },
+    "storage": {
+        "ping": "20s",
+        "impala": {
+            "default": ["10.20.2.29:21050","10.20.133.176:21050","10.20.133.149:21050"],
+            "bee": ["10.20.2.29:21000","10.20.133.176:21000","10.20.133.149:21000"]
+        },
+        "clickhouse": {
+            "default": ["tcp://10.20.2.29:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
+            "mp": ["tcp://10.20.2.29:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
+            "keban": ["tcp://10.20.133.173:19000?debug=false"],
+            "log": ["tcp://10.20.131.58:9000?debug=false", "tcp://10.20.131.14:9000?debug=false"]
+        },
+        "mysql" : {
+            "default": ["select.user:hT0KABSS*X@tcp(172.16.124.5:3306)/jira?charset=utf8&parseTime=true"],
+            "snowball": ["root:Mysql1234!@tcp(10.20.0.173:3306)/snowball?charset=utf8&parseTime=true"]
+        },
+        "postgres": {
+			"default": [
+			    "host=10.20.133.149 port=5432 user=postgres dbname=mayfly password=mysecretpassword sslmode=disable TimeZone=Asia/Shanghai"
+			],
+			"goodscenter": [
+				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=barracks dbname=barracks password=BaxSn2T$o89NJFs sslmode=disable TimeZone=Asia/Shanghai"
+			]
+        }
+    }
+}
