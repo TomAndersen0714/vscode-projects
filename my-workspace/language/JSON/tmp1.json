@@ -1,170 +1,346 @@
 {
-    "answer": "{\"content\":\"亲，目前店铺现货商品付款后【48小时】小时左右发货，我们也将密切跟踪包裹的物流信息，争取尽快为您发货配送，请您耐心等待（预售款除外哦）/:-F\",\"type\":\"question_b\",\"hit\":{\"id\":\"5eaee8da399d27001669866d\",\"name\":\"什么时间发货\"},\"answer_id\":\"623a889ad100c800010c9f14\",\"cond_answer_id\":\"6283689a65101c029b0f02a7\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.8920945",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"5f0a0d9f09529a6f0000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"10\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":0},\\\"sale_status_from\\\":\\\"\\\"}\"}]",
-    "focus_goods_from": 10,
-    "message_id": "1676464020001886",
-    "pin": "cnpdd4726899031",
-    "platform": "pdd",
-    "real_buyer_nick": "4726899031",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "623935e026263500112a07cd",
-    "spin": "cnpdd云盾五金专营店:云盾五金雪雪",
-    "trace_id": "5f0a0d9f09529a6f0000001676463994",
-    "trade": "{\"latest_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":0},\"sale_status_from\":\"\"}",
-    "transfer": "{}",
-    "welcome_reply": "{}"
-}
-{
-    "answer": "{\"content\":\"您好，十分抱歉了，由于近期广州连续降雨，车厘子开柜量较少，导致货量不足。为保障调货品质和购物体验。我们供应链专业人员正在加班加点调货，发货时间会晚一些。我们按照您下单顺序给您陆续发出，麻烦您耐心等待下，谢谢您了\",\"type\":\"question_b\",\"hit\":{\"id\":\"607d6c5b2648234a2b7be41e\",\"name\":\"催发货\"},\"answer_id\":\"627f9b11fe63920019156950\",\"cond_answer_id\":\"627f9b1178f4a6896549d252\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9035894",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"d41d2d8800d572310000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"8\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tid_str\\\":\\\"260995555521\\\",\\\"status\\\":\\\"paied\\\",\\\"tbext\\\":null,\\\"jdext\\\":{\\\"items\\\":[{\\\"item_id\\\":\\\"\\\",\\\"sku_id\\\":\\\"10065933167209\\\"}]},\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tid_str\\\":\\\"260995555521\\\",\\\"status\\\":\\\"paied\\\",\\\"tbext\\\":null,\\\"jdext\\\":{\\\"items\\\":[{\\\"item_id\\\":\\\"\\\",\\\"sku_id\\\":\\\"10065933167209\\\"}]},\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":2,\\\"current_order_seconds\\\":341340},\\\"sale_status_from\\\":\\\"latest_order_goods\\\"}\"}]",
-    "focus_goods_from": 8,
-    "message_id": "1676464013860114",
-    "pin": "cnjdjd_imbhiyumrhys",
+    "_id": ObjectId("63e46009cdd64f0001efb6c3"),
+    "create_time": ISODate("2023-02-09T02:52:57.747Z"),
+    "update_time": ISODate("2023-02-10T05:19:13.859Z"),
     "platform": "jd",
-    "real_buyer_nick": "jd_imbhiyumrhys",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "627cbabaed049c0015ce7413",
-    "spin": "cnjd果蜜享-柠檬",
-    "trace_id": "d41d2d8800d572310000001676463994",
-    "trade": "{\"latest_order\":{\"tid_str\":\"260995555521\",\"status\":\"paied\",\"tbext\":null,\"jdext\":{\"items\":[{\"item_id\":\"\",\"sku_id\":\"10065933167209\"}]},\"pddext\":null},\"focus_goods_order\":{\"tid_str\":\"260995555521\",\"status\":\"paied\",\"tbext\":null,\"jdext\":{\"items\":[{\"item_id\":\"\",\"sku_id\":\"10065933167209\"}]},\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":2,\"current_order_seconds\":341340},\"sale_status_from\":\"latest_order_goods\"}",
-    "transfer": "{}",
-    "welcome_reply": "{\"content\":\"很高兴为您服务\"}"
-}
-{
-    "answer": "{\"content\":\"* 嗯呐亲亲~\",\"type\":\"question_b\",\"hit\":{\"id\":\"603c8c6cf9b24bb862dddbbd\",\"name\":\"表达确认\"},\"answer_id\":\"636084d5c8780700153e85e3\",\"cond_answer_id\":\"636084d58bc98ec3c12178f4\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*,3.*,4.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9091819",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"db89a4e6561da88a0000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"0\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tid_str\\\":\\\"5034016897199854691\\\",\\\"status\\\":\\\"shipped\\\",\\\"tbext\\\":{\\\"items\\\":[{\\\"item_id\\\":\\\"3564138927881346253\\\",\\\"sku_id\\\":\\\"1740302206789684\\\"}]},\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":264651},\\\"sale_status_from\\\":\\\"latest_order_goods\\\"}\"}]",
-    "focus_goods_from": 0,
-    "message_id": "1676464002231596",
-    "pin": "98061051674",
-    "platform": "dy",
-    "real_buyer_nick": "98061051674",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "635f3b699dc65700183cf58b",
-    "spin": "436224:小鑫",
-    "trace_id": "db89a4e6561da88a0000001676463994",
-    "trade": "{\"latest_order\":{\"tid_str\":\"5034016897199854691\",\"status\":\"shipped\",\"tbext\":{\"items\":[{\"item_id\":\"3564138927881346253\",\"sku_id\":\"1740302206789684\"}]},\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":264651},\"sale_status_from\":\"latest_order_goods\"}",
-    "transfer": "{}",
-    "welcome_reply": "{}"
-}
-{
-    "answer": "{\"content\":\"\",\"type\":\"question_b\",\"hit\":{\"id\":\"5cb6ea3b98ef410010440df4\",\"name\":\"收到买家发的商品链接\"},\"answer_id\":\"\",\"cond_answer_id\":\"\",\"answer_cond\":{},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9443291",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"9fc95abad098a5900000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"1\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":365,\\\"current_order_seconds\\\":0},\\\"sale_status_from\\\":\\\"\\\"}\"}]",
-    "focus_goods_from": 1,
-    "message_id": "1676464092490311",
-    "pin": "cnjdjd_drpotxplcrfq",
-    "platform": "jd",
-    "real_buyer_nick": "jd_drpotxplcrfq",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "60d968f84b4e03000a43279c",
-    "spin": "cnjdjd_4e728f8aad70e=7690767592927790",
-    "trace_id": "9fc95abad098a5900000001676463994",
-    "trade": "{\"latest_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":365,\"current_order_seconds\":0},\"sale_status_from\":\"\"}",
-    "transfer": "{}",
-    "welcome_reply": "{\"content\":\"您好，欢迎光临本店!将心比心，我将用我的诚心细心，换您的舒心放心，我是您的家电顾问，请问有什么可以帮到您的呢？ \\n#E-s67【店长推荐好物暴款#E-s39】\\n★现抢购价：限时抄低价！！\\n★立即抢购：还有精美赠品相送  ，数量有限先抢先得！\\n购买链接：https://item.jd.com/100039500196.html\"}"
-}
-{
-    "answer": "{\"content\":\"~ 您好#E-s21，正常情况我们会在您下单后48小时之内发出，特殊情况可能会有延迟呢，仓库都是按照下单顺序发货的。感谢您的支持！！\",\"type\":\"question_b\",\"hit\":{\"id\":\"5f4db525e1a27b001cd9a1a2\",\"name\":\"催发货\"},\"answer_id\":\"5f867dbd79cc58001222f2f4\",\"cond_answer_id\":\"613eb8a585ec3260b9e8062b\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:35.0195735",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"c3c7a570899df78d0000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"8\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tid_str\\\":\\\"261024852903\\\",\\\"status\\\":\\\"paied\\\",\\\"tbext\\\":null,\\\"jdext\\\":{\\\"items\\\":[{\\\"item_id\\\":\\\"14330837508\\\",\\\"sku_id\\\":\\\"67266330446\\\"},{\\\"item_id\\\":\\\"13426367618\\\",\\\"sku_id\\\":\\\"10045137140908\\\"}]},\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":120,\\\"current_order_seconds\\\":284925},\\\"sale_status_from\\\":\\\"latest_order_goods\\\"}\"}]",
-    "focus_goods_from": 8,
-    "message_id": "1676464035193133",
-    "pin": "cnjdjd_eoolpiozpuar",
-    "platform": "jd",
-    "real_buyer_nick": "jd_eoolpiozpuar",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "603f09428f25430011707e3b",
-    "spin": "cnjd申花飞龙-玛丽苏",
-    "trace_id": "c3c7a570899df78d0000001676463994",
-    "trade": "{\"latest_order\":{\"tid_str\":\"261024852903\",\"status\":\"paied\",\"tbext\":null,\"jdext\":{\"items\":[{\"item_id\":\"14330837508\",\"sku_id\":\"67266330446\"},{\"item_id\":\"13426367618\",\"sku_id\":\"10045137140908\"}]},\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":120,\"current_order_seconds\":284925},\"sale_status_from\":\"latest_order_goods\"}",
-    "transfer": "{}",
-    "welcome_reply": "{\"content\":\"很高兴为您服务\"}"
-}
-{
-    "answer": "{\"content\":\"~ *^÷^*  亲亲  有什么可以帮您的呢\",\"type\":\"question_b\",\"hit\":{\"id\":\"5cf8e14ab04c1800143e0512\",\"name\":\"开始语\"},\"answer_id\":\"62d77fdc7bb277001356e4be\",\"cond_answer_id\":\"62d77fdc9e36285fbdba9341\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*,3.*,4.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9748255",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"dc25ba6321fa62d00000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"10\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":0},\\\"sale_status_from\\\":\\\"\\\"}\"}]",
-    "focus_goods_from": 10,
-    "message_id": "1676464004206543",
-    "pin": "cnpdd5654643527594",
-    "platform": "pdd",
-    "real_buyer_nick": "5654643527594",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "6152c7fafe301f000a832c99",
-    "spin": "cnpdd婺唐家居生活官方旗舰店:婺唐家居生活叮当猫",
-    "trace_id": "dc25ba6321fa62d00000001676463994",
-    "trade": "{\"latest_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":0},\"sale_status_from\":\"\"}",
-    "transfer": "{}",
-    "welcome_reply": "{}"
-}
-{
-    "answer": "{\"content\":\"收到您的订单编号了哦~请问您有什么问题的呢\",\"type\":\"question_b\",\"hit\":{\"id\":\"5cf8e14ab04c1800143e050e\",\"name\":\"买家发来订单号\"},\"answer_id\":\"631883bc92871e0019518d94\",\"cond_answer_id\":\"631883bc8e0adaa365a870f6\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*,3.*,4.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9821481",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"7d8df74300b5d61d0000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"4\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tid_str\\\":\\\"230121-419094864882195\\\",\\\"status\\\":\\\"group\\\",\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":2003426},\\\"sale_status_from\\\":\\\"latest_order_goods\\\"}\"}]",
-    "focus_goods_from": 4,
-    "message_id": "1676463999470814",
-    "pin": "cnpdd6859820337299",
-    "platform": "pdd",
-    "real_buyer_nick": "6859820337299",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "6311991ec0006c001917ba1e",
-    "spin": "cnpdd博库图书旗舰店:PDD小盼同学",
-    "trace_id": "7d8df74300b5d61d0000001676463994",
-    "trade": "{\"latest_order\":{\"tid_str\":\"230121-419094864882195\",\"status\":\"group\",\"tbext\":null,\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":2003426},\"sale_status_from\":\"latest_order_goods\"}",
-    "transfer": "{}",
-    "welcome_reply": "{}"
-}
-{
-    "answer": "{\"content\":\"您好，欢迎光临固特异（Goodyear）汽车配件京东自营旗舰店，请问有 什么可以为您服务的吗？\",\"type\":\"question_b\",\"hit\":{\"id\":\"5cb6ea3b98ef410010440df4\",\"name\":\"收到买家发的商品链接\"},\"answer_id\":\"5fd972e0d5d0a70012fa5dc8\",\"cond_answer_id\":\"623bd23a84d7ac0b97a9c201\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*,4.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9827555",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"157d8174dba2e7ba0000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"1\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tid_str\\\":\\\"1000337621_259748653139\\\",\\\"status\\\":\\\"success\\\",\\\"tbext\\\":null,\\\"jdext\\\":{\\\"items\\\":[{\\\"item_id\\\":\\\"100028040149\\\",\\\"sku_id\\\":\\\"100028040149\\\"}]},\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":110968},\\\"sale_status_from\\\":\\\"latest_order_goods\\\"}\"}]",
-    "focus_goods_from": 1,
-    "message_id": "1676464025497664",
-    "pin": "cnjdjd_62ec93c2f83d8",
-    "platform": "jd",
-    "real_buyer_nick": "jd_62ec93c2f83d8",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "5fd8592ad5d0a70018fa604a",
-    "spin": "cnjd固特异长安",
-    "trace_id": "157d8174dba2e7ba0000001676463994",
-    "trade": "{\"latest_order\":{\"tid_str\":\"1000337621_259748653139\",\"status\":\"success\",\"tbext\":null,\"jdext\":{\"items\":[{\"item_id\":\"100028040149\",\"sku_id\":\"100028040149\"}]},\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":110968},\"sale_status_from\":\"latest_order_goods\"}",
-    "transfer": "{}",
-    "welcome_reply": "{\"content\":\"欢迎光临固特异（Goodyear）汽车配件京东自营旗舰店#E-s21\"}"
-}
-{
-    "answer": "{\"content\":\"\",\"type\":\"question_b\",\"hit\":{\"id\":\"5e8c39b775b4e80018e7b147\",\"name\":\"能放哪些东西，能放多大/多少\"},\"answer_id\":\"\",\"cond_answer_id\":\"\",\"answer_cond\":{},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9754336",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"8272040fc9f00b800000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"8\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":0},\\\"sale_status_from\\\":\\\"\\\"}\"}]",
-    "focus_goods_from": 8,
-    "message_id": "1676464036109139",
-    "pin": "cnjdjd_62f1410598fca",
-    "platform": "jd",
-    "real_buyer_nick": "jd_62f1410598fca",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "5e816106e4f3320017e9e9d2",
-    "spin": "cnjd广东康宝电器乐乐",
-    "trace_id": "8272040fc9f00b800000001676463994",
-    "trade": "{\"latest_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":0},\"sale_status_from\":\"\"}",
-    "transfer": "{}",
-    "welcome_reply": "{\"content\":\"【厨房换新，选康宝！家有康宝，健康保障！】\\n①【消毒首选】国标二星级，行业爆品！每日限量300台抢419！拼手速，秒完即止！https://item.jd.com/100011510320.html\\n②【居家必备】餐具要消毒，预防胜于治疗！每日整点限量100台秒杀699！https://item.jd.com/100041703256.html\\n③【大吸力烟机】2月16日晚8点开抢，前30分钟下单返100元E卡，到手低至399元！先抢先得！https://item.jd.com/100046321453.html\\n\"}"
-}
-{
-    "answer": "{\"content\":\"●● 小妹查看下您这边的需求\",\"type\":\"question_b\",\"hit\":{\"id\":\"603c8c65f9b24bb862ddd73e\",\"name\":\"顾客发来颜色，数量，款式需求\"},\"answer_id\":\"6316c2d404cfac8ec3bc5fa9\",\"cond_answer_id\":\"63e452e58d13f532935f9737\",\"answer_cond\":{\"sale_statuses\":\"1.*,2.*\"},\"answer_pics\":null,\"shop_precise_intent\":{\"id\":\"\",\"intent\":\"\"}}",
-    "created_time": "2023-02-15 20:26:34.9925367",
-    "ctx_conds": "[{\"key\":\"trace_id\",\"value\":\"def89b3c9558cd580000001676463994\"},{\"key\":\"focus_goods_from\",\"value\":\"0\"},{\"key\":\"trade\",\"value\":\"{\\\"latest_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"focus_goods_order\\\":{\\\"tbext\\\":null,\\\"jdext\\\":null,\\\"pddext\\\":null},\\\"post_purchase_setting\\\":{\\\"mp_post_purchase_days\\\":30,\\\"current_order_seconds\\\":0},\\\"sale_status_from\\\":\\\"\\\"}\"}]",
-    "focus_goods_from": 0,
-    "message_id": "1676464079648147",
-    "pin": "71320886922",
-    "platform": "dy",
-    "real_buyer_nick": "71320886922",
-    "scene": "{\"size_chart\":{\"is_multi\":false,\"multi_chart_id\":\"\"},\"property_question\":{},\"goods_comparison\":{},\"install_fee\":{\"scene_num_id\":\"\"},\"goods_guide\":{}}",
-    "shop_id": "63b679471d73ce000d034a8f",
-    "spin": "8408515:桃子",
-    "trace_id": "def89b3c9558cd580000001676463994",
-    "trade": "{\"latest_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"focus_goods_order\":{\"tbext\":null,\"jdext\":null,\"pddext\":null},\"post_purchase_setting\":{\"mp_post_purchase_days\":30,\"current_order_seconds\":0},\"sale_status_from\":\"\"}",
-    "transfer": "{}",
-    "welcome_reply": "{}"
+    "channel": "jd",
+    "cnick": "13674610117_p",
+    "open_uid": "",
+    "real_buyer_nick": "",
+    "snick": "得力京东自营官方旗舰店:得力主店-23",
+    "seller_nick": "得力京东自营官方旗舰店",
+    "begin_time": ISODate("2023-02-09T02:52:46.099Z"),
+    "end_time": ISODate("2023-02-09T02:52:46.099Z"),
+    "is_after_sale": true,
+    "origin_is_after_sale": false,
+    "is_inside": false,
+    "s_emotion": [
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "c_emotion": [
+        {
+            "type": 1,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 2,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 3,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 4,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 5,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 6,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 7,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 9,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 10,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 11,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "emotions": [],
+    "abnormals": [
+        {
+            "type": 1,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 2,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 3,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 4,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 5,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 6,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 7,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 9,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 10,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 11,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 12,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 13,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 14,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 15,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 16,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 17,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 18,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 19,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 20,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 21,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 22,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 23,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 24,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 25,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 26,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 27,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 28,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 29,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "excellents": [
+        {
+            "type": 1,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 2,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 3,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 4,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 5,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 6,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 7,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 8,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 9,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 10,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 11,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 12,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 13,
+            "count": 0,
+            "score": 0
+        },
+        {
+            "type": 14,
+            "count": 0,
+            "score": 0
+        }
+    ],
+    "score": 0,
+    "score_add": 0,
+    "mark_judge": 0,
+    "mark_score": 0,
+    "mark_score_add": 0,
+    "mark": "",
+    "suspected_problem": false,
+    "answer_count": NumberLong(1),
+    "question_count": NumberLong(0),
+    "first_answer_time": 1675911166,
+    "qa_time_sum": 0,
+    "qa_round_sum": 0,
+    "focus_goods_id": "",
+    "group": "售前客服组",
+    "order_info": {
+        "order_id": "1000001132_260901227329",
+        "status": "succeeded",
+        "payment": 470,
+        "order_time": NumberLong(1675911096),
+        "status_history": [
+            {
+                "status": "created",
+                "time": NumberLong(1675911096)
+            },
+            {
+                "status": "paid",
+                "time": NumberLong(1675911106)
+            }
+        ]
+    },
+    "is_order_matched": true,
+    "emotion_detect_mode": 1,
+    "task_list_id": ObjectId("619bc6504ff8d80001085525"),
+    "consulte_transfor_v2": 0,
+    "date": 20230209,
+    "qc_task_flag": 0,
+    "after_sale_days": NumberLong(0),
+    "qid": [
+		NumberLong(0)
+    ],
+    "last_msg_id": ObjectId("63e4600958fbda0001326167"),
+    "not_send_rules": {
+        "ac": {},
+        "cb": {}
+    }
 }
