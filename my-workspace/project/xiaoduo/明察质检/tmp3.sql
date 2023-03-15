@@ -1,41 +1,74 @@
-CREATE DATABASE IF NOT EXISTS ods ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary;
-
--- DROP TABLE ods.jd_real_time_chat_log_local ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS ods.jd_real_time_chat_log_local ON CLUSTER cluster_3s_2r
-(
-    `shop_id` String,
-    `plat_user_id` String,
-    `main_username` String,
-    `mt` Int32,
-    `channel` Int32,
-    `waiter` String,
-    `time` Int64,
-    `type` String,
-    `waiter_send` String,
-    `content` String,
-    `sid` String,
-    `customer` String,
-    `sku_id` Int64,
-    `day` Int32
-)
-ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-)
-PARTITION BY day
-ORDER BY (shop_id, waiter)
-SETTINGS index_granularity = 8192, storage_policy = 'rr';
-
--- DROP TABLE ods.jd_real_time_chat_log_all ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS ods.jd_real_time_chat_log_all ON CLUSTER cluster_3s_2r
-AS ods.jd_real_time_chat_log_local
-ENGINE = Distributed('cluster_3s_2r', 'ods', 'jd_real_time_chat_log_local', rand());
-
-CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary;
-
--- DROP TABLE buffer.ods_jd_real_time_chat_log_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS buffer.ods_jd_real_time_chat_log_buffer ON CLUSTER cluster_3s_2r
-AS ods.jd_real_time_chat_log_all
-ENGINE = Buffer('ods', 'jd_real_time_chat_log_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
+[
+	"abtest_user",
+	"addr_unify_log",
+	"authorization_records",
+	"barracks_dialog_case",
+	"barracks_dialog_case_group",
+	"barracks_dialog_result",
+	"barracks_task_execute_record",
+	"barracks_task_publish_record",
+	"barracks_training_task",
+	"barracks_user",
+	"buyer_voice_detail",
+	"buyer_voice_focus",
+	"buyer_voice_goods",
+	"buyer_voice_goods_count",
+	"buyer_voice_msg",
+	"buyer_voice_msg_analysis",
+	"buyer_voice_simple_goods",
+	"buyer_voice_word_result",
+	"client_online_stat",
+	"company_customer_history",
+	"company_op_log",
+	"company_sale_resource_invalid",
+	"company_sale_resource_spider_shops",
+	"daily_adopt_couple",
+	"daily_request_goods_stat",
+	"falcon_sms_log",
+	"goods_replies_import_err",
+	"goods_replies_import_info",
+	"marketing_taobao_shop",
+	"max_qianniu_version",
+	"object_customer_tag",
+	"object_daily_group_achieve",
+	"object_daily_snick_achieve",
+	"object_shop_achieve",
+	"object_total_group_achieve",
+	"object_total_snick_achieve",
+	"op_cd",
+	"op_daily_mp_use",
+	"op_daily_user_chat",
+	"op_fuwu_order",
+	"op_klk_fuwu_order",
+	"op_klk_outsource_fuwu_order",
+	"op_klk_tb_qc_fuwu_order",
+	"op_mymf_fuwu_order2",
+	"op_outsource_fuwu_order",
+	"op_plugin_fuwu_order",
+	"op_request_statistics",
+	"op_taodongli_fuwu_order",
+	"op_user_chat_statistics",
+	"op_yuchi_fuwu_order",
+	"operation_misc",
+	"oplog",
+	"page_search_shop",
+	"poll_config",
+	"query_panel_diagram",
+	"query_panel_enterprise",
+	"query_panel_group_config",
+	"query_panel_page_group",
+	"query_panel_platform_config",
+	"query_panel_primary_page",
+	"query_panel_primary_page_order",
+	"query_panel_sql_builder",
+	"query_panel_user",
+	"reception_of_nick_stat_by_day",
+	"reminder_fetcher_log",
+	"robot_shop_stat_by_question",
+	"shop_level",
+	"taobao_fuwu_order",
+	"tb_order_notice_log",
+	"test_white_shop",
+	"values",
+	"version_info"
+]
