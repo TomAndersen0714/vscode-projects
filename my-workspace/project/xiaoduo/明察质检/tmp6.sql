@@ -1,9 +1,5 @@
-SELECT plat_goods_id AS product_id,
-    sum(pv) AS hot,
-    cast(sum(paid_uv) * 100 / sum(reception_uv) AS int) AS order_cr
-FROM app_mp.presale_day_platform_snick_goods
-WHERE DAY BETWEEN 20230320 AND 20230320
-    AND snick_oid = '634270d1bda541001722969f'
-    AND plat_goods_id IN ('673779868645', '693696488215', '702229182055')
-GROUP BY plat_goods_id;
--- trace:810e04669677222824a23e2412a7844d
+方太京东自营旗舰店 5e9d390d68283c002457b52f
+方太官方旗舰店 5e9d350bcff5ed002486ded8
+方太厨卫旗舰店 5e9d390d68283c002457b52f
+方太京东旗舰店 5edfa47c8f591c00163ef7d6
+方太集成厨电京东自营旗舰店 6045bb797985c4000958a35c
