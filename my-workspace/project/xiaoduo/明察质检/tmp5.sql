@@ -1,15 +1,12 @@
-select msg_time,
-    if (
-        real_buyer_nick is not null
-        and real_buyer_nick != '',
-        real_buyer_nick,
-        cnick
-    ) as cnick,
-    snick,
-    msg,
-    answer_id,
-    act,
-    send_msg_from,
-    is_withdraw
-from dwd.withdraw_context
-where query_id = '64183f4afd1ac200015aa8a0'
+方太京东自营旗舰店 '5e9d390d68283c002457b52f'
+方太官方旗舰店 '5e9d350bcff5ed002486ded8'
+方太厨卫旗舰店 '5e9d390d68283c002457b52f'
+方太京东旗舰店 '5edfa47c8f591c00163ef7d6'
+方太集成厨电京东自营旗舰店 '6045bb797985c4000958a35c'
+
+
+'5e9d390d68283c002457b52f',
+'5e9d350bcff5ed002486ded8',
+'5e9d390d68283c002457b52f',
+'5edfa47c8f591c00163ef7d6',
+'6045bb797985c4000958a35c'

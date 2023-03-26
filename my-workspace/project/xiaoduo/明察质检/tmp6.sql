@@ -1,5 +1,40 @@
-方太京东自营旗舰店 5e9d390d68283c002457b52f
-方太官方旗舰店 5e9d350bcff5ed002486ded8
-方太厨卫旗舰店 5e9d390d68283c002457b52f
-方太京东旗舰店 5edfa47c8f591c00163ef7d6
-方太集成厨电京东自营旗舰店 6045bb797985c4000958a35c
+-- DROP TABLE test.visits
+CREATE TABLE test.visits
+(
+    StartDate DateTime64,
+    CounterID UInt64,
+    Sign Int32,
+    UserID Int32
+) ENGINE = MergeTree ORDER BY (StartDate, CounterID);
+
+
+-- DROP TABLE test.mv_visits
+CREATE MATERIALIZED VIEW test.mv_visits
+(
+    StartDate DateTime64,
+    CounterID UInt64,
+    Visits AggregateFunction(sum, Int32),
+    Users AggregateFunction(uniq, Int32)
+)
+ENGINE = AggregatingMergeTree() ORDER BY (StartDate, CounterID)
+AS SELECT
+    StartDate,
+    CounterID,
+    sumState(Sign) AS Visits,
+    uniqState(UserID) AS Users
+FROM test.visits
+GROUP BY StartDate, CounterID;
+
+-- INSERT
+INSERT INTO test.visits (StartDate, CounterID, Sign, UserID) VALUES (1667446031, 1, 3, 4);
+INSERT INTO test.visits (StartDate, CounterID, Sign, UserID) VALUES (1667446031, 1, 6, 3);
+
+
+-- SELECT
+SELECT
+    StartDate,
+    sumMerge(Visits) AS Visits,
+    uniqMerge(Users) AS Users
+FROM test.mv_visits
+GROUP BY StartDate
+ORDER BY StartDate;
