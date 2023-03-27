@@ -1,28 +1,52 @@
-├── build                      // 构建相关  
-├── config                     // 配置相关
-├── src                        // 源代码
-│   ├── api                    // 所有请求
-│   ├── assets                 // 主题 字体等静态资源
-│   ├── components             // 全局公用组件
-│   ├── directive              // 全局指令
-│   ├── filtres                // 全局 filter
-│   ├── icons                  // 项目所有 svg icons
-│   ├── lang                   // 国际化 language
-│   ├── mock                   // 项目mock 模拟数据
-│   ├── router                 // 路由
-│   ├── store                  // 全局 store管理
-│   ├── styles                 // 全局样式
-│   ├── utils                  // 全局公用方法
-│   ├── vendor                 // 公用vendor
-│   ├── views                   // view
-│   ├── App.vue                // 入口页面
-│   ├── main.js                // 入口 加载组件 初始化等
-│   └── permission.js          // 权限管理
-├── static                     // 第三方不打包资源
-│   └── Tinymce                // 富文本
-├── .babelrc                   // babel-loader 配置
-├── .eslintrc.js                // eslint 配置项
-├── .gitignore                 // git 忽略项
-├── favicon.ico                // favicon图标
-├── index.html                 // html模板
-└── package.json               // package.json
+project
+└───src
+│   │   app.vue    // 主页面
+│   │   main.js    // 主入口
+|   |   router.js  // 所有路由
+│   │
+│   |____assets    // css、image、svg等资源
+│   |   |____css   // 所有sass资源
+|   |   |    |  reset.scss       // 兼容各浏览器
+|   |   |    |  global.scss      // 全局css
+|   |   |    |  variable.scss    // sass变量和function等
+│   |   |____img   // image图标库
+|   |   |____svg   // svg图标库
+|   |
+|   |____components    // 组件
+│   |   |____common    // common自注册组件
+│   |        |____base // 原子组件(如果是引入第三方，该文件夹可省略)
+│   |        |   ...   // 业务公用组件
+│   |   |____entity    // entity页面组件
+│   |   |____about     // about页面组件
+|   |
+|   |____pages     // UI层(原则：轻page，重component)
+|   |   |____entity
+|   |   |    |  list.vue      // 列表页
+|   |   |    |  create.vue    // 新增页
+|   |   |    |  edit.vue      // 修改页
+|   |   | main.vue
+|   |
+|   |____plugins   // 自己或第三方插件
+|   |   | index.js       // 插件入口文件
+|   |   | directives.js  // 所有Vue指令
+|   |   | filters.js  // 所有Vue过滤
+|   |
+|   |____server    // 接口层
+|   |   | index.js   // 所有接口
+|   |   | http.js  // axios二次封装
+|   |
+|   |____store     // vuex数据
+|   |   | index.js
+|   |
+|   |____utils     // 工具层
+|   |   | config.js// 配置文件，包括常量配置
+|
+└───public         // 公用文件，不经过webpack处理
+│   │   favicon.ico
+│   │   index.html
+│   vue.config.js  // vue-cli3主配置
+│   babel.config.js// babel配置
+│   .eslintrc.js   // eslint配置
+│   .prettierrc.js // perttier配置
+│   package.json   // npm配置
+│   README.md      // 项目说明

@@ -1,0 +1,15 @@
+hr {
+    color: rgb(255, 0, 0);
+}
+
+h1 {
+    color: green;
+}
+
+p {
+    margin-left: 20px;
+}
+
+body {
+    background-image: url("../img/background.jpg");
+}
