@@ -1,0 +1,51 @@
+{
+    "platform": "tb",
+    "order_id": "1858973990500148294",
+    "shop_id": "60ed13641cce66000ff4cf13",
+    "buyer_id": "one_id_51149482",
+    "payment": 135
+.42,
+    "address": "上海新*镇**路*****号***室",
+    "status": "shipped",
+    "created_at": 1680053244,
+    "updated_at": 1680090779,
+    "item_ids": ["687391224222","687386428005"],"tbext":{"buyer_nick":"one_id_51149482","items":[{"item_id":"687391224222","item_name":"外星人维C水vc果汁
+饮品柠檬味饮料低糖低卡 500mL*15瓶整箱","sku_id":"5076995507237","sku_name":"食品口味:西西里柠檬500ml*15瓶","count":1,"refund_stat
+us":"NO_REFUND"},{"item_id":"687386428005","item_name":"元气森林新品冰茶冰红茶维生素C 柠檬茶低糖饮料整箱450ml*15瓶","sku_id":"513
+5821854922","sku_name":"口味:减糖柠檬红茶 450ml*15（减糖）","count":1,"refund_status":"NO_REFUND"}],"receiver":{"name":"周**","zi
+p":"200335"},"original_order":"{\"seller_nick\":\"元气森林旗舰店\",\"buyer_nick\":\"t**\",\"created\":\"2023-03-29 09:27:24\",\"m
+odified\":\"2023-03-29 15:06:05\",\"orders\":{\"order\":[{\"num\":1,\"num_iid\":687391224222,\"cid\":50013192,\"payment\":\"106.90\",\"sku_properties_name\":\"食品口味:西西里柠檬500ml*15瓶\",\"sku_id\":\"5076995507237\",\"outer_sku_id\":\"K1AWXR10691001101\",\"title\":\"外星人维C水vc果汁饮品柠檬味饮料低糖低卡 500mL*15瓶整箱\",\"price\":\"106.90\",\"oid\":\"1858973990501148294\",\"stat
+us\":\"WAIT_SELLER_SEND_GOODS\",\"refund_status\":\"NO_REFUND\",\"total_fee\":\"106.90\"},{\"num\":1,\"num_iid\":687386428005,\"c
+id\":50008917,\"payment\":\"79.90\",\"sku_properties_name\":\"口味:减糖柠檬红茶 450ml*15（减糖）\",\"sku_id\":\"5135821854922\",\
+"outer_sku_id\":\"K1AJDYQ10231000101\",\"title\":\"元气森林新品冰茶冰红茶维生素C 柠檬茶低糖饮料整箱450ml*15瓶\",\"price\":\"150.00\",\"oid\":\"1858973990502148294\",\"shipping_type\":\"express\",\"logistics_company\":\"芝麻开门\",\"invoice_no\":\"611412574984474\",\"consign_time\":\"2023-03-29 15:05:06\",\"status\":\"WAIT_BUYER_CONFIRM_GOODS\",\"refund_status\":\"NO_REFUND\",\"total_f
+ee\":\"79.90\"}]},\"payment\":\"135.42\",\"receiver_address\":\"新*镇**路*****号***室\",\"receiver_city\":\"上海市\",\"receiver_c
+ountry\":\"\",\"receiver_district\":\"长宁区\",\"receiver_mobile\":\"*******3119\",\"receiver_name\":\"周**\",\"receiver_state\":
+\"上海\",\"receiver_town\":\"新泾镇\",\"receiver_zip\":\"200335\",\"tid\":\"1858973990500148294\",\"status\":\"SELLER_CONSIGNED_P
+ART\",\"buyer_alipay_no\":\"******@hotmail.com\",\"buyer_area\":\"\",\"buyer_email\":\"thz***@hotmail.com\",\"buyer_rate\":false,
+\"post_fee\":\"0.00\",\"seller_alipay_no\":\"***ui@yuanqisenlin.com\",\"seller_email\":\"xuhui@yuanqisenlin.com\",\"seller_mobile
+\":\"15301107923\",\"seller_name\":\"元气森林（北京）食品科技集团有限公司\",\"seller_flag\":0,\"sid\":\"1858973990500148294\"}"
+        },
+        "origin_status": "SELLER_CONSIGNED_PART",
+        "status_history": [
+            {
+                "status": "created",
+                "time": 1680053247
+            },
+            {
+                "status": "paid",
+                "time": 16800532
+55
+            },
+            {
+                "status": "part_shipped",
+                "time": 1680073509
+            },
+            {
+                "status": "shipped",
+                "time": 1680090782
+            }
+        ],
+        "original_order_id": "1858973990500148294",
+        "real_buyer_nick": "t**",
+        "buyer_open_uid": "AAE1ZosOAKdpZ1hrVDjfvFXM"
+    }

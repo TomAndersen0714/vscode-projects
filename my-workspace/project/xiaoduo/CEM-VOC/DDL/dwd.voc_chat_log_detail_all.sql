@@ -36,6 +36,7 @@ ENGINE = Distributed('cluster_3s_2r', 'dwd', 'voc_chat_log_detail_local', rand()
 CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary;
 
+
 -- DROP TABLE buffer.dwd_voc_chat_log_detail_buffer ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS buffer.dwd_voc_chat_log_detail_buffer ON CLUSTER cluster_3s_2r
 AS dwd.voc_chat_log_detail_all

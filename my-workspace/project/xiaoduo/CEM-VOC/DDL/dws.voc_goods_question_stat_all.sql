@@ -34,6 +34,7 @@ ENGINE = Distributed('cluster_3s_2r', 'dws', 'voc_goods_question_stat_local', ra
 CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary;
 
+
 -- DROP TABLE buffer.dws_voc_goods_question_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS buffer.dws_voc_goods_question_stat_buffer ON CLUSTER cluster_3s_2r
 AS dws.voc_goods_question_stat_all
