@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS dwd.voc_buyer_latest_order_local ON CLUSTER cluster_3
     `buyer_nick` String,
     `real_buyer_nick` String,
     `order_id` String,
-    `order_timestamps` Array(UInt64),
+    `order_status_timestamps` Array(UInt64),
     `order_statuses` Array(String)
 )
 ENGINE = ReplicatedMergeTree(

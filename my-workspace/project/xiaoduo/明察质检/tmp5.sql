@@ -1,12 +1,47 @@
-方太京东自营旗舰店 '5e9d390d68283c002457b52f'
-方太官方旗舰店 '5e9d350bcff5ed002486ded8'
-方太厨卫旗舰店 '5e9d390d68283c002457b52f'
-方太京东旗舰店 '5edfa47c8f591c00163ef7d6'
-方太集成厨电京东自营旗舰店 '6045bb797985c4000958a35c'
-
-
-'5e9d390d68283c002457b52f',
-'5e9d350bcff5ed002486ded8',
-'5e9d390d68283c002457b52f',
-'5edfa47c8f591c00163ef7d6',
-'6045bb797985c4000958a35c'
+SELECT
+    day,
+    platform,
+    shop_id,
+    buyer_nick,
+    real_buyer_nick,
+    order_id,
+    arraySort(groupArray(timestamp)) AS order_status_timestamps,
+    arraySort((x, y)->y, groupArray(status), groupArray(timestamp)) AS order_statuses
+FROM (
+    SELECT DISTINCT
+        day,
+        '{{platform}}' AS platform,
+        shop_id,
+        buyer_nick,
+        '' AS real_buyer_nick,
+        order_id,
+        toUInt64(time) AS timestamp,
+        status
+    FROM ods.order_event_all
+    WHERE day = {{ds_nodash}}
+    AND shop_id IN {{shop_id}}
+    -- 筛选当天每个买家的最新创建的订单
+    AND order_id IN (
+        SELECT latest_order_id
+        FROM (
+            SELECT
+                buyer_nick,
+                arrayReverseSort(
+                    (x,y)->y, order_ids, times
+                )[1] AS latest_order_id,
+                groupArray(order_id) AS order_ids,
+                groupArray(time) AS times
+            FROM ods.order_event_all
+            WHERE day = {{ds_nodash}}
+            AND shop_id IN {{shop_id}}
+            AND status = 'created'
+            GROUP BY buyer_nick
+        )
+    )
+)
+GROUP BY day,
+    platform,
+    shop_id,
+    buyer_nick,
+    real_buyer_nick,
+    order_id

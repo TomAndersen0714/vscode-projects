@@ -1,16 +1,8 @@
-select bitmapToArray(
-        bitmapAnd (
-            (
-                select groupBitmapMergeState(us)
-                from user_tag_value_string
-                where tag_value in ('90后', '80后')
-                    and tag_code = 'agegroup'
-            ),
-            (
-                select groupBitmapMergeState(us)
-                from user_tag_value_string
-                where tag_value in ('ms', 'sj')
-                    and tag_code = 'favor'
-            )
-        )
-    );
+SELECT
+  group_id,
+  groupArray(time)[1] as time,
+  groupArray(value)
+FROM ( 
+  SELECT * FROM items ORDER BY time desc LIMIT 100 BY group_id
+)
+GROUP BY group_id format Null;

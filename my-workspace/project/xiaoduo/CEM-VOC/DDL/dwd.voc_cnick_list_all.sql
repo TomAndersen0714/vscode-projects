@@ -14,7 +14,7 @@ ENGINE = ReplicatedMergeTree(
     '{replica}'
 )
 PARTITION BY day
-ORDER BY cnick
+ORDER BY (cnick, cnick_id)
 SETTINGS index_granularity = 8192, storage_policy = 'rr';
 
 
