@@ -9,13 +9,18 @@ CREATE TABLE IF NOT EXISTS dwd.voc_chat_log_detail_local ON CLUSTER cluster_3s_2
     `shop_id` String,
     `snick` String,
     `cnick` String,
+    `cnick_id` UInt64,
     `real_buyer_nick` String,
+    `msg_timestamp` UInt64,
+    `msg_id` String,
+    `msg` String,
     `act` String,
+    `send_msg_from` String,
     `question_b_qid` String,
-    `create_time` String,
+    `plat_goods_id` String,
     `recent_order_id` String,
+    `recent_order_status_timestamp` UInt64,
     `recent_order_status` String,
-    `recent_order_timestamp` UInt64,
     `dialog_qa_sum` UInt64
 )
 ENGINE = ReplicatedMergeTree(
@@ -31,13 +36,3 @@ SETTINGS index_granularity = 8192, storage_policy = 'rr';
 CREATE TABLE IF NOT EXISTS dwd.voc_chat_log_detail_all ON CLUSTER cluster_3s_2r
 AS dwd.voc_chat_log_detail_local
 ENGINE = Distributed('cluster_3s_2r', 'dwd', 'voc_chat_log_detail_local', rand());
-
-
-CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary;
-
-
--- DROP TABLE buffer.dwd_voc_chat_log_detail_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS buffer.dwd_voc_chat_log_detail_buffer ON CLUSTER cluster_3s_2r
-AS dwd.voc_chat_log_detail_all
-ENGINE = Buffer('dwd', 'voc_chat_log_detail_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);

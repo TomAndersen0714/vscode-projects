@@ -1,3 +1,4 @@
+INSERT INTO dws.voc_goods_question_stat_all
 SELECT
     day,
     platform,
@@ -17,6 +18,7 @@ FROM (
         platform,
         shop_id,
         snick,
+        cnick_id,
         question_b_qid AS question_id,
         CASE
             WHEN dialog_qa_sum=0 THEN 0
@@ -29,8 +31,8 @@ FROM (
         recent_order_status,
         recent_order_status_timestamp
     FROM dwd.voc_chat_log_detail_all
-    WHERE day = {{ds_nodash}}
-    AND shop_id IN {{VOC_SHOP_IDS}}
+    WHERE day = {ds_nodash}
+    AND shop_id IN {VOC_SHOP_IDS}
 )
 GROUP BY day,
     platform,

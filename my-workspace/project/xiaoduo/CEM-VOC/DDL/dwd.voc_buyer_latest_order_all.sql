@@ -26,13 +26,3 @@ SETTINGS index_granularity = 8192, storage_policy = 'rr';
 CREATE TABLE IF NOT EXISTS dwd.voc_buyer_latest_order_all ON CLUSTER cluster_3s_2r
 AS dwd.voc_buyer_latest_order_local
 ENGINE = Distributed('cluster_3s_2r', 'dwd', 'voc_buyer_latest_order_local', rand());
-
-
-CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary;
-
-
--- DROP TABLE buffer.dwd_voc_buyer_latest_order_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS buffer.dwd_voc_buyer_latest_order_buffer ON CLUSTER cluster_3s_2r
-AS dwd.voc_buyer_latest_order_all
-ENGINE = Buffer('dwd', 'voc_buyer_latest_order_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
