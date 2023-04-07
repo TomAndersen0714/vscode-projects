@@ -1,51 +1,519 @@
 {
-    "platform": "tb",
-    "order_id": "1858973990500148294",
-    "shop_id": "60ed13641cce66000ff4cf13",
-    "buyer_id": "one_id_51149482",
-    "payment": 135
-.42,
-    "address": "上海新*镇**路*****号***室",
-    "status": "shipped",
-    "created_at": 1680053244,
-    "updated_at": 1680090779,
-    "item_ids": ["687391224222","687386428005"],"tbext":{"buyer_nick":"one_id_51149482","items":[{"item_id":"687391224222","item_name":"外星人维C水vc果汁
-饮品柠檬味饮料低糖低卡 500mL*15瓶整箱","sku_id":"5076995507237","sku_name":"食品口味:西西里柠檬500ml*15瓶","count":1,"refund_stat
-us":"NO_REFUND"},{"item_id":"687386428005","item_name":"元气森林新品冰茶冰红茶维生素C 柠檬茶低糖饮料整箱450ml*15瓶","sku_id":"513
-5821854922","sku_name":"口味:减糖柠檬红茶 450ml*15（减糖）","count":1,"refund_status":"NO_REFUND"}],"receiver":{"name":"周**","zi
-p":"200335"},"original_order":"{\"seller_nick\":\"元气森林旗舰店\",\"buyer_nick\":\"t**\",\"created\":\"2023-03-29 09:27:24\",\"m
-odified\":\"2023-03-29 15:06:05\",\"orders\":{\"order\":[{\"num\":1,\"num_iid\":687391224222,\"cid\":50013192,\"payment\":\"106.90\",\"sku_properties_name\":\"食品口味:西西里柠檬500ml*15瓶\",\"sku_id\":\"5076995507237\",\"outer_sku_id\":\"K1AWXR10691001101\",\"title\":\"外星人维C水vc果汁饮品柠檬味饮料低糖低卡 500mL*15瓶整箱\",\"price\":\"106.90\",\"oid\":\"1858973990501148294\",\"stat
-us\":\"WAIT_SELLER_SEND_GOODS\",\"refund_status\":\"NO_REFUND\",\"total_fee\":\"106.90\"},{\"num\":1,\"num_iid\":687386428005,\"c
-id\":50008917,\"payment\":\"79.90\",\"sku_properties_name\":\"口味:减糖柠檬红茶 450ml*15（减糖）\",\"sku_id\":\"5135821854922\",\
-"outer_sku_id\":\"K1AJDYQ10231000101\",\"title\":\"元气森林新品冰茶冰红茶维生素C 柠檬茶低糖饮料整箱450ml*15瓶\",\"price\":\"150.00\",\"oid\":\"1858973990502148294\",\"shipping_type\":\"express\",\"logistics_company\":\"芝麻开门\",\"invoice_no\":\"611412574984474\",\"consign_time\":\"2023-03-29 15:05:06\",\"status\":\"WAIT_BUYER_CONFIRM_GOODS\",\"refund_status\":\"NO_REFUND\",\"total_f
-ee\":\"79.90\"}]},\"payment\":\"135.42\",\"receiver_address\":\"新*镇**路*****号***室\",\"receiver_city\":\"上海市\",\"receiver_c
-ountry\":\"\",\"receiver_district\":\"长宁区\",\"receiver_mobile\":\"*******3119\",\"receiver_name\":\"周**\",\"receiver_state\":
-\"上海\",\"receiver_town\":\"新泾镇\",\"receiver_zip\":\"200335\",\"tid\":\"1858973990500148294\",\"status\":\"SELLER_CONSIGNED_P
-ART\",\"buyer_alipay_no\":\"******@hotmail.com\",\"buyer_area\":\"\",\"buyer_email\":\"thz***@hotmail.com\",\"buyer_rate\":false,
-\"post_fee\":\"0.00\",\"seller_alipay_no\":\"***ui@yuanqisenlin.com\",\"seller_email\":\"xuhui@yuanqisenlin.com\",\"seller_mobile
-\":\"15301107923\",\"seller_name\":\"元气森林（北京）食品科技集团有限公司\",\"seller_flag\":0,\"sid\":\"1858973990500148294\"}"
-        },
-        "origin_status": "SELLER_CONSIGNED_PART",
-        "status_history": [
+    "data": {
+        "submitTime": "2023/04/07 16:41",
+        "isResit": false,
+        "userTotalScore": 40.0,
+        "examStatus": "20",
+        "viewAnswerRuleV2": "10",
+        "viewAnswerRuleDetail": "10,20,40,50,60",
+        "isDisplayName": false,
+        "papers": [
             {
-                "status": "created",
-                "time": 1680053247
-            },
-            {
-                "status": "paid",
-                "time": 16800532
-55
-            },
-            {
-                "status": "part_shipped",
-                "time": 1680073509
-            },
-            {
-                "status": "shipped",
-                "time": 1680090782
-            }
-        ],
-        "original_order_id": "1858973990500148294",
-        "real_buyer_nick": "t**",
-        "buyer_open_uid": "AAE1ZosOAKdpZ1hrVDjfvFXM"
-    }
+                "title": "【4.3-4.9考试】对于大型语言模型的不同期待所衍生的两种使用方式",
+                "paperID": "04ab10b7-62ea-4aad-a6f9-7c42f59dd3c7",
+                "questions": [
+                    {
+                        "analysis": "在视频中，李宏毅提到了对于大型语言模型进行微调的情况，因为微调任务的特殊性，所以针对这种方式对模型的要求是准确率（即模型在少许的数据上达到较高的准确率）。",
+                        "resultStatus": "10",
+                        "rightAnswer": "a4c967b4-48e8-4e3f-aa12-d2d174fd22cf",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "a4c967b4-48e8-4e3f-aa12-d2d174fd22cf"
+                        ],
+                        "userAnswerIdentity": "D",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "d7d8b203-87c8-4d5c-a3b9-831e9b6af927",
+                        "title": "对于大型语言模型的第一种使用方式，性能指标主要关注",
+                        "order": 1,
+                        "picture": null,
+                        "questionType": "10",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "30",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "6464346e-ad6c-4bef-beab-91fed03ecaa9",
+                                "identity": "A",
+                                "title": "单样本耗时",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "98c02819-d2e3-4581-9c67-6f33495b02f5",
+                                "identity": "B",
+                                "title": "总耗时",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "5403a0af-a092-4cfc-a353-2c1e11b0a53b",
+                                "identity": "C",
+                                "title": "计算量",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "a4c967b4-48e8-4e3f-aa12-d2d174fd22cf",
+                                "identity": "D",
+                                "title": "模型准确率",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了基于大规模训练的语言模型在自然语言处理任务中的广泛应用，这包括了语言生成、摘要生成、句子相似度计算、机器翻译和关键词提取等等任务。",
+                        "resultStatus": "20",
+                        "rightAnswer": "c86cf31b-cb3a-4495-8403-ad9f0f4436a8,ea6c9294-40a5-4b1c-a338-6e0e8614a4e7,ee76a50d-cc33-4331-bc3f-f664c71d030a,e2e2e61c-6d6f-4789-ba75-8d86381a36e2",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "c86cf31b-cb3a-4495-8403-ad9f0f4436a8",
+                            "ee76a50d-cc33-4331-bc3f-f664c71d030a",
+                            "e2e2e61c-6d6f-4789-ba75-8d86381a36e2"
+                        ],
+                        "userAnswerIdentity": "A,C,D",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "245cb8a5-3f63-43ef-9995-09f78c0b9c47",
+                        "title": "对于基于大型语言模型的第二种使用方式，我们经常需要处理的任务包括：",
+                        "order": 2,
+                        "picture": null,
+                        "questionType": "20",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "10",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "c86cf31b-cb3a-4495-8403-ad9f0f4436a8",
+                                "identity": "A",
+                                "title": "摘要生成",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "ea6c9294-40a5-4b1c-a338-6e0e8614a4e7",
+                                "identity": "B",
+                                "title": "句子相似度计算",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "ee76a50d-cc33-4331-bc3f-f664c71d030a",
+                                "identity": "C",
+                                "title": "机器翻译",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "e2e2e61c-6d6f-4789-ba75-8d86381a36e2",
+                                "identity": "D",
+                                "title": "关键词提取",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了大型语言模型存在过拟合问题，因为过大的模型容易在训练数据上“记忆”而不具备很好的泛化能力，因此会导致模型在测试数据上表现不佳。",
+                        "resultStatus": "10",
+                        "rightAnswer": "e98106be-5a6c-4147-8be8-0840dac2727e",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "e98106be-5a6c-4147-8be8-0840dac2727e"
+                        ],
+                        "userAnswerIdentity": "B",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "2c4f9562-8674-4818-a5be-fcf06e0ea428",
+                        "title": "大型语言模型在过拟合问题上的表现是？",
+                        "order": 3,
+                        "picture": null,
+                        "questionType": "10",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "20",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "e7a31d08-6353-4111-b8b9-f3735bf096b7",
+                                "identity": "A",
+                                "title": "误差较小",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "e98106be-5a6c-4147-8be8-0840dac2727e",
+                                "identity": "B",
+                                "title": "模型泛化能力较差",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "bb119663-ed6a-4384-b5bd-6893fa8ea7e8",
+                                "identity": "C",
+                                "title": "短期效果好",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "c136006a-d42d-4de5-914e-917b53a57285",
+                                "identity": "D",
+                                "title": "长期效果好",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了大型语言模型在工程应用中的两种主要使用方式，第一种便是针对特定任务进行微调，更加注重模型的准确率和效率。",
+                        "resultStatus": "20",
+                        "rightAnswer": "51a1ff87-177e-473f-86f5-d53618f985d3",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "b39686d9-a687-42c2-bd82-298270f85ffb"
+                        ],
+                        "userAnswerIdentity": "C",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "29aa1581-a0a3-4fe1-b033-e67ebc3f02e0",
+                        "title": "对于大型语言模型的第一种使用方式，李宏毅认为其更加注重模型的什么？",
+                        "order": 4,
+                        "picture": null,
+                        "questionType": "10",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "10",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "7b267ad3-ec95-42dc-8290-efb463c5631f",
+                                "identity": "A",
+                                "title": "规模",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "51a1ff87-177e-473f-86f5-d53618f985d3",
+                                "identity": "B",
+                                "title": "效率",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "b39686d9-a687-42c2-bd82-298270f85ffb",
+                                "identity": "C",
+                                "title": "短期效果",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "23e75ce3-eb47-4d37-b289-afa8018751b8",
+                                "identity": "D",
+                                "title": "长期效果",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了大型语言模型的发展对于自然语言处理的领域将会具有深远的影响，比如在自然语言生成、机器翻译、对话系统等方面都有显著的提高。",
+                        "resultStatus": "20",
+                        "rightAnswer": "0a11cb4b-f22c-44a3-924a-14171acc4d51,8e211858-a2d5-4d88-b25e-a9d930e4dde2,ffe2794c-b569-454b-bca4-43904ed851d8",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "0a11cb4b-f22c-44a3-924a-14171acc4d51",
+                            "8e211858-a2d5-4d88-b25e-a9d930e4dde2"
+                        ],
+                        "userAnswerIdentity": "A,B",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "3eaaba3e-b966-4cf7-9b79-efe9231a1ad4",
+                        "title": "大型语言模型的发展对语言处理领域的深远影响包括：",
+                        "order": 5,
+                        "picture": null,
+                        "questionType": "20",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "20",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "0a11cb4b-f22c-44a3-924a-14171acc4d51",
+                                "identity": "A",
+                                "title": "显著提高自然语言生成质量",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "8e211858-a2d5-4d88-b25e-a9d930e4dde2",
+                                "identity": "B",
+                                "title": "显著提高机器翻译质量",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "ffe2794c-b569-454b-bca4-43904ed851d8",
+                                "identity": "C",
+                                "title": "显著提高人类对话质量",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "9a1bb66b-2c66-4a43-95f0-6bee961df6df",
+                                "identity": "D",
+                                "title": "显著提高关系抽取质量",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了在对于大型语言模型进行微调的过程中，可以通过多种方式改善模型的性能，由于微调任务是特定的任务，因此可以通过选择较小的batch size、训练更多的epoch、构建更大的模型等等方法来改善模型性能。",
+                        "resultStatus": "20",
+                        "rightAnswer": "22b9fce1-01b1-431e-8d56-525c73d91b43,f2680f49-ffad-4986-97dc-5163297348f2,d7fa415d-286e-4390-8cd7-fa7165a2ad14",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "22b9fce1-01b1-431e-8d56-525c73d91b43",
+                            "f2680f49-ffad-4986-97dc-5163297348f2"
+                        ],
+                        "userAnswerIdentity": "A,C",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "5437a292-62f8-45cd-b30c-3c11a4b24f55",
+                        "title": "在进行基于大型语言模型的第一种使用方式时，我们可以通过以下方法改善模型的性能：",
+                        "order": 6,
+                        "picture": null,
+                        "questionType": "20",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "20",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "22b9fce1-01b1-431e-8d56-525c73d91b43",
+                                "identity": "A",
+                                "title": "使用更小的batch_size",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "bb350e12-ff7e-4ee4-b620-b5407ada0dff",
+                                "identity": "B",
+                                "title": "使用更大的batch_size",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "f2680f49-ffad-4986-97dc-5163297348f2",
+                                "identity": "C",
+                                "title": "训练更多的epoch",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "d7fa415d-286e-4390-8cd7-fa7165a2ad14",
+                                "identity": "D",
+                                "title": "使用更大的模型",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了大型语言模型在工程应用中的两种主要应用方式，第二种是基于大规模训练的语言模型进行各种自然语言处理任务，而这些任务都与命名实体识别、情感分析、词法分析、句法分析等这些底层技术密切相关。",
+                        "resultStatus": "20",
+                        "rightAnswer": "71fb81fb-7303-4ed8-8778-5c47418aac87",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "132bc028-9e3b-4caa-ba91-2a5d5a62a351"
+                        ],
+                        "userAnswerIdentity": "C",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "89fc1bbe-5cd9-4901-a96d-87143f7f5c40",
+                        "title": "使用大型语言模型的第二种方式需要用到的技术是",
+                        "order": 7,
+                        "picture": null,
+                        "questionType": "10",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "30",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "5b2fbad3-4c32-4d1f-a2a8-df309cc806c0",
+                                "identity": "A",
+                                "title": "语音识别",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "bc156e21-26a5-45f5-89ec-4ab244f96d0e",
+                                "identity": "B",
+                                "title": "关系抽取",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "132bc028-9e3b-4caa-ba91-2a5d5a62a351",
+                                "identity": "C",
+                                "title": "实体识别",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            },
+                            {
+                                "questionItemID": "71fb81fb-7303-4ed8-8778-5c47418aac87",
+                                "identity": "D",
+                                "title": "命名实体识别",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了基于大规模语言模型进行自然语言处理任务的方法，这个方法往往会重点考虑多样性、内容重复率、文本流畅度和文本连贯性等四个方面的因素。",
+                        "resultStatus": "20",
+                        "rightAnswer": "b6f2762e-0aa9-4b12-8fd4-e1435899a1d7,4be6ec76-39a4-4d1a-b337-8ebf6c11483c,fb479208-d7d5-474f-b15e-b4f1e1b18dbe,69e0a020-fc53-4435-9b27-4d971175df94",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "b6f2762e-0aa9-4b12-8fd4-e1435899a1d7",
+                            "fb479208-d7d5-474f-b15e-b4f1e1b18dbe",
+                            "69e0a020-fc53-4435-9b27-4d971175df94"
+                        ],
+                        "userAnswerIdentity": "A,C,D",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "3e7104b3-d2a9-4675-a41b-d4dcc36c0c8e",
+                        "title": "李宏毅提到，对于基于大型语言模型的第二种使用方式，我们往往会考虑的因素包括：",
+                        "order": 8,
+                        "picture": null,
+                        "questionType": "20",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "10",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "b6f2762e-0aa9-4b12-8fd4-e1435899a1d7",
+                                "identity": "A",
+                                "title": "多样性",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "4be6ec76-39a4-4d1a-b337-8ebf6c11483c",
+                                "identity": "B",
+                                "title": "内容重复率",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "fb479208-d7d5-474f-b15e-b4f1e1b18dbe",
+                                "identity": "C",
+                                "title": "文本流畅度",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "69e0a020-fc53-4435-9b27-4d971175df94",
+                                "identity": "D",
+                                "title": "文本连贯性",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，对于大型语言模型进行微调的方法，因此其QA或者异常检测等任务对于模型的准确率提出了极高的要求，因此需要注重模型的一些论文指标，如精度效率、规模与效率的平衡以及高速整型计算等等，的确要关注A、B、C三个问题。",
+                        "resultStatus": "20",
+                        "rightAnswer": "b8e58562-a5c1-434b-b024-b2990f0ca23e,2049fb4c-e251-4198-b160-05e77851ce50,e9906ea2-6937-4e79-b44a-d867dbbb2117",
+                        "isPendingReview": false,
+                        "userAnswers": [
+                            "d91804a0-3dc8-424e-9de4-c9e568879640"
+                        ],
+                        "userAnswerIdentity": "D",
+                        "userAnswerPictures": [],
+                        "userAnswerAttachments": [],
+                        "questionID": "abb25220-934c-419d-bd9d-ac548b7a7524",
+                        "title": "在进行基于大型语言模型的第一种使用方式时，我们往往要关注的问题包括：",
+                        "order": 9,
+                        "picture": null,
+                        "questionType": "20",
+                        "questionScore": 10.0,
+                        "questionDifficulty": "20",
+                        "scoreWay": "10",
+                        "noOrder": false,
+                        "questionItems": [
+                            {
+                                "questionItemID": "b8e58562-a5c1-434b-b024-b2990f0ca23e",
+                                "identity": "A",
+                                "title": "如何提高模型的单样本速度",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "2049fb4c-e251-4198-b160-05e77851ce50",
+                                "identity": "B",
+                                "title": "如何减少规模",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "e9906ea2-6937-4e79-b44a-d867dbbb2117",
+                                "identity": "C",
+                                "title": "如何提升效率",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": true
+                            },
+                            {
+                                "questionItemID": "d91804a0-3dc8-424e-9de4-c9e568879640",
+                                "identity": "D",
+                                "title": "如何提高长期效果",
+                                "picture": null,
+                                "rightAnswerList": null,
+                                "isCorrect": false
+                            }
+                        ]
+                    },
+                    {
+                        "analysis": "在视频中，李宏毅提到了大型语言模型在工程应用中的两种主要使用方式，第二种是基于大规模训练的语言模型进行各种自然语言处理任务，比如机器翻译、摘要生成、文本生成等等，这些任务的核心是对自然语言的情境理解。",
+                        "resultStatus": "20",
+              "rightAnswer
