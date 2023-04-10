@@ -1,14 +1,24 @@
-6045c92df9fbadde8fcca500,
-604f215e018abafa9fb24037,
-604f2158018abafa9fb23fb4,
-60785d962648234a2b7bc9d8,
-6096044ed112d95785d7f484,
-60cc1774d1ccaf803606453e,
-60cc1815d1ccaf8036064686,
-60cc181fd1ccaf8036064766,
-60cc1856d1ccaf8036064a50,
-60dd312ed1ccaf80360715f2,
-60fa68de3b9fbd5d3c0687fb,
-6123144ed2b123bda1a3711a,
-61a094ed04afd495d8072f4e,
-61d3c10104afd495d808436b
+select t1.buyer_nick,
+    created_day
+from (
+        select buyer_nick,
+            created_day
+        from ft_dwd.new_ask_order_cov_buyer_detail_all
+        where cycle = 2
+            and shop_id = '5cac112e98ef4100118a9c9f' -- and act='paid'
+            -- and created_day<=20230401
+            and update_time <= '2023-03-21' -- and buyer_nick like '%one%'
+            and paid_time <> ''
+    ) as t1
+    left join (
+        select distinct buyer_nick
+        from ft_dwd.new_ask_order_cov_buyer_snick_detail_all
+        where cycle = 2
+            and shop_id = '5cac112e98ef4100118a9c9f'
+            and act = 'paid' -- and snick='方太官方旗舰店:七七'
+            and buyer_nick like '%one%'
+            and created_day <= 20230319
+    ) as t2 on t1.buyer_nick = t2.buyer_nick
+where t2.buyer_nick = ''
+order by created_day desc
+limit 1000

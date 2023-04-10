@@ -41,9 +41,10 @@ project
 |   |____utils     // 工具层
 |   |   | config.js// 配置文件，包括常量配置
 |
-└───public         // 公用文件，不经过webpack处理
+└───public         // 公用文件，不经过webpack处理, 也可以是static
 │   │   favicon.ico
 │   │   index.html
+│   │   test.js
 │   vue.config.js  // vue-cli3主配置
 │   babel.config.js// babel配置
 │   .eslintrc.js   // eslint配置
