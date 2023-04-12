@@ -19,11 +19,11 @@ BUG reason:
     1. 询单明细的ETL算法存在逻辑问题, 不符合需求文档, 下单在会话之前的询单记录在算法中被剔除
 
 Test Case:
-    1. day=20230318, cnick='one_id_836119253'
-    2. day=20230319, cnick='one_id_3186495212'
-    3. day=20230319, cnick='one_id_1700966417'
-    4. day=20230319, cnick='one_id_888730110'
-    5. day=20230318, cnick='one_id_58700675'
+    1. day=20230318, shop_id = '5cac112e98ef4100118a9c9f', cnick='one_id_836119253'
+    2. day=20230319, shop_id = '5cac112e98ef4100118a9c9f', cnick='one_id_3186495212'
+    3. day=20230319, shop_id = '5cac112e98ef4100118a9c9f', cnick='one_id_1700966417'
+    4. day=20230319, shop_id = '5cac112e98ef4100118a9c9f', cnick='one_id_888730110'
+    5. day=20230318, shop_id = '5cac112e98ef4100118a9c9f', cnick='one_id_58700675'
 
 排查看板:
     -- 近7日订单记录
