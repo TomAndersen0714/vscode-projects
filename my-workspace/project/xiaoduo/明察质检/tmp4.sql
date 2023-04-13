@@ -209,7 +209,7 @@ ft_dwd_ask_order_cov_detail_all_1 AS (
                     -- 询单周期内创建的订单
                     SELECT order_id,
                               -- 筛选创建状态
-                              arrayFilter(x-> x!= '',groupArray(create_time)) AS flag
+                              arrayFilter(x-> x!= '',groupArray(paid_time)) AS flag
                     FROM tmp_ask_order_cov_detail_all
                     WHERE `day` BETWEEN toYYYYMMDD(subtractDays(toDate('{{ds}}'),{{cycle}} - 1)) AND toYYYYMMDD(toDate('{{ds}}'))
                          AND shop_id = '{{shop_id}}'

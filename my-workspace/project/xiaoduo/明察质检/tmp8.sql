@@ -91,8 +91,8 @@ GLOBAL LEFT JOIN (
                 AS snick_today_level_2_finished_cnt, -- 子账号当天中级已处理告警量
             sum(`level` = 3 AND is_finished = 'True') 
                 AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量
-        FROM xqc_ods.alert_all
-        WHERE day = today
+        FROM xqc_ods.alert_all FINAL
+        PREWHERE day = today
         -- 组织架构包含店铺
         AND shop_id GLOBAL IN (
             SELECT department_id AS shop_id
