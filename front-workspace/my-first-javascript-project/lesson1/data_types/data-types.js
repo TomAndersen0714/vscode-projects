@@ -1,38 +1,83 @@
-// NOTE= JavaScript is dynamic type language, which has six data types.
+/*
+NOTE= JavaScript is dynamic type language, which has 8 data types.
+1. String
+2. Number
+3. Bigint
+4. Boolean
+5. Undefined
+6. Null
+7. Object
+8. Symbol
+*/
 
-// Numbers
-let length = 15;
-let weight = 7.1;
-console.log("length = " + length);
-console.log("weight = " + weight);
 
-// Strings
+// String
 let color = "yellow"; // single quotes equals to double quotes
 let lastName = 'Andersen';
 let title = 'Hello "Jim"!';
+console.log("typeof color = " + typeof color);
 console.log("color = " + color);
+console.log("typeof lastName = " + typeof lastName);
 console.log("lastName = " + lastName);
+console.log("typeof title = " + typeof title);
 console.log("title = " + title);
+console.log();
 
-// Booleans
+// Number
+let length = 15;
+let weight = 7.1;
+console.log("typeof length = " + typeof length);
+console.log("length = " + length);
+console.log("typeof weight = " + typeof weight);
+console.log("weight = " + weight);
+console.log();
+
+// Bigint
+let num = BigInt("123456789012345678901234567890");
+console.log("typeof num = " + typeof num);
+console.log("num = " + num);
+console.log();
+
+// Boolean
 let x = true;
 let y = !x;
+console.log("typeof x = " + typeof x);
 console.log("x = " + x);
+console.log("typeof y = " + typeof y);
 console.log("y = " + y);
-
+console.log();
 
 // Object
 const person = {firstName: "Tom", lastName: "Andersen"};
+console.log("typeof person = " + typeof person);
 console.log("person = " + person);
+console.log("person.firstName = " + person.firstName);
+console.log("person.lastName = " + person.lastName);
+console.log();
 
-// Array Object
-const cars = ["Saab", "Volvo", "BMW"];
-console.log("cars = " + cars);
+// Undefined
+let a;
+console.log("typeof a = " + typeof a);
+console.log("a = " + a);
+a = undefined;
+console.log("typeof a = " + typeof a);
+console.log("a = " + a);
+console.log();
 
-// Date Object
-const date = new Date("2023-04-14");
-console.log("date = " + date);
+// Null
+let b = null;
+console.log("typeof b = " + typeof b);
+console.log("b = " + b);
+console.log();
+
+// Symbol
+let s = Symbol();
+console.log("typeof s = " + typeof s);
+console.log();
 
 // NOTE= data type automatically convert
 let v = 16 + "Hello";
+console.log("typeof v = " + typeof v);
 console.log("v = " + v);
+
+

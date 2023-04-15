@@ -50,9 +50,9 @@
 # .idea/artifacts
 # .idea/compiler.xml
 # .idea/jarRepositories.xml
-# .idea/modules.xml
+# .idea/module.xml
 # .idea/*.iml
-# .idea/modules
+# .idea/module
 # *.iml
 # *.ipr
 

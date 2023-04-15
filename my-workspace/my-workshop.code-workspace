@@ -16,7 +16,11 @@
             "any": "cpp",
             "string_view": "cpp",
             "regex": "cpp"
-        }
+        },
+        "cSpell.words": [
+            "clickhouse",
+            "cnick"
+        ]
     },
     "launch": {
         "version": "0.2.0",
