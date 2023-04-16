@@ -24,6 +24,7 @@ console.log("title = " + title);
 console.log();
 
 // Number
+// NOTE: All number is IEEE754 64-bit float
 let length = 15;
 let weight = 7.1;
 console.log("typeof length = " + typeof length);
