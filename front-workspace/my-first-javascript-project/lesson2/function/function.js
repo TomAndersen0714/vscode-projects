@@ -1,8 +1,3 @@
-// Using CommonJS style to import function from other module
-const utils = require("../../utils/utils");
-utils.printTypeAndValue("Tom Andersen");
-
-
 // NOTE: JavaScript function和var声明的变量一样, 会发生提升(Hoisting), 即function的声明
 //  不论在哪里都会被提取到对应作用域的顶部, 但还是建议声明在调用之前.
 console.log("addFunc(1,2) = " + (addFunc(1, 2)));
