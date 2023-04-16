@@ -1,3 +1,5 @@
+// https://www.w3schools.com/js/js_objects.asp
+
 // Object
 const person = {firstName: "Tom", lastName: "Andersen"};
 console.log("typeof person = " + typeof person);

@@ -1,4 +1,4 @@
-import {printTypeAndValue} from '../../modules/utils.mjs';
+import {printTypeAndValue} from '../../utils/utils.mjs';
 
 
 printTypeAndValue("Tom Andersen");
