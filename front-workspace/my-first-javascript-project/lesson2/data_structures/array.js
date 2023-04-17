@@ -10,3 +10,12 @@ console.log();
 // access Array
 console.log("cars.at(0) = " + cars.at(0));
 console.log("cars[0] = " + cars[0]);
+console.log();
+
+// NOTE: Array Method
+// forEach()
+function handler(p) {
+    console.log("p = " + (p));
+}
+
+cars.forEach(handler);

@@ -1,13 +1,13 @@
 /*
-NOTE= JavaScript is dynamic type language, which has 8 data types.
-1. String
-2. Number
-3. Bigint
-4. Boolean
-5. Undefined
-6. Null
-7. Object
-8. Symbol
+NOTE: JavaScript is dynamic type language, which has 8 data types.
+1. string
+2. number
+3. bigint
+4. boolean
+5. undefined
+6. null
+7. object
+8. symbol
 */
 
 
@@ -76,7 +76,7 @@ let s = Symbol();
 console.log("typeof s = " + typeof s);
 console.log();
 
-// NOTE= data type automatically convert
+// NOTE: data type automatically convert
 let v = 16 + "Hello";
 console.log("typeof v = " + typeof v);
 console.log("v = " + v);
