@@ -56,6 +56,9 @@ console.log("person.firstName = " + person.firstName);
 console.log("person.lastName = " + person.lastName);
 console.log();
 
+let obj = {count: 1};
+console.log("obj.count = " + (obj.count));
+
 // Undefined
 let a;
 console.log("typeof a = " + typeof a);

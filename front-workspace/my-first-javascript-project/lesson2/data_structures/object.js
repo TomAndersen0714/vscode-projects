@@ -9,3 +9,8 @@ console.log();
 // access member of Object
 console.log("person.firstName = " + person.firstName);
 console.log("person.lastName = " + person.lastName);
+
+// for-in statement
+for (let p in person) {
+    console.log("p = " + (p));
+}

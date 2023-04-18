@@ -28,3 +28,11 @@ ADD COLUMN IF NOT EXISTS `qa_cnt` Int64 AFTER `m_session_send_cnt`,
 ADD COLUMN IF NOT EXISTS `qa_reply_intervals_secs` Array(Int64) AFTER `qa_cnt`,
 ADD COLUMN IF NOT EXISTS `m_qa_cnt` Int64 AFTER `qa_reply_intervals_secs`,
 ADD COLUMN IF NOT EXISTS `m_qa_reply_intervals_secs` Array(Int64) AFTER `m_qa_cnt`;
+
+
+-- ft_dwd.order_detail_all
+ALTER TABLE ft_dwd.order_detail_local ON CLUSTER cluster_3s_2r
+RENAME COLUMN original_sratus TO original_status
+
+ALTER TABLE ft_dwd.order_detail_all ON CLUSTER cluster_3s_2r
+RENAME COLUMN original_sratus TO original_status
