@@ -1,2 +1,4 @@
 #!/bin/bash
-python3 sxx_hxc_etl_tb_script.py 20220622 20220704
+rm -rf test1 test2
+mkdir -p test1 test2/test1
+touch test1/txt1 test2/test1/txt2-1
