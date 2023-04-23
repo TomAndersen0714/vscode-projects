@@ -1,0 +1,44 @@
+<!-- 必须在首行进行文档类型定义, 用于给浏览器声明当前文档的解析方式, 当前声明方式为html5及以后版本的语法 -->
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+
+    <!-- 头部信息结构元素 -->
+
+    <head>
+        <!-- 必须定义文档字符编码 -->
+        <meta charset="utf-8">
+        <!-- 设置文档标题 -->
+        <title>My first html document</title>
+    </head>
+
+
+    <!-- 主体内容结构元素 -->
+    <body>
+        <div>
+            <h1>这是一个标题h1</h1>
+            <h2>这是一个标题h2</h2>
+            <p>这是一个段落。</p>
+            <p>这是另外一个段落。</p>
+
+
+            <h3>这是一个标题</h3>
+            <a title="提示文本:这是一个链接" href="https://www.runoob.com">这是一个链接</a>
+
+            <!-- 这是换行 -->
+            <br>
+            <!-- 这是一张插入的图片 -->
+            <img title="提示文本:这是一张插入的图片" decoding="async" src="./public/images/loading.gif"
+                 width="300" height="60" alt="Not found"/>
+
+            <!-- 这是一段JavaScript代码, 当浏览器打开页面时则会运行 -->
+            <script>
+                // 调用 document 对象的 write 方法
+                document.write("<h1>Hello, World</h1>");
+            </script>
+        </div>
+    </body>
+
+</html>

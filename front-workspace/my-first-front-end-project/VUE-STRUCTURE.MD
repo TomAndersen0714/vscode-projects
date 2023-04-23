@@ -44,7 +44,7 @@ project
 └───public         // 公用文件，不经过webpack处理, 也可以是static
 │   │   favicon.ico
 │   │   index.html
-│   │   test.js
+│   │   hello-world.js
 │   vue.config.js  // vue-cli3主配置
 │   babel.config.js// babel配置
 │   .eslintrc.js   // eslint配置
