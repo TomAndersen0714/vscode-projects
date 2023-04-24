@@ -1,0 +1,130 @@
+<!-- saved from url=(0131)file:///E:/WorkSpace/projects/VSCodeProjects/my-workspace/project/xiaoduo/%E6%98%8E%E5%AF%9F%E8%B4%A8%E6%A3%80/SQL%20Formatter.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <title>SQL Formatter</title>
+
+        <meta http-equiv="content-language" content="en" />
+
+        <meta name="description" content="SQL Formatter" />
+
+        <link
+            href="./SQL Formatter_files/style.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+
+        <script
+            type="text/javascript"
+            async=""
+            src="http://www.google-analytics.com/ga.js"
+        ></script>
+        <script
+            type="text/javascript"
+            async=""
+            src="http://www.google-analytics.com/ga.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="./SQL Formatter_files/formatter.js"
+        ></script>
+
+        <script
+            type="text/javascript"
+            src="./SQL Formatter_files/jush.js"
+        ></script>
+
+        <script type="text/javascript">
+            jush.style("jush.css");
+        </script>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="file:///E:/WorkSpace/projects/VSCodeProjects/my-workspace/project/xiaoduo/%E6%98%8E%E5%AF%9F%E8%B4%A8%E6%A3%80/jush.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="./SQL Formatter_files/jush.css"
+        />
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+
+            _gaq.push(["_setAccount", "UA-527883-20"]);
+
+            _gaq.push(["_trackPageview"]);
+
+            (function () {
+                var ga = document.createElement("script");
+                ga.type = "text/javascript";
+                ga.async = true;
+
+                ga.src =
+                    ("https:" == document.location.protocol
+                        ? "https://ssl"
+                        : "http://www") + ".google-analytics.com/ga.js";
+
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <div id="toppart">
+                <h1><a href="http://sql-formatter.com/">SQL Formatter</a></h1>
+
+                <p>
+                    Paste your messy SQL code on the left, get human readable
+                    code on the right. Double click the clean SQL to select and
+                    then copy/paste to your favorite editor. Your SQL code will
+                    be fully indented, keyword-highlighted, carriage-return-ed,
+                    and <i>should</i> still execute :-).
+                </p>
+            </div>
+            <!-- toppart end -->
+
+            <div id="bottompart">
+                <div id="leftpart">
+                    <h2>Messy SQL goes here</h2>
+
+                    <textarea
+                        rows="10"
+                        cols="20"
+                        id="sql_code"
+                        onpaste="fmtPaste();"
+                        onkeyup="fmtKeyup();"
+                    ></textarea
+                    ><br />
+
+                    <!--<button type="button" onclick="javascript:sqlFormatter();">Format</button><br/>-->
+                </div>
+                <!-- leftpart #end -->
+
+                <div id="rightpart">
+                    <h2>Clean SQL comes out here</h2>
+
+                    <pre><code id="formatted_code" class="jush-sql" ondblclick="fnSelect(&#39;formatted_code&#39;); return true;"><span class="jush"></span></code></pre>
+                    <br />
+                </div>
+            </div>
+            <!-- bottompart end -->
+
+            <div id="footer">
+                <p class="copy">© 2012 SQL-formatter.com</p>
+
+                <p class="copy">
+                    This service is provided as is, without warranty of any
+                    kind. Use of this service is entirely at your own risk.<br />We
+                    cannot take responsibility for any direct or indirect
+                    damages resulting from the use of this service.
+                </p>
+            </div>
+            <!-- footer end -->
+        </div>
+        <!-- wrapper #end -->
+    </body>
+</html>

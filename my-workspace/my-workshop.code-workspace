@@ -20,6 +20,9 @@
         "cSpell.words": [
             "clickhouse",
             "cnick"
+        ],
+        "sqlfluff.excludeRules": [
+            "PRS"
         ]
     },
     "launch": {

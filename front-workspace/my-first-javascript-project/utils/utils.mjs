@@ -4,3 +4,11 @@ function printTypeAndValue(value) {
 }
 
 export {printTypeAndValue};
+
+
+let a = 1;
+export default a;
+
+// A module cannot have multiple default exports
+// let b = 1;
+// export default b;

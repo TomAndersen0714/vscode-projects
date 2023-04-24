@@ -1,0 +1,557 @@
+==== sqlfluff ====
+sqlfluff:                2.0.7 python:                 3.8.10
+implementation:        cpython verbosity:                   1
+dialect:            clickhouse templater:               jinja
+rules:                                all
+==== readout ====
+
+== [tmp1.sql] FAIL
+L:   3 | P:   1 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:   3 | P:   7 | LT02 | Expected line break and indent of 4 spaces before 'day'.
+                       | [layout.indent]
+L:   4 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:   5 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:   6 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:   7 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:   8 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:   8 | P:  31 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:   8 | P:  43 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:   9 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  10 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  11 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  11 | P:  33 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  11 | P:  45 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  12 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  12 | P:  31 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  12 | P:  43 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  13 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  13 | P:  32 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  13 | P:  44 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  14 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  14 | P:  30 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  14 | P:  42 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  15 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  15 | P:  30 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  15 | P:  42 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  16 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  16 | P:  38 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  16 | P:  50 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  16 | P:  76 | LT01 | Unexpected whitespace before comma ','. [layout.spacing]
+L:  17 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  17 | P:  38 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  17 | P:  50 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  18 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  19 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  20 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  21 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  21 | P:  33 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  21 | P:  44 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L:  21 | P: 101 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  21 | P: 114 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  21 | P: 118 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  22 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  23 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  23 | P:  33 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  23 | P:  41 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L:  23 | P:  98 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  23 | P: 108 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  23 | P: 112 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  24 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  25 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  25 | P:  33 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  25 | P:  41 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L:  25 | P:  94 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  25 | P: 130 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  25 | P: 141 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L:  25 | P: 194 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  25 | P: 206 | LT01 | Expected single whitespace between comma ',' and numeric
+                       | literal. [layout.spacing]
+L:  25 | P: 210 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  26 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  27 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  27 | P:  33 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  27 | P:  41 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L:  27 | P:  94 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  27 | P: 130 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  27 | P: 141 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L:  27 | P: 194 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  27 | P: 206 | LT01 | Expected single whitespace between comma ',' and numeric
+                       | literal. [layout.spacing]
+L:  27 | P: 210 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  28 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  28 | P:   7 | AL03 | Column expression without alias. Use explicit `AS`
+                       | clause. [aliasing.expression]
+L:  29 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  29 | P:   7 | AL03 | Column expression without alias. Use explicit `AS`
+                       | clause. [aliasing.expression]
+L:  30 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  30 | P:   7 | AL03 | Column expression without alias. Use explicit `AS`
+                       | clause. [aliasing.expression]
+L:  31 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  31 | P:   7 | AL03 | Column expression without alias. Use explicit `AS`
+                       | clause. [aliasing.expression]
+L:  32 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  32 | P:   9 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  33 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  33 | P:  26 | LT01 | Expected single whitespace between comma ',' and numeric
+                       | literal. [layout.spacing]
+L:  33 | P:  28 | LT01 | Expected single whitespace between comma ',' and numeric
+                       | literal. [layout.spacing]
+L:  33 | P:  31 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  34 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  34 | P:   8 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{cycle}} [jinja.padding]
+L:  34 | P:  18 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  34 | P:  21 | RF04 | Keywords should not be used as identifiers.
+                       | [references.keywords]
+L:  35 | P:   1 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  36 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  36 | P:   4 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  36 | P:   4 | LT09 | Select targets should be on a new line unless there is
+                       | only one select target. [layout.select_targets]
+L:  36 | P:   4 | ST06 | Select wildcards then simple targets before calculations
+                       | and aggregates. [structure.column_order]
+L:  36 | P:  10 | LT02 | Expected line break and indent of 8 spaces before
+                       | 'order_info'. [layout.indent]
+L:  36 | P:  24 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  36 | P:  24 | RF02 | Unqualified reference 'new_modified' found in select
+                       | with more than one referenced table/view.
+                       | [references.qualification]
+L:  37 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  38 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  38 | P:  20 | RF02 | Unqualified reference 'x' found in select with more than
+                       | one referenced table/view. [references.qualification]
+L:  38 | P:  21 | LT01 | Expected single whitespace between naked identifier and
+                       | lambda '->'. [layout.spacing]
+L:  38 | P:  71 | RF02 | Unqualified reference 'x' found in select with more than
+                       | one referenced table/view. [references.qualification]
+L:  38 | P:  73 | LT01 | Expected single whitespace between comma ',' and numeric
+                       | literal. [layout.spacing]
+L:  38 | P:  77 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  38 | P:  77 | RF02 | Unqualified reference 'session_start_time_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  38 | P: 101 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  39 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  40 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  40 | P:  23 | RF02 | Unqualified reference 'x' found in select with more than
+                       | one referenced table/view. [references.qualification]
+L:  40 | P:  24 | LT01 | Expected single whitespace between naked identifier and
+                       | lambda '->'. [layout.spacing]
+L:  40 | P:  27 | RF02 | Unqualified reference 'x' found in select with more than
+                       | one referenced table/view. [references.qualification]
+L:  40 | P:  28 | LT01 | Expected single whitespace between naked identifier and
+                       | raw comparison operator '>'. [layout.spacing]
+L:  40 | P:  30 | LT01 | Expected single whitespace between raw comparison
+                       | operator '=' and numeric literal. [layout.spacing]
+L:  40 | P:  32 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  40 | P:  47 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  41 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  42 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  42 | P:  29 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  42 | P:  51 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  43 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  44 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  44 | P:  33 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  44 | P:  52 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  45 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  46 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  47 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  47 | P:  11 | RF02 | Unqualified reference 'snick_arr' found in select with
+                       | more than one referenced table/view.
+                       | [references.qualification]
+L:  47 | P:  30 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  48 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  48 | P:  11 | RF02 | Unqualified reference 'day_arr' found in select with
+                       | more than one referenced table/view.
+                       | [references.qualification]
+L:  48 | P:  28 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  48 | P:  31 | RF04 | Keywords should not be used as identifiers.
+                       | [references.keywords]
+L:  49 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  49 | P:  11 | RF02 | Unqualified reference 'real_buyer_nick_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  49 | P:  40 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  50 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  50 | P:  11 | RF02 | Unqualified reference 'session_id_arr' found in select
+                       | with more than one referenced table/view.
+                       | [references.qualification]
+L:  50 | P:  35 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  51 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  51 | P:  11 | RF02 | Unqualified reference 'session_start_time_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  51 | P:  43 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  52 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  52 | P:  11 | RF02 | Unqualified reference 'session_end_time_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  52 | P:  41 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  53 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  53 | P:  11 | RF02 | Unqualified reference 'is_start_by_cnick_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  53 | P:  42 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  54 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  54 | P:  11 | RF02 | Unqualified reference 'is_end_by_cnick_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  54 | P:  40 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  55 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  55 | P:  11 | RF02 | Unqualified reference 'focus_goods_ids_arr' found in
+                       | select with more than one referenced table/view.
+                       | [references.qualification]
+L:  55 | P:  40 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  56 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  56 | P:  11 | RF02 | Unqualified reference 's_active_send_goods_ids_arr'
+                       | found in select with more than one referenced
+                       | table/view. [references.qualification]
+L:  57 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  57 | P:  11 | RF02 | Unqualified reference 'c_active_send_goods_ids_arr'
+                       | found in select with more than one referenced
+                       | table/view. [references.qualification]
+L:  58 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L:  58 | P:   4 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  59 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L:  60 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L:  60 | P:   9 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  60 | P:   9 | LT09 | Select targets should be on a new line unless there is
+                       | only one select target. [layout.select_targets]
+L:  60 | P:  15 | LT02 | Expected line break and indent of 16 spaces before
+                       | 'shop_id'. [layout.indent]
+L:  61 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  62 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  62 | P:  32 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  63 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  63 | P:  30 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  64 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  64 | P:  42 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  65 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  65 | P:  37 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  66 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  66 | P:  45 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  67 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  67 | P:  43 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  68 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  68 | P:  44 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  69 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  69 | P:  42 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  70 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  70 | P:  42 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  71 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  71 | P:  50 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  72 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  72 | P:  50 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  73 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L:  73 | P:   7 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  74 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L:  75 | P:   1 | LT02 | Expected indent of 20 spaces. [layout.indent]
+L:  75 | P:  13 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  75 | P:  13 | LT09 | Select targets should be on a new line unless there is
+                       | only one select target. [layout.select_targets]
+L:  75 | P:  19 | LT02 | Expected line break and indent of 24 spaces before
+                       | 'day'. [layout.indent]
+L:  76 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  77 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  78 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  79 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  80 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  81 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  82 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  83 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  84 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  85 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  86 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  87 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  88 | P:   1 | LT02 | Expected indent of 20 spaces. [layout.indent]
+L:  88 | P:  10 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  89 | P:   1 | LT02 | Expected indent of 20 spaces. [layout.indent]
+L:  89 | P:  15 | LT02 | Expected line break and indent of 24 spaces before
+                       | 'day'. [layout.indent]
+L:  89 | P:  20 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  89 | P:  59 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{ds}} [jinja.padding]
+L:  89 | P:  70 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{cycle}} [jinja.padding]
+L:  89 | P:  86 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  89 | P: 108 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{ds}} [jinja.padding]
+L:  90 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  90 | P:  17 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  90 | P:  31 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{shop_id}} [jinja.padding]
+L:  91 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  91 | P:  29 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{cycle}} [jinja.padding]
+L:  92 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  92 | P:  20 | LT01 | Expected only single space before function name
+                       | identifier. Found '  '. [layout.spacing]
+L:  92 | P:  37 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  92 | P:  41 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  92 | P:  53 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  93 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  94 | P:   1 | LT02 | Expected indent of 24 spaces. [layout.indent]
+L:  94 | P:  18 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  94 | P:  18 | LT02 | Expected line break and indent of 24 spaces before
+                       | 'SELECT'. [layout.indent]
+L:  94 | P:  25 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  94 | P:  49 | LT01 | Expected single whitespace between comma ',' and quoted
+                       | literal. [layout.spacing]
+L:  94 | P:  53 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L:  95 | P:   1 | LT02 | Expected indent of 28 spaces. [layout.indent]
+L:  95 | P:  18 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  96 | P:   1 | LT02 | Expected indent of 28 spaces. [layout.indent]
+L:  96 | P:  18 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  96 | P:  23 | LT02 | Expected line break and indent of 24 spaces before
+                       | 'day'. [layout.indent]
+L:  96 | P:  28 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  96 | P:  67 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{ds}} [jinja.padding]
+L:  96 | P:  78 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{cycle}} [jinja.padding]
+L:  96 | P:  94 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  96 | P: 116 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{ds}} [jinja.padding]
+L:  97 | P:   1 | LT02 | Expected indent of 32 spaces. [layout.indent]
+L:  97 | P:  20 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  97 | P:  34 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{shop_id}} [jinja.padding]
+L:  98 | P:   1 | LT02 | Expected indent of 32 spaces. [layout.indent]
+L:  98 | P:  20 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  98 | P:  31 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L:  98 | P:  35 | LT02 | Expected line break and indent of 24 spaces before
+                       | "'created'". [layout.indent]
+L:  99 | P:   1 | LT02 | Expected indent of 36 spaces. [layout.indent]
+L:  99 | P:  41 | LT02 | Expected line break and indent of 32 spaces before ')'.
+                       | [layout.indent]
+L: 100 | P:   1 | LT02 | Expected indent of 32 spaces. [layout.indent]
+L: 100 | P:  44 | LT01 | Unexpected whitespace before end bracket ')'.
+                       | [layout.spacing]
+L: 100 | P:  44 | LT02 | Expected line break and indent of 24 spaces before ')'.
+                       | [layout.indent]
+L: 101 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L: 102 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 102 | P:   7 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 102 | P:  13 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 102 | P:  15 | LT02 | Expected line break and indent of 16 spaces before
+                       | 'shop_id'. [layout.indent]
+L: 103 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L: 103 | P:  26 | LT02 | Expected line break and indent of 8 spaces before ')'.
+                       | [layout.indent]
+L: 103 | P:  28 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 104 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 104 | P:   4 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 104 | P:   9 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 105 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L: 105 | P:   7 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 105 | P:   7 | LT02 | Expected line break and indent of 12 spaces before
+                       | 'SELECT'. [layout.indent]
+L: 105 | P:   7 | LT09 | Select targets should be on a new line unless there is
+                       | only one select target. [layout.select_targets]
+L: 105 | P:   7 | ST06 | Select wildcards then simple targets before calculations
+                       | and aggregates. [structure.column_order]
+L: 106 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 107 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 107 | P:  45 | LT01 | Expected single whitespace between comma ',' and
+                       | function name identifier. [layout.spacing]
+L: 107 | P:  67 | LT01 | Expected single whitespace between comma ',' and numeric
+                       | literal. [layout.spacing]
+L: 107 | P:  70 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 108 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 108 | P:  32 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 109 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 110 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 110 | P:  35 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 111 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 111 | P:  35 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 112 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 112 | P:  39 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 113 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 113 | P:  35 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 114 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 114 | P:  32 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 115 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 115 | P:  31 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 116 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 117 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 117 | P:   7 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 118 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 118 | P:   7 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 118 | P:  12 | LT02 | Expected line break and indent of 12 spaces before
+                       | 'day'. [layout.indent]
+L: 118 | P:  17 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 118 | P:  56 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{ds}} [jinja.padding]
+L: 118 | P:  66 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{cycle}} [jinja.padding]
+L: 118 | P:  82 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 118 | P: 104 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{ds}} [jinja.padding]
+L: 119 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L: 119 | P:   9 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 119 | P:  23 | JJ01 | Jinja tags should have a single whitespace on either
+                       | side: {{shop_id}} [jinja.padding]
+L: 120 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L: 120 | P:   9 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 120 | P:  20 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 120 | P:  24 | LT02 | Expected line break and indent of 12 spaces before
+                       | "'created'". [layout.indent]
+L: 121 | P:   1 | LT02 | Expected indent of 20 spaces. [layout.indent]
+L: 121 | P:  30 | LT02 | Expected line break and indent of 16 spaces before ')'.
+                       | [layout.indent]
+L: 122 | P:   1 | LT02 | Expected indent of 16 spaces. [layout.indent]
+L: 123 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 123 | P:  26 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 123 | P:  35 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 123 | P:  42 | LT01 | Expected single whitespace between comma ',' and naked
+                       | identifier. [layout.spacing]
+L: 124 | P:  11 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 125 | P:   1 | LT02 | Expected indent of 8 spaces. [layout.indent]
+L: 126 | P:   1 | LT02 | Expected indent of 12 spaces. [layout.indent]
+L: 126 | P:   5 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 126 | P:  10 | LT01 | Expected single whitespace between 'USING' keyword and
+                       | start bracket '('. [layout.spacing]
+L: 126 | P:  31 |  PRS | Line 126, Position 31: Found unparsable section: '\n   
+                       | -- 剔除订单状态先于会话产生的订单状态记录, 筛选订单状态记录产生在...'
+L: 128 | P:  43 | LT02 | Expected line break and indent of 4 spaces before ')'.
+                       | [layout.indent]
+L: 129 | P:   1 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 129 | P:   7 | CP01 | Keywords must be consistently lower case.
+                       | [capitalisation.keywords]
+L: 129 | P:   9 | LT02 | Expected line break and indent of 4 spaces before 'day'.
+                       | [layout.indent]
+L: 130 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 131 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 132 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 133 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 134 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 135 | P:   1 | LT02 | Expected indent of 4 spaces. [layout.indent]
+L: 135 | P:  15 | LT12 | Files must end with a single trailing newline.
+                       | [layout.end_of_file]
+WARNING: Parsing errors found and dialect is set to 'clickhouse'. Have you configured your dialect correctly?
+==== summary ====
+violations:      330 status:         FAIL
+All Finished!

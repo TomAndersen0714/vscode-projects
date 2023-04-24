@@ -1,118 +1,33 @@
-            SELECT
-                company_id,
-                question_b_qid,
-                question_b_name,
-                group_id,
-                group_name,
-                group_level,
-                parent_group_id,
-                parent_group_name,
-                first_group_id,
-                first_group_name,
-                second_group_id,
-                second_group_name,
-                third_group_id,
-                third_group_name,
-                fourth_group_id,
-                fourth_group_name,
-                create_time,
-                update_time
-            FROM (
-                SELECT
-                    company_id,
-                    question_b_qid,
-                    question_b_name,
-                    group_id,
-                    create_time,
-                    update_time
-                FROM (
-                    SELECT
-                        company_id,
-                        name AS question_b_name,
-                        group_id, 
-                        create_time,
-                        update_time
-                    FROM dim.voc_question_b_all
-                    WHERE company_id IN ['63fc50f0a06a5ecd9a249ac9']
-                ) AS voc_question_info
-                INNER JOIN (
-                    -- 获取企业店铺行业场景
-                    SELECT
-                        company_id,
-                        shop_id,
-                        category_id,
-                        subcategory_id,
-                        question_b_qid,
-                        question_b_name
-                    FROM (
-                        -- 获取企业店铺行业场景一级分组
-                        SELECT
-                            company_id,
-                            shop_id,
-                            category_id,
-                            subcategory_id
-                        FROM (
-                            -- 获取企业店铺非专属品类
-                            SELECT
-                                company_id,
-                                shop_id,
-                                category_id
-                            FROM (
-                                SELECT
-                                    _id AS shop_id,
-                                    category_id
-                                FROM dim.xdre_shop_all
-                                WHERE _id IN ['60b72d421edc070017428380']
-                                -- 筛选非专属模型店铺
-                                AND model_type != '1'
-                            ) AS shop_category_info
-                            GLOBAL INNER JOIN (
-                                SELECT
-                                    company_id,
-                                    shop_id
-                                FROM numbers(1)
-                                ARRAY JOIN
-                                    ['63fc50f0a06a5ecd9a249ac9'] AS company_id,
-                                    ['60b72d421edc070017428380'] AS shop_id
-                            ) AS voc_shop_info
-                            USING(shop_id)
-                        ) AS company_shop_category_info
-                        GLOBAL INNER JOIN (
-                            SELECT
-                                category_id,
-                                subcategory_id
-                            FROM dim.category_subcategory_all
-                        ) AS cate_map_info
-                        USING(category_id)
-                    ) AS company_shop_subcategory_info
-                    INNER JOIN (
-                        SELECT
-                            qid AS question_b_qid,
-                            question AS question_b_name,
-                            subcategory_id
-                        FROM dim.question_b_v2_all
-                    ) AS question_b_info
-                    USING(subcategory_id)
-                ) AS robot_question_info
-                USING(company_id, question_b_name)
+-- 询单周期内所有的会话记录
+SELECT
+    day,
+    shop_id,
+    buyer_nick,
+    real_buyer_nick,
+    snick,
+    session_id,
+    session_start_time,
+    session_end_time,
+    is_start_by_cnick,
+    is_end_by_cnick,
+    focus_goods_ids,
+    c_active_send_goods_ids,
+    s_active_send_goods_ids
+FROM tmp.session_filter_all
+WHERE
+    day BETWEEN toYYYYMMDD(subtractDays(toDate('{{ ds }}'), {{ cycle }} - 1)) AND toYYYYMMDD(toDate('{{ ds }}'))
+    AND shop_id = '{{ shop_id }}'
+    AND cycle = {{ cycle }}
+    AND concat(shop_id, '-', buyer_nick) IN -- 只看询单周期内有订单记录的数据
+    (
+        SELECT DISTINCT concat(shop_id, '-', buyer_nick)
+        FROM ft_dwd.order_detail_all
+        WHERE
+            day BETWEEN toYYYYMMDD(subtractDays(toDate('{{ ds }}'), {{ cycle }} - 1)) AND toYYYYMMDD(toDate('{{ ds }}'))
+            AND shop_id = '{{ shop_id }}'
+            AND status IN (
+                'created',
+                'paid'
             )
-            LEFT JOIN (
-                SELECT
-                    company_id,
-                    group_id,
-                    group_name,
-                    group_level,
-                    parent_group_id,
-                    parent_group_name,
-                    first_group_id,
-                    first_group_name,
-                    second_group_id,
-                    second_group_name,
-                    third_group_id,
-                    third_group_name,
-                    fourth_group_id,
-                    fourth_group_name
-                FROM dim.voc_question_b_group_detail_all
-                WHERE company_id IN ['63fc50f0a06a5ecd9a249ac9']
-            ) AS company_group_info
-            USING(company_id, group_id)
+            AND order_type != 'step'
+    )
