@@ -1,0 +1,7 @@
+{
+  "name": "front-workspace",
+  "version": "1.0.0",
+  "dependencies": {
+    "sql-formatter": "^12.2.0"
+  }
+}
