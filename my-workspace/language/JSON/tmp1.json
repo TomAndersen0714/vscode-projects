@@ -1,35 +1,12 @@
-"Indexes": [
-    {
-        "Type": "MinMax",
-        "Keys": [
-            "day"
-        ],
-        "Condition": "and((day in (-inf, 20230413]), (day in [20230314, +inf)))",
-        "Initial Parts": 1361,
-        "Selected Parts": 101,
-        "Initial Granules": 12948,
-        "Selected Granules": 1139
-    },
-    {
-        "Type": "Partition",
-        "Keys": [
-            "day"
-        ],
-        "Condition": "and((day in (-inf, 20230413]), (day in [20230314, +inf)))",
-        "Initial Parts": 101,
-        "Selected Parts": 101,
-        "Initial Granules": 1139,
-        "Selected Granules": 1139
-    },
-    {
-        "Type": "PrimaryKey",
-        "Keys": [
-            "level"
-        ],
-        "Condition": "(level in 3-element set)",
-        "Initial Parts": 101,
-        "Selected Parts": 101,
-        "Initial Granules": 1139,
-        "Selected Granules": 1139
-    }
-]
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Cookie': 'session=.eJwNy0EKwjAQBdCrSG6Qtm4EF0JqUZhfLGnLzEZQwXRM9nXEu-vubd7HXZeH233c5uZ2jiwV2KVB19bQvytaKd7fXKYMvTdctZUUWmFHRTl50YNHSBkm2geuSYcs89jA2i3iUDi-jCMZ7LSVGQt1Q0ZMmeOU2MZaZvaso5dwLtBzgpGnkJc-thXZs2Z9reiQRafUByl9eHoq_xNp777fHx8QPvI.FyoiRw.GaqSEV2UiSdEAua6WDcb7Y0e6OI',
+    'Origin': 'http://10.0.2.1:8070',
+    'Referer': 'http://10.0.2.1:8070/login',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
+  }
