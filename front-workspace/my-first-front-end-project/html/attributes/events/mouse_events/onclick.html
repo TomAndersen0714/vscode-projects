@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--https://www.w3schools.com/tags/ref_eventattributes.asp-->
+<!--https://www.w3schools.com/tags/ev_onclick.asp-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>onclick event demo</title>
+    </head>
+    <body>
+        <button onclick="greeting()">Button</button>
+        <p id="text"></p>
+
+        <p>
+            A function is triggered when the button is clicked.
+            The function outputs some text in a &ltp&gt element with id="text".
+        </p>
+        <script>
+            function greeting() {
+                document.getElementById("text").innerHTML = "Hello World!";
+            }
+        </script>
+    </body>
+</html>
