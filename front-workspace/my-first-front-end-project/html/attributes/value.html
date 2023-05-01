@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- https://www.w3schools.com/tags/att_value.asp -->
+<!--
+    For <button>, <input> and <option> elements, the value attribute specifies the initial value of the element.
+
+    For <li> elements, the value attribute sets the value of the list item (for ordered lists). The next list items will increment from that value.
+
+    For <meter> elements, the value attribute specifies the current value of the gauge.
+
+    For <progress> elements, the value attribute specifies how much of the task has been completed.
+
+    For <param> elements, the value attribute specifies the value of the parameter.
+ -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>value attribute demo</title>
+    </head>
+    <body>
+        <h1>The input value attribute</h1>
+        <form>
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname" value="John"><br><br>
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" name="lname" value="Doe"><br><br>
+            <input type="submit" value="Submit">
+            <ol>
+                <!-- For <li> elements, the value attribute sets the value of the list item (for ordered lists).
+                The next list items will increment from that value. -->
+                <li value="2"></li>
+                <li value="4"></li>
+                <li></li>
+            </ol>
+        </form>
+    </body>
+</html>

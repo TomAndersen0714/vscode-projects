@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+    https://www.w3schools.com/jsref/obj_window.asp
+
+    NOTE: The window object represents an open window in browser.
+     If a document contain frames(<iframe> tags), the browser creates one window object
+     for the HTML document, and one additional window object for each frame.
+ -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>window-methods</title>
+    </head>
+    <body>
+
+    </body>
+    <script>
+        // window.setTimeout()
+        // Calls a function or evaluates an expression after a specified number of milliseconds
+        window.setTimeout(greeting, 500);
+        window.setTimeout(greeting, 1500);
+
+        // window.setInterval()
+        // Calls a function or evaluates an expression at specified intervals (in milliseconds)
+        // window.setInterval(greeting, 1000);
+
+        // declare
+        function greeting() {
+            window.alert('Hello World!');
+        }
+    </script>
+</html>

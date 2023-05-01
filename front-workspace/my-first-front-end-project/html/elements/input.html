@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- https://www.w3schools.com/tags/tag_input.asp -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>input element demo</title>
+    </head>
+    <body>
+        <form>
+            <!--
+                label标签可以为text类型的input表单控件提供关联, 当用户点击label标签时, 
+                浏览器会自动将焦点移动到对应的表单控件上. 这可以提高表单的可用性和无障碍性. 
+                某些HTML规范中, 会要求保证text类型的input有对应的label
+             -->
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname"><br><br>
+
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" name="lname"><br><br>
+
+            <input type="submit" value="Submit-1">
+            <input type="button" value="button-1">
+        </form>
+    </body>
+</html>

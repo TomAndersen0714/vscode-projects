@@ -3,6 +3,7 @@
 let text = '{ "employees" : [' + '{ "firstName":"John" , "lastName":"Doe" },' + '{ "firstName":"Anna" , "lastName":"Smith" },' + '{ "firstName":"Peter" , "lastName":"Jones" } ]}';
 
 // JSON.parse()
+// Converts a JavaScript Object Notation (JSON) string into an object.
 const JSONObj = JSON.parse(text);
 
 // JSON.stringify()

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- https://www.w3schools.com/jsref/dom_obj_document.asp -->
+<!--
+    NOTE: The document object is a property of the Window object, and accessed with
+     `windows.document` or just `document`.
+
+    NOTE: When an HTML document is loaded into a web browser, it becomes a
+     document object.
+ -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>document-properties</title>
+    </head>
+    <body>
+        <ul>
+            <li id="URL"></li>
+            <li id="baseURI"></li>
+        </ul>
+
+        <span id="span1"></span>
+
+
+        <script>
+            console.log("window.document = " + (window.document));
+            console.log("document = " + (document));
+            console.log("window.document === document = " + (window.document === document));
+
+            // NOTE: Document object properties
+            // URL
+            document.getElementById("URL").innerHTML = document.URL;
+            // baseURI
+            document.getElementById("baseURI").innerHTML = document.baseURI;
+
+            console.log("typeof document.getElementById('baseURI') = " +
+                (typeof document.getElementById('baseURI')));
+            console.log("typeof document.URL = " + (typeof document.URL));
+            console.log("document.URL = " + (document.URL));
+            console.log("typeof document.baseURI = " + (typeof document.baseURI));
+            console.log("document.baseURI = " + (document.baseURI));
+
+            // NOTE: Document object methods
+            // getElementById
+            let htmlElement = document.getElementById("span1");
+            htmlElement.innerHTML = "Hello World!";
+
+        </script>
+    </body>
+</html>
