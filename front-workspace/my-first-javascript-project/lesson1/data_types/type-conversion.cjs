@@ -1,6 +1,7 @@
 // https://www.w3schools.com/js/js_type_conversion.asp
 
-const utils = require("../../utils/utils");
+const utils = require("../../utils/utils.cjs");
+
 
 // NOTE: Number conversion
 // Number()

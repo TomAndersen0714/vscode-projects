@@ -1,8 +1,14 @@
-// https://www.runoob.com/nodejs/nodejs-module-system.html
+// https://www.ruanyifeng.com/blog/2020/08/how-nodejs-use-es6-module.html
 function printTypeAndValue(value) {
     console.log("type: " + typeof value + ", value: " + value);
 }
 
-module.exports = {
-    printTypeAndValue: printTypeAndValue
-};
+export {printTypeAndValue};
+
+
+let a = 1;
+export default a;
+
+// A module cannot have multiple default exports
+// let b = 1;
+// export default b;

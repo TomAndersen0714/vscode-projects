@@ -6,8 +6,9 @@
 // Set(): create a Set
 const letters = new Set(["a", "b", "c"]);
 
-const utils = require("../../utils/utils");
-utils.printTypeAndValue(letters);
+import {printTypeAndValue} from "../../utils/utils.js";
+
+printTypeAndValue(letters);
 console.log();
 
 // add(): add value to the set
@@ -16,7 +17,7 @@ console.log();
 
 // delete(): removes an element from a Set
 letters.delete("c");
-console.log()
+console.log();
 
 // forEach()
 letters.forEach((x) => { // Arrow Functions / Lambda expression
