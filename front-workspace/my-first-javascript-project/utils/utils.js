@@ -6,8 +6,10 @@ function printTypeAndValue(value) {
 export {printTypeAndValue};
 
 
-let a = 1;
+const a = 1;
 export default a;
+
+console.log("a = " + (a));
 
 // A module cannot have multiple default exports
 // let b = 1;

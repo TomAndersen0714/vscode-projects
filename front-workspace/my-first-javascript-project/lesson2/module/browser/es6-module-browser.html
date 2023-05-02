@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>script module type</title>
+    </head>
+    <body>
+
+    </body>
+
+    <!-- NOTE: script type="module", ES6 Nodule -->
+    <script type="module">
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+        // https://www.w3schools.com/js/js_modules.asp
+
+        // NOTE: In the browser, you can only use relative or absolute URL as module specifiers
+        //  to locate JavaScript module files.
+        import {printTypeAndValue} from '../../../utils/utils.js';
+
+        // import Axios from '/axios/index.js'
+
+        // Note: The imported values are read-only views of the features that were exported.
+        import x from '../../../utils/utils.js';
+
+
+        printTypeAndValue("Tom Andersen");
+        console.log("x = " + (x));
+    </script>
+
+    <!-- NOTE: script type="module" src="..." -->
+    <!-- The script will be loaded which support ES6 module statement. -->
+    <script type="module" src="../../../utils/utils.js"></script>
+
+</html>

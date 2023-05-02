@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap -->
+<!-- import map 目前仍处于提案状态，目前主流浏览器并未完全支持 -->
+<!--
+    Import maps allow developers to instead specify almost any text they want
+    in the module specifier when importing a module
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>import map script type</title>
+    </head>
+    <body>
+
+    </body>
+
+    <!-- NOTE: script type="importmap" -->
+    <script type="importmap">
+        {
+          "imports": {
+            "dayjs": "https://cdn.skypack.dev/dayjs@1.10.7",
+          }
+        }
+    </script>
+
+    <!-- NOTE: script type="module", ES6 Nodule -->
+    <script type="module">
+        import dayjs from 'dayjs';
+
+        console.log(dayjs('2019-01-25').format('YYYY-MM-DDTHH:mm:ssZ[Z]'));
+    </script>
+
+</html>

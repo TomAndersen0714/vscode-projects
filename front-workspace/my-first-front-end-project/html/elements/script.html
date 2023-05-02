@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+<!-- https://www.w3cschool.cn/htmltags/tag-script.html -->
+<!-- https://www.w3schools.com/tags/tag_script.asp -->
 <html lang="en">
-
     <head>
         <meta charset="UTF-8">
         <title>script demo</title>
-        <!--https://www.w3cschool.cn/htmltags/tag-script.html-->
         <script>
             document.write("Hello World!");
         </script>
@@ -12,12 +12,39 @@
 
     <body>
         <h1 id="title"></h1>
+
+        <!-- NOTE: type="application/javascript" -->
+        <!-- `application/javascript` is default value of script-type attribute -->
         <script>
             document.getElementById("title").innerHTML = "Hello World!";
         </script>
-        <script>
+
+        <script type="application/javascript">
             document.write("Hello World!");
         </script>
+
+        <!-- NOTE: script type="module", support ES6 Nodule -->
+        <script type="module">
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+            // https://www.w3schools.com/js/js_modules.asp
+
+            // NOTE: In the browser, you can only use relative or absolute URL as module specifiers
+            //  to locate JavaScript module files.
+            import {printTypeAndValue} from '../../../my-first-javascript-project/utils/utils.js';
+
+            // import Axios from '/axios/index.js'
+
+            // Note: The imported values are read-only views of the features that were exported.
+            import x from '../../../my-first-javascript-project/utils/utils.js';
+
+
+            printTypeAndValue("Tom Andersen");
+            console.log("x = " + (x));
+        </script>
+
+        <!-- NOTE: script type="module" src="...", support ES6 Nodule for source -->
+        <!-- The script will be loaded which support ES6 module statement. -->
+        <script type="module" src="../../../my-first-javascript-project/utils/utils.js"></script>
     </body>
 
 </html>

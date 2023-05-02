@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<!-- https://www.w3schools.com/tags/ref_canvas.asp -->
+<!-- https://www.w3schools.com/tags/tag_canvas.asp -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>canvas element demo</title>
+    </head>
+    <body>
+        <h1>The canvas element</h1>
+        <canvas id="myCanvas">Your browser does not support the canvas tag.</canvas>
+        <script>
+            let c = document.getElementById("myCanvas");
+            let ctx = c.getContext("2d");
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(0, 0, 80, 100);
+        </script>
+    </body>
+</html>
