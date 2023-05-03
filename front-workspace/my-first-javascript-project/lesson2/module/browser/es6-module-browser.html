@@ -13,18 +13,18 @@
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
         // https://www.w3schools.com/js/js_modules.asp
 
-        // NOTE: In the browser, you can only use relative or absolute URL as module specifiers
-        //  to locate JavaScript module files.
+        // NOTE: In the browser, you can only use relative or absolute URL as module specifiers to locate JavaScript module files.
         import {printTypeAndValue} from '../../../utils/utils.js';
 
-        // import Axios from '/axios/index.js'
+        // NOTE: Import all variable in utils.js, and create a corresponding namespace `utils`
+        import * as utils from "../../../utils/utils.js";
 
-        // Note: The imported values are read-only views of the features that were exported.
+        // NOTE: The imported values are read-only views of the features that were exported.
         import x from '../../../utils/utils.js';
-
 
         printTypeAndValue("Tom Andersen");
         console.log("x = " + (x));
+
     </script>
 
     <!-- NOTE: script type="module" src="..." -->

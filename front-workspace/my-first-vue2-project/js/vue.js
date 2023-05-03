@@ -3994,7 +3994,7 @@
   }
 
   /**
-   * Note: also update dist/vue.runtime.mjs when adding new exports to this file.
+   * NOTE: also update dist/vue.runtime.mjs when adding new exports to this file.
    */
   var version = '2.7.14';
   /**
@@ -6959,10 +6959,10 @@
       var hydrationBailed = false;
       // list of modules that can skip create hook during hydration because they
       // are already rendered on the client or has no need for initialization
-      // Note: style is excluded because it relies on initial clone for future
+      // NOTE: style is excluded because it relies on initial clone for future
       // deep updates (#7063).
       var isRenderedModule = makeMap('attrs,class,staticClass,staticStyle,key');
-      // Note: this is a browser-only function so we can assume elms are DOM nodes.
+      // NOTE: this is a browser-only function so we can assume elms are DOM nodes.
       function hydrate(elm, vnode, insertedVnodeQueue, inVPre) {
           var i;
           var tag = vnode.tag, data = vnode.data, children = vnode.children;
@@ -7660,7 +7660,7 @@
           }
       }
   }
-  // note: this only removes the attr from the Array (attrsList) so that it
+  // NOTE: this only removes the attr from the Array (attrsList) so that it
   // doesn't get processed by processAttrs.
   // By default it does NOT remove it from the map (attrsMap) because the map is
   // needed during codegen.

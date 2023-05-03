@@ -8,3 +8,5 @@ const JSONObj = JSON.parse(text);
 
 // JSON.stringify()
 console.log("JSON.stringify(JSONObj) = " + (JSON.stringify(JSONObj)));
+// JSON.stringify(), format string
+console.log("JSON.stringify(JSONObj, null, 4) = " + (JSON.stringify(JSONObj, null, 4)));
