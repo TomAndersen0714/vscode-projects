@@ -24,7 +24,7 @@ const axios2 = require("axios");
 // PS: All specifiers, https://nodejs.org/docs/latest-v18.x/api/modules.html#all-together
 
 
-// NOTE: NODE_PATH environment
+// NOTE: NODE_PATH environment, only valid in require specifiers of commonJS module
 // If the NODE_PATH environment variable is set to a colon-delimited list of absolute paths,
 // then Node.js will search those paths for modules if they are not found elsewhere.
 // https://nodejs.org/docs/latest-v18.x/api/modules.html#loading-from-the-global-folders

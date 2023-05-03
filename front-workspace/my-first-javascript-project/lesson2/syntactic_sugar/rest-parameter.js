@@ -1,10 +1,12 @@
-// NOTE: rest parameter
-const addNums = ((...args) => {
-    let sum = 0;
-    for (let arg of args) {
-        sum += arg;
-    }
-    return sum;
-});
+// https://www.w3schools.com/js/js_function_parameters.asp
 
-console.log("addNums(2, 3, 4, 5) = " + addNums(2, 3, 4, 5));
+
+// NOTE: Rest Parameter
+function sum(...args) {
+    let sum = 0;
+    for (let arg of args) sum += arg;
+    return sum;
+}
+
+console.log("sum(4, 9, 16, 25, 29, 100, 66, 77) = " +
+    (sum(4, 9, 16, 25, 29, 100, 66, 77)));
