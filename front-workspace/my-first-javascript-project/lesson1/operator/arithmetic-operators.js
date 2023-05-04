@@ -1,4 +1,6 @@
-// Arithmetic Operators
+// NOTE: Arithmetic Operators
+// https://www.w3schools.com/js/js_operators.asp
+// https://www.w3schools.com/js/js_arithmetic.asp
 
 console.log("3 + 1 = " + 3 + 1);
 

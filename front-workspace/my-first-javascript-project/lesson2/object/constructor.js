@@ -17,6 +17,9 @@ console.log("myFather = " + (myFather));
 console.log("myMother = " + (myMother));
 
 
+// NOTE: the constructor function will be added into object when create
+console.log("myFather.constructor = " + (myFather.constructor));
+
 // Adding a Method to an Object
 myFather.name = function () {
     return this.firstName + " " + this.lastName;
