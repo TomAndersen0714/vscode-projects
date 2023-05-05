@@ -1,5 +1,6 @@
 {
     "id": "bd917566af7fe0e6610197dd0e7b852c",
+    "platform": "tb",
     "level": 3,
     "warning_type": "投诉、差评",
     "company_id": "",
@@ -9,7 +10,6 @@
     "date": 20230504,
     "is_finish": true,
     "finish_time": "2023-05-04 09:04:58",
-    "platform": "tb",
     "seller_nick": "新华文轩旗舰",
     "shop_id": "57bbadae48d76c16418cae60",
     "snick": "新华文轩旗舰:琴台_售后",

@@ -1,43 +1,146 @@
-"storage":
-  {
-    "ping": "20s",
-    "impala":
-      {
-        "default":
-          ["10.22.113.169:21050", "10.22.113.168:21050", "10.22.113.173:21050"],
-        "bee":
-          ["10.22.113.169:21000", "10.22.113.168:21000", "10.22.113.173:21000"],
-      },
-    "clickhouse":
-      {
-        "log":
-          [
-            "tcp://10.22.131.153:9000?read_timeout=300&max_memory_usage=20000000000",
-            "tcp://10.22.131.154:9000?read_timeout=300&max_memory_usage=20000000000",
-            "tcp://10.22.131.217:9000?read_timeout=300&max_memory_usage=20000000000",
-          ],
-        "default":
-          [
-            "tcp://10.22.113.169:19000?read_timeout=300&alt_hosts=10.22.113.168:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-            "tcp://10.22.113.168:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-            "tcp://10.22.113.173:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.168:19000&max_memory_usage=20000000000",
-          ],
-        "mp":
-          [
-            "tcp://10.22.113.169:19000?read_timeout=300&alt_hosts=10.22.113.168:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-            "tcp://10.22.113.168:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-            "tcp://10.22.113.173:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.168:19000&max_memory_usage=20000000000",
-          ],
-        "keban":
-          [
-            "tcp://10.22.133.209:19000?read_timeout=300&alt_hosts=10.22.133.210:19000,10.22.133.211:19000&max_memory_usage=20000000000",
-            "tcp://10.22.133.210:19000?read_timeout=300&alt_hosts=10.22.133.209:19000,10.22.133.211:19000&max_memory_usage=20000000000",
-            "tcp://10.22.133.211:19000?read_timeout=300&alt_hosts=10.22.133.209:19000,10.22.133.210:19000&max_memory_usage=20000000000",
-          ],
-        "report":
-          [
-            "tcp://10.22.133.213:19000?read_timeout=300&alt_hosts=10.22.133.214:19000&max_memory_usage=20000000000",
-            "tcp://10.22.133.213:29000?read_timeout=300&alt_hosts=10.22.133.214:29000&max_memory_usage=20000000000",
-          ],
-      },
-  }
+{
+    "http_endpoint": ":8155",
+    "grpc_endpoint": ":8156",
+    "stream_step_size": 1000,
+    "std_log":
+        {
+            "level": "info",
+            "file": "/var/log/xiaoduo/query-sdk.log",
+            "err_file": "/var/log/xiaoduo/query-sdk.err.log",
+            "app_name": "query-sdk",
+            "auto_init": true,
+        },
+    "api_log":
+        {
+            "level": "info",
+            "file": "/var/log/xiaoduo/query-sdk.api.log",
+            "app_name": "query-sdk",
+            "auto_init": true,
+        },
+    "switcher": ["etcd001:2379"],
+    "rate_limit":
+        {
+            "default":
+                {
+                    "impala": { "qpm": 3000, "qps": 50, "max": 50 },
+                    "clickhouse": { "qpm": 3000, "qps": 50, "max": 50 },
+                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
+                },
+            "config-check":
+                {
+                    "impala": { "qpm": 3000, "qps": 50, "max": 50 },
+                    "clickhouse": { "qpm": 3000, "qps": 50, "max": 50 },
+                },
+            "ticket":
+                {
+                    "impala": { "qpm": 30, "qps": 1, "max": 10 },
+                    "clickhouse": { "qpm": 60, "qps": 4, "max": 2 },
+                },
+            "opmanagement":
+                {
+                    "impala": { "qpm": 30, "qps": 1, "max": 10 },
+                    "clickhouse": { "qpm": 30, "qps": 1, "max": 2 },
+                },
+            "log":
+                {
+                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
+                    "clickhouse": { "qpm": 1200, "qps": 20, "max": 20 },
+                },
+            "data-visual":
+                {
+                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
+                    "clickhouse": { "qpm": 1200, "qps": 20, "max": 40 },
+                },
+            "qc-object":
+                {
+                    "impala": { "qpm": 6000, "qps": 100, "max": 50 },
+                    "clickhouse": { "qpm": 6000, "qps": 100, "max": 50 },
+                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
+                },
+            "keban-group":
+                {
+                    "impala": { "qpm": 180, "qps": 3, "max": 3 },
+                    "clickhouse": { "qpm": 180, "qps": 3, "max": 3 },
+                },
+            "x-data-tb":
+                {
+                    "impala": { "qpm": 6000, "qps": 100, "max": 50 },
+                    "clickhouse": { "qpm": 6000, "qps": 100, "max": 50 },
+                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
+                },
+            "x-data-1111-screen":
+                {
+                    "impala": { "qpm": 300, "qps": 5, "max": 5 },
+                    "clickhouse": { "qpm": 4000, "qps": 75, "max": 40 },
+                },
+            "x-data-x-data":
+                {
+                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
+                    "clickhouse": { "qpm": 1800, "qps": 30, "max": 30 },
+                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
+                },
+            "x-data-xqc":
+                {
+                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
+                    "clickhouse": { "qpm": 1800, "qps": 30, "max": 30 },
+                },
+        },
+    "storage":
+        {
+            "ping": "20s",
+            "impala":
+                {
+                    "default":
+                        [
+                            "10.22.113.169:21050",
+                            "10.22.113.168:21050",
+                            "10.22.113.173:21050",
+                        ],
+                    "bee":
+                        [
+                            "10.22.113.169:21000",
+                            "10.22.113.168:21000",
+                            "10.22.113.173:21000",
+                        ],
+                },
+            "clickhouse":
+                {
+                    "log":
+                        [
+                            "tcp://10.22.131.153:9000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.131.154:9000,10.22.131.217:9000&max_memory_usage=20000000000",
+                            "tcp://10.22.131.154:9000?read_timeout=300&alt_hosts=10.22.131.153:9000,10.22.131.217:9000&max_memory_usage=20000000000",
+                            "tcp://10.22.131.217:9000?read_timeout=300&alt_hosts=10.22.131.153:9000,10.22.131.154:9000&max_memory_usage=20000000000",
+                        ],
+                    "default":
+                        [
+                            "tcp://10.22.113.169:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.113.168:19000,10.22.113.173:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.113.168:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.173:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.113.173:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.168:19000&max_memory_usage=20000000000",
+                        ],
+                    "mp":
+                        [
+                            "tcp://10.22.113.169:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.113.168:19000,10.22.113.173:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.113.168:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.173:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.113.173:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.168:19000&max_memory_usage=20000000000",
+                        ],
+                    "keban":
+                        [
+                            "tcp://10.22.133.209:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.133.210:19000,10.22.133.211:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.133.210:19000?read_timeout=300&alt_hosts=10.22.133.209:19000,10.22.133.211:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.133.211:19000?read_timeout=300&alt_hosts=10.22.133.209:19000,10.22.133.210:19000&max_memory_usage=20000000000",
+                        ],
+                    "report":
+                        [
+                            "tcp://10.22.133.213:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.133.214:19000&max_memory_usage=20000000000",
+                            "tcp://10.22.133.213:29000?read_timeout=300&alt_hosts=10.22.133.214:29000&max_memory_usage=20000000000",
+                        ],
+                },
+            "postgres":
+                {
+                    "qcobject":
+                        [
+                            "host=pgm-k2j93k10d62w052c112880.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=qc_object dbname=qc_object password=qcobjadmin sslmode=disable TimeZone=Asia/Shanghai",
+                        ],
+                },
+        },
+}

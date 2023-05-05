@@ -1,12 +1,21 @@
-headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Cache-Control': 'max-age=0',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Cookie': 'session=.eJwNy0EKwjAQBdCrSG6Qtm4EF0JqUZhfLGnLzEZQwXRM9nXEu-vubd7HXZeH233c5uZ2jiwV2KVB19bQvytaKd7fXKYMvTdctZUUWmFHRTl50YNHSBkm2geuSYcs89jA2i3iUDi-jCMZ7LSVGQt1Q0ZMmeOU2MZaZvaso5dwLtBzgpGnkJc-thXZs2Z9reiQRafUByl9eHoq_xNp777fHx8QPvI.FyoiRw.GaqSEV2UiSdEAua6WDcb7Y0e6OI',
-    'Origin': 'http://10.0.2.1:8070',
-    'Referer': 'http://10.0.2.1:8070/login',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36'
-  }
+{
+    "id": "bd917566af7fe0e6610197dd0e7b852c",
+    "platform": "tb",
+    "level": 3,
+    "warning_type": "投诉、差评",
+    "dialog_id": "6452fef050a4170001ac02a6",
+    "message_id": "645300133d7e8beda386fb20",
+    "time": "2023-05-04 08:45:07",
+    "day": 20230504,
+    "is_finished": "True",
+    "finish_time": "2023-05-04 09:04:58",
+    "seller_nick": "新华文轩旗舰",
+    "shop_id": "57bbadae48d76c16418cae60",
+    "snick": "新华文轩旗舰:琴台_售后",
+    "cnick": "大炮biubiubiu",
+    "open_uid": "",
+    "buyer_one_id": "",
+    "employee_name": "",
+    "superior_name": "",
+    "update_time": datetime.datetime(2023,5,4,9,4,58)
+}
