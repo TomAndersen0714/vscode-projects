@@ -1,21 +1,445 @@
 {
-    "id": "bd917566af7fe0e6610197dd0e7b852c",
-    "platform": "tb",
-    "level": 3,
-    "warning_type": "投诉、差评",
-    "company_id": "",
-    "dialog_id": "6452fef050a4170001ac02a6",
-    "message_id": "645300133d7e8beda386fb20",
-    "time": "2023-05-04 08:45:07",
-    "date": 20230504,
-    "is_finish": true,
-    "finish_time": "2023-05-04 09:04:58",
-    "seller_nick": "新华文轩旗舰",
-    "shop_id": "57bbadae48d76c16418cae60",
-    "snick": "新华文轩旗舰:琴台_售后",
-    "cnick": "大炮biubiubiu",
-    "open_uid": "",
-    "buyer_one_id": "",
-    "employee_name": "",
-    "superior_name": ""
+	"_id" : ObjectId("6431254d68de840001ff5cc4"),
+	"create_time" : ISODate("2023-04-08T08:26:53.131Z"),
+	"update_time" : ISODate("2023-04-08T08:56:53.170Z"),
+	"platform" : "tb",
+	"channel" : "tb",
+	"cnick" : "one_id_3967206530",
+	"open_uid" : "AAG-ZosOAKdpZ1hrVDgwxuvk",
+	"real_buyer_nick" : "云云q康商城q",
+	"snick" : "美的官方旗舰店:小巫",
+	"seller_nick" : "美的官方旗舰店",
+	"begin_time" : ISODate("2023-04-08T08:26:51.865Z"),
+	"end_time" : ISODate("2023-04-08T08:26:51.865Z"),
+	"is_after_sale" : true,
+	"origin_is_after_sale" : true,
+	"is_inside" : false,
+	"s_emotion" : [
+		{
+			"type" : 8,
+			"count" : 0,
+			"score" : 0
+		}
+	],
+	"c_emotion" : [
+		{
+			"type" : 1,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 2,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 3,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 4,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 5,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 6,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 7,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 8,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 9,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 10,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 11,
+			"count" : 0,
+			"score" : 0
+		}
+	],
+	"emotions" : [ ],
+	"abnormals" : [
+		{
+			"type" : 1,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 2,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 3,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 4,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 5,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 6,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 7,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 8,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 9,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 10,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 11,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 12,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 13,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 14,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 15,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 16,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 17,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 18,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 19,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 20,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 21,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 22,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 23,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 24,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 25,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 26,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 27,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 28,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 29,
+			"count" : 0,
+			"score" : 0
+		}
+	],
+	"excellents" : [
+		{
+			"type" : 1,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 2,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 3,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 4,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 5,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 6,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 7,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 8,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 9,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 10,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 11,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 12,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 13,
+			"count" : 0,
+			"score" : 0
+		},
+		{
+			"type" : 14,
+			"count" : 0,
+			"score" : 0
+		}
+	],
+	"score" : 0,
+	"score_add" : 0,
+	"mark_judge" : 0,
+	"mark_score" : 0,
+	"mark_score_add" : 0,
+	"mark" : "",
+	"suspected_problem" : false,
+	"answer_count" : NumberLong(1),
+	"question_count" : NumberLong(0),
+	"first_answer_time" : 1680942411,
+	"qa_time_sum" : 0,
+	"qa_round_sum" : 0,
+	"focus_goods_id" : "",
+	"order_info" : {
+		"order_id" : "3251227467540203065",
+		"status" : "succeeded",
+		"payment" : 179,
+		"order_time" : NumberLong(1678459710),
+		"status_history" : [
+			{
+				"status" : "created",
+				"time" : NumberLong(1678459713)
+			},
+			{
+				"status" : "paid",
+				"time" : NumberLong(1678459735)
+			},
+			{
+				"status" : "shipped",
+				"time" : NumberLong(1678499100)
+			},
+			{
+				"status" : "succeeded",
+				"time" : NumberLong(1679022397)
+			}
+		]
+	},
+	"origin_order_info" : {
+		"order_id" : "3251227467540203065",
+		"status" : "succeeded",
+		"payment" : 179,
+		"order_time" : NumberLong(1678459710),
+		"status_history" : [
+			{
+				"status" : "created",
+				"time" : NumberLong(1678459713)
+			},
+			{
+				"status" : "paid",
+				"time" : NumberLong(1678459735)
+			},
+			{
+				"status" : "shipped",
+				"time" : NumberLong(1678499100)
+			},
+			{
+				"status" : "succeeded",
+				"time" : NumberLong(1679022397)
+			}
+		]
+	},
+	"is_order_matched" : true,
+	"emotion_detect_mode" : 0,
+	"consulte_transfor_v2" : 0,
+	"date" : 20230408,
+	"qc_task_flag" : 0,
+	"after_sale_days" : NumberLong(120),
+	"sec_after_cache" : {
+		
+	},
+	"top_xrules" : [ ],
+	"xrule_stats" : [ ],
+	"qc_word" : [
+		{
+			"source" : 1,
+			"word" : "2个",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "3个",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "优惠",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "券",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "多件",
+			"count" : 2,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "套购",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "活动",
+			"count" : 3,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "电",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "跨品类",
+			"count" : 2,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "预约",
+			"count" : 1,
+			"is_robot" : 1
+		},
+		{
+			"source" : 1,
+			"word" : "高",
+			"count" : 1,
+			"is_robot" : 1
+		}
+	],
+	"qid" : [
+		NumberLong(0)
+	],
+	"last_msg_id" : ObjectId("6431254db570d30001bd1da0")
 }
