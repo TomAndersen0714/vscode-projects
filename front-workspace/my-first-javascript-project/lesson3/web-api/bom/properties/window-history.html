@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- https://www.w3schools.com/js/js_api_history.asp -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Window history demo</title>
+    </head>
+    <body>
+        <button onclick="back()">Go Back</button>
+        <button onclick="back()">Go Forward</button>
+    </body>
+    <script>
+        console.log("window.history = " + (window.history));
+
+        // properties
+        console.log("window.history.length = " + (window.history.length));
+
+        // methods
+        function back() {
+            window.history.back();
+        }
+
+        function forward() {
+            window.history.forward();
+        }
+    </script>
+</html>

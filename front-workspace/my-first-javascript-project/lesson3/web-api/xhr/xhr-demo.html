@@ -5,9 +5,9 @@
         <title>XMLHttpRequest Demo</title>
     </head>
     <body>
-        <span id="content">
+        <div id="content">
 
-        </span>
+        </div>
     </body>
     <script>
         // create an XMLHttpRequest object
@@ -18,13 +18,18 @@
         const req = new XMLHttpRequest();
         req.addEventListener("load", reqListener);
 
-        // open a URL with GET method
-        req.open("GET", "https://www.example.org/");
+        // open a URL using the GET method and make a synchronous request.
+        req.open("GET", "https://api.github.com/", false);
+
+
+        // set request headers, after open method, before send method
+        // req.setRequestHeader()
 
         // send an HTTP request, and waiting for the transaction to finish
         req.send();
 
         // print the response
+        console.log("req.responseText = " + (req.responseText));
         window.document.getElementById("content").innerHTML = req.responseText;
     </script>
 </html>
