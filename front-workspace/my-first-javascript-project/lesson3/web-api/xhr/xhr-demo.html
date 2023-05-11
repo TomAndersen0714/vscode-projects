@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>XMLHttpRequest Demo</title>
+    </head>
+    <body>
+        <span id="content">
+
+        </span>
+    </body>
+    <script>
+        // create an XMLHttpRequest object
+        function reqListener() {
+            console.log(this.responseText);
+        }
+
+        const req = new XMLHttpRequest();
+        req.addEventListener("load", reqListener);
+
+        // open a URL with GET method
+        req.open("GET", "https://www.example.org/");
+
+        // send an HTTP request, and waiting for the transaction to finish
+        req.send();
+
+        // print the response
+        window.document.getElementById("content").innerHTML = req.responseText;
+    </script>
+</html>
