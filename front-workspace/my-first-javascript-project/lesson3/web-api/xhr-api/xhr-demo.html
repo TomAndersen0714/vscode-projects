@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>XMLHttpRequest Demo</title>
+    </head>
+    <body>
+        <div id="content">
+
+        </div>
+        <div id="error-content">
+            Hello World!
+        </div>
+    </body>
+    <script>
+        // create an XMLHttpRequest object
+        const req = new XMLHttpRequest();
+
+        // add an async callback method as handler for the `load` event by invoking
+        function responseLoadHandler() {
+            if (this.status >= 200 && this.status < 300) {
+                // print the response
+                console.log("this.responseText = \n" + (this.responseText));
+                // set the innerHTML content for specific element
+                window.document.getElementById("content").innerHTML = this.responseText;
+            }
+        }
+
+        req.addEventListener("load", responseLoadHandler);
+
+        // add an async callback method as handler for the `error` event by assignment
+        // NOTE: response with 4xx status code will not trigger error event
+        function responseErrorHandler() {
+            if (this.status >= 400 && this.status < 500) {
+                // print the response
+                console.error("this.responseText = \n" + (this.responseText));
+                // set the innerHTML content for specific element
+                window.document.getElementById("error-content").innerHTML = this.responseText;
+            }
+        }
+
+        req.onerror = responseErrorHandler;
+
+        // open a URL using the GET method and make an asynchronous request
+        req.open("GET", "https://api.github.com/", true);
+
+        // set request headers, after open method, before send method
+        req.setRequestHeader('Content-type', 'text/plain; charset=UTF-8');
+
+        // send an HTTP request with empty body
+        req.send();
+
+        // NOTE: every XMLHttpRequest is one-off object, you need to create a new one to issue new HTTP request.
+        // send a error request to trigger the error handler
+        const new_req = new XMLHttpRequest();
+        new_req.onload = responseErrorHandler;
+        new_req.open("GET", "https://api.github.com/1", true);
+        new_req.send();
+
+    </script>
+</html>

@@ -6,7 +6,7 @@ let text = '{ "employees" : [' + '{ "firstName":"John" , "lastName":"Doe" },' + 
 // Converts a JavaScript Object Notation (JSON) string into an object.
 const JSONObj = JSON.parse(text);
 
-// JSON.stringify()
+// JSON.stringify(), json to string
 console.log("JSON.stringify(JSONObj) = " + (JSON.stringify(JSONObj)));
 // JSON.stringify(), format string
 console.log("JSON.stringify(JSONObj, null, 4) = " + (JSON.stringify(JSONObj, null, 4)));

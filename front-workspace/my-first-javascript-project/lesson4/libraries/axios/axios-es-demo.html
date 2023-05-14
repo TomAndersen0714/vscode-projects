@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Axios demo</title>
+    </head>
+    <body>
+        <div id="output"></div>
+    </body>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        // 在 JavaScript 中使用 axios 发起 HTTP 请求
+        axios.get('https://api.github.com/')
+            .then(function (response) {
+                console.log("response.status = " + (response.status));
+                // 处理请求成功的响应数据
+                document.getElementById('output').innerHTML = JSON.stringify(response.data);
+            })
+            .catch(function (error) {
+                // 处理请求失败的错误
+                console.error("error: " + error);
+            });
+    </script>
+</html>

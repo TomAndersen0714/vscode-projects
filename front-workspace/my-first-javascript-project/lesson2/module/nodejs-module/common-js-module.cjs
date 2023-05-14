@@ -30,7 +30,7 @@ const axios2 = require("axios");
 // https://nodejs.org/docs/latest-v18.x/api/modules.html#loading-from-the-global-folders
 
 
-// NOTE: import() expression, dynamic import module
+// NOTE: import() expression, dynamic import module, which will return a Promise object
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import
 console.log();
 let module_specifier = "../../../utils/utils.cjs";

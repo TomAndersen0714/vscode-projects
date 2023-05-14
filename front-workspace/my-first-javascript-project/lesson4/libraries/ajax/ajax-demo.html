@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+https://www.w3schools.com/js/js_ajax_intro.asp
+https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX
+
+NOTE: Asynchronous JavaScript and XML(Ajax)
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Ajax Demo</title>
+    </head>
+    <body>
+        <div id="content">
+
+        </div>
+    </body>
+    <script>
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://example.com/api', true);
+
+        xhr.onload = function () {
+            window.document.getElementById("content").innerHTML = xhr.responseText;
+
+            if (xhr.status >= 200 && xhr.status < 400) {
+                const response = JSON.parse(xhr.responseText);
+                console.log(response);
+            }
+            else {
+                console.error('Request failed with status:', xhr.status);
+            }
+        };
+
+        xhr.onerror = function () {
+            console.error('An error occurred during the request.');
+        };
+
+        xhr.send();
+
+    </script>
+</html>
