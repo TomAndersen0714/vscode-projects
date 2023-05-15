@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>first vue demo</title>
-        <script src="../js/vue.js"></script>
+
+        <!-- import vue -->
+        <script src="/vue.js"></script>
     </head>
     <body>
         <!--准备好容器(Container)-->
@@ -14,7 +16,8 @@
         </div>
 
         <script>
-            Vue.config.productionTip = false; // 关闭生产环境不建议使用开发版本Vue的使用提示
+            // 关闭生产环境下使用开发版本Vue的告警
+            Vue.config.productionTip = false;
         </script>
     </body>
 </html>
