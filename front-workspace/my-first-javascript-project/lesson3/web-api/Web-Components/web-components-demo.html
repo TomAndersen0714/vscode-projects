@@ -4,8 +4,58 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Web Component Demo</title>
-    </head>
-    <body>
+        <script>
+            <!-- define a custom HTML Element -->
+            customElements.define(
+                "my-paragraph",
+                class extends HTMLElement {
+                    constructor() {
+                        super();
+                        let templateElement = document.getElementById("my-paragraph-temp");
+                        let templateContent = templateElement.content;
 
+                        const shadowRoot = this.attachShadow({mode: "open"});
+                        shadowRoot.appendChild(templateContent.cloneNode(true));
+                    }
+                }
+            );
+
+        </script>
+    </head>
+
+    <body>
+        <!-- define template with content and css -->
+        <template id="my-paragraph-temp">
+            <style>
+                p {
+                    color: white;
+                    background-color: #666;
+                    padding: 5px;
+                }
+            </style>
+
+            <!-- you can replace the content of slot element by using
+             the slot attribute in the element later, which has the same value
+             as the name of slot -->
+            <p>
+                <slot name="my-text1">My default text1</slot>
+            </p>
+            <p>
+                <slot name="my-text2">My default text2</slot>
+            </p>
+        </template>
+
+        <my-paragraph>
+            <span slot="my-text2">
+                Let's have some different text!
+            </span>
+        </my-paragraph>
+
+        <my-paragraph>
+            <ul slot="my-text1">
+                <li>Let's have some different text!</li>
+                <li>In a list!</li>
+            </ul>
+        </my-paragraph>
     </body>
 </html>

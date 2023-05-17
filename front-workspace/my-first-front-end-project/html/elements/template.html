@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template -->
-<!-- https://www.w3schools.com/tags/tag_template.asp -->
+<!-- https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots -->
 <html lang="en">
     <head>
         <meta charset="UTF-8"/>
@@ -33,14 +33,16 @@
     </body>
 
     <script>
-        var myArr = ["Audi", "BMW", "Ford", "Honda", "Jaguar", "Nissan"];
+        const myArr = ["Audi", "BMW", "Ford", "Honda", "Jaguar", "Nissan"];
 
         function showContent() {
-            var temp, item, a, i;
-            temp = document.getElementsByTagName("template")[0];
-            //get the div element from the template:
-            item = temp.content.querySelector("div");
-            //for each item in the array:
+            let tempElement, item, a, i;
+            tempElement = document.getElementsByTagName("template")[0];
+
+            // get the div element from the template:
+            item = tempElement.content.querySelector("div");
+
+            // for each item in the array:
             for (i = 0; i < myArr.length; i++) {
                 //Create a new node, based on the template:
                 a = document.importNode(item, true);
