@@ -1,146 +1,264 @@
 {
     "http_endpoint": ":8155",
     "grpc_endpoint": ":8156",
+    "pprof_endpoint": ":8157",
     "stream_step_size": 1000,
-    "std_log":
-        {
-            "level": "info",
-            "file": "/var/log/xiaoduo/query-sdk.log",
-            "err_file": "/var/log/xiaoduo/query-sdk.err.log",
-            "app_name": "query-sdk",
-            "auto_init": true,
+    "std_log": {
+        "level": "info",
+        "file": "/var/log/xiaoduo/query-sdk.log",
+        "err_file": "/var/log/xiaoduo/query-sdk.err.log",
+        "app_name": "query-sdk",
+        "auto_init": true
+    },
+    "api_log": {
+        "level": "info",
+        "file": "/var/log/xiaoduo/query-sdk.api.log",
+        "app_name": "query-sdk",
+        "auto_init": true
+    },
+    "switcher": ["10.20.0.125:2379"],
+    "rate_limit": {
+        "default": {
+            "impala": {
+                "qpm": 600,
+                "max": 10
+            },
+            "clickhouse": {
+                "qpm": 600,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            },
+            "postgres":{
+                "qpm": 1200,
+                "qps": 20,
+                "max": 10
+            }
         },
-    "api_log":
-        {
-            "level": "info",
-            "file": "/var/log/xiaoduo/query-sdk.api.log",
-            "app_name": "query-sdk",
-            "auto_init": true,
+        "config-check": {
+            "impala": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            },
+            "postgres":{
+                "qpm": 1200,
+                "qps": 20,
+                "max": 10
+            }
         },
-    "switcher": ["etcd001:2379"],
-    "rate_limit":
-        {
-            "default":
-                {
-                    "impala": { "qpm": 3000, "qps": 50, "max": 50 },
-                    "clickhouse": { "qpm": 3000, "qps": 50, "max": 50 },
-                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
-                },
-            "config-check":
-                {
-                    "impala": { "qpm": 3000, "qps": 50, "max": 50 },
-                    "clickhouse": { "qpm": 3000, "qps": 50, "max": 50 },
-                },
-            "ticket":
-                {
-                    "impala": { "qpm": 30, "qps": 1, "max": 10 },
-                    "clickhouse": { "qpm": 60, "qps": 4, "max": 2 },
-                },
-            "opmanagement":
-                {
-                    "impala": { "qpm": 30, "qps": 1, "max": 10 },
-                    "clickhouse": { "qpm": 30, "qps": 1, "max": 2 },
-                },
-            "log":
-                {
-                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
-                    "clickhouse": { "qpm": 1200, "qps": 20, "max": 20 },
-                },
-            "data-visual":
-                {
-                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
-                    "clickhouse": { "qpm": 1200, "qps": 20, "max": 40 },
-                },
-            "qc-object":
-                {
-                    "impala": { "qpm": 6000, "qps": 100, "max": 50 },
-                    "clickhouse": { "qpm": 6000, "qps": 100, "max": 50 },
-                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
-                },
-            "keban-group":
-                {
-                    "impala": { "qpm": 180, "qps": 3, "max": 3 },
-                    "clickhouse": { "qpm": 180, "qps": 3, "max": 3 },
-                },
-            "x-data-tb":
-                {
-                    "impala": { "qpm": 6000, "qps": 100, "max": 50 },
-                    "clickhouse": { "qpm": 6000, "qps": 100, "max": 50 },
-                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
-                },
-            "x-data-1111-screen":
-                {
-                    "impala": { "qpm": 300, "qps": 5, "max": 5 },
-                    "clickhouse": { "qpm": 4000, "qps": 75, "max": 40 },
-                },
-            "x-data-x-data":
-                {
-                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
-                    "clickhouse": { "qpm": 1800, "qps": 30, "max": 30 },
-                    "postgres": { "qpm": 6000, "qps": 100, "max": 50 },
-                },
-            "x-data-xqc":
-                {
-                    "impala": { "qpm": 600, "qps": 10, "max": 10 },
-                    "clickhouse": { "qpm": 1800, "qps": 30, "max": 30 },
-                },
+        "data-visual":{
+            "impala": {
+                "qpm": 600,
+                "max": 10
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 41
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
         },
-    "storage":
-        {
-            "ping": "20s",
-            "impala":
-                {
-                    "default":
-                        [
-                            "10.22.113.169:21050",
-                            "10.22.113.168:21050",
-                            "10.22.113.173:21050",
-                        ],
-                    "bee":
-                        [
-                            "10.22.113.169:21000",
-                            "10.22.113.168:21000",
-                            "10.22.113.173:21000",
-                        ],
-                },
-            "clickhouse":
-                {
-                    "log":
-                        [
-                            "tcp://10.22.131.153:9000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.131.154:9000,10.22.131.217:9000&max_memory_usage=20000000000",
-                            "tcp://10.22.131.154:9000?read_timeout=300&alt_hosts=10.22.131.153:9000,10.22.131.217:9000&max_memory_usage=20000000000",
-                            "tcp://10.22.131.217:9000?read_timeout=300&alt_hosts=10.22.131.153:9000,10.22.131.154:9000&max_memory_usage=20000000000",
-                        ],
-                    "default":
-                        [
-                            "tcp://10.22.113.169:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.113.168:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.113.168:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.113.173:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.168:19000&max_memory_usage=20000000000",
-                        ],
-                    "mp":
-                        [
-                            "tcp://10.22.113.169:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.113.168:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.113.168:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.173:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.113.173:19000?read_timeout=300&alt_hosts=10.22.113.169:19000,10.22.113.168:19000&max_memory_usage=20000000000",
-                        ],
-                    "keban":
-                        [
-                            "tcp://10.22.133.209:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.133.210:19000,10.22.133.211:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.133.210:19000?read_timeout=300&alt_hosts=10.22.133.209:19000,10.22.133.211:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.133.211:19000?read_timeout=300&alt_hosts=10.22.133.209:19000,10.22.133.210:19000&max_memory_usage=20000000000",
-                        ],
-                    "report":
-                        [
-                            "tcp://10.22.133.213:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.22.133.214:19000&max_memory_usage=20000000000",
-                            "tcp://10.22.133.213:29000?read_timeout=300&alt_hosts=10.22.133.214:29000&max_memory_usage=20000000000",
-                        ],
-                },
-            "postgres":
-                {
-                    "qcobject":
-                        [
-                            "host=pgm-k2j93k10d62w052c112880.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=qc_object dbname=qc_object password=qcobjadmin sslmode=disable TimeZone=Asia/Shanghai",
-                        ],
-                },
+        "csm":{
+            "impala": {
+                "qpm": 240,
+                "max": 4
+            },
+            "clickhouse": {
+                "qpm": 240,
+                "max": 4
+            },
+            "mysql": {
+                "qpm": 240,
+                "max": 4
+            }
+        },  
+        "snowball":{
+            "impala": {
+                "qpm": 2,
+                "max": 1
+            },
+            "clickhouse": {
+                "qpm": 2,
+                "max": 1
+            },
+            "mysql": {
+                "qpm": 100,
+                "max": 20
+            }
+        },      
+        "x-data-x-data": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
         },
+        "x-data-screen": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-shandian": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 600,
+                "max": 10
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xcm": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xz": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-jd": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1800,
+                "max": 30
+            }
+        },
+        "x-data-csm": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-x-data-trans": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xqc": {
+            "impala": {
+                "qpm": 600,
+                "max": 5
+            },
+            "clickhouse": {
+                "qps": 900,
+                "max": 10
+            }
+        },
+        "keban-group": {
+            "impala": {
+                "qpm": 10, 
+                "max": 3
+            },
+            "clickhouse": {
+                "qpm": 10,
+                "max": 10
+            }
+        }
+    },
+    "storage": {
+        "ping": "20s",
+        "impala": {
+            "default": ["10.20.2.29:21050","10.20.133.176:21050","10.20.133.149:21050"],
+            "bee": ["10.20.2.29:21000","10.20.133.176:21000","10.20.133.149:21000"]
+        },
+        "clickhouse": {
+            "default": ["tcp://10.20.2.29:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
+            "mp": ["tcp://10.20.2.29:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
+            "keban": ["tcp://10.20.133.173:19000?debug=false"],
+            "log": ["tcp://10.20.131.58:9000?debug=false", "tcp://10.20.131.14:9000?debug=false"]
+        },
+        "mysql" : {
+            "default": ["select.user:hT0KABSS*X@tcp(172.16.124.5:3306)/jira?charset=utf8&parseTime=true"],
+            "snowball": ["root:Mysql1234!@tcp(10.20.0.173:3306)/snowball?charset=utf8&parseTime=true"]
+        },
+        "postgres": {
+			"default": [
+			    "host=10.20.133.149 port=5432 user=postgres dbname=mayfly password=mysecretpassword sslmode=disable TimeZone=Asia/Shanghai"
+			],
+			"goodscenter": [
+				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=barracks dbname=barracks password=BaxSn2T$o89NJFs sslmode=disable TimeZone=Asia/Shanghai"
+			],
+            "keban": [
+				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=keban dbname=keban password=1tpSAlm2PJww5Bc sslmode=disable TimeZone=Asia/Shanghai"
+			],
+            "cvd_midea": [
+				"host=pgm-k2j9we6rl7v00b3t.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=cvd_midea dbname=cvd password=Postgres1234!  sslmode=disable TimeZone=Asia/Shanghai"
+			],
+			"open": [
+				"host=pgm-k2j9we6rl7v00b3t.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=open dbname=open password=pGSrNwgXyKiEIua sslmode=disable TimeZone=Asia/Shanghai"
+			]
+        }
+    }
 }
