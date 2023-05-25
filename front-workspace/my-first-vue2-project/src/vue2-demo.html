@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>first vue demo</title>
+
+        <!-- import vue -->
+        <script src="../public/vue.js"></script>
+
+    </head>
+
+    <body>
+        <!-- prepare a element as container -->
+        <div id="app">
+            <h1>
+                Hello World!
+                {{ message }}
+            </h1>
+        </div>
+
+
+        <!-- using 'v-bind' command to bind data with DOM attribute -->
+        <div id="app-2">
+          <span v-bind:title="message">
+            鼠标悬停几秒钟查看此处动态绑定的提示信息！
+          </span>
+        </div>
+
+
+        <!-- using 'v-if' command to bind data with DOM structure -->
+        <div id="app-3">
+            <p v-if=false>现在你看不到我了</p>
+            <p v-if="seen">现在你看到我了</p>
+        </div>
+
+
+        <!-- using 'v-for' command to iterate and render a list -->
+        <div id="app-4">
+            <ol>
+                <li v-for="todo in todos">
+                    {{ todo.text }}
+                </li>
+            </ol>
+            <ul>
+                <li v-for="todo in todos">
+                    {{ todo.text }}
+                </li>
+            </ul>
+        </div>
+
+        <!-- using 'v-on' command to create an event listener and attach to DOM -->
+        <div id="app-5">
+            <p>{{ message }}</p>
+            <button v-on:click="reverseMessage">反转消息</button>
+        </div>
+
+        <!-- using 'v-model' command to combine the form and data -->
+        <div id="app-6">
+            <p>{{ message }}</p>
+            <input v-model="message">
+        </div>
+
+        <script>
+            <!-- create Vue application instance -->
+
+            const app = new Vue(
+                {
+                    // 绑定至指定DOM
+                    el: '#app',
+                    data: {
+                        message: 'Hello Vue!'
+                    }
+                }
+            );
+
+            const app2 = new Vue({
+                el: '#app-2',
+                data: {
+                    message: '页面加载于 ' + new Date().toLocaleString()
+                }
+            });
+
+
+            const app3 = new Vue({
+                el: '#app-3',
+                data: {
+                    seen: true
+                }
+            });
+
+
+            const app4 = new Vue({
+                el: '#app-4',
+                data: {
+                    todos: [
+                        {text: '学习 JavaScript'},
+                        {text: '学习 Vue'},
+                        {text: '整个牛项目'}
+                    ]
+                }
+            });
+
+            const app5 = new Vue({
+                el: '#app-5',
+                data: {
+                    message: 'Hello Vue.js!'
+                },
+                methods: {
+                    reverseMessage: function () {
+                        // reverse all characters in the string
+                        this.message = this.message.split('').reverse().join('');
+                    }
+                }
+            });
+
+
+            const app6 = new Vue({
+                el: '#app-6',
+                data: {
+                    message: 'Hello Vue!'
+                }
+            });
+        </script>
+
+        <script>
+            // 关闭生产环境下使用开发版本Vue的告警
+            Vue.config.productionTip = false;
+        </script>
+    </body>
+</html>
