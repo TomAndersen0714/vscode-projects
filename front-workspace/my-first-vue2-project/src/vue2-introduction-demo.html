@@ -19,7 +19,7 @@
         </div>
 
 
-        <!-- using 'v-bind' command to bind data with DOM attribute -->
+        <!-- using 'v-bind' directive to bind data with DOM attribute -->
         <div id="app-2">
           <span v-bind:title="message">
             鼠标悬停几秒钟查看此处动态绑定的提示信息！
@@ -27,14 +27,14 @@
         </div>
 
 
-        <!-- using 'v-if' command to bind data with DOM structure -->
+        <!-- using 'v-if' directive to bind data with DOM structure -->
         <div id="app-3">
             <p v-if=false>现在你看不到我了</p>
             <p v-if="seen">现在你看到我了</p>
         </div>
 
 
-        <!-- using 'v-for' command to iterate and render a list -->
+        <!-- using 'v-for' directive to iterate and render a list -->
         <div id="app-4">
             <ol>
                 <li v-for="todo in todos">
@@ -42,30 +42,49 @@
                 </li>
             </ol>
             <ul>
+                <!-- 'v-for' directive to generate multi element dynamically -->
                 <li v-for="todo in todos">
                     {{ todo.text }}
                 </li>
             </ul>
         </div>
 
-        <!-- using 'v-on' command to create an event listener and attach to DOM -->
+        <!-- using 'v-on' directive to create an event listener and attach to DOM -->
         <div id="app-5">
             <p>{{ message }}</p>
             <button v-on:click="reverseMessage">反转消息</button>
         </div>
 
-        <!-- using 'v-model' command to combine the form and data -->
+        <!-- using 'v-model' directive to combine the form and data -->
         <div id="app-6">
             <p>{{ message }}</p>
             <input v-model="message">
+        </div>
+
+
+        <div id="app-7">
+            <ol>
+                <!--
+                  Now we provide each todo-item with the todo object
+                  it's representing, so that its content can be dynamic.
+                  We also need to provide each component with a "key" to replace the default
+                  key of the li element, which will be explained later.
+                -->
+                <todo-item
+                        v-for="item in groceryList"
+                        v-bind:todo_prop="item"
+                        v-bind:key="item.id"
+                ></todo-item>
+            </ol>
         </div>
 
         <script>
             <!-- create Vue application instance -->
 
             const app = new Vue(
+                // passing an options object
                 {
-                    // 绑定至指定DOM
+                    // bind to specific dom as root component in the tree of components
                     el: '#app',
                     data: {
                         message: 'Hello Vue!'
@@ -120,6 +139,32 @@
                     message: 'Hello Vue!'
                 }
             });
+
+
+            Vue.component(
+                // define a new component called todo-item
+                'todo-item',
+                {
+                    // passing data into to components with props, PS: javascript variable
+                    props: ['todo_prop'],
+                    template: '<li>' +
+                        '<p>This is a todo item id {{todo_prop.id}}</p>' +
+                        '<p>This is a todo item text {{todo_prop.text}}</p>' +
+                        '</li>'
+                });
+
+            const app7 = new Vue(
+                {
+                    el: '#app-7',
+                    data: {
+                        groceryList: [
+                            {id: 0, text: 'Vegetables'},
+                            {id: 1, text: 'Cheese'},
+                            {id: 2, text: 'Whatever else humans are supposed to eat'}
+                        ]
+                    }
+                }
+            );
         </script>
 
         <script>

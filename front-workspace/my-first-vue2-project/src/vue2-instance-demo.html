@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>vue2 instance demo</title>
+        <script src="../public/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <h1>
+                {{ a }}
+            </h1>
+        </div>
+
+        <div id="app1">
+            <h1>
+                {{ a }}
+            </h1>
+        </div>
+
+        <!-- instance demo -->
+        <script>
+            // define a data object
+            var data = {
+                a: 1,
+                func: () => {
+                    return "this is a test func";
+                }
+            };
+
+            // create a Vue2 instance
+            var vm = new Vue(
+                {
+                    el: "#app",
+                    // The object is added to a Vue instance
+                    data: data
+                }
+            );
+
+
+            // Getting the property on the instance
+            // returns the one from the original data
+            window.console.log(vm.a === data.a);
+            window.console.log(vm.func === data.func);
+        </script>
+
+        <!-- instance data demo -->
+        <script>
+            // NOTE: reactive update
+            // When this data changes, the view will re-render.
+            // It should be noted that properties in data are only reactive if they existed when the instance was created.
+            vm.a = 2;
+            vm.b = "hi";
+
+            window.console.log("vm.$data === data = " + (vm.$data === data)); // => true
+            window.console.log("vm.$el === document.getElementById('app') = " + (vm.$el === document.getElementById('app'))); // => true
+        </script>
+
+        <!-- instance method demo -->
+        <script>
+            // $watch is an instance method
+            vm.$watch('a', function (newValue, oldValue) {
+                // This callback will be called when `vm.a` changes
+                window.console.log(`newValue of 'a': ${newValue}`);
+                window.console.log(`oldValue of 'a': ${oldValue}`);
+            });
+        </script>
+
+        <!-- instance lifecycle hooks demo -->
+        <script>
+            vm1 = new Vue({
+                el: "#app1",
+                data: {
+                    a: 1
+                },
+                // invoke when vue instance created
+                created: function () {
+                    // `this` points to the vm instance
+                    console.log('a is: ' + this.a);
+                },
+
+                updated: function () {
+                    // `this` points to the vm instance
+                    console.log('updated a is: ' + this.a);
+                }
+            });
+        </script>
+    </body>
+
+
+</html>

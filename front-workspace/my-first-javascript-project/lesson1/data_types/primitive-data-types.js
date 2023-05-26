@@ -23,6 +23,14 @@ console.log("typeof title = " + typeof title);
 console.log("title = " + title);
 console.log();
 
+const name = 'Alice';
+const age = 25;
+
+// NOTE: string template
+// string template is a kind of string which is quoted with backticks
+const message = `My name is ${name} and I'm ${age} years old.`;
+console.log(message);
+
 // Number
 // NOTE: All number is IEEE754 64-bit float
 let length = 15;
