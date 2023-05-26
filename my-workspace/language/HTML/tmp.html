@@ -1,48 +1,55 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>在HTML中引用JavaScript的变量</title>
-        <script type="text/javascript">
-            var foobar = "foobar"; //创建一个全局变量“foobar”
-            function var2pass() {
-                document.getElementById("textfield").value = foobar; //给HTML元素的value属性赋值
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-                alert("应用变量成功！");
-            }
-            function displayVar() {
-                alert("变量值为" + foobar);
-            }
-        </script>
-    </head>
-    <body>
-        <h2>在HTML中引用JavaScript的变量</h2>
-        <hr />
-        <br />
-        <h5>单机相应的按钮……</h5>
-        <form name="form1" method="post" action="">
-            <label>
-                <input type="text" name="textfield" id="textfield" />
-            </label>
-            <!-- 绑定onclick事件 -->
-            <label>
-                <input
-                    type="button"
-                    name="button"
-                    id="button"
-                    value="显示变量"
-                    onclick="javascript: void displayVar();"
-                />
-            </label>
-            <!-- 绑定onclick事件 -->
-            <label>
-                <input
-                    type="button"
-                    name="button2"
-                    id="button2"
-                    value="引用变量"
-                    onclick="javascript: void var2pass();"
-                />
-            </label>
-        </form>
-    </body>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=utf-8" />
+    <title></title>
+    <style type="text/css">
+        table.diff {font-family:Courier; border:medium;}
+        .diff_header {background-color:#e0e0e0}
+        td.diff_header {text-align:right}
+        .diff_next {background-color:#c0c0c0}
+        .diff_add {background-color:#aaffaa}
+        .diff_chg {background-color:#ffff77}
+        .diff_sub {background-color:#ffaaaa}
+    </style>
+</head>
+
+<body>
+    
+    <table class="diff" id="difflib_chg_to0__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to0__1"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="from0_1">1</td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="to0_1">1</td><td nowrap="nowrap"></td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to0__1">n</a></td><td class="diff_header" id="from0_2">2</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;Hello,&nbsp;this&nbsp;is&nbsp;the&nbsp;o<span class="diff_chg">r</span>i<span class="diff_chg">g</span>i<span class="diff_chg">nal</span>&nbsp;text.</td><td class="diff_next"><a href="#difflib_chg_to0__1">n</a></td><td class="diff_header" id="to0_2">2</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;Hello,&nbsp;this&nbsp;is&nbsp;the&nbsp;<span class="diff_add">m</span>o<span class="diff_chg">d</span>i<span class="diff_chg">f</span>i<span class="diff_chg">ed</span>&nbsp;text.</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_3">3</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;are&nbsp;some&nbsp;lines&nbsp;here.</td><td class="diff_next"></td><td class="diff_header" id="to0_3">3</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;are&nbsp;some&nbsp;lines&nbsp;here.</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_4">4</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;And&nbsp;some&nbsp;<span class="diff_chg">m</span>o<span class="diff_chg">re</span>&nbsp;lines.</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_4">4</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;And&nbsp;some&nbsp;<span class="diff_chg">additi</span>o<span class="diff_chg">nal</span>&nbsp;lines.</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_5">5</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;</td><td class="diff_next"></td><td class="diff_header" id="to0_5">5</td><td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+        </tbody>
+    </table>
+    <table class="diff" summary="Legends">
+        <tr> <th colspan="2"> Legends </th> </tr>
+        <tr> <td> <table border="" summary="Colors">
+                      <tr><th> Colors </th> </tr>
+                      <tr><td class="diff_add">&nbsp;Added&nbsp;</td></tr>
+                      <tr><td class="diff_chg">Changed</td> </tr>
+                      <tr><td class="diff_sub">Deleted</td> </tr>
+                  </table></td>
+             <td> <table border="" summary="Links">
+                      <tr><th colspan="2"> Links </th> </tr>
+                      <tr><td>(f)irst change</td> </tr>
+                      <tr><td>(n)ext change</td> </tr>
+                      <tr><td>(t)op</td> </tr>
+                  </table></td> </tr>
+    </table>
+</body>
+
 </html>
+
+Process finished with exit code 0
