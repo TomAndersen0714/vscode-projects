@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS dim ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary;
 
 
-DROP TABLE dim.voc_question_b_detail_local ON CLUSTER cluster_3s_2r NO DELAY;
+DROP TABLE IF EXISTS dim.voc_question_b_detail_local ON CLUSTER cluster_3s_2r NO DELAY;
 
 CREATE TABLE IF NOT EXISTS dim.voc_question_b_detail_local ON CLUSTER cluster_3s_2r
 (
@@ -30,8 +30,7 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-PARTITION BY day
-ORDER BY (shop_id, snick)
+ORDER BY (company_id, group_id, sid)
 SETTINGS index_granularity = 8192, storage_policy = 'rr';
 
 

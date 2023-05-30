@@ -1,19 +1,9 @@
-    `company_id` String,
-    `sid` String,
-    `question_b_qids` Array(String),
-    `question_b_name` String,
-    `group_id` String,
-    `group_name` String,
-    `group_level` Int32,
-    `parent_group_id` String,
-    `parent_group_name` String,
-    `first_group_id` String,
-    `first_group_name` String,
-    `second_group_id` String,
-    `second_group_name` String,
-    `third_group_id` String,
-    `third_group_name` String,
-    `fourth_group_id` String,
-    `fourth_group_name` String,
-    `create_time` Int64,
-    `update_time` Int64
+ALTER TABLE dim.question_b_local ON CLUSTER cluster_3s_2r
+ADD COLUMN IF NOT EXISTS `question_sample` Array(String) AFTER `subcategory_ids`,
+ADD COLUMN IF NOT EXISTS `sid` String AFTER `question_sample`
+SETTINGS database_atomic_wait_for_drop_and_detach_synchronously = 1;
+
+ALTER TABLE dim.question_b_all ON CLUSTER cluster_3s_2r
+ADD COLUMN IF NOT EXISTS `question_sample` Array(String) AFTER `subcategory_ids`,
+ADD COLUMN IF NOT EXISTS `sid` String AFTER `question_sample`
+SETTINGS database_atomic_wait_for_drop_and_detach_synchronously = 1;
