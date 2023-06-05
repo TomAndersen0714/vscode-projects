@@ -1,43 +1,77 @@
-{
-	"apiVersion": "v1",
-	"kind": "Service",
-	"metadata": {
-		"annotations": {},
-		"creationTimestamp": "2021-05-11T11:44:34Z",
-		"name": "query-panel-service",
-		"namespace": "dev-lane",
-		"resourceVersion": "337851375",
-		"selfLink": "/api/v1/namespaces/ns-prod/services/query-panel-service",
-		"uid": "db04958d-f606-4200-97f6-d01a8430657b"
-	},
-	"spec": {
-		"ports": [
-			{
-				"name": "http",
-				"port": 8080,
-				"protocol": "TCP",
-				"targetPort": 8096
-			},
-			{
-				"name": "prof",
-				"port": 8081,
-				"protocol": "TCP",
-				"targetPort": 18096
-			},
-			{
-				"name": "grpc",
-				"port": 8082,
-				"protocol": "TCP",
-				"targetPort": 28096
-			}
-		],
-		"selector": {
-			"app": "query-panel"
-		},
-		"sessionAffinity": "None",
-		"type": "ClusterIP"
-	},
-	"status": {
-		"loadBalancer": {}
-	}
-}
+[
+    {
+        "company_id": "63fc50f0a06a5ecd9a249ac9",
+        "shop_id": "60b72d421edc070017428380",
+        "platform": "tb"
+    },
+    {
+        "company_id": "63fc50f0a06a5ecd9a249ac9",
+        "shop_id": "61616faa112fa5000dcc7fba",
+        "platform": "jd"
+    },
+    {
+        "company_id": "6242bf16b9caa9fa6158fe3c",
+        "shop_id": "603c98af400eb6001029be86",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6242bf16b9caa9fa6158fe3c",
+        "shop_id": "58ddbef5369f9931fd6a1cb5",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6242bf16b9caa9fa6158fe3c",
+        "shop_id": "614aa89338af59001621003d",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6242bf16b9caa9fa6158fe3c",
+        "shop_id": "6151272333743000150e1869",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6242bf16b9caa9fa6158fe3c",
+        "shop_id": "5e8be6d0e4f3320016ea3faa",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "600553e5d8891f00111e4a71",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "62416239773256001c03f83b",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "626bd05db89a800019266951",
+        "platform": "tb"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "62bc062ce421c700184fcd81",
+        "platform": "jd"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "5d679d909a560700130403d1",
+        "platform": "jd"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "62bbe4ac780b2b001d00d780",
+        "platform": "jd"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "62bbebe8fe41e20019695d7e",
+        "platform": "jd"
+    },
+    {
+        "company_id": "6239c9270707ce52b8130b88",
+        "shop_id": "6234887226263500182a0858",
+        "platform": "jd"
+    }
+]

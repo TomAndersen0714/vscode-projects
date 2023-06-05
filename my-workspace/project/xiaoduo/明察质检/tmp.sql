@@ -1,9 +1,8 @@
-ALTER TABLE dim.question_b_local ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `question_sample` Array(String) AFTER `subcategory_ids`,
-ADD COLUMN IF NOT EXISTS `sid` String AFTER `question_sample`
-SETTINGS database_atomic_wait_for_drop_and_detach_synchronously = 1;
-
-ALTER TABLE dim.question_b_all ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `question_sample` Array(String) AFTER `subcategory_ids`,
-ADD COLUMN IF NOT EXISTS `sid` String AFTER `question_sample`
-SETTINGS database_atomic_wait_for_drop_and_detach_synchronously = 1;
+6239c9270707ce52b8130b88 600553e5d8891f00111e4a71 tb
+6239c9270707ce52b8130b88 62416239773256001c03f83b tb
+6239c9270707ce52b8130b88 626bd05db89a800019266951 tb
+6239c9270707ce52b8130b88 62bc062ce421c700184fcd81 jd
+6239c9270707ce52b8130b88 5d679d909a560700130403d1 jd
+6239c9270707ce52b8130b88 62bbe4ac780b2b001d00d780 jd
+6239c9270707ce52b8130b88 62bbebe8fe41e20019695d7e jd
+6239c9270707ce52b8130b88 6234887226263500182a0858 jd
