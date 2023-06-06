@@ -1,8 +1,23 @@
-6239c9270707ce52b8130b88 600553e5d8891f00111e4a71 tb
-6239c9270707ce52b8130b88 62416239773256001c03f83b tb
-6239c9270707ce52b8130b88 626bd05db89a800019266951 tb
-6239c9270707ce52b8130b88 62bc062ce421c700184fcd81 jd
-6239c9270707ce52b8130b88 5d679d909a560700130403d1 jd
-6239c9270707ce52b8130b88 62bbe4ac780b2b001d00d780 jd
-6239c9270707ce52b8130b88 62bbebe8fe41e20019695d7e jd
-6239c9270707ce52b8130b88 6234887226263500182a0858 jd
+dim.category_subcategory_all
+dim.category_subcategory_local
+dim.kaleidoscope_category_domain_all
+dim.kaleidoscope_category_domain_local
+dim.question_b_all
+dim.question_b_local
+ods.xdrs_logs_all
+ods.xdrs_logs_local
+
+
+dim.voc_question_b_all
+dim.voc_question_b_detail_all
+dwd.voc_chat_log_detail_all
+dwd.voc_chat_log_detail_local
+dwd.voc_cnick_list_all
+dwd.voc_cnick_list_local
+ods.order_event_all
+ods.order_event_local
+
+
+SELECT number FROM numbers(10)
+INTO OUTFILE 'export.avro'
+FORMAT Avro;
