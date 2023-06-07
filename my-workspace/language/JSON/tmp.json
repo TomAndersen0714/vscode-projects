@@ -1,9 +1,93 @@
-58ddbef5369f9931fd6a1cb5
-5e8be6d0e4f3320016ea3faa
-600553e5d8891f00111e4a71
-603c98af400eb6001029be86
-60b72d421edc070017428380
-614aa89338af59001621003d
-6151272333743000150e1869
-62416239773256001c03f83b
-626bd05db89a800019266951
+[
+    {
+        "Plan": {
+            "Node Type": "Expression",
+            "Description": "Projection",
+            "Plans": [
+                {
+                    "Node Type": "SettingQuotaAndLimits",
+                    "Description": "Set limits and quota after reading from storage",
+                    "Plans": [
+                        {
+                            "Node Type": "Limit",
+                            "Description": "preliminary LIMIT (without OFFSET)",
+                            "Plans": [
+                                {
+                                    "Node Type": "Union",
+                                    "Plans": [
+                                        {
+                                            "Node Type": "Expression",
+                                            "Description": "( + Before ORDER BY)",
+                                            "Plans": [
+                                                {
+                                                    "Node Type": "Limit",
+                                                    "Description": "preliminary LIMIT (with OFFSET)",
+                                                    "Plans": [
+                                                        {
+                                                            "Node Type": "Filter",
+                                                            "Description": "WHERE",
+                                                            "Plans": [
+                                                                {
+                                                                    "Node Type": "SettingQuotaAndLimits",
+                                                                    "Description": "Set limits and quota after reading from storage",
+                                                                    "Plans": [
+                                                                        {
+                                                                            "Node Type": "ReadFromMergeTree",
+                                                                            "Indexes": [
+                                                                                {
+                                                                                    "Type": "MinMax",
+                                                                                    "Keys": [
+                                                                                        "day"
+                                                                                    ],
+                                                                                    "Condition": "and(and((day in (-inf, 20230519]), (day in [20230517, +inf))), and((day in (-inf, 20230519]), (day in [20230517, +inf))))",
+                                                                                    "Initial Parts": 2287,
+                                                                                    "Selected Parts": 7,
+                                                                                    "Initial Granules": 491357,
+                                                                                    "Selected Granules": 2219
+                                                                                },
+                                                                                {
+                                                                                    "Type": "Partition",
+                                                                                    "Keys": [
+                                                                                        "day"
+                                                                                    ],
+                                                                                    "Condition": "and(and((day in (-inf, 20230519]), (day in [20230517, +inf))), and((day in (-inf, 20230519]), (day in [20230517, +inf))))",
+                                                                                    "Initial Parts": 7,
+                                                                                    "Selected Parts": 7,
+                                                                                    "Initial Granules": 2219,
+                                                                                    "Selected Granules": 2219
+                                                                                },
+                                                                                {
+                                                                                    "Type": "PrimaryKey",
+                                                                                    "Keys": [
+                                                                                        "shop_id"
+                                                                                    ],
+                                                                                    "Condition": "(shop_id in 1-element set)",
+                                                                                    "Initial Parts": 7,
+                                                                                    "Selected Parts": 7,
+                                                                                    "Initial Granules": 2219,
+                                                                                    "Selected Granules": 10
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Node Type": "ReadFromPreparedSource",
+                                            "Description": "Read from remote replica"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]
