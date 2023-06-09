@@ -1,93 +1,42 @@
 [
     {
-        "Plan": {
-            "Node Type": "Expression",
-            "Description": "Projection",
-            "Plans": [
-                {
-                    "Node Type": "SettingQuotaAndLimits",
-                    "Description": "Set limits and quota after reading from storage",
-                    "Plans": [
-                        {
-                            "Node Type": "Limit",
-                            "Description": "preliminary LIMIT (without OFFSET)",
-                            "Plans": [
-                                {
-                                    "Node Type": "Union",
-                                    "Plans": [
-                                        {
-                                            "Node Type": "Expression",
-                                            "Description": "( + Before ORDER BY)",
-                                            "Plans": [
-                                                {
-                                                    "Node Type": "Limit",
-                                                    "Description": "preliminary LIMIT (with OFFSET)",
-                                                    "Plans": [
-                                                        {
-                                                            "Node Type": "Filter",
-                                                            "Description": "WHERE",
-                                                            "Plans": [
-                                                                {
-                                                                    "Node Type": "SettingQuotaAndLimits",
-                                                                    "Description": "Set limits and quota after reading from storage",
-                                                                    "Plans": [
-                                                                        {
-                                                                            "Node Type": "ReadFromMergeTree",
-                                                                            "Indexes": [
-                                                                                {
-                                                                                    "Type": "MinMax",
-                                                                                    "Keys": [
-                                                                                        "day"
-                                                                                    ],
-                                                                                    "Condition": "and(and((day in (-inf, 20230519]), (day in [20230517, +inf))), and((day in (-inf, 20230519]), (day in [20230517, +inf))))",
-                                                                                    "Initial Parts": 2287,
-                                                                                    "Selected Parts": 7,
-                                                                                    "Initial Granules": 491357,
-                                                                                    "Selected Granules": 2219
-                                                                                },
-                                                                                {
-                                                                                    "Type": "Partition",
-                                                                                    "Keys": [
-                                                                                        "day"
-                                                                                    ],
-                                                                                    "Condition": "and(and((day in (-inf, 20230519]), (day in [20230517, +inf))), and((day in (-inf, 20230519]), (day in [20230517, +inf))))",
-                                                                                    "Initial Parts": 7,
-                                                                                    "Selected Parts": 7,
-                                                                                    "Initial Granules": 2219,
-                                                                                    "Selected Granules": 2219
-                                                                                },
-                                                                                {
-                                                                                    "Type": "PrimaryKey",
-                                                                                    "Keys": [
-                                                                                        "shop_id"
-                                                                                    ],
-                                                                                    "Condition": "(shop_id in 1-element set)",
-                                                                                    "Initial Parts": 7,
-                                                                                    "Selected Parts": 7,
-                                                                                    "Initial Granules": 2219,
-                                                                                    "Selected Granules": 10
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "Node Type": "ReadFromPreparedSource",
-                                            "Description": "Read from remote replica"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "60e4192bf7d2f001ca988e52",
+        "platform": "tb"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "5cac112e98ef4100118a9c9f",
+        "platform": "tb"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "6045bb797985c4000958a35c",
+        "platform": "jd"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "5edfa47c8f591c00163ef7d6",
+        "platform": "jd"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "5ec268eba4e6550015829402",
+        "platform": "jd"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "5eb8acf16119f0001cbdaa5f",
+        "platform": "jd"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "5e9d390d68283c002457b52f",
+        "platform": "jd"
+    },
+    {
+        "company_id": "5f747ba42c90fd0001254404",
+        "shop_id": "5e9d350bcff5ed002486ded8",
+        "platform": "jd"
     }
 ]

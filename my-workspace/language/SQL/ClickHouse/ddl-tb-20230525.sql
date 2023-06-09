@@ -1,15 +1,14 @@
 CREATE DATABASE IF NOT EXISTS dim ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary;
 
-
 DROP TABLE IF EXISTS dim.voc_question_b_detail_local ON CLUSTER cluster_3s_2r NO DELAY;
 
 CREATE TABLE IF NOT EXISTS dim.voc_question_b_detail_local ON CLUSTER cluster_3s_2r
 (
     `company_id` String,
     `sid` String,
-    `question_b_qids` Array(String),
     `question_b_name` String,
+    `question_b_qids` Array(String),
     `group_id` String,
     `group_name` String,
     `group_level` Int32,
