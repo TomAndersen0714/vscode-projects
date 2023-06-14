@@ -1,65 +1,31 @@
-SELECT
-    buyer_nick, real_buyer_nick,
-    target_times,
-    target_order_ids,
-    target_plat_goods_ids_s,
-    target_payments
-FROM (
-    SELECT
-        buyer_nick,
-        real_buyer_nick,
-        groupArray(time) AS _times,
-        arraySort(_times) AS times,
-        arraySort((x,y)->y, groupArray(order_id), _times) AS order_ids,
-        arraySort((x,y)->y, groupArray(plat_goods_ids), _times) AS plat_goods_ids_s,
-        arraySort((x,y)->y, groupArray(payment), _times) AS payments,
-        
-        arrayMap(
-            (x)->(hasAny(x, ['681460777534','718092987553'])),
-            plat_goods_ids_s
-        ) AS has_goods_s,
-        arrayMap(
-            (x,y)->(y=1),
-            arrayEnumerate(times),
-            arrayCumSum(has_goods_s) AS has_goods_sums
-        ) AS is_targets,
-        arrayFilter(
-            (x,y)->(y=1),
-            times,
-            is_targets
-        ) AS target_times,
-        arrayFilter(
-            (x,y)->(y=1),
-            order_ids,
-            is_targets
-        ) AS target_order_ids,
-        arrayFilter(
-            (x,y)->(y=1),
-            plat_goods_ids_s,
-            is_targets
-        ) AS target_plat_goods_ids_s,
-        arrayFilter(
-            (x,y)->(y=1),
-            payments,
-            is_targets
-        ) AS target_payments
-        
-    FROM (
-        SELECT
-            buyer_nick,
-            real_buyer_nick,
-            time,
-            order_id,
-            plat_goods_ids,
-            payment
-        FROM ods.order_event_tb_all
-        WHERE day BETWEEN 20230301 AND 20230331
-        AND shop_id = '5a48c5c489bc46387361988d'
-        AND status = 'succeeded'
-        ORDER BY
-            buyer_nick, real_buyer_nick, time ASC
-    )
-    GROUP BY
-        buyer_nick, real_buyer_nick
-    HAVING length(target_times)>1
-)
+SELECT DISTINCT b.name AS "标准名称",
+                g.full_name AS "分组",
+                r.name AS "质检项名称",
+                if(r.rule_category=1,'AI',if(r.rule_category=2,'人工','自定义')) AS "质检类型",
+                r.check AS "是否检查",
+                CASE
+                    WHEN r.alert_level=0 THEN '不告警'
+                    WHEN r.alert_level=1 THEN '初级告警'
+                    WHEN r.alert_level=2 THEN '中级告警'
+                    WHEN r.alert_level=3 THEN '高级高级'
+                    ELSE '-'
+                END AS "告警等级",
+                if(r.notify_way=1,'自动通知',if(r.notify_way=2,'手动通知','')) AS "告警通知方式",
+                r.score AS "质检分值"
+FROM (SELECT * FROM xqc_dim.qc_rule_all WHERE day=toYYYYMMDD(yesterday())) r,
+     (SELECT * FROM ods.xinghuan_qc_norm_all WHERE day=toYYYYMMDD(yesterday())) b,
+     (SELECT * FROM xqc_dim.qc_norm_group_full_all WHERE day=toYYYYMMDD(yesterday())) g
+WHERE r.day = toYYYYMMDD(yesterday())
+  AND r.day=b.day
+  AND g.day=b.day
+  AND r.platform = 'jd'
+  AND r.platform=b.platform
+  AND r.company_id = '6281c39e55fe7d13b95b5bcb'
+  AND r.company_id=b.company_id
+  AND r.qc_norm_id=b._id
+  AND r.qc_norm_id='630dec141e5b4234dfefa14c'
+  AND g.qc_norm_id=r.qc_norm_id
+  AND r.qc_norm_group_id=g._id
+  AND r.status=1
+
+ORDER BY g.full_name
