@@ -1,31 +1,84 @@
-SELECT DISTINCT b.name AS "标准名称",
-                g.full_name AS "分组",
-                r.name AS "质检项名称",
-                if(r.rule_category=1,'AI',if(r.rule_category=2,'人工','自定义')) AS "质检类型",
-                r.check AS "是否检查",
-                CASE
-                    WHEN r.alert_level=0 THEN '不告警'
-                    WHEN r.alert_level=1 THEN '初级告警'
-                    WHEN r.alert_level=2 THEN '中级告警'
-                    WHEN r.alert_level=3 THEN '高级高级'
-                    ELSE '-'
-                END AS "告警等级",
-                if(r.notify_way=1,'自动通知',if(r.notify_way=2,'手动通知','')) AS "告警通知方式",
-                r.score AS "质检分值"
-FROM xqc_dim.qc_rule_all r,
-     ods.xinghuan_qc_norm_all b,
-     xqc_dim.qc_norm_group_full_all g
-WHERE r.day = toYYYYMMDD(yesterday())
-  AND r.day=b.day
-  AND g.day=b.day
-  AND r.platform = 'tb'
-  AND r.platform=b.platform
-  AND r.company_id = '6281c39e55fe7d13b95b5bcb'
-  AND r.company_id=b.company_id
-  AND r.qc_norm_id=b._id
-  AND r.qc_norm_id='63058f491b58f39d18b97282'
-  AND g.qc_norm_id=r.qc_norm_id
-  AND r.qc_norm_group_id=g._id
-  AND r.status=1
-  
-ORDER BY g.full_name
+WITH dateDiff(
+    'day',
+    toDate('{{ day.start }}'),
+    toDate('{{ day.end }}')
+) + 1 AS subDays,
+toDate('{{ day.start }}') AS day_start,
+toDate('{{ day.end }}') AS day_end -- 取双倍周期的数据
+SELECT sid,
+    qids,
+    question AS `咨询场景`,
+    rank1 AS `排名`,
+    uniqCnt AS `人数`,
+    dialog_cnt AS `声量`,
+    cn_change AS `排名变化`,
+    first_group_name AS `一级场景`,
+    second_group_name AS `二级场景`,
+    third_group_name AS `三级场景`,
+    fourth_group_name AS `四级场景`
+FROM (
+        SELECT sid,
+            uniqCnt,
+            dialog_cnt,
+            rank1,
+            rank2 - rank1 AS rank_change,
+            IF (
+                rank2 = 0
+                OR rank_change = 0,
+                '-',
+                IF (
+                    rank_change > 0,
+                    concat('上升', toString(rank_change)),
+                    concat('下降', toString(abs(rank_change)))
+                )
+            ) AS cn_change
+        FROM (
+                SELECT sid,
+                    uniqCnt,
+                    dialog_cnt,
+                    rowNumberInAllBlocks() + 1 AS rank1
+                FROM (
+                        SELECT sid,
+                            groupBitmapOr(cnick_id_bitmap) AS uniqCnt,
+                            sum(dialog_sum) AS dialog_cnt
+                        FROM (
+                                SELECT *
+                                FROM dws.voc_goods_question_stat_all
+                                WHERE day BETWEEN toYYYYMMDD(day_start) AND toYYYYMMDD(day_end)
+                                    AND platform = 'jd'
+                            )
+                        GROUP BY sid
+                        ORDER BY uniqCnt DESC
+                        LIMIT 100
+                    )
+            ) GLOBAL
+            LEFT JOIN (
+                SELECT sid,
+                    uniqCnt2,
+                    rowNumberInAllBlocks() + 1 AS rank2
+                FROM (
+                        SELECT sid,
+                            groupBitmapOr(cnick_id_bitmap) AS uniqCnt2
+                        FROM (
+                                SELECT *
+                                FROM dws.voc_goods_question_stat_all
+                                WHERE day BETWEEN toYYYYMMDD(subtractDays(day_start, subDays)) AND toYYYYMMDD(subtractDays(day_start, 1))
+                                    AND platform = 'jd' -- 下拉店铺
+
+                            )
+                        GROUP BY sid
+                        ORDER BY uniqCnt2 DESC
+                    )
+            ) USING(sid)
+    ) AS rank_info GLOBAL
+    LEFT JOIN (
+        SELECT sid,
+            arrayStringConcat(question_b_qids, ',') as qids,
+            question_b_name AS question,
+            first_group_name,
+            second_group_name,
+            third_group_name,
+            fourth_group_name
+        FROM dim.voc_question_b_detail_all
+        WHERE company_id = '{{ company_id }}'
+    ) AS qb USING(sid)
