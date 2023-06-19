@@ -1,4 +1,18 @@
 {
+    "TokenUserInfo": {
+        "tenant_id": "q-6217343bd740a8402e35a196",
+        "user_id": "q-6217343bd740a8402e35a196",
+        "is_main_user": true
+    },
+    "StandardClaims": {
+        "exp": 1687179367,
+        "iss": "console.xiaoduoai.com"
+    }
+}
+
+
+
+{
     "product_key": "mc",
     "token": ""
 }
