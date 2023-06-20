@@ -1,18 +1,17 @@
 {
-    "TokenUserInfo": {
-        "tenant_id": "q-6217343bd740a8402e35a196",
-        "user_id": "q-6217343bd740a8402e35a196",
-        "is_main_user": true
-    },
-    "StandardClaims": {
-        "exp": 1687179367,
-        "iss": "console.xiaoduoai.com"
-    }
-}
-
-
-
-{
-    "product_key": "mc",
-    "token": ""
+	"_id" : ObjectId("62667edef10ae8b0c38a14dc"),
+	"create_time" : ISODate("2022-04-25T10:58:38.981Z"),
+	"update_time" : ISODate("2022-09-13T15:36:13.659Z"),
+	"name" : "杭州珀莱雅贸易有限公司",
+	"shot_name" : "珀莱雅",
+	"logo" : "",
+	"url" : "",
+	"default_platform" : "ks",
+	"platforms" : [
+		"ks"
+	],
+	"pri_center_id" : "q-62667edf808dd020cba76067",
+	"expired_time" : ISODate("2023-11-30T00:00:00Z"),
+	"downgrade_strategy" : 0,
+	"need_init" : false
 }

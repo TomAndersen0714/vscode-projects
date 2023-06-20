@@ -1,28 +1,18 @@
-dim.category_subcategory_all
-dim.category_subcategory_local
-dim.kaleidoscope_category_domain_all
-dim.kaleidoscope_category_domain_local
-dim.question_b_all
-dim.question_b_local
-dim.xdre_shop_all
-dim.xdre_shop_local
-ods.order_event_all
-ods.order_event_local
-ods.xdrs_logs_all
-ods.xdrs_logs_local
-
-
-dim.voc_question_b_all
-dim.voc_question_b_detail_all
-dim.voc_question_b_detail_local
-dim.voc_question_b_group_all
-dim.voc_question_b_group_detail_all
-dim.voc_question_b_group_detail_local
-dim.voc_question_b_group_local
-dim.voc_question_b_local
-dwd.voc_buyer_latest_order_all
-dwd.voc_buyer_latest_order_local
-dwd.voc_chat_log_detail_all
-dwd.voc_chat_log_detail_local
-dwd.voc_cnick_list_all
-dwd.voc_cnick_list_local
+_id String
+create_time String
+update_time String
+nick String
+is_create_qc_engine_shop String
+is_close String
+groups String
+nlu_code String
+shop_id String
+is_start_use String
+start_use_time DateTime64(3)
+expire_time DateTime64(3)
+version UInt32
+whitelist Array(String)
+is_phone_verified String
+phone String
+name String
+source String
