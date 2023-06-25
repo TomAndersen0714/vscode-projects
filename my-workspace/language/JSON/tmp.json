@@ -1,12 +1,18 @@
 {
-    {
-        "company_id": "62a6ff4d139537b9d531d96f",
-        "shop_id": "6302edf3fbfcd3001765e2e1",
-        "platform": "jd"
-    },
-    {
-        "company_id": "62a6ff4d139537b9d531d96f",
-        "shop_id": "62a6bf9c1aa2d0001cdc9550",
-        "platform": "jd"
-    }
+    "_id": ObjectId("62190059d58fe5c1dce5f411"),
+    "create_time": ISODate("2022-02-25T16:14:17.753Z"),
+    "update_time": ISODate("2023-02-27T03:50:41.478Z"),
+    "name": "厦门巢儿尚制电子商务有限公司",
+    "shot_name": "厦门巢儿电商",
+    "logo": "",
+    "url": "",
+    "default_platform": "jd",
+    "platforms": [
+        "jd",
+        "tb"
+    ],
+    "pri_center_id": "q-62190059ef67a5f713b89570",
+    "expired_time": ISODate("2023-10-23T15:59:59Z"),
+    "downgrade_strategy": 0,
+    "need_init": false
 }

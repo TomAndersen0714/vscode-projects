@@ -1,0 +1,14 @@
+_id
+create_time
+update_time
+name
+shot_name
+logo
+url
+default_platform
+platforms
+pri_center_id
+expired_time
+downgrade_strategy
+need_init
+white_list
