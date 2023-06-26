@@ -1,18 +1,73 @@
 {
-    "_id": ObjectId("62190059d58fe5c1dce5f411"),
-    "create_time": ISODate("2022-02-25T16:14:17.753Z"),
-    "update_time": ISODate("2023-02-27T03:50:41.478Z"),
-    "name": "厦门巢儿尚制电子商务有限公司",
-    "shot_name": "厦门巢儿电商",
-    "logo": "",
-    "url": "",
-    "default_platform": "jd",
-    "platforms": [
-        "jd",
-        "tb"
+    "ID": "63de27d1abf8de000165b457",
+    "Platform": "pdd",
+    "OrderID": "230204-349202051991963",
+    "OriginalOrderID": "230204-349202051991963",
+    "ShopID": "62f373ef006fa000159d4747",
+    "SellerID": "396224067",
+    "BuyerID": "4989974443",
+    "OriBuyerID": "",
+    "Payment": 0,
+    "Address": "",
+    "Province": "",
+    "City": "",
+    "Town": "",
+    "Street": "",
+    "DecryptAddress": "",
+    "Status": "shipped",
+    "OriginStatus": "",
+    "OrderType": "",
+    "StepTradeStatus": "",
+    "StepPaidFee": 0,
+    "PushStatus": "",
+    "StatusHistory": [
+        {
+            "Status": "group",
+            "Time": 1675503569
+        },
+        {
+            "Status": "shipped",
+            "Time": 1675513615
+        }
     ],
-    "pri_center_id": "q-62190059ef67a5f713b89570",
-    "expired_time": ISODate("2023-10-23T15:59:59Z"),
-    "downgrade_strategy": 0,
-    "need_init": false
+    "BuyerRemark": "",
+    "SellerMemo": "",
+    "BalanceUsed": "",
+    "SellerDiscount": "",
+    "OrderSellerPrice": "",
+    "PayType": "",
+    "FreightPrice": "",
+    "CreatedAt": 1675503569,
+    "UpdatedAt": 1675503565,
+    "ItemIDs": [
+        "0"
+    ],
+    "Tbext": null,
+    "Jdext": null,
+    "Pddext": {
+        "BuyerNick": "4989974443",
+        "StateDesc": "",
+        "Items": [
+            {
+                "ItemID": "0",
+                "ItemName": "",
+                "SkuID": "0",
+                "SkuName": "",
+                "Count": 1,
+                "Price": 0
+            }
+        ],
+        "Receiver": {
+            "Name": "",
+            "Phone": ""
+        },
+        "GroupOrderId": ""
+    },
+    "Lazy": true,
+    "NotInWhitelist": false,
+    "UpdateTime": "2023-02-04T12:26:55.982750245Z",
+    "UpdateDesc": "trade worker update",
+    "BuyerOpenUID": "",
+    "RealBuyerNick": "",
+    "LogisticsInfo": null
 }

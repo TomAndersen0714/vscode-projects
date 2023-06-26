@@ -1,8 +1,11 @@
-58ddbef5369f9931fd6a1cb5
-5e8be6d0e4f3320016ea3faa
-600553e5d8891f00111e4a71
-60b72d421edc070017428380
-614aa89338af59001621003d
-6151272333743000150e1869
-62416239773256001c03f83b
-626bd05db89a800019266951
+order_id String
+shop_id String
+buyer_nick String
+real_buyer_nick String
+payment Float64
+status String
+time DateTime('Asia/Shanghai')
+plat_goods_ids Array(String)
+step_trade_status String
+step_paid_fee Float64
+day Int32
