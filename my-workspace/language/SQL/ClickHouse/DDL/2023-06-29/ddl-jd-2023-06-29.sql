@@ -35,7 +35,7 @@ ENGINE = Distributed('cluster_3s_2r', 'ods', 'pdd_order_event_local', rand());
 CREATE DATABASE IF NOT EXISTS buffer ON CLUSTER cluster_3s_2r
 ENGINE=Ordinary;
 
--- DROP TABLE buffer.pdd_ods_order_event_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS buffer.pdd_ods_order_event_buffer ON CLUSTER cluster_3s_2r
+-- DROP TABLE buffer.ods_pdd_order_event_buffer ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE IF NOT EXISTS buffer.ods_pdd_order_event_buffer ON CLUSTER cluster_3s_2r
 AS ods.pdd_order_event_all
 ENGINE = Buffer('ods', 'pdd_order_event_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
