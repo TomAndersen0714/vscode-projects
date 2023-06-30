@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS ods ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary;
-
 -- DROP TABLE ods.pdd_order_event_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS ods.pdd_order_event_local ON CLUSTER cluster_3s_2r
 (

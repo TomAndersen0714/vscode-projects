@@ -1,11 +1,33 @@
-order_id String
-shop_id String
-buyer_nick String
-real_buyer_nick String
-payment Float64
-status String
-time DateTime('Asia/Shanghai')
-plat_goods_ids Array(String)
-step_trade_status String
-step_paid_fee Float64
-day Int32
+{
+    "platform": "pdd",
+    "order_id": "230618-012415179551798",
+    "shop_id": "62de652e7bb2770018572733",
+    "buyer_id": "2063349510",
+    "status": "shipped",
+    "created_at": 1687099835,
+    "updated_at": 1687099824,
+    "item_ids": [
+        "0"
+    ],
+    "pddext": {
+        "items": [
+            {
+                "item_id": "0",
+                "sku_id": "0",
+                "count": 1
+            }
+        ],
+        "receiver": {}
+    },
+    "status_history": [
+        {
+            "status": "group",
+            "time": 1687099835
+        },
+        {
+            "status": "shipped",
+            "time": 1688026206
+        }
+    ],
+    "original_order_id": "230618-012415179551798"
+}

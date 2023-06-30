@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS xqc_dim ON CLUSTER cluster_3s_2r
-ENGINE=Ordinary;
-
 -- DROP TABLE xqc_dim.company_latest_local ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS xqc_dim.company_latest_local ON CLUSTER cluster_3s_2r
 AS tmp.xinghuan_company_local
