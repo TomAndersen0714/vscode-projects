@@ -1,127 +1,138 @@
-            -- 查询每个当天没有下单的买家, 其对应的历史订单数据, 并更新其历史订单的状态字段, 以及版本日期
-            SELECT
-                20230628 AS day,
-                platform,
-                shop_id,
-                buyer_nick,
-                real_buyer_nick,
-                order_id,
-                arrayConcat(past_order_info.order_status_timestamps, past_order_update_info.order_status_timestamps) AS order_status_timestamps,
-                arrayConcat(past_order_info.order_statuses, past_order_update_info.order_statuses) AS order_statuses
-            FROM (
-                -- 查询历史创建的订单对应的订单状态数据, 剔除当天有下单的买家
-                SELECT
-                    *
-                FROM dwd.voc_buyer_latest_order_all
-                WHERE day = 20230627
-                AND shop_id GLOBAL IN (
-                    SELECT shop_id
-                    FROM xqc_dim.shop_latest_all
-                    WHERE company_id GLOBAL IN (
-                        SELECT _id
-                        FROM xqc_dim.company_latest_all
-                        WHERE has(white_list, 'VOC')
-                    )
-                    AND platform = 'dy'
-                )
-                -- 剔除当天有下单的买家
-                AND buyer_nick GLOBAL NOT IN (
-                    SELECT DISTINCT
-                        buyer_nick
-                    FROM remote('10.20.133.174:9000', 'ods.dy_order_event_all')
-                    WHERE day = 20230628
-                    AND shop_id GLOBAL IN (
-                        SELECT shop_id
-                        FROM xqc_dim.shop_latest_all
-                        WHERE company_id GLOBAL IN (
-                            SELECT _id
-                            FROM xqc_dim.company_latest_all
-                            WHERE has(white_list, 'VOC')
-                        )
-                        AND platform = 'dy'
-                    )
-                    AND status = 'created'
-                )
-            ) AS past_order_info
-            LEFT JOIN (
-                -- 查询当天的订单状态数据中, 属于历史订单的状态数据
-                SELECT
-                    platform,
-                    shop_id,
-                    buyer_nick,
-                    real_buyer_nick,
-                    order_id,
-                    arraySort(groupArray(timestamp)) AS order_status_timestamps,
-                    arraySort((x, y)->y, groupArray(status), groupArray(timestamp)) AS order_statuses
-                FROM (
-                    SELECT
-                        platform, shop_id, buyer_nick, real_buyer_nick,
-                        order_id, timestamp, status
-                    FROM (
-                        SELECT DISTINCT
-                            shop_id,
-                            buyer_nick,
-                            '' AS real_buyer_nick,
-                            order_id,
-                            toUInt64(time) AS timestamp,
-                            status
-                        FROM remote('10.20.133.174:9000', 'ods.dy_order_event_all')
-                        WHERE day = 20230628
-                        AND shop_id GLOBAL IN (
-                            SELECT shop_id
-                            FROM xqc_dim.shop_latest_all
-                            WHERE company_id GLOBAL IN (
-                                SELECT _id
-                                FROM xqc_dim.company_latest_all
-                                WHERE has(white_list, 'VOC')
-                            )
-                            AND platform = 'dy'
-                        )
-                        -- 剔除当天下过单的买家
-                        AND buyer_nick GLOBAL NOT IN (
-                            SELECT 
-                                buyer_nick
-                            FROM remote('10.20.133.174:9000', 'ods.dy_order_event_all')
-                            WHERE day = 20230628
-                            AND shop_id GLOBAL IN (
-                                SELECT shop_id
-                                FROM xqc_dim.shop_latest_all
-                                WHERE company_id GLOBAL IN (
-                                    SELECT _id
-                                    FROM xqc_dim.company_latest_all
-                                    WHERE has(white_list, 'VOC')
-                                )
-                                AND platform = 'dy'
-                            )
-                            AND status = 'created'
-                        )
-                    ) AS order_update_info
-                    GLOBAL LEFT JOIN (
-                        SELECT
-                            company_id,
-                            shop_id,
-                            platform
-                        FROM xqc_dim.shop_latest_all
-                        WHERE company_id GLOBAL IN (
-                            SELECT _id
-                            FROM xqc_dim.company_latest_all
-                            WHERE has(white_list, 'VOC')
-                        )
-                        AND platform = 'dy'
-                    ) AS voc_shop_info
-                    USING(shop_id)
-                ) AS order_update_info
-                GROUP BY
-                    platform,
-                    shop_id,
-                    buyer_nick,
-                    real_buyer_nick,
-                    order_id
-            ) AS past_order_update_info
-            USING(
-                platform,
-                shop_id,
-                buyer_nick,
-                real_buyer_nick,
-                order_id
+-- 客户评价满意度(二期)-统计-评价列表
+SELECT
+    eval_info.*,
+    dim_snick_department.department_name AS department_name,
+    dim_snick_department.employee_name AS employee_name,
+
+    day AS `日期`,
+    seller_nick AS `店铺`,
+    employee_name AS `客服姓名`,
+    snick AS `客服子账号`,
+    department_name AS `子账号分组`,
+
+    cnick AS `顾客名称`,
+    if(is_invited, send_time, '-') AS `邀评时间`,
+    if(latest_eval_time != '', latest_eval_time, '-') AS `最新评价时间`,
+    CASE
+        WHEN latest_eval_code=0 THEN '非常满意'
+        WHEN latest_eval_code=1 THEN '满意'
+        WHEN latest_eval_code=2 THEN '一般'
+        WHEN latest_eval_code=3 THEN '不满意'
+        WHEN latest_eval_code=4 THEN '非常不满意'
+        ELSE '-'
+    END AS `最新评价结果`,
+    CASE
+        WHEN source=0 THEN '客服邀评'
+        WHEN source=1 THEN '消费者自主评价'
+        WHEN source=2 THEN '系统邀评'
+        ELSE '-'
+    END AS `评价来源`,
+    CASE
+        WHEN (first_eval_code IN (0, 1)) AND (latest_eval_code IN (2, 3, 4)) THEN '满意改不满意'
+        WHEN (first_eval_code IN (2, 3, 4)) AND (latest_eval_code IN (0, 1)) THEN '不满意改满意'
+        ELSE '-'
+    END AS `评价修改记录`,
+    if(
+        (
+            send_time = ''
+            OR
+            dateDiff('hour', toDateTime(toDateTime64(send_time, 0)), now()) < 24
+        ),
+        '是',
+        '否'
+    ) AS `是否可挽回`
+
+FROM (
+    SELECT
+        day,
+        seller_nick,
+        snick,
+        cnick,
+        max(dialog_id) AS dialog_id,
+        source,
+        send_time,
+        is_invited,
+
+        arraySort(groupArrayIf(eval_time, eval_time !='')) AS eval_times,
+        arraySort((x,y)->y, groupArrayIf(eval_code, eval_time != ''), groupArrayIf(eval_time, eval_time != '')) AS eval_codes,
+        toString(eval_times[-1]) AS latest_eval_time,
+        if(latest_eval_time != '', eval_codes[-1], -1) AS latest_eval_code,
+        if(latest_eval_time != '', eval_codes[1], -1) AS first_eval_code
+
+    FROM (
+        SELECT
+            seller_nick,
+            snick,
+            cnick,
+            dialog_id,
+            eval_code,
+            eval_time,
+            send_time,
+            source,
+            if(eval_time != '' AND source = 1, 0, 1) AS is_invited,
+            day
+        FROM xqc_ods.dialog_eval_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
+            AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
+        AND platform = 'tb'
+        -- 下拉框-店铺
+        AND (
+            '{{ seller_nicks }}'=''
+            OR
+            seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
+        )
+        -- 当前企业对应的店铺
+        AND seller_nick GLOBAL IN (
+            SELECT DISTINCT
+                seller_nick
+            FROM xqc_dim.xqc_shop_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            AND platform = 'tb'
+        )
+        -- 当前企业对应的子账号
+        AND snick GLOBAL IN (
+            SELECT DISTINCT
+                snick
+            FROM xqc_dim.snick_full_info_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+            AND platform = 'tb'
+            -- 下拉框-子账号分组id
+            AND (
+                '{{ department_ids }}'=''
+                OR
+                department_id IN splitByChar(',','{{ department_ids }}')
             )
+            -- 下拉框-客服姓名
+            AND (
+                '{{ usernames }}'=''
+                OR
+                employee_name IN splitByChar(',','{{ usernames }}')
+            )
+        )
+    ) AS ods_dialog_eval
+    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
+    -- 单选-评价类型
+    HAVING (
+        ('{{ type=全部 }}'='全部')
+        OR
+        ('{{ type=全部 }}'='未评价' AND latest_eval_time = '')
+        OR
+        ('{{ type=全部 }}'='满意' AND latest_eval_time != '' AND latest_eval_code IN (0, 1))
+        OR
+        ('{{ type=全部 }}'='不满意' AND latest_eval_time != '' AND latest_eval_code IN (2, 3, 4))
+    )
+    ORDER BY latest_eval_time DESC
+    LIMIT 15000
+) AS eval_info
+GLOBAL LEFT JOIN (
+    -- 关联子账号分组/子账号员工信息
+    SELECT
+        snick, employee_name, superior_name, department_id, department_name
+    FROM xqc_dim.snick_full_info_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
+    AND platform = 'tb'
+) AS dim_snick_department
+USING(snick)
