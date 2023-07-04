@@ -1,138 +1,112 @@
--- 客户评价满意度(二期)-统计-评价列表
-SELECT
-    eval_info.*,
-    dim_snick_department.department_name AS department_name,
-    dim_snick_department.employee_name AS employee_name,
-
-    day AS `日期`,
-    seller_nick AS `店铺`,
-    employee_name AS `客服姓名`,
-    snick AS `客服子账号`,
-    department_name AS `子账号分组`,
-
-    cnick AS `顾客名称`,
-    if(is_invited, send_time, '-') AS `邀评时间`,
-    if(latest_eval_time != '', latest_eval_time, '-') AS `最新评价时间`,
-    CASE
-        WHEN latest_eval_code=0 THEN '非常满意'
-        WHEN latest_eval_code=1 THEN '满意'
-        WHEN latest_eval_code=2 THEN '一般'
-        WHEN latest_eval_code=3 THEN '不满意'
-        WHEN latest_eval_code=4 THEN '非常不满意'
-        ELSE '-'
-    END AS `最新评价结果`,
-    CASE
-        WHEN source=0 THEN '客服邀评'
-        WHEN source=1 THEN '消费者自主评价'
-        WHEN source=2 THEN '系统邀评'
-        ELSE '-'
-    END AS `评价来源`,
-    CASE
-        WHEN (first_eval_code IN (0, 1)) AND (latest_eval_code IN (2, 3, 4)) THEN '满意改不满意'
-        WHEN (first_eval_code IN (2, 3, 4)) AND (latest_eval_code IN (0, 1)) THEN '不满意改满意'
-        ELSE '-'
-    END AS `评价修改记录`,
-    if(
-        (
-            send_time = ''
-            OR
-            dateDiff('hour', toDateTime(toDateTime64(send_time, 0)), now()) < 24
-        ),
-        '是',
-        '否'
-    ) AS `是否可挽回`
-
-FROM (
-    SELECT
-        day,
-        seller_nick,
-        snick,
-        cnick,
-        max(dialog_id) AS dialog_id,
-        source,
-        send_time,
-        is_invited,
-
-        arraySort(groupArrayIf(eval_time, eval_time !='')) AS eval_times,
-        arraySort((x,y)->y, groupArrayIf(eval_code, eval_time != ''), groupArrayIf(eval_time, eval_time != '')) AS eval_codes,
-        toString(eval_times[-1]) AS latest_eval_time,
-        if(latest_eval_time != '', eval_codes[-1], -1) AS latest_eval_code,
-        if(latest_eval_time != '', eval_codes[1], -1) AS first_eval_code
-
-    FROM (
-        SELECT
-            seller_nick,
-            snick,
-            cnick,
-            dialog_id,
-            eval_code,
-            eval_time,
-            send_time,
-            source,
-            if(eval_time != '' AND source = 1, 0, 1) AS is_invited,
-            day
-        FROM xqc_ods.dialog_eval_all
-        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start=week_ago }}'))
-            AND toYYYYMMDD(toDate('{{ day.end=yesterday }}'))
-        AND platform = 'tb'
-        -- 下拉框-店铺
-        AND (
-            '{{ seller_nicks }}'=''
-            OR
-            seller_nick IN splitByChar(',',replaceAll('{{ seller_nicks }}', '星环#', ''))
-        )
-        -- 当前企业对应的店铺
-        AND seller_nick GLOBAL IN (
-            SELECT DISTINCT
-                seller_nick
-            FROM xqc_dim.xqc_shop_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            AND platform = 'tb'
-        )
-        -- 当前企业对应的子账号
-        AND snick GLOBAL IN (
-            SELECT DISTINCT
-                snick
-            FROM xqc_dim.snick_full_info_all
-            WHERE day = toYYYYMMDD(yesterday())
-            AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-            AND platform = 'tb'
-            -- 下拉框-子账号分组id
-            AND (
-                '{{ department_ids }}'=''
-                OR
-                department_id IN splitByChar(',','{{ department_ids }}')
-            )
-            -- 下拉框-客服姓名
-            AND (
-                '{{ usernames }}'=''
-                OR
-                employee_name IN splitByChar(',','{{ usernames }}')
-            )
-        )
-    ) AS ods_dialog_eval
-    GROUP BY day, seller_nick, snick, cnick, source, send_time, is_invited
-    -- 单选-评价类型
-    HAVING (
-        ('{{ type=全部 }}'='全部')
-        OR
-        ('{{ type=全部 }}'='未评价' AND latest_eval_time = '')
-        OR
-        ('{{ type=全部 }}'='满意' AND latest_eval_time != '' AND latest_eval_code IN (0, 1))
-        OR
-        ('{{ type=全部 }}'='不满意' AND latest_eval_time != '' AND latest_eval_code IN (2, 3, 4))
-    )
-    ORDER BY latest_eval_time DESC
-    LIMIT 15000
-) AS eval_info
-GLOBAL LEFT JOIN (
-    -- 关联子账号分组/子账号员工信息
-    SELECT
-        snick, employee_name, superior_name, department_id, department_name
-    FROM xqc_dim.snick_full_info_all
-    WHERE day = toYYYYMMDD(yesterday())
-    AND company_id = '{{ company_id=5f747ba42c90fd0001254404 }}'
-    AND platform = 'tb'
-) AS dim_snick_department
-USING(snick)
+-- DROP TABLE ods.xdqc_dialog_local ON CLUSTER cluster_3s_2r NO DELAY
+CREATE TABLE ods.xdqc_dialog_local ON CLUSTER cluster_3s_2r
+(
+    `_id` String,
+    `platform` String,
+    `channel` String,
+    `group` String,
+    `date` Int32,
+    `seller_nick` String,
+    `cnick` String,
+    `real_buyer_nick` String,
+    `open_uid` String,
+    `snick` String,
+    `begin_time` DateTime64(3),
+    `end_time` DateTime64(3),
+    `is_after_sale` UInt8,
+    `is_inside` UInt8,
+    `employee_name` String,
+    `s_emotion_type` Array(UInt16),
+    `s_emotion_rule_id` Array(String),
+    `s_emotion_score` Array(Int32),
+    `s_emotion_count` Array(UInt32),
+    `c_emotion_type` Array(UInt16),
+    `c_emotion_rule_id` Array(String),
+    `c_emotion_score` Array(Int32),
+    `c_emotion_count` Array(UInt32),
+    `emotions` Array(String),
+    `abnormals_type` Array(UInt16),
+    `abnormals_rule_id` Array(String),
+    `abnormals_score` Array(Int32),
+    `abnormals_count` Array(UInt32),
+    `excellents_type` Array(UInt16),
+    `excellents_rule_id` Array(String),
+    `excellents_score` Array(Int32),
+    `excellents_count` Array(UInt32),
+    `qc_word_source` Array(UInt8),
+    `qc_word_word` Array(String),
+    `qc_word_count` Array(UInt32),
+    `qid` Array(Int64),
+    `mark` String,
+    `mark_judge` Int32,
+    `mark_score` Int32,
+    `mark_score_add` Int32,
+    `mark_ids` Array(String),
+    `last_mark_id` String,
+    `human_check` UInt8,
+    `tag_score_stats_id` Array(String),
+    `tag_score_stats_score` Array(Int32),
+    `tag_score_stats_count` Array(UInt32),
+    `tag_score_stats_md` Array(UInt8),
+    `tag_score_stats_mm` Array(UInt8),
+    `tag_score_add_stats_id` Array(String),
+    `tag_score_add_stats_score` Array(Int32),
+    `tag_score_add_stats_count` Array(UInt32),
+    `tag_score_add_stats_md` Array(UInt8),
+    `tag_score_add_stats_mm` Array(UInt8),
+    `rule_stats_id` Array(String),
+    `rule_stats_score` Array(Int32),
+    `rule_stats_count` Array(UInt32),
+    `rule_add_stats_id` Array(String),
+    `rule_add_stats_score` Array(Int32),
+    `rule_add_stats_count` Array(UInt32),
+    `xrule_stats_id` Array(String),
+    `xrule_stats_score` Array(Int32),
+    `xrule_stats_count` Array(UInt32),
+    `top_xrules_id` Array(String),
+    `top_xrules_score` Array(Int32),
+    `top_xrules_count` Array(UInt32),
+    `score` Int32,
+    `score_add` Int32,
+    `question_count` UInt32,
+    `answer_count` UInt32,
+    `first_answer_time` DateTime64(3),
+    `qa_time_sum` UInt32,
+    `qa_round_sum` UInt32,
+    `focus_goods_id` String,
+    `is_remind` UInt8,
+    `task_list_id` String,
+    `read_mark` Array(String),
+    `last_msg_id` String,
+    `consulte_transfor_v2` Int32,
+    `order_info_id` Array(String),
+    `order_info_status` Array(String),
+    `order_info_payment` Array(Float32),
+    `order_info_time` Array(UInt64),
+    `intel_score` Int32,
+    `remind_ntype` String,
+    `first_follow_up_time` DateTime64(3),
+    `is_follow_up_remind` UInt8,
+    `emotion_detect_mode` Int32,
+    `has_withdraw_robot_msg` UInt8,
+    `is_order_matched` UInt8,
+    `suspected_positive_emotion` UInt8,
+    `suspected_problem` UInt8,
+    `suspected_excellent` UInt8,
+    `has_after` UInt8,
+    `cnick_customize_rule` Array(String),
+    `update_time` DateTime('Asia/Shanghai'),
+    `wx_rule_stats_id` Array(String),
+    `wx_rule_stats_score` Array(Int32),
+    `wx_rule_stats_count` Array(UInt32),
+    `wx_rule_add_stats_id` Array(String),
+    `wx_rule_add_stats_score` Array(Int32),
+    `wx_rule_add_stats_count` Array(UInt32)
+)
+ENGINE = ReplicatedMergeTree(
+    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
+    '{replica}'
+)
+PARTITION BY toYYYYMMDD(begin_time)
+ORDER BY (platform, seller_nick, _id)
+SETTINGS storage_policy = 'rr', index_granularity = 8192

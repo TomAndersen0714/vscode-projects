@@ -1,189 +1,111 @@
-INSERT INTO {dwd_voc_chat_log_detail_etl_sink_table}
-            SELECT
-                day,
-                platform,
-                shop_id,
-                snick,
-                cnick,
-                cnick_id,
-                real_buyer_nick,
-                msg_timestamp,
-                msg_id,
-                msg,
-                act,
-                send_msg_from,
-                question_b_qid,
-                plat_goods_id,
-                IF(recent_order_status!='', latest_order_info.order_id, '') AS recent_order_id,
-                arrayFilter(
-                    (x)-> x<=msg_timestamp,
-                    latest_order_info.order_status_timestamps
-                )[-1] AS recent_order_status_timestamp,
-                arrayFilter(
-                    (x,y)-> y<=msg_timestamp,
-                    latest_order_info.order_statuses,
-                    latest_order_info.order_status_timestamps
-                )[-1] AS recent_order_status,
-                dialog_qa_cnt AS dialog_qa_sum
-            FROM (
-                SELECT
-                    u_day AS day,
-                    platform,
-                    shop_id,
-                    snick,
-                    cnick,
-                    cnick_id,
-                    real_buyer_nick,
-                    msg_timestamp,
-                    msg_id,
-                    msg,
-                    act,
-                    send_msg_from,
-                    question_b_qid,
-                    plat_goods_id,
-                    dialog_detail_info.dialog_qa_cnt
-                FROM (
-                    -- stage-1: 查询当天的聊天消息记录
-                    SELECT
-                        toUInt32(day) AS u_day,
-                        platform,
-                        shop_id,
-                        snick,
-                        cnick,
-                        '' AS real_buyer_nick,
-                        toUInt64(msg_time) AS msg_timestamp,
-                        msg_id,
-                        msg,
-                        act,
-                        send_msg_from,
-                        question_b_qid,
-                        plat_goods_id
-                    FROM remote('10.20.133.174:9000', 'ods.xdrs_logs')
-                    WHERE day = {ds_nodash}
-                    AND shop_id GLOBAL IN (
-                        SELECT shop_id
-                        FROM xqc_dim.shop_latest_all
-                        WHERE company_id GLOBAL IN (
-                            SELECT _id
-                            FROM xqc_dim.company_latest_all
-                            WHERE has(white_list, '{FEATURE_ID}')
-                        )
-                        AND platform = 'dy'
-                    )
-                    AND act IN ['send_msg', 'recv_msg']
-                ) AS xdrs_logs
-                LEFT JOIN (
-                    SELECT
-                        u_day,
-                        platform,
-                        shop_id,
-                        snick,
-                        cnick,
-                        cnick_info.cnick_id,
-                        real_buyer_nick,
-                        dialog_qa_cnt
-                    FROM (
-                        -- stage-2: 基于当天的聊天消息计算会话轮次, 按照会话聚合, 统计会话QA次数
-                        SELECT
-                            u_day,
-                            platform,
-                            shop_id,
-                            snick,
-                            cnick,
-                            real_buyer_nick,
-                            arraySort(groupArray(msg_milli_timestamp)) AS msg_milli_timestamps,
-                            arraySort((x, y)->y, groupArray(act), groupArray(msg_milli_timestamp)) AS msg_acts,
-            
-                            -- 切分会话生成QA切分标记, PS: 可能存在单个Q, 单个A, 单个QA, 多个QA四种情况, 此切分方法只能切分多QA的情况
-                            arrayMap(
-                                (x, y)->(if(x = 'send_msg' AND msg_acts[y-1] = 'recv_msg', 1, 0)),
-                                msg_acts,
-                                arrayEnumerate(msg_acts)
-                            ) AS _qa_split_tags,
-                            -- QA数量
-                            arraySum(_qa_split_tags) AS dialog_qa_cnt
-                        FROM (
-                            SELECT
-                                toUInt32(day) AS u_day,
-                                platform,
-                                shop_id,
-                                snick,
-                                cnick,
-                                '' AS real_buyer_nick,
-                                toUInt64(toFloat64(toDateTime64(create_time, 3))*1000) AS msg_milli_timestamp,
-                                act
-                            FROM remote('10.20.133.174:9000', 'ods.xdrs_logs')
-                            WHERE day = {ds_nodash}
-                            AND shop_id GLOBAL IN (
-                                SELECT shop_id
-                                FROM xqc_dim.shop_latest_all
-                                WHERE company_id GLOBAL IN (
-                                    SELECT _id
-                                    FROM xqc_dim.company_latest_all
-                                    WHERE has(white_list, '{FEATURE_ID}')
-                                )
-                                AND platform = 'dy'
-                            )
-                            AND act IN ['send_msg', 'recv_msg']
-                        ) AS xdrs_logs
-                        GROUP BY u_day,
-                            platform,
-                            shop_id,
-                            snick,
-                            cnick,
-                            real_buyer_nick
-                    ) AS dialog_info
-                    LEFT JOIN (
-                        SELECT
-                            cnick,
-                            cnick_id
-                        FROM dwd.voc_cnick_list_all
-                        WHERE day = {ds_nodash}
-                        -- 筛选当日咨询客户
-                        AND (platform, cnick) IN (
-                            SELECT DISTINCT
-                                platform,
-                                cnick
-                            FROM remote('10.20.133.174:9000', 'ods.xdrs_logs')
-                            WHERE day = {ds_nodash}
-                            AND shop_id GLOBAL IN (
-                                SELECT shop_id
-                                FROM xqc_dim.shop_latest_all
-                                WHERE company_id GLOBAL IN (
-                                    SELECT _id
-                                    FROM xqc_dim.company_latest_all
-                                    WHERE has(white_list, '{FEATURE_ID}')
-                                )
-                                AND platform = 'dy'
-                            )
-                            AND act IN ['send_msg', 'recv_msg']
-                        )
-                    ) AS cnick_info
-                    USING(cnick)
-                ) AS dialog_detail_info
-                USING(u_day, platform, shop_id, snick, cnick, real_buyer_nick)
-            ) AS xdrs_dialog_info
-            LEFT JOIN (
-                -- stage-3: 关联买家最新订单表, 查询订单状态
-                SELECT
-                    day,
-                    platform,
-                    shop_id,
-                    buyer_nick AS cnick,
-                    order_id,
-                    order_status_timestamps,
-                    order_statuses
-                FROM dwd.voc_buyer_latest_order_all
-                WHERE day = {ds_nodash}
-                AND shop_id GLOBAL IN (
-                    SELECT shop_id
-                    FROM xqc_dim.shop_latest_all
-                    WHERE company_id GLOBAL IN (
-                        SELECT _id
-                        FROM xqc_dim.company_latest_all
-                        WHERE has(white_list, '{FEATURE_ID}')
-                    )
-                    AND platform = 'dy'
-                )
-            ) AS latest_order_info
-            USING(day, platform, shop_id, cnick)
+CREATE TABLE ods.xdqc_dialog_local ON CLUSTER cluster_3s_2r
+(
+    `_id` String,
+    `platform` String,
+    `channel` String,
+    `group` String,
+    `date` Int32,
+    `seller_nick` String,
+    `cnick` String,
+    `real_buyer_nick` String,
+    `open_uid` String,
+    `snick` String,
+    `begin_time` DateTime64(3),
+    `end_time` DateTime64(3),
+    `is_after_sale` UInt8,
+    `is_inside` UInt8,
+    `employee_name` String,
+    `s_emotion_type` Array(UInt16),
+    `s_emotion_rule_id` Array(String),
+    `s_emotion_score` Array(Int32),
+    `s_emotion_count` Array(UInt32),
+    `c_emotion_type` Array(UInt16),
+    `c_emotion_rule_id` Array(String),
+    `c_emotion_score` Array(Int32),
+    `c_emotion_count` Array(UInt32),
+    `emotions` Array(String),
+    `abnormals_type` Array(UInt16),
+    `abnormals_rule_id` Array(String),
+    `abnormals_score` Array(Int32),
+    `abnormals_count` Array(UInt32),
+    `excellents_type` Array(UInt16),
+    `excellents_rule_id` Array(String),
+    `excellents_score` Array(Int32),
+    `excellents_count` Array(UInt32),
+    `qc_word_source` Array(UInt8),
+    `qc_word_word` Array(String),
+    `qc_word_count` Array(UInt32),
+    `qid` Array(Int64),
+    `mark` String,
+    `mark_judge` Int32,
+    `mark_score` Int32,
+    `mark_score_add` Int32,
+    `mark_ids` Array(String),
+    `last_mark_id` String,
+    `human_check` UInt8,
+    `tag_score_stats_id` Array(String),
+    `tag_score_stats_score` Array(Int32),
+    `tag_score_stats_count` Array(UInt32),
+    `tag_score_stats_md` Array(UInt8),
+    `tag_score_stats_mm` Array(UInt8),
+    `tag_score_add_stats_id` Array(String),
+    `tag_score_add_stats_score` Array(Int32),
+    `tag_score_add_stats_count` Array(UInt32),
+    `tag_score_add_stats_md` Array(UInt8),
+    `tag_score_add_stats_mm` Array(UInt8),
+    `rule_stats_id` Array(String),
+    `rule_stats_score` Array(Int32),
+    `rule_stats_count` Array(UInt32),
+    `rule_add_stats_id` Array(String),
+    `rule_add_stats_score` Array(Int32),
+    `rule_add_stats_count` Array(UInt32),
+    `xrule_stats_id` Array(String),
+    `xrule_stats_score` Array(Int32),
+    `xrule_stats_count` Array(UInt32),
+    `top_xrules_id` Array(String),
+    `top_xrules_score` Array(Int32),
+    `top_xrules_count` Array(UInt32),
+    `score` Int32,
+    `score_add` Int32,
+    `question_count` UInt32,
+    `answer_count` UInt32,
+    `first_answer_time` DateTime64(3),
+    `qa_time_sum` UInt32,
+    `qa_round_sum` UInt32,
+    `focus_goods_id` String,
+    `is_remind` UInt8,
+    `task_list_id` String,
+    `read_mark` Array(String),
+    `last_msg_id` String,
+    `consulte_transfor_v2` Int32,
+    `order_info_id` Array(String),
+    `order_info_status` Array(String),
+    `order_info_payment` Array(Float32),
+    `order_info_time` Array(UInt64),
+    `intel_score` Int32,
+    `remind_ntype` String,
+    `first_follow_up_time` DateTime64(3),
+    `is_follow_up_remind` UInt8,
+    `emotion_detect_mode` Int32,
+    `has_withdraw_robot_msg` UInt8,
+    `is_order_matched` UInt8,
+    `suspected_positive_emotion` UInt8,
+    `suspected_problem` UInt8,
+    `suspected_excellent` UInt8,
+    `has_after` UInt8,
+    `cnick_customize_rule` Array(String),
+    `update_time` DateTime('Asia/Shanghai'),
+    `wx_rule_stats_id` Array(String),
+    `wx_rule_stats_score` Array(Int32),
+    `wx_rule_stats_count` Array(UInt32),
+    `wx_rule_add_stats_id` Array(String),
+    `wx_rule_add_stats_score` Array(Int32),
+    `wx_rule_add_stats_count` Array(UInt32)
+)
+ENGINE = ReplicatedMergeTree(
+    '/clickhouse/ods/tables/{layer}_{shard}/xdqc_dialog_local',
+    '{replica}'
+)
+PARTITION BY toYYYYMMDD(begin_time)
+ORDER BY (platform, seller_nick, _id)
+SETTINGS storage_policy = 'rr', index_granularity = 8192
