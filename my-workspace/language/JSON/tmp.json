@@ -1,73 +1,24 @@
 {
-    "ID": "63de27d1abf8de000165b457",
-    "Platform": "pdd",
-    "OrderID": "230204-349202051991963",
-    "OriginalOrderID": "230204-349202051991963",
-    "ShopID": "62f373ef006fa000159d4747",
-    "SellerID": "396224067",
-    "BuyerID": "4989974443",
-    "OriBuyerID": "",
-    "Payment": 0,
-    "Address": "",
-    "Province": "",
-    "City": "",
-    "Town": "",
-    "Street": "",
-    "DecryptAddress": "",
-    "Status": "shipped",
-    "OriginStatus": "",
-    "OrderType": "",
-    "StepTradeStatus": "",
-    "StepPaidFee": 0,
-    "PushStatus": "",
-    "StatusHistory": [
-        {
-            "Status": "group",
-            "Time": 1675503569
-        },
-        {
-            "Status": "shipped",
-            "Time": 1675513615
-        }
-    ],
-    "BuyerRemark": "",
-    "SellerMemo": "",
-    "BalanceUsed": "",
-    "SellerDiscount": "",
-    "OrderSellerPrice": "",
-    "PayType": "",
-    "FreightPrice": "",
-    "CreatedAt": 1675503569,
-    "UpdatedAt": 1675503565,
-    "ItemIDs": [
-        "0"
-    ],
-    "Tbext": null,
-    "Jdext": null,
-    "Pddext": {
-        "BuyerNick": "4989974443",
-        "StateDesc": "",
-        "Items": [
-            {
-                "ItemID": "0",
-                "ItemName": "",
-                "SkuID": "0",
-                "SkuName": "",
-                "Count": 1,
-                "Price": 0
-            }
-        ],
-        "Receiver": {
-            "Name": "",
-            "Phone": ""
-        },
-        "GroupOrderId": ""
-    },
-    "Lazy": true,
-    "NotInWhitelist": false,
-    "UpdateTime": "2023-02-04T12:26:55.982750245Z",
-    "UpdateDesc": "trade worker update",
-    "BuyerOpenUID": "",
-    "RealBuyerNick": "",
-    "LogisticsInfo": null
+    "id": "33b7d5cac6e3ddec4c028a529b9e55ca",
+    "level": 1,
+    "warning_type": "顾客对服务评价为“非常满意”",
+    "company_id": "61602afd297bb79b69c06118",
+    "dialog_id": "64a65ba56c337900016eaa68",
+    "message_id": "64a65e9808414a00015cc4b2",
+    "time": "2023-07-06 14:50:17",
+    "date": 20230706,
+    "is_finish": false,
+    "finish_time": "",
+    "platform": "jd",
+    "seller_nick": "欧普照明京东自营旗舰店",
+    "shop_id": "617a1b2aa08ae9000e9de455",
+    "snick": "欧普照明京东自营旗舰店:oupu_kf18s",
+    "cnick": "wlnbear",
+    "open_uid": "",
+    "buyer_one_id": "",
+    "employee_name": "尉荷（2组）",
+    "superior_name": "向明",
+    "content": "",
+    "qc_rule_id": "641d8b61dc72ebff92f598f8",
+    "department_id": "617fe64f905445c2b9b90522"
 }

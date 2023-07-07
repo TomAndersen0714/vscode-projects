@@ -1,14 +1,27 @@
-订单状态
-订单金额
-下单时间
-情绪筛选
-扣分行为
-加分行为
-自定义质检
-质检人员
-人工质检标签
-质检词
-质检词触发角色
-备注内容
-顾客满意度评价
-质检标准
+CREATE TABLE xqc_ods.alert_local (
+    `id` String,
+    `platform` String,
+    `level` Int64,
+    `warning_type` String,
+    `dialog_id` String,
+    `message_id` String,
+    `time` String,
+    `day` Int64,
+    `is_finished` String,
+    `finish_time` String,
+    `shop_id` String,
+    `seller_nick` String,
+    `snick` String,
+    `cnick` String,
+    `buyer_one_id` String,
+    `open_uid` String,
+    `employee_name` String,
+    `superior_name` String,
+    `update_time` DateTime
+) ENGINE = ReplicatedReplacingMergeTree(
+    '/clickhouse/xqc_ods/tables/{layer}_{shard}/alert_local',
+    '{replica}',
+    update_time
+) PARTITION BY day PRIMARY KEY (level, warning_type)
+ORDER BY (level, warning_type, id) SETTINGS index_granularity = 8192,
+    storage_policy = 'rr'
