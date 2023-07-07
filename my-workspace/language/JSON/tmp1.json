@@ -1,33 +1,27 @@
 {
-    "platform": "pdd",
-    "order_id": "230618-012415179551798",
-    "shop_id": "62de652e7bb2770018572733",
-    "buyer_id": "2063349510",
-    "status": "shipped",
-    "created_at": 1687099835,
-    "updated_at": 1687099824,
-    "item_ids": [
-        "0"
-    ],
-    "pddext": {
-        "items": [
-            {
-                "item_id": "0",
-                "sku_id": "0",
-                "count": 1
-            }
-        ],
-        "receiver": {}
-    },
-    "status_history": [
-        {
-            "status": "group",
-            "time": 1687099835
-        },
-        {
-            "status": "shipped",
-            "time": 1688026206
-        }
-    ],
-    "original_order_id": "230618-012415179551798"
+    "cnick": "one_id_1622236323",
+    "content": "服务助手很高兴为您服务~~~/:809​​",
+    "date": 20230707,
+    "department_id": "639968956301f88b63b54389",
+    "dialog_id": "64a784e36752de0001bc651a",
+    "employee_name": "",
+    "finish_time": "2023-07-07 11:36:24",
+    "handler": "IM群:ps测试企业",
+    "id": "3137b7159047d016d90511ea62690974",
+    "is_finish": true,
+    "level_name": "中级告警",
+    "level": 2,
+    "message_id": "64a784e362e8d700018cb9b8",
+    "note": "",
+    "platform": "tb",
+    "qc_rule_id": "6358effa5f1f20174f04468b",
+    "remind_num": 0,
+    "remind_time": 0,
+    "seller_nick": "木月瑞希尔",
+    "shop_id": "5f8ff0c0a3967d00188dca48",
+    "snick": "木月瑞希尔:服务助手",
+    "status": 1,
+    "superior_name": "",
+    "time": "2023-07-07 11:22:11",
+    "warning_type": "客服（人工客服、机器人）发送的首句消息",
 }
