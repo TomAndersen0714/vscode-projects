@@ -1,24 +1,35 @@
 {
-    "id": "2e3b0fa00d33fa2e45ae09d2c3d14551",
-    "level": 2,
-    "warning_type": "其他不满意",
-    "company_id": "62a701d9139537b9d531eb12",
-    "dialog_id": "64a7e2b899b3e70001e5645e",
-    "message_id": "64a7e4583121d0aed77b1a1c",
-    "time": "2023-07-07 18:09:28",
-    "date": 20230707,
-    "is_finish": false,
-    "finish_time": "",
+    "_id": ObjectId("64af605a27e1820001835682"),
     "platform": "tb",
-    "seller_nick": "奥克斯电热水龙头旗舰店",
-    "shop_id": "5d947675c607d300130cc773",
-    "snick": "奥克斯电热水龙头旗舰店:果果",
-    "cnick": "陈其悦",
-    "open_uid": "AAH7ZosOAKdpZ1hrVDjNnXmf",
-    "buyer_one_id": "one_id_288184057",
-    "employee_name": "黑龙江外包售后2组",
-    "superior_name": "",
-    "content": "晕死了",
-    "qc_rule_id": "62a701d9139537b9d531ec6a",
-    "department_id": "62a701ef139537b9d531ed13"
+    "company_id": ObjectId("5f938c4be70ea20001345ece"),
+    "seller_nick": "星环#海信电视官方旗舰店",
+    "wiper_id": ObjectId("5ff8124345d4190001ad4c75"),
+    "wiper_time": NumberLong(1689215066),
+    "cnick": "yxuanmo11",
+    "wipe_messages": {
+        "dialog_id": ObjectId("64ae41ae7b64d60001ad9504"),
+        "begin_timestamp": NumberLong(1689141678),
+        "messages": [
+            {
+                "id": ObjectId("64ae41aeb32f900001cdf99a"),
+                "wipe_emotion": false,
+                "abnormals": [],
+                "excellents": [],
+                "rule_scores": [
+                    {
+                        "id": ObjectId("6327c843a22027ee6d002184"),
+                        "acount": 1,
+                        "score": -3,
+                        "name": ""
+                    }
+                ],
+                "emotion": null
+            }
+        ],
+        "rule_score_stats": [],
+        "abnormals": [],
+        "tags": []
+    },
+    "snick": "星环#海信电视官方旗舰店:小梨儿",
+    "open_uid": "AAEbZosOAKdpZ1hrVDiuxc1i"
 }

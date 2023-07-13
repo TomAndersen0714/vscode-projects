@@ -1,27 +1,26 @@
 {
-    "cnick": "one_id_1622236323",
-    "content": "服务助手很高兴为您服务~~~/:809​​",
-    "date": 20230707,
-    "department_id": "639968956301f88b63b54389",
-    "dialog_id": "64a784e36752de0001bc651a",
-    "employee_name": "",
-    "finish_time": "2023-07-07 11:36:24",
-    "handler": "IM群:ps测试企业",
-    "id": "3137b7159047d016d90511ea62690974",
-    "is_finish": true,
-    "level_name": "中级告警",
-    "level": 2,
-    "message_id": "64a784e362e8d700018cb9b8",
-    "note": "",
-    "platform": "tb",
-    "qc_rule_id": "6358effa5f1f20174f04468b",
-    "remind_num": 0,
-    "remind_time": 0,
-    "seller_nick": "木月瑞希尔",
-    "shop_id": "5f8ff0c0a3967d00188dca48",
-    "snick": "木月瑞希尔:服务助手",
-    "status": 1,
-    "superior_name": "",
-    "time": "2023-07-07 11:22:11",
-    "warning_type": "客服（人工客服、机器人）发送的首句消息",
+    "_id": ObjectId("64af97e6b472b6000163f3e8"),
+    "platform": "jd",
+    "company_id": ObjectId("5f938c4be70ea20001345ece"),
+    "seller_nick": "星环#林内京东自营旗舰店",
+    "wiper_id": ObjectId("61c986981bfae5b5ad27b7d0"),
+    "wiper_time": NumberLong(1689229286),
+    "cnick": "jd_hnmgwunvdrap",
+    "wipe_messages": {
+        "dialog_id": ObjectId("64adf6cb8a6a6d0001545aa3"),
+        "begin_timestamp": NumberLong(1689122507),
+        "messages": [],
+        "rule_score_stats": [
+            {
+                "id": ObjectId("634e724c1413751ea8c4d30f"),
+                "acount": 1,
+                "score": -20,
+                "name": ""
+            }
+        ],
+        "abnormals": [],
+        "tags": []
+    },
+    "snick": "星环#林内京东自营旗舰店:林内林小羽",
+    "open_uid": ""
 }
