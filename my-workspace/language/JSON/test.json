@@ -1,24 +1,23 @@
-{
-    "id": "97ff20db71a140793f93751e5a23408b",
-    "level": 2,
-    "warning_type": "非客服结束会话",
-    "company_id": "63563e97c5bdd4d1fdfc2282",
-    "dialog_id": "64a7aea16752de0001bc651c",
-    "message_id": "64a7af5f22a02bfeedc23c6b",
-    "time": "2023-07-07 14:36:27",
-    "date": 20230707,
-    "is_finish": false,
-    "finish_time": "",
-    "platform": "tb",
-    "seller_nick": "木月瑞希尔",
-    "shop_id": "5f8ff0c0a3967d00188dca48",
-    "snick": "木月瑞希尔:zh",
-    "cnick": "汪达怀斯1591107142",
-    "open_uid": "AAFRZosOAKdpZ1hrVDhUYyEA",
-    "buyer_one_id": "one_id_2295533158",
-    "employee_name": "",
-    "superior_name": "",
-    "content": "什么时间发货",
-    "qc_rule_id": "6358effa5f1f20174f0446bc",
-    "department_id": "639968956301f88b63b54389"
+type VocCustomer struct {
+    ID            primitive.ObjectID `bson:"_id" json:"id"`
+    CreateTime    time.Time          `bson:"create_time" json:"create_time"`
+    UpdateTime    time.Time          `bson:"update_time" json:"update_time"`
+    CompanyID     primitive.ObjectID `bson:"company_id" json:"company_id"`
+    ShopID        primitive.ObjectID `bson:"shop_id" json:"shop_id"` // 这里用mp的shop_id
+    Platform      string             `bson:"platform" json:"platform"`
+    SellerNick    string             `bson:"seller_nick" json:"seller_nick"`
+    Cnick         string             `bson:"cnick" json:"cnick"`                     // 买家昵称，淘宝那边就是one_id
+    RealBuyerNick string             `bson:"real_buyer_nick" json:"real_buyer_nick"` // 淘宝这有用，其他平台无数据
+    ReceptionTime time.Time          `bson:"reception_time" json:"reception_time"`   // 进线时间 顾客当天第一条消息。
+    Tags          []int              `bson:"tags" json:"tags"`                       // 流失顾客标签  1-高意向，2-不满流失，3-自然流失
+    OrderStatus   int                `bson:"order_status" json:"order_status"`       // 顾客订单状态  0-有历史订单记录, 1-有近1日新下单记录, 2-无近1日新下单记录, 3-有近n日新下单记录, 4-无近n日新下单记录
+    Day           int                `bson:"day" json:"day"`                         // 时间 20230708
+    DialogInfo    []*DialogInfo      `bson:"dialog_info" json:"dialog_info"`         // 顾客对话信息
+}
+
+type DialogInfo struct {
+    DialogID  primitive.ObjectID `bson:"dialog_id" json:"dialog_id"`
+    BeginTime time.Time          `bson:"begin_time" json:"begin_time"`
+    GoodsID   string             `bson:"goods_id" json:"goods_id"`
+    Snick     string             `bson:"snick" json:"snick"`
 }
