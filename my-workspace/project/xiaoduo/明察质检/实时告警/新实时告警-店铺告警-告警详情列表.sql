@@ -76,9 +76,9 @@ FROM (
     )
     -- 下拉框-告警项处理状态
     WHERE (
-        '{{ alert_state }}' = ''
+        '{{ alert_state=-1 }}' = ''
         OR
-        is_finished IN splitByChar(',','{{ alert_state }}')
+        is_finished IN splitByChar(',','{{ alert_state=-1 }}')
     )
 ) AS alert_info
 GLOBAL LEFT JOIN (
@@ -104,3 +104,14 @@ GLOBAL LEFT JOIN (
 ) AS dim_snick_department
 USING(snick)
 order by time desc
+
+
+WHERE (
+    ('{{ alert_state=-1 }}' = '-1')
+    OR
+    ('{{ alert_state=-1 }}' = '0' AND is_finished!='True' AND toString(status)!='2')
+    OR
+    ('{{ alert_state=-1 }}' = '1' AND is_finished='True')
+    OR
+    ('{{ alert_state=-1 }}' = '2' AND is_finished!='True' AND toString(status)='2')
+)
