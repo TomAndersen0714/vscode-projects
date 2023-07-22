@@ -70,3 +70,13 @@ ENGINE=Ordinary;
 CREATE TABLE IF NOT EXISTS buffer.trino_xdrs_logs_buffer ON CLUSTER cluster_3s_2r
 AS trino.xdrs_logs_all
 ENGINE = Buffer('trino', 'xdrs_logs_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
+
+
+-- RENAME TABLE
+-- test.tbl_1_new TO test.tbl_1_old, 
+-- test.tbl_2_new TO test.tbl_2_old
+-- ON CLUSTER cluster_3s_2r
+RENAME TABLE 
+test.tbl_1_old TO test.tbl_1_new,
+test.tbl_2_old TO test.tbl_2_new
+ON CLUSTER cluster_3s_2r 
