@@ -1,22 +1,14 @@
-type VocCustomer struct {
-    ID            primitive.ObjectID `bson:"_id" json:"id"`
-    CreateTime    time.Time          `bson:"create_time" json:"create_time"`
-    UpdateTime    time.Time          `bson:"update_time" json:"update_time"`
-    CompanyID     primitive.ObjectID `bson:"company_id" json:"company_id"`
-    ShopID        primitive.ObjectID `bson:"shop_id" json:"shop_id"` // 这里用mp的shop_id
-    Platform      string             `bson:"platform" json:"platform"`
-    SellerNick    string             `bson:"seller_nick" json:"seller_nick"`
-    Cnick         string             `bson:"cnick" json:"cnick"`                     // 买家昵称，淘宝那边就是one_id
-    RealBuyerNick string             `bson:"real_buyer_nick" json:"real_buyer_nick"` // 淘宝这有用，其他平台无数据
-    ReceptionTime time.Time          `bson:"reception_time" json:"reception_time"`   // 进线时间 顾客当天第一条消息。
-    Tags          []int              `bson:"tags" json:"tags"`                       // 流失顾客标签  1-高意向，2-不满流失，3-自然流失
-    OrderStatus   int                `bson:"order_status" json:"order_status"`       // 顾客订单状态  0-有历史订单记录, 1-有近1日新下单记录, 2-无近1日新下单记录, 3-有近n日新下单记录, 4-无近n日新下单记录
-    Day           int                `bson:"day" json:"day"`                         // 时间 20230708
-    DialogInfo    []*DialogInfo      `bson:"dialog_info" json:"dialog_info"`         // 顾客对话信息
-}
-type DialogInfo struct {
-    DialogID  primitive.ObjectID `bson:"dialog_id" json:"dialog_id"`
-    BeginTime time.Time          `bson:"begin_time" json:"begin_time"`
-    GoodsID   string             `bson:"goods_id" json:"goods_id"`
-    Snick     string             `bson:"snick" json:"snick"`
+type Goods struct {
+    ID         primitive.ObjectID `bson:"id" json:"id"`
+    CreateTime time.Time          `bson:"create_time" json:"create_time"`
+    UpdateTime time.Time          `bson:"update_time" json:"update_time"`
+    CompanyID  primitive.ObjectID `bson:"company_id" json:"company_id"`
+    ShopID     primitive.ObjectID `bson:"shop_id" json:"shop_id"` // 这里用mp的shop_id
+    Platform   string             `bson:"platform" json:"platform"`
+    Name       string             `bson:"name" json:"name"`
+    GoodsID    string             `bson:"goods_id" json:"goods_id"` // 整合所有id
+    Price      float64            `bson:"price" json:"price"`
+    Status     int                `bson:"status" json:"status"`
+    Tags       []string           `bson:"tags" json:"tags"`
+    AddedTime  time.Time          `bson:"added_time" json:"added_time"`
 }
