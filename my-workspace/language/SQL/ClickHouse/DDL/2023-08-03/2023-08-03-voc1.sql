@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS xqc_dim.goods_local ON CLUSTER cluster_3s_2r
     `goods_id` String,
     `price` Float64,
     `status` Int64,
-    `tags` Array(Int64),
+    `tags` Array(String),
     `added_time` Int64
 )
 ENGINE = ReplicatedMergeTree(
@@ -89,4 +89,4 @@ SETTINGS index_granularity = 8192, storage_policy = 'rr';
 -- DROP TABLE xqc_dim.goods_all ON CLUSTER cluster_3s_2r NO DELAY
 CREATE TABLE IF NOT EXISTS xqc_dim.goods_all ON CLUSTER cluster_3s_2r
 AS xqc_dim.goods_local
-ENGINE = Distributed('cluster_3s_2r', 'dim', 'voc_goods_local', rand());
+ENGINE = Distributed('cluster_3s_2r', 'xqc_dim', 'goods_local', rand());

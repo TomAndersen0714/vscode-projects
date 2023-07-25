@@ -185,6 +185,23 @@
                     )
                     AND platform = 'jd'
                 )
-                AND 
+                AND (platform, cnick) IN (
+                    SELECT DISTINCT
+                        platform,
+                        replaceOne(cnick,'cnjd','') AS cnick
+                    FROM ods.xdrs_logs_all
+                    WHERE day = 20230724
+                    AND shop_id GLOBAL IN (
+                        SELECT shop_id
+                        FROM xqc_dim.shop_latest_all
+                        WHERE company_id GLOBAL IN (
+                            SELECT _id
+                            FROM xqc_dim.company_latest_all
+                            WHERE has(white_list, 'VOC')
+                        )
+                        AND platform = 'jd'
+                    )
+                    AND act IN ['send_msg', 'recv_msg']
+                )
             ) AS latest_order_info
             USING(day, platform, shop_id, cnick)
