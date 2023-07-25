@@ -1,230 +1,43 @@
-SELECT question_id,
-    question AS `咨询场景`,
-    rank1 AS `排名`,
-    uniqCnt AS `人数`,
-    dialog_cnt AS `声量`,
-    cn_change AS `排名变化`,
-    first_group_name AS `一级场景`,
-    second_group_name AS `二级场景`,
-    third_group_name AS `三级场景`,
-    fourth_group_name AS `四级场景`
-FROM (
-        SELECT question_id,
-            uniqCnt,
-            dialog_cnt,
-            rank1,
-            rank2 - rank1 AS rank_change,
-            IF (
-                rank2 = 0
-                OR rank_change = 0,
-                '-',
-                IF (
-                    rank_change > 0,
-                    concat('上升', toString(rank_change)),
-                    concat('下降', toString(abs(rank_change)))
-                )
-            ) AS cn_change
-        FROM (
-                SELECT question_id,
-                    uniqCnt,
-                    dialog_cnt,
-                    rowNumberInAllBlocks() + 1 AS rank1
-                FROM (
-                        SELECT question_id,
-                            groupBitmapOr(cnick_id_bitmap) AS uniqCnt,
-                            sum(dialog_sum) AS dialog_cnt
-                        FROM (
-                                SELECT *
-                                FROM dws.voc_goods_question_stat_all
-                                WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
-                                    AND platform = 'tb' -- 下拉店铺
-                                    AND (
-                                        '{{ goods_ids }}' = ''
-                                        OR dialog_goods_id IN splitByChar(',', '{{ goods_ids }}')
-                                    )
-                                    AND question_id != ''
-                                    AND question_id GLOBAL IN (
-                                        SELECT question_b_qid AS question_id
-                                        FROM dim.voc_question_b_detail_all
-                                        WHERE company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}'
-                                            AND (
-                                                '{{ first_group_ids }}' = ''
-                                                OR first_group_id IN splitByChar(',', '{{ first_group_ids }}')
-                                            )
-                                            AND (
-                                                '{{ second_group_ids }}' = ''
-                                                OR second_group_id IN splitByChar(',', '{{ second_group_ids }}')
-                                            )
-                                            AND (
-                                                '{{ third_group_ids }}' = ''
-                                                OR third_group_id IN splitByChar(',', '{{ third_group_ids }}')
-                                            )
-                                            AND (
-                                                '{{ fourth_group_ids }}' = ''
-                                                OR fourth_group_id IN splitByChar(',', '{{ fourth_group_ids }}')
-                                            )
-                                    )
-                                    AND (
-                                        '{{ shop_ids }}' = ''
-                                        OR shop_id IN splitByChar(',', '{{ shop_ids }}')
-                                    ) -- 下拉订单状态
-                                    -- 下拉订单状态
-                                    AND (
-                                        '{{ order_status }}' = ''
-                                        OR recent_order_status IN splitByChar(
-                                            ',',
-                                            replaceAll('{{ order_status }}', 'unorder', '')
-                                        )
-                                    )
-                                    AND (
-                                        '{{ round_count }}' = ''
-                                        OR toString(dialog_qa_stage) IN splitByChar(',', '{{ round_count }}')
-                                    ) -- 当前企业对应的店铺
-                                    AND shop_id GLOBAL IN (
-                                        SELECT DISTINCT shop_id
-                                        FROM xqc_dim.xqc_shop_all
-                                        WHERE day = toYYYYMMDD(yesterday())
-                                            AND company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}'
-                                            AND platform = 'tb'
-                                    ) -- 当前企业对应的子账号
-                                    AND snick GLOBAL IN (
-                                        SELECT DISTINCT snick
-                                        FROM ods.xinghuan_employee_snick_all
-                                        WHERE day = toYYYYMMDD(yesterday())
-                                            AND platform = 'tb'
-                                            AND company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}' -- 下拉框-子账号分组id
-                                            AND (
-                                                '{{ department_ids }}' = ''
-                                                OR department_id IN splitByChar(',', '{{ department_ids }}')
-                                            ) -- 下拉子账号
-                                            AND (
-                                                '{{ snicks }}' = ''
-                                                OR snick IN splitByChar(',', '{{ snicks }}')
-                                            )
-                                    )
-                            )
-                        GROUP BY question_id
-                        ORDER BY uniqCnt DESC
-                        LIMIT 100
-                    )
-            ) GLOBAL
-            LEFT JOIN (
-                SELECT question_id,
-                    uniqCnt2,
-                    rowNumberInAllBlocks() + 1 AS rank2
-                FROM (
-                        SELECT question_id,
-                            groupBitmapOr(cnick_id_bitmap) AS uniqCnt2
-                        FROM (
-                                SELECT *
-                                FROM dws.voc_goods_question_stat_all
-                                WHERE day BETWEEN toYYYYMMDD(
-                                        subtractDays(
-                                            toDate('{{ day.start }}'),
-                                            dateDiff(
-                                                'day',
-                                                toDate('{{ day.start }}'),
-                                                toDate('{{ day.end }}')
-                                            ) + 1
-                                        )
-                                    ) AND toYYYYMMDD(
-                                        subtractDays(toDate('{{ day.start }}'), 1)
-                                    )
-                                    AND platform = 'tb' -- 下拉店铺
-                                    AND (
-                                        '{{ goods_ids }}' = ''
-                                        OR dialog_goods_id IN splitByChar(',', '{{ goods_ids }}')
-                                    )
-                                    AND (
-                                        '{{ shop_ids }}' = ''
-                                        OR shop_id IN splitByChar(',', '{{ shop_ids }}')
-                                    ) -- 下拉订单状态
-                                    -- 下拉订单状态
-                                    AND (
-                                        '{{ order_status }}' = ''
-                                        OR recent_order_status IN splitByChar(
-                                            ',',
-                                            replaceAll('{{ order_status }}', 'unorder', '')
-                                        )
-                                    )
-                                    AND (
-                                        '{{ round_count }}' = ''
-                                        OR toString(dialog_qa_stage) IN splitByChar(',', '{{ round_count }}')
-                                    ) -- 当前企业对应的店铺
-                                    AND question_id != ''
-                                    AND question_id GLOBAL IN (
-                                        SELECT question_b_qid AS question_id
-                                        FROM dim.voc_question_b_detail_all
-                                        WHERE company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}'
-                                            AND (
-                                                '{{ first_group_ids }}' = ''
-                                                OR first_group_id IN splitByChar(',', '{{ first_group_ids }}')
-                                            )
-                                            AND (
-                                                '{{ second_group_ids }}' = ''
-                                                OR second_group_id IN splitByChar(',', '{{ second_group_ids }}')
-                                            )
-                                            AND (
-                                                '{{ third_group_ids }}' = ''
-                                                OR third_group_id IN splitByChar(',', '{{ third_group_ids }}')
-                                            )
-                                            AND (
-                                                '{{ fourth_group_ids }}' = ''
-                                                OR fourth_group_id IN splitByChar(',', '{{ fourth_group_ids }}')
-                                            )
-                                    )
-                                    AND shop_id GLOBAL IN (
-                                        SELECT DISTINCT shop_id
-                                        FROM xqc_dim.xqc_shop_all
-                                        WHERE day = toYYYYMMDD(yesterday())
-                                            AND company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}'
-                                            AND platform = 'tb'
-                                    ) -- 当前企业对应的子账号
-                                    AND snick GLOBAL IN (
-                                        SELECT DISTINCT snick
-                                        FROM ods.xinghuan_employee_snick_all
-                                        WHERE day = toYYYYMMDD(yesterday())
-                                            AND platform = 'tb'
-                                            AND company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}' -- 下拉框-子账号分组id
-                                            AND (
-                                                '{{ department_ids }}' = ''
-                                                OR department_id IN splitByChar(',', '{{ department_ids }}')
-                                            ) -- 下拉子账号
-                                            AND (
-                                                '{{ snicks }}' = ''
-                                                OR snick IN splitByChar(',', '{{ snicks }}')
-                                            )
-                                    )
-                            )
-                        GROUP BY question_id
-                        ORDER BY uniqCnt2 DESC
-                    )
-            ) USING(question_id)
-    ) AS rank_info GLOBAL
-    LEFT JOIN (
-        SELECT DISTINCT
-            question_b_qid AS question_id,
-            question_b_name AS question,
-            first_group_name,
-            second_group_name,
-            third_group_name,
-            fourth_group_name
-        FROM dim.voc_question_b_detail_all
-        WHERE company_id = '{{ company_id=63fc50f0a06a5ecd9a249ac9 }}'
-            AND (
-                '{{ first_group_ids }}' = ''
-                OR first_group_id IN splitByChar(',', '{{ first_group_ids }}')
-            )
-            AND (
-                '{{ second_group_ids }}' = ''
-                OR second_group_id IN splitByChar(',', '{{ second_group_ids }}')
-            )
-            AND (
-                '{{ third_group_ids }}' = ''
-                OR third_group_id IN splitByChar(',', '{{ third_group_ids }}')
-            )
-            AND (
-                '{{ fourth_group_ids }}' = ''
-                OR fourth_group_id IN splitByChar(',', '{{ fourth_group_ids }}')
-            )
-    ) AS qb USING(question_id)
+Airflow DAG告警
+Env: tb
+DAG: voc_ods_etl_jd, Task: dwd_voc_chat_log_detail_etl
+Owner: chengcheng, Email: ['chengcheng@xiaoduotech.com']
+State: up_for_retry
+Try: 5 out of 7
+Exception: Code: 241.
+DB::Exception: Memory limit (for query) exceeded: would use 12.62 GiB (attempt to allocate chunk of 4295527472 bytes), maximum: 9.31 GiB: while executing 'FUNCTION arrayElement(sorted_msg_acts :: 2, minus(y, 1) :: 3) -> arrayElement(sorted_msg_acts, minus(y, 1)) String : 1': while executing 'FUNCTION arrayMap(__lambda :: 6, sorted_msg_acts :: 7, arrayEnumerate(sorted_msg_acts) :: 13) -> arrayMap(lambda(tuple(x, y), if(and(equals(x, 'send_msg'), equals(arrayElement(sorted_msg_acts, minus(y, 1)), 'recv_msg')), 1, 0)), sorted_msg_acts, arrayEnumerate(sorted_msg_acts)) Array(UInt8) : 12'. Stack trace:
+
+0. DB::Exception::Exception(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, int, bool) @ 0x8fe8d5a in /usr/bin/clickhouse
+1. DB::Exception::Exception<char const*, char const*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, long&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >(int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, char const*&&, char const*&&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >&&, long&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >&&) @ 0x8ffe749 in /usr/bin/clickhouse
+2. MemoryTracker::allocImpl(long, bool) @ 0x8ffe0fc in /usr/bin/clickhouse
+3. MemoryTracker::allocImpl(long, bool) @ 0x8ffde54 in /usr/bin/clickhouse
+4. COW<DB::IColumn>::immutable_ptr<DB::IColumn> DB::FunctionArrayElement::executeString<long>(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, DB::PODArray<long, 4096ul, Allocator<false, false>, 15ul, 16ul> const&, DB::ArrayImpl::NullMapBuilder&) @ 0xed2a6e4 in /usr/bin/clickhouse
+5. COW<DB::IColumn>::immutable_ptr<DB::IColumn> DB::FunctionArrayElement::executeArgument<long>(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, DB::ArrayImpl::NullMapBuilder&, unsigned long) const @ 0xed19283 in /usr/bin/clickhouse
+6. DB::FunctionArrayElement::perform(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, DB::ArrayImpl::NullMapBuilder&, unsigned long) const @ 0xed13731 in /usr/bin/clickhouse
+7. DB::FunctionArrayElement::executeImpl(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long) const @ 0xed11c5d in /usr/bin/clickhouse
+8. DB::FunctionToExecutableFunctionAdaptor::executeImpl(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long) const @ 0xb18690e in /usr/bin/clickhouse
+9. DB::IExecutableFunction::executeWithoutLowCardinalityColumns(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xfb3689e in /usr/bin/clickhouse
+10. DB::IExecutableFunction::execute(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xfb36eb2 in /usr/bin/clickhouse
+11. DB::ExpressionActions::execute(DB::Block&, unsigned long&, bool) const @ 0x101b3d55 in /usr/bin/clickhouse
+12. DB::ExpressionActions::execute(DB::Block&, bool) const @ 0x101b4e02 in /usr/bin/clickhouse
+13. DB::ExecutableFunctionExpression::executeImpl(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long) const @ 0x102bfac5 in /usr/bin/clickhouse
+14. DB::IExecutableFunction::executeWithoutLowCardinalityColumns(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xfb3689e in /usr/bin/clickhouse
+15. DB::IExecutableFunction::execute(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xfb36eb2 in /usr/bin/clickhouse
+16. DB::IFunctionBase::execute(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xb186407 in /usr/bin/clickhouse
+17. DB::ColumnFunction::reduce() const @ 0x108e01a2 in /usr/bin/clickhouse
+18. DB::FunctionArrayMapped<DB::ArrayMapImpl, DB::NameArrayMap>::executeImpl(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long) const @ 0xecf7344 in /usr/bin/clickhouse
+19. DB::FunctionToExecutableFunctionAdaptor::executeImpl(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long) const @ 0xb18690e in /usr/bin/clickhouse
+20. DB::IExecutableFunction::executeWithoutLowCardinalityColumns(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xfb3689e in /usr/bin/clickhouse
+21. DB::IExecutableFunction::execute(std::__1::vector<DB::ColumnWithTypeAndName, std::__1::allocator<DB::ColumnWithTypeAndName> > const&, std::__1::shared_ptr<DB::IDataType const> const&, unsigned long, bool) const @ 0xfb36eb2 in /usr/bin/clickhouse
+22. DB::ExpressionActions::execute(DB::Block&, unsigned long&, bool) const @ 0x101b3d55 in /usr/bin/clickhouse
+23. DB::ExpressionTransform::transform(DB::Chunk&) @ 0x11283c9c in /usr/bin/clickhouse
+24. DB::ISimpleTransform::transform(DB::Chunk&, DB::Chunk&) @ 0x11284030 in /usr/bin/clickhouse
+25. DB::ISimpleTransform::work() @ 0x11286f07 in /usr/bin/clickhouse
+26. ? @ 0x1113895d in /usr/bin/clickhouse
+27. DB::PipelineExecutor::executeStepImpl(unsigned long, unsigned long, std::__1::atomic<bool>*) @ 0x111354f1 in /usr/bin/clickhouse
+28. ? @ 0x11139f96 in /usr/bin/clickhouse
+29. ThreadPoolImpl<std::__1::thread>::worker(std::__1::__list_iterator<std::__1::thread, void*>) @ 0x90299df in /usr/bin/clickhouse
+30. ? @ 0x902d2c3 in /usr/bin/clickhouse
+31. start_thread @ 0x9609 in /usr/lib/x86_64-linux-gnu/libpthread-2.31.so
+
+Log: log_url

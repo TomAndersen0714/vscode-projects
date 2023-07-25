@@ -1,5 +1,4 @@
-            INSERT INTO dwd.voc_chat_log_detail_all
-            SELECT
+SELECT
                 day,
                 platform,
                 shop_id,
@@ -48,8 +47,8 @@
                         toUInt32(day) AS u_day,
                         platform,
                         shop_id,
-                        replaceOne(snick,'cnjd','') AS snick,
-                        replaceOne(cnick,'cnjd','') AS cnick,
+                        snick,
+                        cnick,
                         '' AS real_buyer_nick,
                         toUInt64(msg_time) AS msg_timestamp,
                         msg_id,
@@ -58,17 +57,17 @@
                         send_msg_from,
                         question_b_qid,
                         plat_goods_id
-                    FROM ods.xdrs_logs_all
-                    WHERE day = 20230724
+                    FROM remote('{CH_REMOTE_CONNECTION_DY}', 'ods.xdrs_logs')
+                    WHERE day = {ds_nodash}
                     AND shop_id GLOBAL IN (
                         SELECT shop_id
                         FROM xqc_dim.shop_latest_all
                         WHERE company_id GLOBAL IN (
                             SELECT _id
                             FROM xqc_dim.company_latest_all
-                            WHERE has(white_list, 'VOC')
+                            WHERE has(white_list, '{FEATURE_ID}')
                         )
-                        AND platform = 'jd'
+                        AND platform = 'dy'
                     )
                     AND act IN ['send_msg', 'recv_msg']
                 ) AS xdrs_logs
@@ -81,7 +80,8 @@
                         cnick,
                         cnick_info.cnick_id,
                         real_buyer_nick,
-                        dialog_qa_cnt
+                        -- QA数量
+                        arraySum(qa_split_tags) AS dialog_qa_cnt
                     FROM (
                         -- stage-2: 基于当天的聊天消息计算会话轮次, 按照会话聚合, 统计会话QA次数
                         SELECT
@@ -91,70 +91,76 @@
                             snick,
                             cnick,
                             real_buyer_nick,
-                            arraySort(groupArray(msg_milli_timestamp)) AS msg_milli_timestamps,
-                            arraySort((x, y)->y, groupArray(act), groupArray(msg_milli_timestamp)) AS msg_acts,
-            
                             -- 切分会话生成QA切分标记, PS: 可能存在单个Q, 单个A, 单个QA, 多个QA四种情况, 此切分方法只能切分多QA的情况
                             arrayMap(
-                                (x, y)->(if(x = 'send_msg' AND msg_acts[y-1] = 'recv_msg', 1, 0)),
-                                msg_acts,
-                                arrayEnumerate(msg_acts)
-                            ) AS _qa_split_tags,
-                            -- QA数量
-                            arraySum(_qa_split_tags) AS dialog_qa_cnt
+                                (x, y)->(if(x = 'send_msg' AND sorted_msg_acts[y-1] = 'recv_msg', 1, 0)),
+                                sorted_msg_acts,
+                                arrayEnumerate(sorted_msg_acts)
+                            ) AS qa_split_tags
                         FROM (
                             SELECT
-                                toUInt32(day) AS u_day,
+                                u_day,
                                 platform,
                                 shop_id,
-                                replaceOne(snick,'cnjd','') AS snick,
-                                replaceOne(cnick,'cnjd','') AS cnick,
-                                '' AS real_buyer_nick,
-                                toUInt64(toFloat64(toDateTime64(create_time, 3))*1000) AS msg_milli_timestamp,
-                                act
-                            FROM ods.xdrs_logs_all
-                            WHERE day = 20230724
-                            AND shop_id GLOBAL IN (
-                                SELECT shop_id
-                                FROM xqc_dim.shop_latest_all
-                                WHERE company_id GLOBAL IN (
-                                    SELECT _id
-                                    FROM xqc_dim.company_latest_all
-                                    WHERE has(white_list, 'VOC')
+                                snick,
+                                cnick,
+                                real_buyer_nick,
+                                arraySort(groupArray(msg_milli_timestamp)) AS msg_milli_timestamps,
+                                arraySort((x, y)->y, groupArray(act), groupArray(msg_milli_timestamp)) AS sorted_msg_acts
+                            FROM (
+                                SELECT
+                                    toUInt32(day) AS u_day,
+                                    platform,
+                                    shop_id,
+                                    snick,
+                                    cnick,
+                                    '' AS real_buyer_nick,
+                                    toUInt64(toFloat64(toDateTime64(create_time, 3))*1000) AS msg_milli_timestamp,
+                                    act
+                                FROM remote('{CH_REMOTE_CONNECTION_DY}', 'ods.xdrs_logs')
+                                WHERE day = {ds_nodash}
+                                AND shop_id GLOBAL IN (
+                                    SELECT shop_id
+                                    FROM xqc_dim.shop_latest_all
+                                    WHERE company_id GLOBAL IN (
+                                        SELECT _id
+                                        FROM xqc_dim.company_latest_all
+                                        WHERE has(white_list, '{FEATURE_ID}')
+                                    )
+                                    AND platform = 'dy'
                                 )
-                                AND platform = 'jd'
+                                AND act IN ['send_msg', 'recv_msg']
                             )
-                            AND act IN ['send_msg', 'recv_msg']
+                            GROUP BY u_day,
+                                platform,
+                                shop_id,
+                                snick,
+                                cnick,
+                                real_buyer_nick
                         ) AS xdrs_logs
-                        GROUP BY u_day,
-                            platform,
-                            shop_id,
-                            snick,
-                            cnick,
-                            real_buyer_nick
                     ) AS dialog_info
                     LEFT JOIN (
                         SELECT
                             cnick,
                             cnick_id
                         FROM dwd.voc_cnick_list_all
-                        WHERE day = 20230724
+                        WHERE day = {ds_nodash}
                         -- 筛选当日咨询客户
                         AND (platform, cnick) IN (
                             SELECT DISTINCT
                                 platform,
-                                replaceOne(cnick,'cnjd','') AS cnick
-                            FROM ods.xdrs_logs_all
-                            WHERE day = 20230724
+                                cnick
+                            FROM remote('{CH_REMOTE_CONNECTION_DY}', 'ods.xdrs_logs')
+                            WHERE day = {ds_nodash}
                             AND shop_id GLOBAL IN (
                                 SELECT shop_id
                                 FROM xqc_dim.shop_latest_all
                                 WHERE company_id GLOBAL IN (
                                     SELECT _id
                                     FROM xqc_dim.company_latest_all
-                                    WHERE has(white_list, 'VOC')
+                                    WHERE has(white_list, '{FEATURE_ID}')
                                 )
-                                AND platform = 'jd'
+                                AND platform = 'dy'
                             )
                             AND act IN ['send_msg', 'recv_msg']
                         )
@@ -174,32 +180,33 @@
                     order_status_timestamps,
                     order_statuses
                 FROM dwd.voc_buyer_latest_order_all
-                WHERE day = 20230724
+                WHERE day = {ds_nodash}
                 AND shop_id GLOBAL IN (
                     SELECT shop_id
                     FROM xqc_dim.shop_latest_all
                     WHERE company_id GLOBAL IN (
                         SELECT _id
                         FROM xqc_dim.company_latest_all
-                        WHERE has(white_list, 'VOC')
+                        WHERE has(white_list, '{FEATURE_ID}')
                     )
-                    AND platform = 'jd'
+                    AND platform = 'dy'
                 )
-                AND (platform, cnick) IN (
+                -- 筛选当日咨询客户
+                AND (platform, buyer_nick) IN (
                     SELECT DISTINCT
                         platform,
-                        replaceOne(cnick,'cnjd','') AS cnick
-                    FROM ods.xdrs_logs_all
-                    WHERE day = 20230724
+                        cnick
+                    FROM remote('{CH_REMOTE_CONNECTION_DY}', 'ods.xdrs_logs')
+                    WHERE day = {ds_nodash}
                     AND shop_id GLOBAL IN (
                         SELECT shop_id
                         FROM xqc_dim.shop_latest_all
                         WHERE company_id GLOBAL IN (
                             SELECT _id
                             FROM xqc_dim.company_latest_all
-                            WHERE has(white_list, 'VOC')
+                            WHERE has(white_list, '{FEATURE_ID}')
                         )
-                        AND platform = 'jd'
+                        AND platform = 'dy'
                     )
                     AND act IN ['send_msg', 'recv_msg']
                 )
