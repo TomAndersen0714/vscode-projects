@@ -137,6 +137,8 @@ SELECT
                                 snick,
                                 cnick,
                                 real_buyer_nick
+                            -- 限制单次会话数据量, 避免脏数据
+                            HAVING count(1) < 2000
                         ) AS xdrs_logs
                     ) AS dialog_info
                     LEFT JOIN (
