@@ -27,16 +27,16 @@ Peak memory usage (for query): 1.00 GiB.
 
 
 -- 嵌套子查询无效
-select arrayFilter(x->A[x]='777', keys) from (select A, arrayEnumerate(A) as keys from test.X) format Null;
+select arrayFilter((x, y)->A[y]='777', A, keys) from (select A, arrayEnumerate(A) as keys from test.X) format Null;
 Peak memory usage (for query): 1.00 GiB.
 
 
 -- 更换数组生成函数为range, 无效
-select arrayFilter(x->A[x]='777', keys) from (select A, range(length(A)) as keys from test.X) format Null;
+select arrayFilter((x, y)->A[y]='777', A, keys) from (select A, range(length(A)) as keys from test.X) format Null;
 Peak memory usage (for query): 1.00 GiB.
 
 
-select arrayFilter(x->A[x]='777', keys) from (select A, arrayEnumerate(A) as keys from test.X) format Null
+select arrayFilter((x, y)->A[y]='777', A, keys) from (select A, arrayEnumerate(A) as keys from test.X) format Null
 settings max_block_size = 1;
 Peak memory usage (for query): 1.00 GiB.
 
@@ -46,5 +46,6 @@ select arrayFilter((v, k)-> k = '777', A, A) from test.X format Null;
 Peak memory usage (for query): 0.00 B.
 
 
--- 
-select arrayFilter((v, k)-> k = 778, A, keys) from (select A, arrayEnumerate(A) as keys from test.X) format Null;
+-- lambda 中取消Array引用, 有效
+select arrayFilter((v, k)-> k = 777, A, keys) from (select A, arrayEnumerate(A) as keys from test.X) format Null;
+Peak memory usage (for query): 0.00 B.
