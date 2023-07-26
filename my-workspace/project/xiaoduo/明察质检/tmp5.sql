@@ -1,5 +1,0 @@
-SELECT day, shop_id, COUNT(1) AS cnt
-FROM xqc_ods.alert_all FINAL
-PREWHERE day BETWEEN 20230513 AND 20230516
-GROUP BY day, shop_id
-ORDER BY cnt DESC

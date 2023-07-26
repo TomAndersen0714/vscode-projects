@@ -95,7 +95,8 @@ SELECT
                             arrayMap(
                                 (x, y)->(if(x = 'send_msg' AND sorted_msg_acts[y-1] = 'recv_msg', 1, 0)),
                                 sorted_msg_acts,
-                                arrayEnumerate(sorted_msg_acts)
+                                arrayEnumerate(sorted_msg_acts),
+                                
                             ) AS qa_split_tags
                         FROM (
                             SELECT
