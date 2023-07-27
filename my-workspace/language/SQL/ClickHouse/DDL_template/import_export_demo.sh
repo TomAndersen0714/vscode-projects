@@ -25,7 +25,8 @@ docker exec -i 9043cb24167c clickhouse-client --port=19000 --query="
 
 docker exec -i 9043cb24167c clickhouse-client --port=19000 --query="
     SELECT *
-    FROM dim.xdre_shop_all FORMAT Avro
+    FROM dim.xdre_shop_all
+    FORMAT Avro
 " > /tmp/dim.xdre_shop_all.avro
 
 docker exec -i 9043cb24167c clickhouse-client --port=19000 --query="
