@@ -1,15 +1,15 @@
-#!/usr/bin/env bash
+# export
+docker exec -i 7a6838cfcc45 clickhouse-client --port=19000 --query="
+    SELECT *
+    FROM ods.xdrs_logs_all
+    WHERE day BETWEEN 20230726 AND 20230731
+    AND shop_id = '5f8ff0c0a3967d00188dca48'
+    FORMAT Avro
+" > /tmp/ods.xdrs_logs_all.avro
 
-cd /data2/code_workplace/data_receiver_docker/
 
-mkdir -p conf/pdd_conf/reminder_pdd_rmd_order
-
-mkdir -p src/rawdata_parser/pdd_parser
-
-cp /opt/bigdata/gitlab/online/20230629/reminder_pdd_rmd_order/docker_run.sh conf/pdd_conf/reminder_pdd_rmd_order/docker_run.sh
-
-cp /opt/bigdata/gitlab/online/20230629/reminder_pdd_rmd_order/reminder_pdd_rmd_order_clickhouse.json conf/pdd_conf/reminder_pdd_rmd_order/reminder_pdd_rmd_order_clickhouse.json
-
-cp /opt/bigdata/gitlab/online/20230629/reminder_pdd_rmd_order/reminder_pdd_rmd_order_clickhouse_parser.py src/rawdata_parser/pdd_parser/reminder_pdd_rmd_order_clickhouse_parser.py
-
-sh /data2/code_workplace/data_receiver_docker/conf/pdd_conf/reminder_pdd_rmd_order/docker_run.sh base.v2.8
+# Import
+docker exec -i f513ece2eba7 clickhouse-client --port=19000 --query="
+    INSERT INTO ods.tb_xdrs_logs_all
+    FORMAT Avro
+" < ods.xdrs_logs_all.avro
