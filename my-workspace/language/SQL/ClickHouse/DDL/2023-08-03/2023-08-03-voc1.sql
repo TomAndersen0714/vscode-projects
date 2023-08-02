@@ -73,6 +73,8 @@ CREATE TABLE IF NOT EXISTS xqc_dim.goods_local ON CLUSTER cluster_3s_2r
     `platform` String,
     `name` String,
     `goods_id` String,
+    `goods_url` String,
+    `goods_img` String,
     `price` Float64,
     `status` Int64,
     `tags` Array(String),
