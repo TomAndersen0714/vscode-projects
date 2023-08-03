@@ -1,188 +1,76 @@
+SELECT
+    platform AS `平台`,
+    seller_nick AS `店铺`, department_name AS `子账号分组`, snick AS `客服子账号`,
+    employee_name AS `客服姓名`, superior_name AS `客服上级姓名`,
+    qc_norm_name AS `质检标准`,
+    tag_name AS `质检项名称`,
+    tag_cnt_sum AS `质检项触发次数`,
+    tag_score_sum AS `质检项分值`,
+    tag_dialog_cnt_sum AS `质检项打标会话量`,
+    round(tag_score_sum/tag_dialog_cnt_sum,2) AS tag_score_sum_avg_score AS `质检项平均分`
+FROM (
+    SELECT
+        platform, seller_nick, snick, 
+        qc_norm_name, tag_type, tag_id, tag_name,
+        tag_cnt_sum, tag_score_sum, tag_dialog_cnt_sum
+    FROM (
         SELECT
-            day,
-            platform,
-            shop_id,
-            snick,
-            cnick,
-            cnick_id,
-            real_buyer_nick,
-            msg_timestamp,
-            msg_id,
-            msg,
-            act,
-            send_msg_from,
-            question_b_qid,
-            plat_goods_id,
-            IF(recent_order_status!='', latest_order_info.order_id, '') AS recent_order_id,
-            arrayFilter(
-                (x)-> x<=msg_timestamp,
-                latest_order_info.order_status_timestamps
-            )[-1] AS recent_order_status_timestamp,
-            arrayFilter(
-                (x,y)-> y<=msg_timestamp,
-                latest_order_info.order_statuses,
-                latest_order_info.order_status_timestamps
-            )[-1] AS recent_order_status,
-            dialog_qa_cnt AS dialog_qa_sum
+            platform, seller_nick, snick, 
+            tag_type, tag_id, tag_name,
+            sum(tag_cnt_sum) AS tag_cnt_sum,
+            sum(tag_score_sum) AS tag_score_sum,
+            sum(tag_dialog_cnt) AS tag_dialog_cnt_sum
+        FROM xqc_dws.tag_stat_all
+        WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+        AND platform = '{{platform}}'
+        AND seller_nick GLOBAL IN (
+            -- 查询对应企业-平台的店铺
+            SELECT DISTINCT seller_nick
+            FROM xqc_dim.shop_latest_all
+            WHERE platform = '{{platform}}'
+            AND company_id = '{{ company_id }}'
+        )
+        GROUP BY platform, seller_nick, snick, tag_type, tag_id, tag_name
+    )
+    LEFT JOIN (
+        SELECT
+            tag_id, qc_norm_name
         FROM (
             SELECT
-                u_day AS day,
-                platform,
-                shop_id,
-                snick,
-                cnick,
-                cnick_id,
-                real_buyer_nick,
-                msg_timestamp,
-                msg_id,
-                msg,
-                act,
-                send_msg_from,
-                question_b_qid,
-                plat_goods_id,
-                dialog_detail_info.dialog_qa_cnt
-            FROM (
-                -- stage-1: 查询当天的聊天消息记录
+                _id AS tag_id, name AS tag_name, qc_norm_id
+            FROM xqc_dim.qc_rule_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND status = 1
+            AND qc_norm_id GLOBAL IN (
                 SELECT
-                    toUInt32(day) AS u_day,
-                    platform,
-                    shop_id,
-                    replaceOne(snick,'cntaobao','') AS snick,
-                    replaceOne(cnick,'cntaobao','') AS cnick,
-                    real_buyer_nick,
-                    toUInt64(msg_time) AS msg_timestamp,
-                    msg_id,
-                    msg,
-                    act,
-                    send_msg_from,
-                    question_b_qid,
-                    plat_goods_id
-                FROM ods.xdrs_logs_all
-                PREWHERE day = 20230731
-                AND shop_id GLOBAL IN (
-                    SELECT shop_id
-                    FROM xqc_dim.shop_latest_all
-                    WHERE company_id GLOBAL IN (
-                        SELECT _id
-                        FROM xqc_dim.company_latest_all
-                        WHERE has(white_list, 'VOC')
-                    )
-                    AND platform IN ['tb']
-                )
-                AND act IN ['send_msg', 'recv_msg']
-            ) AS xdrs_logs
-            LEFT JOIN (
-                SELECT
-                    u_day,
-                    platform,
-                    shop_id,
-                    snick,
-                    cnick,
-                    cnick_info.cnick_id,
-                    real_buyer_nick,
-                    dialog_qa_cnt
-                FROM (
-                    -- stage-2: 基于当天的聊天消息计算会话轮次, 按照会话聚合, 统计会话QA次数
-                    SELECT
-                        u_day,
-                        platform,
-                        shop_id,
-                        snick,
-                        cnick,
-                        real_buyer_nick,
-                        arraySort(groupArray(msg_milli_timestamp)) AS msg_milli_timestamps,
-                        arraySort((x, y)->y, groupArray(act), groupArray(msg_milli_timestamp)) AS msg_acts,
-
-                        -- 切分会话生成QA切分标记, PS: 可能存在单个Q, 单个A, 单个QA, 多个QA四种情况, 此切分方法只能切分多QA的情况
-                        arrayMap(
-                            (x, y)->(if(x = 'send_msg' AND msg_acts[y-1] = 'recv_msg', 1, 0)),
-                            msg_acts,
-                            arrayEnumerate(msg_acts)
-                        ) AS _qa_split_tags,
-                        -- QA数量
-                        arraySum(_qa_split_tags) AS dialog_qa_cnt
-                    FROM (
-                        SELECT
-                            toUInt32(day) AS u_day,
-                            platform,
-                            shop_id,
-                            replaceOne(snick,'cntaobao','') AS snick,
-                            replaceOne(cnick,'cntaobao','') AS cnick,
-                            real_buyer_nick,
-                            toUInt64(toFloat64(toDateTime64(create_time, 3))*1000) AS msg_milli_timestamp,
-                            act
-                        FROM ods.xdrs_logs_all
-                        PREWHERE day = 20230731
-                        AND shop_id GLOBAL IN (
-                            SELECT shop_id
-                            FROM xqc_dim.shop_latest_all
-                            WHERE company_id GLOBAL IN (
-                                SELECT _id
-                                FROM xqc_dim.company_latest_all
-                                WHERE has(white_list, 'VOC')
-                            )
-                            AND platform IN ['tb']
-                        )
-                        AND act IN ['send_msg', 'recv_msg']
-                    ) AS xdrs_logs
-                    GROUP BY u_day,
-                        platform,
-                        shop_id,
-                        snick,
-                        cnick,
-                        real_buyer_nick
-                ) AS dialog_info
-                LEFT JOIN (
-                    SELECT
-                        cnick,
-                        cnick_id
-                    FROM dwd.voc_cnick_list_all
-                    WHERE day = 20230731
-                    -- 筛选当日咨询客户
-                    AND (platform, cnick) IN (
-                        SELECT DISTINCT
-                            platform,
-                            replaceOne(cnick,'cntaobao','') AS cnick
-                        FROM ods.xdrs_logs_all
-                        PREWHERE day = 20230731
-                        AND shop_id GLOBAL IN (
-                            SELECT shop_id
-                            FROM xqc_dim.shop_latest_all
-                            WHERE company_id GLOBAL IN (
-                                SELECT _id
-                                FROM xqc_dim.company_latest_all
-                                WHERE has(white_list, 'VOC')
-                            )
-                            AND platform IN ['tb']
-                        )
-                        AND act IN ['send_msg', 'recv_msg']
-                    )
-                ) AS cnick_info
-                USING(cnick)
-            ) AS dialog_detail_info
-            USING(u_day, platform, shop_id, snick, cnick, real_buyer_nick)
-        ) AS xdrs_dialog_info
-        LEFT JOIN (
-            -- stage-3: 关联买家最新订单表, 查询订单状态
-            SELECT
-                day,
-                platform,
-                shop_id,
-                buyer_nick AS cnick,
-                order_id,
-                order_status_timestamps,
-                order_statuses
-            FROM dwd.voc_buyer_latest_order_all
-            WHERE day = 20230731
-            AND shop_id GLOBAL IN (
-                SELECT shop_id
-                FROM xqc_dim.shop_latest_all
-                WHERE company_id GLOBAL IN (
-                    SELECT _id
-                    FROM xqc_dim.company_latest_all
-                    WHERE has(white_list, 'VOC')
-                )
-                AND platform IN ['tb']
+                    _id
+                FROM ods.xinghuan_qc_norm_all
+                WHERE day = toYYYYMMDD(yesterday())
+                AND platform = '{{platform}}'
+                AND company_id = '{{ company_id }}'
+                AND status = 1
             )
-        ) AS latest_order_info
-        USING(day, platform, shop_id, cnick)
+        ) AS qc_rule_info
+        GLOBAL LEFT JOIN (
+            SELECT
+                _id AS qc_norm_id, name AS qc_norm_name
+            FROM ods.xinghuan_qc_norm_all
+            WHERE day = toYYYYMMDD(yesterday())
+            AND platform = '{{platform}}'
+            AND company_id = '{{ company_id }}'
+            AND status = 1
+        ) AS qc_norm_info
+        USING(qc_norm_id)
+    )
+    USING(tag_id)
+) AS tag_stat
+GLOBAL LEFT JOIN (
+    -- 关联子账号分组/子账号员工信息
+    SELECT
+        platform, snick, employee_name, superior_name, department_id, department_name
+    FROM xqc_dim.snick_full_info_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND platform = '{{platform}}'
+    AND company_id = '{{ company_id }}'
+) AS dim_snick_department
+USING(platform, snick)
