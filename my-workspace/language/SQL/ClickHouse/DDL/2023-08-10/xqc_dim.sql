@@ -33,7 +33,7 @@ ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
     '{replica}'
 )
-ORDER BY (company_id, platform)
+ORDER BY (company_id, platform, qc_norm_id)
 SETTINGS index_granularity = 8192, storage_policy = 'rr';
 
 -- DROP TABLE xqc_dim.qc_rule_full_info_latest_all ON CLUSTER cluster_3s_2r NO DELAY

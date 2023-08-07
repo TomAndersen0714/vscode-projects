@@ -1,6 +1,6 @@
--- ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r 
+-- ALTER TABLE xqc_dws.xplat_snick_stat_local ON CLUSTER cluster_3s_2r 
 -- DROP COLUMN IF EXISTS `company_id`;
-ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r
+ALTER TABLE xqc_dws.xplat_snick_stat_local ON CLUSTER cluster_3s_2r
 ADD COLUMN IF NOT EXISTS `company_id` String AFTER `day`,
 ADD COLUMN IF NOT EXISTS `shop_id` String AFTER `company_id`,
 ADD COLUMN IF NOT EXISTS `qc_norm_id` String AFTER `department_name`,
@@ -24,12 +24,26 @@ ADD COLUMN IF NOT EXISTS `custom_tagged_add_score_dialog_cnt` Int64 AFTER `custo
 ADD COLUMN IF NOT EXISTS `custom_tagged_zero_score_dialog_cnt` Int64 AFTER `custom_tagged_add_score_dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `manual_tagged_subtract_score_dialog_cnt` Int64 AFTER `manual_tagged_dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `manual_tagged_add_score_dialog_cnt` Int64 AFTER `manual_tagged_subtract_score_dialog_cnt`,
-ADD COLUMN IF NOT EXISTS `manual_tagged_zero_score_dialog_cnt` Int64 AFTER `manual_tagged_add_score_dialog_cnt`;
+ADD COLUMN IF NOT EXISTS `manual_tagged_zero_score_dialog_cnt` Int64 AFTER `manual_tagged_add_score_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_dialog_cnt` Int64 AFTER `manual_add_score_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_1_dialog_cnt` Int64 AFTER `eval_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_2_dialog_cnt` Int64 AFTER `eval_level_1_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_3_dialog_cnt` Int64 AFTER `eval_level_2_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_4_dialog_cnt` Int64 AFTER `eval_level_3_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_5_dialog_cnt` Int64 AFTER `eval_level_4_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `alert_cnt` Int64 `eval_level_5_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `level_1_alert_cnt` Int64 AFTER `alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_2_alert_cnt` Int64 AFTER `level_1_alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_3_alert_cnt` Int64 AFTER `level_2_alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_1_alert_finished_cnt` Int64 AFTER `level_3_alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_2_alert_finished_cnt` Int64 AFTER `level_1_alert_finished_cnt`,
+ADD COLUMN IF NOT EXISTS `level_3_alert_finished_cnt` Int64 AFTER `level_2_alert_finished_cnt`,
+ADD COLUMN IF NOT EXISTS `alert_finished_mins` Int64 AFTER `level_3_alert_finished_cnt`;
 
 
--- ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
+-- ALTER TABLE xqc_dws.xplat_snick_stat_all ON CLUSTER cluster_3s_2r
 -- DROP COLUMN IF EXISTS `company_id`;
-ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
+ALTER TABLE xqc_dws.xplat_snick_stat_all ON CLUSTER cluster_3s_2r
 ADD COLUMN IF NOT EXISTS `company_id` String AFTER `day`,
 ADD COLUMN IF NOT EXISTS `shop_id` String AFTER `company_id`,
 ADD COLUMN IF NOT EXISTS `qc_norm_id` String AFTER `department_name`,
@@ -53,48 +67,25 @@ ADD COLUMN IF NOT EXISTS `custom_tagged_add_score_dialog_cnt` Int64 AFTER `custo
 ADD COLUMN IF NOT EXISTS `custom_tagged_zero_score_dialog_cnt` Int64 AFTER `custom_tagged_add_score_dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `manual_tagged_subtract_score_dialog_cnt` Int64 AFTER `manual_tagged_dialog_cnt`,
 ADD COLUMN IF NOT EXISTS `manual_tagged_add_score_dialog_cnt` Int64 AFTER `manual_tagged_subtract_score_dialog_cnt`,
-ADD COLUMN IF NOT EXISTS `manual_tagged_zero_score_dialog_cnt` Int64 AFTER `manual_tagged_add_score_dialog_cnt`;
+ADD COLUMN IF NOT EXISTS `manual_tagged_zero_score_dialog_cnt` Int64 AFTER `manual_tagged_add_score_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_dialog_cnt` Int64 AFTER `manual_add_score_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_1_dialog_cnt` Int64 AFTER `eval_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_2_dialog_cnt` Int64 AFTER `eval_level_1_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_3_dialog_cnt` Int64 AFTER `eval_level_2_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_4_dialog_cnt` Int64 AFTER `eval_level_3_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `eval_level_5_dialog_cnt` Int64 AFTER `eval_level_4_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `alert_cnt` Int64 `eval_level_5_dialog_cnt`,
+ADD COLUMN IF NOT EXISTS `level_1_alert_cnt` Int64 AFTER `alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_2_alert_cnt` Int64 AFTER `level_1_alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_3_alert_cnt` Int64 AFTER `level_2_alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_1_alert_finished_cnt` Int64 AFTER `level_3_alert_cnt`,
+ADD COLUMN IF NOT EXISTS `level_2_alert_finished_cnt` Int64 AFTER `level_1_alert_finished_cnt`,
+ADD COLUMN IF NOT EXISTS `level_3_alert_finished_cnt` Int64 AFTER `level_2_alert_finished_cnt`,
+ADD COLUMN IF NOT EXISTS `alert_finished_mins` Int64 AFTER `level_3_alert_finished_cnt`;
 
 
--- ALTER TABLE xqc_dws.tag_stat_local ON CLUSTER cluster_3s_2r 
--- DROP COLUMN IF EXISTS `company_id`;
-ALTER TABLE xqc_dws.tag_stat_local ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `company_id` String AFTER `day`,
-ADD COLUMN IF NOT EXISTS `shop_id` String AFTER `company_id`,
-ADD COLUMN IF NOT EXISTS `qc_norm_id` String AFTER `snick`,
-ADD COLUMN IF NOT EXISTS `qc_norm_name` String AFTER `qc_norm_id`,
-ADD COLUMN IF NOT EXISTS `tag_group_full_name` String AFTER `qc_norm_name`;
+DROP TABLE buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY;
 
-
--- ALTER TABLE xqc_dws.tag_stat_all ON CLUSTER cluster_3s_2r 
--- DROP COLUMN IF EXISTS `company_id`;
-ALTER TABLE xqc_dws.tag_stat_all ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `company_id` String AFTER `day`,
-ADD COLUMN IF NOT EXISTS `shop_id` String AFTER `company_id`,
-ADD COLUMN IF NOT EXISTS `qc_norm_id` String AFTER `snick`,
-ADD COLUMN IF NOT EXISTS `qc_norm_name` String AFTER `qc_norm_id`,
-ADD COLUMN IF NOT EXISTS `tag_group_full_name` String AFTER `qc_norm_name`;
-
-
--- DROP TABLE xqc_dws.xplat_tag_stat_local ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS xqc_dws.xplat_tag_stat_local ON CLUSTER cluster_3s_2r
-AS xqc_dws.tag_stat_all
-ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-)
-PARTITION BY (day, platform)
-ORDER BY (company_id, shop_id)
-SETTINGS index_granularity = 8192, storage_policy = 'rr';
-
-
--- DROP TABLE xqc_dws.xplat_tag_stat_all ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS xqc_dws.xplat_tag_stat_all ON CLUSTER cluster_3s_2r
-AS xqc_dws.xplat_tag_stat_local
-ENGINE = Distributed('cluster_3s_2r', 'xqc_dws', 'xplat_tag_stat_local', rand());
-
-
--- DROP TABLE buffer.xqc_dwd_xplat_tag_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
-CREATE TABLE IF NOT EXISTS buffer.xqc_dwd_xplat_tag_stat_buffer ON CLUSTER cluster_3s_2r
-AS xqc_dws.xplat_tag_stat_all
-ENGINE = Buffer('xqc_dws', 'xplat_tag_stat_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
+CREATE TABLE buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r
+AS xqc_dws.xplat_snick_stat_all
+ENGINE = Buffer('xqc_dws', 'xplat_snick_stat_all', 16, 15, 35, 81920, 409600, 16777216, 67108864)
