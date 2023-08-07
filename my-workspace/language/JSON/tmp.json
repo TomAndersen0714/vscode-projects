@@ -1,35 +1,7 @@
-{
-    "_id": ObjectId("64af605a27e1820001835682"),
-    "platform": "tb",
-    "company_id": ObjectId("5f938c4be70ea20001345ece"),
-    "seller_nick": "星环#海信电视官方旗舰店",
-    "wiper_id": ObjectId("5ff8124345d4190001ad4c75"),
-    "wiper_time": NumberLong(1689215066),
-    "cnick": "yxuanmo11",
-    "wipe_messages": {
-        "dialog_id": ObjectId("64ae41ae7b64d60001ad9504"),
-        "begin_timestamp": NumberLong(1689141678),
-        "messages": [
-            {
-                "id": ObjectId("64ae41aeb32f900001cdf99a"),
-                "wipe_emotion": false,
-                "abnormals": [],
-                "excellents": [],
-                "rule_scores": [
-                    {
-                        "id": ObjectId("6327c843a22027ee6d002184"),
-                        "acount": 1,
-                        "score": -3,
-                        "name": ""
-                    }
-                ],
-                "emotion": null
-            }
-        ],
-        "rule_score_stats": [],
-        "abnormals": [],
-        "tags": []
-    },
-    "snick": "星环#海信电视官方旗舰店:小梨儿",
-    "open_uid": "AAEbZosOAKdpZ1hrVDiuxc1i"
-}
+{ "_id" : ObjectId("6321a78b6688d9c6e0155471"), "create_time" : ISODate("2022-09-14T10:06:03.148Z"), "update_time" : ISODate("2022-09-14T10:06:03.148Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("630f068f4f78e40c16f164db"), "seller_nick" : "阳光宅男820", "shop_name" : "阳光宅男820" }
+{ "_id" : ObjectId("6323e7aea22027ee6dfe671e"), "create_time" : ISODate("2022-09-16T03:04:14.227Z"), "update_time" : ISODate("2022-09-16T03:04:14.227Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61d3c23aad037d615e69d041"), "seller_nick" : "木月瑞希尔", "shop_name" : "木月瑞希尔" }
+{ "_id" : ObjectId("63298b81a22027ee6d012c00"), "create_time" : ISODate("2022-09-20T09:44:33.251Z"), "update_time" : ISODate("2022-09-20T09:44:33.251Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61a625b8130c40817c37fb46"), "seller_nick" : "杜可风按", "shop_name" : "测试店铺 非卖品" }
+{ "_id" : ObjectId("63913eebd7f98b06548dded6"), "create_time" : ISODate("2022-12-08T01:33:31.499Z"), "update_time" : ISODate("2022-12-08T01:33:31.499Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61a625b8130c40817c37fb46"), "seller_nick" : "hjahdsa", "shop_name" : "随风而行216" }
+{ "_id" : ObjectId("63913ef9d7f98b06548ddee5"), "create_time" : ISODate("2022-12-08T01:33:45.736Z"), "update_time" : ISODate("2022-12-08T01:33:45.736Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61a625b8130c40817c37fb46"), "seller_nick" : "wangjq_1990", "shop_name" : "wangjq_1990" }
+{ "_id" : ObjectId("639930ea049c14cd4956ce67"), "create_time" : ISODate("2022-12-14T02:11:54.062Z"), "update_time" : ISODate("2022-12-14T02:11:54.062Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("638dd787833c11edea5b4ece"), "seller_nick" : "hjahdsa", "shop_name" : "随风而行216" }
+{ "_id" : ObjectId("64ba55ed42af339b02da2fec"), "create_time" : ISODate("2023-07-21T09:54:53.586Z"), "update_time" : ISODate("2023-07-21T09:54:53.586Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("6447ae7df16644b417906720"), "seller_nick" : "wangjq_1990", "shop_name" : "wangjq_1990" }
