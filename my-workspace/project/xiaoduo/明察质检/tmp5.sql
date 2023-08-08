@@ -1,20 +1,39 @@
-CREATE TABLE dws.di_health_pred_target_customer_local (
-    `customer_name` String,
-    `customer_id` String,
-    `tonnage_level` String,
-    `order_id` String,
-    `order_no` String,
-    `contract_start_date` String,
-    `real_contract_end_date` String,
-    `service_end_date` String,
-    `sq_delivery_time` Int64,
-    `shop_id` String,
-    `plat_user_id` String,
-    `platform` String,
-    `has_shouqian` String
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/dws/tables/{layer}_{shard}/di_health_pred_target_customer_local',
-    '{replica}'
-)
-ORDER BY order_id SETTINGS index_granularity = 8192,
-    storage_policy = 'rr'
+app_afsal -> /data0/clickhouse/data/store/8ab/8abac6b0-868b-4007-8aba-c6b0868b9007/
+app_anls -> /data0/clickhouse/data/store/cdb/cdb52bb3-dd54-43d5-a5b1-4cb4bc6c7fc2/
+app_ciae -> /data0/clickhouse/data/store/912/9121fdea-187a-4995-9121-fdea187aa995/
+app_crm -> /data0/clickhouse/data/store/0c7/0c70c41b-7735-431e-8c70-c41b7735831e/
+app_csm -> /data0/clickhouse/data/store/17c/17c902b2-2f5f-425f-816b-1b11b0b64312/
+app_ia -> /data0/clickhouse/data/store/228/228f44bf-dde6-4ba7-a28f-44bfdde6bba7/
+cdp_dim -> /data0/clickhouse/data/store/269/269b21a2-fe18-4aae-ba79-292b456e928a/
+cdp_ods -> /data0/clickhouse/data/store/e41/e41e2283-ee5d-4db7-86de-a1f6fc0530ce/
+diagnosis -> /data0/clickhouse/data/store/c97/c976428c-2164-4418-8976-428c2164c418/
+di_fin -> /data0/clickhouse/data/store/dd1/dd101bfd-d3f0-4240-9d10-1bfdd3f00240/
+di_mz -> /data0/clickhouse/data/store/d57/d579774a-bf2e-43d3-9579-774abf2eb3d3/
+dipper -> /data0/clickhouse/data/store/317/317c90db-4daf-4e59-a048-2dde71ec0b3f/
+dipper_dwd -> /data0/clickhouse/data/store/5d5/5d5eacdf-2f1a-4ae8-a629-127b3046d502/
+dwm -> /data0/clickhouse/data/store/96d/96dfbd1a-52e9-4ab1-96df-bd1a52e92ab1/
+dws -> /data0/clickhouse/data/store/cf3/cf3d1b2b-785b-465f-adce-427819bdc787/
+etl_tmp -> /data0/clickhouse/data/store/446/446eed12-5a30-4bad-846e-ed125a307bad/
+ft_ods -> /data0/clickhouse/data/store/1be/1beba479-d0c9-4ceb-9beb-a479d0c9dceb/
+gitlab -> /data0/clickhouse/data/store/519/5199af2d-07bd-43a5-bb11-8738ca7234cb/
+jira_dim -> /data0/clickhouse/data/store/af9/af9ad43e-05b0-4821-acd0-1a47c78760fd/
+mayfly -> /data0/clickhouse/data/store/5ac/5ac0877f-aa3c-45f5-9ac0-877faa3c95f5/
+polaris -> /data0/clickhouse/data/store/a62/a62f25e9-caa6-454d-a62f-25e9caa6e54d/
+pub_app -> /data0/clickhouse/data/store/39c/39c16a5d-cdd2-46d4-bf27-94b3aeebe3bd/
+pub_app_mp -> /data0/clickhouse/data/store/8a0/8a05382d-ffeb-4272-8a05-382dffeb5272/
+pub_dwd -> /data0/clickhouse/data/store/714/7142ea4a-9097-450e-b142-ea4a9097e50e/
+pub_dws -> /data0/clickhouse/data/store/f64/f6445a07-2ee5-4f1c-b644-5a072ee50f1c/
+pub_ods -> /data0/clickhouse/data/store/91f/91f47912-06e2-4c7a-91f4-791206e26c7a/
+qc_dim -> /data0/clickhouse/data/store/6ad/6ad3ecc8-9c76-4f11-b318-1ecfe78ee13c/
+sxx_app -> /data0/clickhouse/data/store/6df/6dfaac71-9890-435c-adfa-ac719890035c/
+sxx_dim -> /data0/clickhouse/data/store/ee3/ee3851f2-99d4-4a51-ae38-51f299d49a51/
+sxx_dwd -> /data0/clickhouse/data/store/c25/c25f9084-25ee-47ee-825f-908425ee17ee/
+sxx_dws -> /data0/clickhouse/data/store/303/30373c30-2a67-406c-b037-3c302a67006c/
+sxx_ods -> /data0/clickhouse/data/store/f1a/f1aa6a54-b3c4-4ed3-b1aa-6a54b3c4aed3/
+sxx_tmp -> /data0/clickhouse/data/store/6d0/6d0c4422-befa-4d3a-ad0c-4422befa6d3a/
+sxx_view -> /data0/clickhouse/data/store/45b/45b4a393-013a-45ba-85b4-a393013a75ba/
+xqc_dim -> /data0/clickhouse/data/store/7d8/7d88e6a4-2bed-4ca9-a838-8e7345b737e8/
+xqc_ods -> /data0/clickhouse/data/store/b54/b54d0b55-7c53-4495-9eab-98d059cf4585/
+zhl -> /data0/clickhouse/data/store/dd8/dd8be3b7-f013-4f6e-9d8b-e3b7f0139f6e/
+zhl_dim -> /data0/clickhouse/data/store/808/8087d06f-2dc0-4b15-8087-d06f2dc00b15/
+zhl_dwd -> /data0/clickhouse/data/store/744/74458e5d-884e-4242-b445-8e5d884e9242/

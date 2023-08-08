@@ -1,113 +1,39 @@
--- BG实时概况(会话总量+告警分布+日环比+中高级告警比例+告警完结率)
--- PS: 对于BG部门新增/更名的问题,由于所有统计都是下钻到了店铺维度,因此即使BG变更,其环比计算依旧不受影响
-WITH 
-( SELECT toYYYYMMDD(today()) ) AS today,
-( SELECT toYYYYMMDD(yesterday()) ) AS yesterday
-SELECT -- BG部门维度聚合统计
-    bg_name,
-    sum(if(isNull(snick_today_dialog_cnt),0,snick_today_dialog_cnt)) AS bg_today_dialog_cnt, -- BG当天当前的会话总量
-    sum(if(isNull(snick_yesterday_dialog_cnt),0,snick_yesterday_dialog_cnt)) AS bg_yesterday_dialog_cnt, -- BG昨天同时刻的会话总量
-    if(
-        bg_yesterday_dialog_cnt!=0, round(sum(diff_dialog_cnt)/bg_yesterday_dialog_cnt*100,1), 0.0
-    ) AS bg_dialog_relative_ratio, -- BG会话总量日环比(秒级)
-    sum(if(isNull(snick_today_level_1_cnt),0,snick_today_level_1_cnt)) AS bg_today_level_1_cnt, -- BG当天当前初级告警总量 -- BG告警分布
-    sum(if(isNull(snick_today_level_2_cnt),0,snick_today_level_2_cnt)) AS bg_today_level_2_cnt, -- BG当天当前中级告警总量 -- BG告警分布
-    sum(if(isNull(snick_today_level_3_cnt),0,snick_today_level_3_cnt)) AS bg_today_level_3_cnt, -- BG当天当前高级告警总量 -- BG告警分布
-    (bg_today_level_1_cnt+bg_today_level_2_cnt+bg_today_level_3_cnt) AS bg_today_warning_cnt, -- BG当天当前告警总量
-    if(
-        bg_today_dialog_cnt!=0, round((bg_today_level_2_cnt+bg_today_level_3_cnt)/bg_today_dialog_cnt*100,1), 0.0
-    ) AS bg_level_2_3_ratio, -- BG当天当前中高级告警比例
-    sum(if(isNull(snick_today_level_2_finished_cnt),0,snick_today_level_2_finished_cnt)) AS bg_today_level_2_finished_cnt, -- BG当天当前已完结中级告警总量
-    sum(if(isNull(snick_today_level_3_finished_cnt),0,snick_today_level_3_finished_cnt)) AS bg_today_level_3_finished_cnt, -- BG当天当前已完结高级告警总量
-    if(
-        bg_today_level_2_cnt!=0, round(bg_today_level_2_finished_cnt/bg_today_level_2_cnt*100,1), 0.0
-    ) AS bg_level_2_finished_ratio, -- BG当天当前中级告警完结率
-    if(
-        bg_today_level_3_cnt!=0, round(bg_today_level_3_finished_cnt/bg_today_level_3_cnt*100,1), 0.0
-    ) AS bg_level_3_finished_ratio -- BG当天当前高级告警完结率
-FROM (
-
-    -- bg_name--shop_id
-    SELECT bg_name, shop_id
-    FROM (
-        -- bg_name--bg_id
-        SELECT 
-            department_name AS bg_name,
-            department_id AS bg_id
-        FROM xqc_dim.group_all
-        WHERE company_id = '6131e6554524490001fc6825'
-        AND level = 1
-        AND is_shop = 'False'
-    )
-    GLOBAL LEFT JOIN (
-        -- bg_id--shop_id
-        SELECT DISTINCT
-            parent_department_path[1] AS bg_id,
-            department_id AS shop_id
-        FROM xqc_dim.group_all
-        WHERE company_id = '6131e6554524490001fc6825'
-        AND is_shop = 'True'
-    )
-    USING bg_id
-
-) AS bg_shop
-
-GLOBAL LEFT JOIN (
-
-    -- 子账号维度聚合统计
-    -- shop_id--snick--statistic
-    SELECT *
-    FROM (
-        -- 子账号维度今天和昨天会话数据聚合统计
-        -- shop_id--snick--statistic
-        SELECT
-            shop_id,
-            snick,
-            sum(day = yesterday AND substr(`time`,11)<=substr(toString(now()),11)) AS snick_yesterday_dialog_cnt, -- 子账号昨天同时刻会话总量
-            sum(day = today) AS snick_today_dialog_cnt, -- 子账号当天当前会话总量
-            (snick_today_dialog_cnt - snick_yesterday_dialog_cnt) AS diff_dialog_cnt -- 子账号当天和昨天同时刻会话总量差值(后续上卷聚合)
-        FROM xqc_ods.dialog_all
-        WHERE day BETWEEN yesterday AND today
-        -- 组织架构包含店铺
-        AND shop_id GLOBAL IN (
-            SELECT department_id AS shop_id
-            FROM xqc_dim.group_all
-            WHERE company_id = '6131e6554524490001fc6825'
-            AND is_shop = 'True'
-        )
-        GROUP BY shop_id, snick
-    ) AS snick_dialog_stat -- 各个子账号两天内的会话统计
-    GLOBAL LEFT JOIN (
-        -- 子账号维度当天告警数据聚合统计
-        -- shop_id--snick--statistic
-        SELECT
-            shop_id,
-            snick,
-            count(1) AS snick_today_warning_cnt, -- 子账号当天当前的告警总量
-            sum(`level` = 1) AS snick_today_level_1_cnt, -- 子账号当天初级告警量
-            sum(`level` = 2) AS snick_today_level_2_cnt, -- 子账号当天中级告警量
-            sum(`level` = 3) AS snick_today_level_3_cnt, -- 子账号当天高级告警量
-            sum(`level` = 2 AND is_finished = 'True') 
-                AS snick_today_level_2_finished_cnt, -- 子账号当天中级已处理告警量
-            sum(`level` = 3 AND is_finished = 'True') 
-                AS snick_today_level_3_finished_cnt -- 子账号当天高级已处理告警量
-        FROM xqc_ods.alert_all
-        WHERE day = today
-        -- 组织架构包含店铺
-        AND shop_id GLOBAL IN (
-            SELECT department_id AS shop_id
-            FROM xqc_dim.group_all
-            WHERE company_id = '6131e6554524490001fc6825'
-            AND is_shop = 'True'
-        )
-        -- 筛选新版本告警
-        AND `level` IN [1,2,3]
-        GROUP BY shop_id, snick
-    ) AS snick_warning_stat -- 各个子账号当天当前的告警统计
-    USING shop_id, snick
-
-) AS shop_snick_stat
-USING shop_id
-GROUP BY bg_name
-ORDER BY bg_name ASC
-LIMIT 8 -- 因为前端UI长度限制,在查询时写死限制8条记录
+chmod 777 /data1/clickhouse/data/store/8ab/8abac6b0-868b-4007-8aba-c6b0868b9007/*
+chmod 777 /data1/clickhouse/data/store/cdb/cdb52bb3-dd54-43d5-a5b1-4cb4bc6c7fc2/*
+chmod 777 /data1/clickhouse/data/store/912/9121fdea-187a-4995-9121-fdea187aa995/*
+chmod 777 /data1/clickhouse/data/store/0c7/0c70c41b-7735-431e-8c70-c41b7735831e/*
+chmod 777 /data1/clickhouse/data/store/17c/17c902b2-2f5f-425f-816b-1b11b0b64312/*
+chmod 777 /data1/clickhouse/data/store/228/228f44bf-dde6-4ba7-a28f-44bfdde6bba7/*
+chmod 777 /data1/clickhouse/data/store/269/269b21a2-fe18-4aae-ba79-292b456e928a/*
+chmod 777 /data1/clickhouse/data/store/e41/e41e2283-ee5d-4db7-86de-a1f6fc0530ce/*
+chmod 777 /data1/clickhouse/data/store/c97/c976428c-2164-4418-8976-428c2164c418/*
+chmod 777 /data1/clickhouse/data/store/dd1/dd101bfd-d3f0-4240-9d10-1bfdd3f00240/*
+chmod 777 /data1/clickhouse/data/store/d57/d579774a-bf2e-43d3-9579-774abf2eb3d3/*
+chmod 777 /data1/clickhouse/data/store/317/317c90db-4daf-4e59-a048-2dde71ec0b3f/*
+chmod 777 /data1/clickhouse/data/store/5d5/5d5eacdf-2f1a-4ae8-a629-127b3046d502/*
+chmod 777 /data1/clickhouse/data/store/96d/96dfbd1a-52e9-4ab1-96df-bd1a52e92ab1/*
+chmod 777 /data1/clickhouse/data/store/cf3/cf3d1b2b-785b-465f-adce-427819bdc787/*
+chmod 777 /data1/clickhouse/data/store/446/446eed12-5a30-4bad-846e-ed125a307bad/*
+chmod 777 /data1/clickhouse/data/store/1be/1beba479-d0c9-4ceb-9beb-a479d0c9dceb/*
+chmod 777 /data1/clickhouse/data/store/519/5199af2d-07bd-43a5-bb11-8738ca7234cb/*
+chmod 777 /data1/clickhouse/data/store/af9/af9ad43e-05b0-4821-acd0-1a47c78760fd/*
+chmod 777 /data1/clickhouse/data/store/5ac/5ac0877f-aa3c-45f5-9ac0-877faa3c95f5/*
+chmod 777 /data1/clickhouse/data/store/a62/a62f25e9-caa6-454d-a62f-25e9caa6e54d/*
+chmod 777 /data1/clickhouse/data/store/39c/39c16a5d-cdd2-46d4-bf27-94b3aeebe3bd/*
+chmod 777 /data1/clickhouse/data/store/8a0/8a05382d-ffeb-4272-8a05-382dffeb5272/*
+chmod 777 /data1/clickhouse/data/store/714/7142ea4a-9097-450e-b142-ea4a9097e50e/*
+chmod 777 /data1/clickhouse/data/store/f64/f6445a07-2ee5-4f1c-b644-5a072ee50f1c/*
+chmod 777 /data1/clickhouse/data/store/91f/91f47912-06e2-4c7a-91f4-791206e26c7a/*
+chmod 777 /data1/clickhouse/data/store/6ad/6ad3ecc8-9c76-4f11-b318-1ecfe78ee13c/*
+chmod 777 /data1/clickhouse/data/store/6df/6dfaac71-9890-435c-adfa-ac719890035c/*
+chmod 777 /data1/clickhouse/data/store/ee3/ee3851f2-99d4-4a51-ae38-51f299d49a51/*
+chmod 777 /data1/clickhouse/data/store/c25/c25f9084-25ee-47ee-825f-908425ee17ee/*
+chmod 777 /data1/clickhouse/data/store/303/30373c30-2a67-406c-b037-3c302a67006c/*
+chmod 777 /data1/clickhouse/data/store/f1a/f1aa6a54-b3c4-4ed3-b1aa-6a54b3c4aed3/*
+chmod 777 /data1/clickhouse/data/store/6d0/6d0c4422-befa-4d3a-ad0c-4422befa6d3a/*
+chmod 777 /data1/clickhouse/data/store/45b/45b4a393-013a-45ba-85b4-a393013a75ba/*
+chmod 777 /data1/clickhouse/data/store/7d8/7d88e6a4-2bed-4ca9-a838-8e7345b737e8/*
+chmod 777 /data1/clickhouse/data/store/b54/b54d0b55-7c53-4495-9eab-98d059cf4585/*
+chmod 777 /data1/clickhouse/data/store/dd8/dd8be3b7-f013-4f6e-9d8b-e3b7f0139f6e/*
+chmod 777 /data1/clickhouse/data/store/808/8087d06f-2dc0-4b15-8087-d06f2dc00b15/*
+chmod 777 /data1/clickhouse/data/store/744/74458e5d-884e-4242-b445-8e5d884e9242/*
