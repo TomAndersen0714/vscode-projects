@@ -1,7 +1,264 @@
-{ "_id" : ObjectId("6321a78b6688d9c6e0155471"), "create_time" : ISODate("2022-09-14T10:06:03.148Z"), "update_time" : ISODate("2022-09-14T10:06:03.148Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("630f068f4f78e40c16f164db"), "seller_nick" : "阳光宅男820", "shop_name" : "阳光宅男820" }
-{ "_id" : ObjectId("6323e7aea22027ee6dfe671e"), "create_time" : ISODate("2022-09-16T03:04:14.227Z"), "update_time" : ISODate("2022-09-16T03:04:14.227Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61d3c23aad037d615e69d041"), "seller_nick" : "木月瑞希尔", "shop_name" : "木月瑞希尔" }
-{ "_id" : ObjectId("63298b81a22027ee6d012c00"), "create_time" : ISODate("2022-09-20T09:44:33.251Z"), "update_time" : ISODate("2022-09-20T09:44:33.251Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61a625b8130c40817c37fb46"), "seller_nick" : "杜可风按", "shop_name" : "测试店铺 非卖品" }
-{ "_id" : ObjectId("63913eebd7f98b06548dded6"), "create_time" : ISODate("2022-12-08T01:33:31.499Z"), "update_time" : ISODate("2022-12-08T01:33:31.499Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61a625b8130c40817c37fb46"), "seller_nick" : "hjahdsa", "shop_name" : "随风而行216" }
-{ "_id" : ObjectId("63913ef9d7f98b06548ddee5"), "create_time" : ISODate("2022-12-08T01:33:45.736Z"), "update_time" : ISODate("2022-12-08T01:33:45.736Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("61a625b8130c40817c37fb46"), "seller_nick" : "wangjq_1990", "shop_name" : "wangjq_1990" }
-{ "_id" : ObjectId("639930ea049c14cd4956ce67"), "create_time" : ISODate("2022-12-14T02:11:54.062Z"), "update_time" : ISODate("2022-12-14T02:11:54.062Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("638dd787833c11edea5b4ece"), "seller_nick" : "hjahdsa", "shop_name" : "随风而行216" }
-{ "_id" : ObjectId("64ba55ed42af339b02da2fec"), "create_time" : ISODate("2023-07-21T09:54:53.586Z"), "update_time" : ISODate("2023-07-21T09:54:53.586Z"), "company_id" : ObjectId("5f73e9c1684bf70001413636"), "platform" : "tb", "create_account" : ObjectId("5f73e9c1684bf7000141363e"), "update_account" : ObjectId("5f73e9c1684bf7000141363e"), "qc_norm_id" : ObjectId("62e1255263761536e2ed7daf"), "department_id" : ObjectId("6447ae7df16644b417906720"), "seller_nick" : "wangjq_1990", "shop_name" : "wangjq_1990" }
+{
+    "http_endpoint": ":8155",
+    "grpc_endpoint": ":8156",
+    "pprof_endpoint": ":8157",
+    "stream_step_size": 1000,
+    "std_log": {
+        "level": "info",
+        "file": "/var/log/xiaoduo/query-sdk.log",
+        "err_file": "/var/log/xiaoduo/query-sdk.err.log",
+        "app_name": "query-sdk",
+        "auto_init": true
+    },
+    "api_log": {
+        "level": "info",
+        "file": "/var/log/xiaoduo/query-sdk.api.log",
+        "app_name": "query-sdk",
+        "auto_init": true
+    },
+    "switcher": ["10.20.0.125:2379"],
+    "rate_limit": {
+        "default": {
+            "impala": {
+                "qpm": 600,
+                "max": 10
+            },
+            "clickhouse": {
+                "qpm": 600,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            },
+            "postgres":{
+                "qpm": 1200,
+                "qps": 20,
+                "max": 10
+            }
+        },
+        "config-check": {
+            "impala": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            },
+            "postgres":{
+                "qpm": 1200,
+                "qps": 20,
+                "max": 10
+            }
+        },
+        "data-visual":{
+            "impala": {
+                "qpm": 600,
+                "max": 10
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 41
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "csm":{
+            "impala": {
+                "qpm": 240,
+                "max": 4
+            },
+            "clickhouse": {
+                "qpm": 240,
+                "max": 4
+            },
+            "mysql": {
+                "qpm": 240,
+                "max": 4
+            }
+        },  
+        "snowball":{
+            "impala": {
+                "qpm": 2,
+                "max": 1
+            },
+            "clickhouse": {
+                "qpm": 2,
+                "max": 1
+            },
+            "mysql": {
+                "qpm": 100,
+                "max": 20
+            }
+        },      
+        "x-data-x-data": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-screen": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-shandian": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 600,
+                "max": 10
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xcm": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xz": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-jd": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1800,
+                "max": 30
+            }
+        },
+        "x-data-csm": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-x-data-trans": {
+            "impala": {
+                "qpm": 300,
+                "max": 5
+            },
+            "clickhouse": {
+                "qpm": 1200,
+                "max": 20
+            },
+            "mysql": {
+                "qpm": 600,
+                "max": 10
+            }
+        },
+        "x-data-xqc": {
+            "impala": {
+                "qpm": 600,
+                "max": 5
+            },
+            "clickhouse": {
+                "qps": 900,
+                "max": 10
+            }
+        },
+        "keban-group": {
+            "impala": {
+                "qpm": 10, 
+                "max": 3
+            },
+            "clickhouse": {
+                "qpm": 10,
+                "max": 10
+            }
+        }
+    },
+    "storage": {
+        "ping": "20s",
+        "impala": {
+            "default": ["10.20.133.176:21050","10.20.133.176:21050","10.20.133.149:21050"],
+            "bee": ["10.20.133.176:21000","10.20.133.176:21000","10.20.133.149:21000"]
+        },
+        "clickhouse": {
+            "default": ["tcp://10.20.133.149:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
+            "mp": ["tcp://10.20.133.149:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
+            "keban": ["tcp://10.20.133.173:19000?debug=false"],
+            "log": ["tcp://10.20.131.58:9000?debug=false", "tcp://10.20.131.14:9000?debug=false"]
+        },
+        "mysql" : {
+            "default": ["select.user:hT0KABSS*X@tcp(172.16.124.5:3306)/jira?charset=utf8&parseTime=true"],
+            "snowball": ["root:Mysql1234!@tcp(10.20.0.173:3306)/snowball?charset=utf8&parseTime=true"]
+        },
+        "postgres": {
+			"default": [
+			    "host=10.20.133.149 port=5432 user=postgres dbname=mayfly password=mysecretpassword sslmode=disable TimeZone=Asia/Shanghai"
+			],
+			"goodscenter": [
+				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=barracks dbname=barracks password=BaxSn2T$o89NJFs sslmode=disable TimeZone=Asia/Shanghai"
+			],
+            "keban": [
+				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=keban dbname=keban password=1tpSAlm2PJww5Bc sslmode=disable TimeZone=Asia/Shanghai"
+			],
+            "cvd_midea": [
+				"host=pgm-k2j9we6rl7v00b3t.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=cvd_midea dbname=cvd password=Postgres1234!  sslmode=disable TimeZone=Asia/Shanghai"
+			],
+			"open": [
+				"host=pgm-k2j9we6rl7v00b3t.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=open dbname=open password=pGSrNwgXyKiEIua sslmode=disable TimeZone=Asia/Shanghai"
+			]
+        }
+    }
+}
