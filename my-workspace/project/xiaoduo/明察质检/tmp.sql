@@ -1,7 +1,23 @@
-KILL query ON CLUSTER cluster_3s_2r
-where client_name  = 'Golang SQLDriver'
-
-
-KILL query WHERE query_id = 'ca4fc417-5eeb-494b-850f-a72a3c6c71b1'
-
-CREATE TABLE xqc_dim.company_tenant
+data_receiver_trade_rate
+data_receiver_ks_no_reply_logs_v2
+data_receiver_market_qc_stat_total
+data_receiver_ks_reminder_trace_ch
+data_receiver_jd_goods_question
+data_receiver_dy_no_reply_logs
+data_receiver_ch_xqc_ods_alert_remind
+data_receiver_dy_no_reply_logs_v2
+data_receiver_ks_order_event_ch
+data_receiver_order_event
+data_receiver_ch_xqc_ods_alert
+data_receiver_dy_xdrs_logs_ch
+data_receiver_ks_order_ch
+data_receiver_dy_reminder_trace_ch
+data_receiver_reminder_pdd_rmd_order_clickhouse
+data_receiver_order_event_trans
+data_receiver_tmc_refund_tb
+data_receiver_corp_chat_msg
+data_receiver_refund_tb_info
+data_receiver_market_qc_tstatic
+data_receiver_ks_xdrs_logs_ch
+data_receiver_market_corprs_msg_send
+data_receiver_ks_no_reply_logs
