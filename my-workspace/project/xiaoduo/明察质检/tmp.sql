@@ -1,31 +1,89 @@
-select '' as _id,
-    platform,
-    shop_id,
-    snick,
-    cnick,
-    mp_version,
-    mp_category,
-    mode,
-    act,
-    msg,
-    intent,
-    question_b_id,
-    toFloat64OrZero(question_b_proba) as question_b_proba,
-    question_b_standard_q,
-    question_b_qid,
-    shop_question_id,
-    qa_id,
-    answer_id,
-    answer_explain,
-    remind_answer,
-    robot_answer,
-    plat_goods_id,
-    current_sale_stage,
-    msg_id,
-    msg_time,
-    create_time,
-    send_msg_from,
-    '' as properties
-from ods.pdd_xdrs_log_all
-where day = 20230808
-    and shop_id != ''
+        SELECT
+            company_id, company_name, company_short_name, platform,
+            shop_id, shop_name, seller_nick,
+            department_id, department_name,
+            snick, employee_id, employee_name, superior_id, superior_name,
+            day
+        FROM (
+            SELECT
+                company_id, platform,
+                shop_id, shop_name, seller_nick,
+                department_id, department_name,
+                snick, employee_id, employee_name, superior_id, superior_name,
+                day
+            FROM (
+                SELECT
+                    company_id, platform,
+                    shop_id,
+                    department_id, department_name,
+                    snick, employee_id, employee_name, superior_id, superior_name,
+                    day
+                FROM (
+                    SELECT
+                        *
+                    FROM (
+                        SELECT
+                            company_id, platform,
+                            mp_shop_id AS shop_id,
+                            department_id,
+                            snick, employee_id,
+                            day
+                        FROM {snick_info_tbl}
+                        WHERE day = {snapshot_ds_nodash}
+                    ) AS snick_info
+                    GLOBAL LEFT JOIN (
+                        SELECT DISTINCT
+                            company_id,
+                            _id AS employee_id,
+                            username AS employee_name,
+                            superior_id,
+                            superior_name
+                        FROM {employee_info_tbl}
+                        WHERE day = {snapshot_ds_nodash}
+                    ) AS employee_info
+                    USING(company_id, employee_id)
+                ) AS snick_employee_info
+                GLOBAL LEFT JOIN (
+                    SELECT DISTINCT
+                        company_id,
+                        _id AS department_id,
+                        full_name AS department_name
+                    FROM {department_info_tbl}
+                    WHERE day = {snapshot_ds_nodash}
+                ) AS department_info
+                USING (company_id, department_id)
+            ) AS snick_employee_department_info
+            GLOBAL LEFT JOIN (
+                SELECT DISTINCT
+                    company_id,
+                    shop_id,
+                    seller_nick,
+                    plat_shop_name AS shop_name
+                FROM {shop_info_tbl}
+                WHERE day = {snapshot_ds_nodash}
+            ) AS shop_info
+            USING(company_id, shop_id)
+        ) AS snick_employee_department_shop_info
+        GLOBAL LEFT JOIN (
+            SELECT DISTINCT
+                _id AS company_id,
+                name AS company_name,
+                shot_name AS company_short_name
+            FROM {company_info_tbl}
+            WHERE day = {snapshot_ds_nodash}
+        ) AS company_info
+        USING(company_id)
+        
+
+        GLOBAL LEFT JOIN (
+            SELECT
+                department_id,
+                qc_norm_id,
+                qc_norm_name
+            FROM (
+
+            ) AS 
+            GLOBAL LEFT JOIN (
+                
+            )
+        )
