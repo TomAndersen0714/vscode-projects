@@ -1,0 +1,12 @@
+app_mp.focus_item_stat_v1_local
+app_mp.focus_item_stat_v2_local
+app_mp.recommend_goods_stat
+app_mp.recommend_goods_stat_v1_local
+app_mp.recommend_goods_stat_v2_local
+dwd.issue_changeitem_local
+ods.jira_customfieldvalue_local
+ods.qc_algo_emotion_local
+ods.qc_dialog_local
+ods.qc_msg_local
+ods.recommend_order
+test.reception_subnick_hybd_stat
