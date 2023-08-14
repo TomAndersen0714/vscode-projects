@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # iterate a list
 for i in {1..5}
 do

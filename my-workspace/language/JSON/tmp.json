@@ -1,264 +1,407 @@
 {
-    "http_endpoint": ":8155",
-    "grpc_endpoint": ":8156",
-    "pprof_endpoint": ":8157",
-    "stream_step_size": 1000,
-    "std_log": {
-        "level": "info",
-        "file": "/var/log/xiaoduo/query-sdk.log",
-        "err_file": "/var/log/xiaoduo/query-sdk.err.log",
-        "app_name": "query-sdk",
-        "auto_init": true
-    },
-    "api_log": {
-        "level": "info",
-        "file": "/var/log/xiaoduo/query-sdk.api.log",
-        "app_name": "query-sdk",
-        "auto_init": true
-    },
-    "switcher": ["10.20.0.125:2379"],
-    "rate_limit": {
-        "default": {
-            "impala": {
-                "qpm": 600,
-                "max": 10
-            },
-            "clickhouse": {
-                "qpm": 600,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            },
-            "postgres":{
-                "qpm": 1200,
-                "qps": 20,
-                "max": 10
-            }
-        },
-        "config-check": {
-            "impala": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            },
-            "postgres":{
-                "qpm": 1200,
-                "qps": 20,
-                "max": 10
-            }
-        },
-        "data-visual":{
-            "impala": {
-                "qpm": 600,
-                "max": 10
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 41
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "csm":{
-            "impala": {
-                "qpm": 240,
-                "max": 4
-            },
-            "clickhouse": {
-                "qpm": 240,
-                "max": 4
-            },
-            "mysql": {
-                "qpm": 240,
-                "max": 4
-            }
-        },  
-        "snowball":{
-            "impala": {
-                "qpm": 2,
-                "max": 1
-            },
-            "clickhouse": {
-                "qpm": 2,
-                "max": 1
-            },
-            "mysql": {
-                "qpm": 100,
-                "max": 20
-            }
-        },      
-        "x-data-x-data": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-screen": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-shandian": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 600,
-                "max": 10
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-xcm": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-xz": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-jd": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1800,
-                "max": 30
-            }
-        },
-        "x-data-csm": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-x-data-trans": {
-            "impala": {
-                "qpm": 300,
-                "max": 5
-            },
-            "clickhouse": {
-                "qpm": 1200,
-                "max": 20
-            },
-            "mysql": {
-                "qpm": 600,
-                "max": 10
-            }
-        },
-        "x-data-xqc": {
-            "impala": {
-                "qpm": 600,
-                "max": 5
-            },
-            "clickhouse": {
-                "qps": 900,
-                "max": 10
-            }
-        },
-        "keban-group": {
-            "impala": {
-                "qpm": 10, 
-                "max": 3
-            },
-            "clickhouse": {
-                "qpm": 10,
-                "max": 10
-            }
+    "_id" : ObjectId("64d9943682b95b000150cdf3"),
+    "create_time" : ISODate("2023-08-14T02:40:54.104Z"),
+    "update_time" : ISODate("2023-08-14T03:04:54.197Z"),
+    "platform" : "tb",
+    "channel" : "tb",
+    "cnick" : "one_id_2295533158",
+    "open_uid" : "AAFRZosOAKdpZ1hrVDhUYyEA",
+    "real_buyer_nick" : "汪达怀斯1591107142",
+    "snick" : "木月瑞希尔:zh",
+    "seller_nick" : "木月瑞希尔",
+    "begin_time" : ISODate("2023-08-14T02:40:52.212Z"),
+    "end_time" : ISODate("2023-08-14T02:45:15.514Z"),
+    "is_after_sale" : false,
+    "origin_is_after_sale" : false,
+    "is_inside" : false,
+    "s_emotion" : [
+        {
+            "type" : 8,
+            "count" : 0,
+            "score" : 0
         }
-    },
-    "storage": {
-        "ping": "20s",
-        "impala": {
-            "default": ["10.20.133.176:21050","10.20.133.176:21050","10.20.133.149:21050"],
-            "bee": ["10.20.133.176:21000","10.20.133.176:21000","10.20.133.149:21000"]
+    ],
+    "c_emotion" : [
+        {
+            "type" : 1,
+            "count" : 0,
+            "score" : 0
         },
-        "clickhouse": {
-            "default": ["tcp://10.20.133.149:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
-            "mp": ["tcp://10.20.133.149:19000?check_connection_liveness=true&read_timeout=300&alt_hosts=10.20.133.149:19000&max_memory_usage=20000000000","tcp://10.20.133.149:19000?read_timeout=300&alt_hosts=10.20.2.29:19000&max_memory_usage=20000000000"],
-            "keban": ["tcp://10.20.133.173:19000?debug=false"],
-            "log": ["tcp://10.20.131.58:9000?debug=false", "tcp://10.20.131.14:9000?debug=false"]
+        {
+            "type" : 2,
+            "count" : 0,
+            "score" : 0
         },
-        "mysql" : {
-            "default": ["select.user:hT0KABSS*X@tcp(172.16.124.5:3306)/jira?charset=utf8&parseTime=true"],
-            "snowball": ["root:Mysql1234!@tcp(10.20.0.173:3306)/snowball?charset=utf8&parseTime=true"]
+        {
+            "type" : 3,
+            "count" : 0,
+            "score" : 0
         },
-        "postgres": {
-			"default": [
-			    "host=10.20.133.149 port=5432 user=postgres dbname=mayfly password=mysecretpassword sslmode=disable TimeZone=Asia/Shanghai"
-			],
-			"goodscenter": [
-				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=barracks dbname=barracks password=BaxSn2T$o89NJFs sslmode=disable TimeZone=Asia/Shanghai"
-			],
-            "keban": [
-				"host=pgm-k2jkzdt0rm806b04112900.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=keban dbname=keban password=1tpSAlm2PJww5Bc sslmode=disable TimeZone=Asia/Shanghai"
-			],
-            "cvd_midea": [
-				"host=pgm-k2j9we6rl7v00b3t.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=cvd_midea dbname=cvd password=Postgres1234!  sslmode=disable TimeZone=Asia/Shanghai"
-			],
-			"open": [
-				"host=pgm-k2j9we6rl7v00b3t.pgsql.zhangbei.rds.aliyuncs.com port=5432 user=open dbname=open password=pGSrNwgXyKiEIua sslmode=disable TimeZone=Asia/Shanghai"
-			]
+        {
+            "type" : 4,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 5,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 6,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 7,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 8,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 9,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 10,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 11,
+            "count" : 0,
+            "score" : 0
         }
-    }
+    ],
+    "emotions" : [ ],
+    "abnormals" : [
+        {
+            "type" : 1,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 2,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 3,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 4,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 5,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 6,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 7,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 8,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 9,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 10,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 11,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 12,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 13,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 14,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 15,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 16,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 17,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 18,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 19,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 20,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 21,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 22,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 23,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 24,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 25,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 26,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 27,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 28,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 29,
+            "count" : 0,
+            "score" : 0
+        }
+    ],
+    "excellents" : [
+        {
+            "type" : 1,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 2,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 3,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 4,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 5,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 6,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 7,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 8,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 9,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 10,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 11,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 12,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 13,
+            "count" : 0,
+            "score" : 0
+        },
+        {
+            "type" : 14,
+            "count" : 0,
+            "score" : 0
+        }
+    ],
+    "score" : 3,
+    "score_add" : 0,
+    "mark_judge" : 0,
+    "mark_score" : 0,
+    "mark_score_add" : 0,
+    "mark" : "",
+    "suspected_problem" : false,
+    "answer_count" : NumberLong(7),
+    "question_count" : NumberLong(0),
+    "first_answer_time" : 1691980852,
+    "qa_time_sum" : 0,
+    "qa_round_sum" : 0,
+    "focus_goods_id" : "",
+    "is_order_matched" : false,
+    "emotion_detect_mode" : 0,
+    "consulte_transfor_v2" : 1,
+    "date" : 20230814,
+    "qc_task_flag" : 0,
+    "after_sale_days" : NumberLong(1),
+    "remark" : "",
+    "desc" : "",
+    "sec_after_cache" : {
+        "20" : ObjectId("64d9953c7afbb2000192a38f"),
+        "120" : ObjectId("64d9953c7afbb2000192a38f")
+    },
+    "top_xrules" : [
+        {
+            "id" : ObjectId("62e1255263761536e2ed7f0c"),
+            "count" : 1,
+            "score" : -3,
+            "anchor_id" : "64d9953c7afbb2000192a38f",
+            "hit_ts" : NumberLong(1691981295)
+        }
+    ],
+    "xrule_stats" : [
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d9945e8f53a90001bb2ea5",
+            "hit_ts" : NumberLong(1691980895)
+        },
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d99436374e9100016a5754",
+            "hit_ts" : NumberLong(1691980854)
+        },
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d9947e44cd630001acc141",
+            "hit_ts" : NumberLong(1691980926)
+        },
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d9953c7afbb2000192a38f",
+            "hit_ts" : NumberLong(1691981116)
+        },
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d9946bcd1f0200019cf4a2",
+            "hit_ts" : NumberLong(1691980907)
+        },
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d9946bc89e9200012e64a3",
+            "hit_ts" : NumberLong(1691980907)
+        },
+        {
+            "id" : ObjectId("63903416d7f98b06548d9e00"),
+            "count" : 1,
+            "score" : 0,
+            "anchor_id" : "64d99506374e9100016a91ed",
+            "hit_ts" : NumberLong(1691981062)
+        }
+    ],
+    "qid" : [
+        NumberLong(0)
+    ],
+    "last_msg_id" : ObjectId("64d9953c7afbb2000192a38f"),
+    "last_mark_id" : ObjectId("5f73e9c1684bf7000141363e"),
+    "mark_ids" : [
+        ObjectId("5f73e9c1684bf7000141363e")
+    ],
+    "mark_time" : ISODate("2023-08-14T03:04:54.197Z"),
+    "message_marks" : [ ],
+    "tag_score_add_stats" : [
+        {
+            "id" : ObjectId("6385f074abf40fc80e9e9539"),
+            "score" : 0,
+            "md" : true,
+            "mm" : true,
+            "count" : 2,
+            "name" : ""
+        }
+    ],
+    "tag_score_stats" : [ ]
 }
