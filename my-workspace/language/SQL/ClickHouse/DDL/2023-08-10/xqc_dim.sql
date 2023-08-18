@@ -8,13 +8,14 @@ CREATE TABLE IF NOT EXISTS xqc_dim.qc_rule_full_info_latest_local ON CLUSTER clu
     `platform` String,
     `create_account` String,
     `update_account` String,
-    `qc_norm_id` String,
-    `qc_norm_name` String,
-    `qc_norm_group_id` String,
-    `qc_norm_group_name` String,
-    `qc_norm_group_full_name` String,
+    `qc_norm_id` String, 
+    `qc_norm_name` String, 
+    `qc_norm_group_id` String, 
+    `qc_norm_group_name` String, 
+    `qc_norm_group_full_name` String, 
     `template_id` String,
     `name` String,
+    `seller_nick` String,
     `rule_category` Int32,
     `rule_type` Int32,
     `settings` String,
@@ -26,8 +27,7 @@ CREATE TABLE IF NOT EXISTS xqc_dim.qc_rule_full_info_latest_local ON CLUSTER clu
     `score` Int32,
     `threshold` Float64,
     `special_settings` String,
-    `status` Int32,
-    `day` Int32
+    `status` Int32
 )
 ENGINE = ReplicatedMergeTree(
     '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
