@@ -44,7 +44,7 @@ AS xqc_dws.xplat_tag_stat_local
 ENGINE = Distributed('cluster_3s_2r', 'xqc_dws', 'xplat_tag_stat_local', rand());
 
 
-DROP TABLE buffer.xqc_dws_xplat_tag_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
+DROP TABLE IF EXISTS buffer.xqc_dws_xplat_tag_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY
 
 CREATE TABLE IF NOT EXISTS buffer.xqc_dws_xplat_tag_stat_buffer ON CLUSTER cluster_3s_2r
 AS xqc_dws.xplat_tag_stat_all

@@ -120,8 +120,8 @@ ADD COLUMN IF NOT EXISTS `eval_level_4_dialog_cnt` Int64 AFTER `eval_level_3_dia
 ADD COLUMN IF NOT EXISTS `eval_level_5_dialog_cnt` Int64 AFTER `eval_level_4_dialog_cnt`;
 
 
-DROP TABLE buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY;
+DROP TABLE IF EXISTS buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r NO DELAY;
 
-CREATE TABLE buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r
+CREATE TABLE IF NOT EXISTS buffer.xqc_dws_xplat_snick_stat_buffer ON CLUSTER cluster_3s_2r
 AS xqc_dws.xplat_snick_stat_all
 ENGINE = Buffer('xqc_dws', 'xplat_snick_stat_all', 16, 15, 35, 81920, 409600, 16777216, 67108864);
