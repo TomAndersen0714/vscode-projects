@@ -1,68 +1,18 @@
-day
-company_id
-shop_id
-platform
-seller_nick
-snick
-employee_id
-employee_name
-department_id
-department_name
-qc_norm_id
-qc_norm_name
-qc_norm_tag_cnt
-qc_norm_ai_tag_cnt
-qc_norm_custom_tag_cnt
-qc_norm_manual_tag_cnt
-qc_norm_alert_tag_cnt
-dialog_tag_cnt
-dialog_ai_tag_cnt
-dialog_custom_tag_cnt
-dialog_manual_tag_cnt
-subtract_score_sum
-add_score_sum
-ai_subtract_score_sum
-ai_add_score_sum
-custom_subtract_score_sum
-custom_add_score_sum
-manual_subtract_score_sum
-manual_add_score_sum
-dialog_score_avg
-dialog_cnt
-excellent_dialog_cnt
-tagged_dialog_cnt
-ai_tagged_dialog_cnt
-custom_tagged_dialog_cnt
-manual_tagged_dialog_cnt
-subtract_score_dialog_cnt
-add_score_dialog_cnt
-manual_marked_dialog_cnt
-ai_subtract_score_dialog_cnt
-ai_add_score_dialog_cnt
-ai_tagged_subtract_score_dialog_cnt
-ai_tagged_add_score_dialog_cnt
-ai_zero_score_tagged_dialog_cnt
-custom_subtract_score_dialog_cnt
-custom_add_score_dialog_cnt
-custom_tagged_subtract_score_dialog_cnt
-custom_tagged_add_score_dialog_cnt
-custom_zero_score_tagged_dialog_cnt
-manual_subtract_score_dialog_cnt
-manual_add_score_dialog_cnt
-manual_tagged_subtract_score_dialog_cnt
-manual_tagged_add_score_dialog_cnt
-manual_zero_score_tagged_dialog_cnt
-eval_dialog_cnt
-eval_level_1_dialog_cnt
-eval_level_2_dialog_cnt
-eval_level_3_dialog_cnt
-eval_level_4_dialog_cnt
-eval_level_5_dialog_cnt
-alert_cnt
-level_1_alert_cnt
-level_2_alert_cnt
-level_3_alert_cnt
-level_1_alert_finished_cnt
-level_2_alert_finished_cnt
-level_3_alert_finished_cnt
-alert_finished_mins
+ '61d66898ad037d615e69e91c',
+ '614d86d84eed94e6fc980b1c',
+ '625413f7f05f9f1d1ac90583',
+ '6273e011d54236d7388d2f55',
+ '61dcfe1b62cd17f0c4fe0e0c',
+ '63da0ac8243463c5a0d60ce2',
+ '64be5c93ad73bba68fcb4d36',
+ '63fc50f0a06a5ecd9a249ac9',
+ '634e7904894430bebc96733e',
+ '61e00d0f62cd17f0c4ff10da',
+ '64ba5311e55acbfe8d3cef9e',
+ '62b026f0d4e3f811eb4f142f',
+ '61cd18981bfae5b5ad27ca11',
+ '62f4f6d2b3e26af65a1239cd',
+ '6492921505379c4f6cef7d29',
+ '646db747e6306912886fd622',
+ '628cd3dc815ffc1910b5aa3c',
+ '61ea1e600e41b86080fcea99'
