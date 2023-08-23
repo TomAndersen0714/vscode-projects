@@ -1,7 +1,24 @@
-ch_test_data_sync_1_msg_header = PulsarHook.get_ch_msg_header(
-    target_table="buffer.test_data_sync_1_buffer",
-    source_table="numbers(100)",
-    clear_table="test.data_sync_1_local",
-    partition="{{ds_nodash}}",
-    cluster_name=CLUSTER_NAME
-)
+seller_nick
+platform
+company_id
+shop_id
+group
+snick
+employee_id
+employee_name
+department_id
+department_name
+mark_account_id
+mark_account_name
+qc_norm_id
+qc_norm_name
+qc_norm_group_id
+qc_norm_group_name
+qc_norm_group_full_name
+dialog_id
+cnick
+tag_id
+name
+score
+cal_op
+day

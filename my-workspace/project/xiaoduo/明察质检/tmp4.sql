@@ -1,22 +1,3 @@
-day
-company_id
-shop_id
-platform
-seller_nick
-snick
-employee_id
-employee_name
-department_id
-department_name
-qc_norm_id
-qc_norm_name
-tag_group_id
-tag_group_name
-tag_group_full_name
-tag_type
-tag_id
-tag_name
-tag_cnt_sum
-tag_score_sum
-tag_dialog_cnt
-tag_manual_dialog_cnt
+'custom_message', 'custom_dialog'
+
+'custom'

@@ -1,18 +1,24 @@
- '61d66898ad037d615e69e91c',
- '614d86d84eed94e6fc980b1c',
- '625413f7f05f9f1d1ac90583',
- '6273e011d54236d7388d2f55',
- '61dcfe1b62cd17f0c4fe0e0c',
- '63da0ac8243463c5a0d60ce2',
- '64be5c93ad73bba68fcb4d36',
- '63fc50f0a06a5ecd9a249ac9',
- '634e7904894430bebc96733e',
- '61e00d0f62cd17f0c4ff10da',
- '64ba5311e55acbfe8d3cef9e',
- '62b026f0d4e3f811eb4f142f',
- '61cd18981bfae5b5ad27ca11',
- '62f4f6d2b3e26af65a1239cd',
- '6492921505379c4f6cef7d29',
- '646db747e6306912886fd622',
- '628cd3dc815ffc1910b5aa3c',
- '61ea1e600e41b86080fcea99'
+seller_nick
+platform
+company_id
+shop_id
+group
+snick
+employee_id
+employee_name
+department_id
+department_name
+mark_account_id
+mark_account_name
+qc_norm_id
+qc_norm_name
+qc_norm_group_id
+qc_norm_group_name
+qc_norm_group_full_name
+dialog_id
+cnick
+tag_id
+name
+score
+cal_op
+day

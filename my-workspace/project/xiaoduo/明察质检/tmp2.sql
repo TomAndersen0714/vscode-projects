@@ -1,15 +1,62 @@
--- ALTER TABLE xqc_dim.snick_full_info_local ON CLUSTER cluster_3s_2r 
--- DROP COLUMN IF EXISTS `company_name`;
-ALTER TABLE xqc_dim.snick_full_info_local ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `company_name` String AFTER `company_id`,
-ADD COLUMN IF NOT EXISTS `company_short_name` String AFTER `company_name`,
-ADD COLUMN IF NOT EXISTS `shop_name` String AFTER `shop_id`,
-ADD COLUMN IF NOT EXISTS `seller_nick` String AFTER `shop_name`;
+ALTER TABLE xqc_dwd.xplat_manual_tag_local ON CLUSTER cluster_3s_2r
+DROP PARTITION (20230813, 'tb'),
+DROP PARTITION (20230814, 'tb'),
+DROP PARTITION (20230815, 'tb')
 
--- ALTER TABLE xqc_dim.snick_full_info_all ON CLUSTER cluster_3s_2r
--- DROP COLUMN IF EXISTS `company_name`;
-ALTER TABLE xqc_dim.snick_full_info_all ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `company_name` String AFTER `company_id`,
-ADD COLUMN IF NOT EXISTS `company_short_name` String AFTER `company_name`,
-ADD COLUMN IF NOT EXISTS `shop_name` String AFTER `shop_id`,
-ADD COLUMN IF NOT EXISTS `seller_nick` String AFTER `shop_name`;
+SELECT day, count(1)
+FROM buffer.xqc_dwd_xplat_manual_tag_buffer
+WHERE day BETWEEN 20230813 AND 20230815
+AND platform = 'tb'
+GROUP BY day
+ORDER BY day
+
+SELECT day, count(1)
+FROM ods.xinghuan_dialog_tag_score_all
+WHERE day BETWEEN 20230813 AND 20230815
+AND platform = 'tb'
+GROUP BY day
+ORDER BY day
+
+
+ALTER TABLE xqc_dws.xplat_snick_stat_local ON CLUSTER cluster_3s_2r
+DROP PARTITION (20230813, 'tb'),
+DROP PARTITION (20230814, 'tb'),
+DROP PARTITION (20230815, 'tb')
+
+
+SELECT day, count(1)
+FROM xqc_dws.tag_stat_all
+WHERE day BETWEEN 20230813 AND 20230815
+AND platform = 'tb'
+GROUP BY day
+ORDER BY day
+
+
+SELECT day, count(1)
+FROM buffer.xqc_dws_xplat_tag_stat_buffer
+WHERE day BETWEEN 20230813 AND 20230815
+AND platform = 'tb'
+GROUP BY day
+ORDER BY day
+
+
+ALTER TABLE xqc_dws.xplat_tag_stat_local ON CLUSTER cluster_3s_2r
+DROP PARTITION (20230813, 'tb'),
+DROP PARTITION (20230814, 'tb'),
+DROP PARTITION (20230815, 'tb')
+
+SELECT day, count(1)
+FROM buffer.xqc_dws_xplat_snick_stat_buffer
+WHERE day BETWEEN 20230813 AND 20230815
+AND platform = 'tb'
+GROUP BY day
+ORDER BY day
+
+SELECT day, count(1)
+FROM xqc_dws.snick_stat_all
+WHERE day BETWEEN 20230813 AND 20230815
+AND platform = 'tb'
+GROUP BY day
+ORDER BY day
+
+

@@ -1,10 +1,48 @@
-#!/bin/bash
+# Import
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_0.avro
 
-# get parent directory of script
-work_dir=$(dirname "$PWD")
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_1.avro
 
-# using parent directory as working directory
-cd "$work_dir" || exit
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_2.avro
 
-# run script
-python3 -m xdt
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_3.avro
+
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_4.avro
+
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_5.avro
+
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_6.avro
+
+docker exec -i f3f548fad48e clickhouse-client --port=29000 --query="
+    INSERT INTO
+    dwd.xdqc_dialog_all
+    FORMAT Avro
+" < dwd.xdqc_dialog_all_20230815_7.avro
