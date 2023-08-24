@@ -1,62 +1,102 @@
-ALTER TABLE xqc_dwd.xplat_manual_tag_local ON CLUSTER cluster_3s_2r
-DROP PARTITION (20230813, 'tb'),
-DROP PARTITION (20230814, 'tb'),
-DROP PARTITION (20230815, 'tb')
-
-SELECT day, count(1)
-FROM buffer.xqc_dwd_xplat_manual_tag_buffer
-WHERE day BETWEEN 20230813 AND 20230815
-AND platform = 'tb'
-GROUP BY day
-ORDER BY day
-
-SELECT day, count(1)
-FROM ods.xinghuan_dialog_tag_score_all
-WHERE day BETWEEN 20230813 AND 20230815
-AND platform = 'tb'
-GROUP BY day
-ORDER BY day
-
-
-ALTER TABLE xqc_dws.xplat_snick_stat_local ON CLUSTER cluster_3s_2r
-DROP PARTITION (20230813, 'tb'),
-DROP PARTITION (20230814, 'tb'),
-DROP PARTITION (20230815, 'tb')
-
-
-SELECT day, count(1)
-FROM xqc_dws.tag_stat_all
-WHERE day BETWEEN 20230813 AND 20230815
-AND platform = 'tb'
-GROUP BY day
-ORDER BY day
-
-
-SELECT day, count(1)
-FROM buffer.xqc_dws_xplat_tag_stat_buffer
-WHERE day BETWEEN 20230813 AND 20230815
-AND platform = 'tb'
-GROUP BY day
-ORDER BY day
-
-
-ALTER TABLE xqc_dws.xplat_tag_stat_local ON CLUSTER cluster_3s_2r
-DROP PARTITION (20230813, 'tb'),
-DROP PARTITION (20230814, 'tb'),
-DROP PARTITION (20230815, 'tb')
-
-SELECT day, count(1)
-FROM buffer.xqc_dws_xplat_snick_stat_buffer
-WHERE day BETWEEN 20230813 AND 20230815
-AND platform = 'tb'
-GROUP BY day
-ORDER BY day
-
-SELECT day, count(1)
-FROM xqc_dws.snick_stat_all
-WHERE day BETWEEN 20230813 AND 20230815
-AND platform = 'tb'
-GROUP BY day
-ORDER BY day
-
-
+_id
+platform
+channel
+group
+date
+seller_nick
+cnick
+real_buyer_nick
+open_uid
+snick
+begin_time
+end_time
+is_after_sale
+is_inside
+employee_name
+s_emotion_type
+s_emotion_rule_id
+s_emotion_score
+s_emotion_count
+c_emotion_type
+c_emotion_rule_id
+c_emotion_score
+c_emotion_count
+emotions
+abnormals_type
+abnormals_rule_id
+abnormals_score
+abnormals_count
+excellents_type
+excellents_rule_id
+excellents_score
+excellents_count
+qc_word_source
+qc_word_word
+qc_word_count
+qid
+mark
+mark_judge
+mark_score
+mark_score_add
+mark_ids
+last_mark_id
+human_check
+tag_score_stats_id
+tag_score_stats_score
+tag_score_stats_count
+tag_score_stats_md
+tag_score_stats_mm
+tag_score_add_stats_id
+tag_score_add_stats_score
+tag_score_add_stats_count
+tag_score_add_stats_md
+tag_score_add_stats_mm
+rule_stats_id
+rule_stats_score
+rule_stats_count
+rule_add_stats_id
+rule_add_stats_score
+rule_add_stats_count
+xrule_stats_id
+xrule_stats_score
+xrule_stats_count
+top_xrules_id
+top_xrules_score
+top_xrules_count
+score
+score_add
+question_count
+answer_count
+first_answer_time
+qa_time_sum
+qa_round_sum
+focus_goods_id
+is_remind
+task_list_id
+read_mark
+last_msg_id
+consulte_transfor_v2
+order_info_id
+order_info_status
+order_info_payment
+order_info_time
+intel_score
+remind_ntype
+first_follow_up_time
+is_follow_up_remind
+emotion_detect_mode
+has_withdraw_robot_msg
+is_order_matched
+suspected_positive_emotion
+suspected_problem
+suspected_excellent
+has_after
+cnick_customize_rule
+update_time
+wx_rule_stats_id
+wx_rule_stats_score
+wx_rule_stats_count
+wx_rule_add_stats_id
+wx_rule_add_stats_score
+wx_rule_add_stats_count
+sign

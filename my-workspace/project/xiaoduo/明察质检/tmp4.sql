@@ -1,3 +1,4 @@
-'custom_message', 'custom_dialog'
+'custom_message', 'custom_dialog']
 
-'custom'
+'custom_message', 'custom_dialog', 'custom']
+
