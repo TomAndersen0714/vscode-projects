@@ -1,24 +1,12 @@
-seller_nick
-platform
-company_id
-shop_id
-group
-snick
-employee_id
-employee_name
-department_id
-department_name
-mark_account_id
-mark_account_name
-qc_norm_id
-qc_norm_name
-qc_norm_group_id
-qc_norm_group_name
-qc_norm_group_full_name
-dialog_id
-cnick
-tag_id
-name
-score
-cal_op
-day
+店铺信息如下：
+店铺：  主账号：  平台：
+百秀大药房旗舰店    百秀大药房旗舰店    淘宝多脉
+百秀大药房旗舰店    jd_baixiu_jk    京东
+云开亚美大药房旗舰店    jd_yunkaiyamei  京东多脉
+云开亚美大药房旗舰店    云开亚美大药房旗舰店:pdd80014183884 拼多多
+CONVATEC伦胜专卖店  伦胜康维德专卖店  京东多脉
+康乐保京东自营旗舰店    kanglebao111    京东多脉
+康乐保旗舰店    kanglebao   京东多脉
+京新旗舰店  jd_jingxinqjd 京东多脉
+恩华官方旗舰店  恩华官方旗舰店:pdd90860664345 拼多多
+秀酱大药房旗舰店    秀酱大药房旗舰店:pdd10697927628 拼多多
