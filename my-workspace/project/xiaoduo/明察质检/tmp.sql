@@ -1,12 +1,36 @@
-店铺信息如下：
-店铺：  主账号：  平台：
-百秀大药房旗舰店    百秀大药房旗舰店    淘宝多脉
-百秀大药房旗舰店    jd_baixiu_jk    京东
-云开亚美大药房旗舰店    jd_yunkaiyamei  京东多脉
-云开亚美大药房旗舰店    云开亚美大药房旗舰店:pdd80014183884 拼多多
-CONVATEC伦胜专卖店  伦胜康维德专卖店  京东多脉
-康乐保京东自营旗舰店    kanglebao111    京东多脉
-康乐保旗舰店    kanglebao   京东多脉
-京新旗舰店  jd_jingxinqjd 京东多脉
-恩华官方旗舰店  恩华官方旗舰店:pdd90860664345 拼多多
-秀酱大药房旗舰店    秀酱大药房旗舰店:pdd10697927628 拼多多
+SELECT
+    goods_id,
+    groupBitmapOr(cnick_id_bitmap) AS churn_count
+FROM (
+    SELECT cnick_id_bitmap,
+        goods_id
+    FROM dws.voc_customer_stat_all
+    WHERE `day` = 20230827
+        AND company_id = '63fc50f0a06a5ecd9a249ac9'
+        AND platform = 'tb'
+        AND shop_id = '60b72d421edc070017428380'
+        AND goods_id = '718154483681'
+        AND order_status IN ['2', '3', '4']
+)
+GROUP BY goods_id
+
+
+SELECT
+    COUNT(DISTINCT cnick)
+FROM (
+    SELECT
+        day,
+        company_id,
+        shop_id,
+        platform,
+        arrayJoin(if(empty(tags), [-1], tags)) AS tag,
+        order_status,
+        arrayJoin(if(empty(dialog_info_goods_ids), [''], dialog_info_goods_ids)) AS goods_id,
+        cnick
+    FROM ods.voc_customer_all
+    WHERE day = 20230827
+    AND company_id = '63fc50f0a06a5ecd9a249ac9'
+    AND platform = 'tb'
+    AND shop_id = '60b72d421edc070017428380'
+    AND goods_id = '718154483681'
+)
