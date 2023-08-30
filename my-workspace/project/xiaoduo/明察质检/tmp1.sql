@@ -1,41 +1,35 @@
-SELECT
-    day,
-    company_id,
-    shop_id,
-    platform,
-    tag,
-    order_status,
-    goods_id,
-    groupBitmapState(cnick_id) AS cnick_id_bitmap
-FROM (
-    SELECT
-        day,
-        company_id,
-        shop_id,
-        platform,
-        arrayJoin(if(empty(tags), [-1], tags)) AS tag,
-        order_status,
-        arrayJoin(if(empty(dialog_info_goods_ids), [''], dialog_info_goods_ids)) AS goods_id,
-        cnick
-    FROM ods.voc_customer_all
-    WHERE day = 20230826
-) AS ods_voc_customer
--- 获取cnick的one_id
-LEFT JOIN (
-    SELECT
-        platform,
-        cnick,
-        cnick_id
-    FROM dwd.voc_cnick_list_latest_all
-    -- 筛选当日咨询客户
-    WHERE (platform, cnick) IN (
-        SELECT
-            platform, 
-            cnick
-        FROM ods.voc_customer_all
-        WHERE day = 20230826
-    )
-) AS cnick_one_id
-USING(platform, cnick)
-GROUP BY
-    day, company_id, shop_id, platform, tag, order_status, goods_id
+select count(1) as count
+from (
+        select distinct buyer_nick
+        from (
+                select distinct final_table_0.buyer_nick
+                from (
+                        select distinct buyer_nick
+                        from (
+                                select buyer_nick,
+                                    avg(payment) as avg_payment_paid
+                                from ods.order_event_all
+                                where shop_id = '5ec76879edbe97000f8d850c'
+                                    and status = 'paid'
+                                group by buyer_nick
+                                having avg_payment_paid between 100 and 100
+                            )
+                    ) as final_table_0
+            ) as table_groupresult
+            join (
+                SELECT DISTINCT buyer_nick
+                FROM (
+                        SELECT DISTINCT buyer_nick
+                        FROM ods.order_event_all
+                        WHERE `day` > toYYYYMMDD(subtractDays(now(), 60))
+                            AND shop_id = '5ec76879edbe97000f8d850c'
+                            AND status = 'created'
+                        UNION ALL
+                        SELECT DISTINCT buyer_nick
+                        FROM ods.chat_event_all
+                        WHERE `day` > toYYYYMMDD(subtractDays(now(), 60))
+                            AND shop_id = '5ec76879edbe97000f8d850c'
+                            AND act = 'consult'
+                    )
+            ) as table_reachable on table_reachable.buyer_nick = table_groupresult.buyer_nick
+    ) -- trace:1028b7ca5083d232fed82ae013239fda
