@@ -11,7 +11,7 @@ ADD COLUMN IF NOT EXISTS `msg_scenes_source` String AFTER `source`,
 ADD COLUMN IF NOT EXISTS `msg_content_type` String AFTER `content_type`;
 
 
-DROP TABLE buffer.xqc_message_buffer ON CLUSTER cluster_3s_2r NO DELAY
+DROP TABLE buffer.xqc_message_buffer ON CLUSTER cluster_3s_2r NO DELAY;
 
 CREATE TABLE IF NOT EXISTS buffer.xqc_message_buffer ON CLUSTER cluster_3s_2r
 AS xqc_ods.message_all
