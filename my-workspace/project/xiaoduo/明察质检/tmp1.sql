@@ -1,22 +1,72 @@
-登录用户：root，登录节点：jstzjk-002130-prod-tb-bigdata-bigdata，登录集群：ClickHouse
-操作命令：
-执行DDL文件中的命令
 
-登录用户：worker，登录节点：jstzjk-002129-prod-tb-bigdata-bigdata
-操作命令：
-备份/home/worker/airflow/dags/xqc_ods_etl_tb.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_ods_etl_tb.py文件，替换/home/worker/airflow/dags/xqc_ods_etl_tb.py
-备份/home/worker/airflow/dags/xqc_ods_message_etl_tb.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_ods_message_etl_tb.py文件，替换/home/worker/airflow/dags/xqc_ods_message_etl_tb.py
+cntaobaoone_id_3202920097 2023-08-28 12:12:45:
 
+    老妹手机今天减价了没有
 
-登录用户：root，登录节点：mini-bigdata-004，登录集群：ClickHouse
-操作命令：
-执行DDL文件中的命令
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:13:40:
 
-登录用户：worker，登录节点：v1mini-bigdata-002
-操作命令：
-备份/home/worker/airflow/dags/xqc_ods_etl_mini.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_ods_etl_mini.py文件，替换/home/worker/airflow/dags/xqc_ods_etl_mini.py
-备份/home/worker/airflow/dags/xqc_message_etl_mini.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_message_etl_mini.py文件，替换/home/worker/airflow/dags/xqc_message_etl_mini.py
+    8月28-30日，Y78价格（具体以页面显示为准）：\n8+128G版，特惠30，到手价1269元；\n8+256G版，特惠30，到手价1369元；\n12+256G版，特惠30，到手价1969元；
+
+cntaobaoone_id_3202920097 2023-08-28 12:14:37:
+
+    价格能不能在商量商量
+
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:14:54:
+
+    亲爱哒~感谢您对vivo的支持与喜爱，小v偷偷送您一张店铺会员专享300元优惠券（有效期截止8月31日），快来领取哦！\r可用商品：Y78手机（限12GB+256GB版本）\r领取链接：https://c.tb.cn/O4.ZnG7Ev
+
+cntaobaoone_id_3202920097 2023-08-28 12:16:53:
+
+    我买899的，是不是只要付五百都了
+
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:17:39:
+
+    这个优惠券是Y78的12+256g内存版本使用的是无法达到这个价格
+
+cntaobaoone_id_3202920097 2023-08-28 12:18:19:
+
+    不能在899上使用的
+
+cntaobaoone_id_3202920097 2023-08-28 12:18:50:
+
+    老人不要那么好的手机
+
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:19:44:
+
+    8月28-30日，Y53t价格（具体以页面显示为准）：\n4+128G版，到手价849元；\n6+128G版，到手价899元；\n8+128G版，特惠30，到手价1069元；\n8+256G版，特惠30，到手价1269元；
+
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:20:04:
+
+    现在y53t的4+128G版，到手价849元是小v这边在售比较优惠的价格了，是没有其他价格优惠活动了\r
+
+cntaobaoone_id_3202920097 2023-08-28 12:20:25:
+
+    899的能不能优惠个一两百
+
+cntaobaoone_id_3202920097 2023-08-28 12:21:38:
+
+    七百卖不卖
+
+cntaobaoone_id_3202920097 2023-08-28 12:22:13:
+
+    我诚心诚意要买
+
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:22:28:
+
+    亲亲，非常抱歉是不可以的这个是官方定价，小v这边也无法修改
+
+cntaobaoone_id_3202920097 2023-08-28 12:22:39:
+
+    你想想办法
+
+cntaobaoone_id_3202920097 2023-08-28 12:23:16:
+
+    七百可以，我就下单
+
+cntaobaoone_id_3202920097 2023-08-28 12:23:34:
+
+    899的七百卖给我
+
+cntaobaovivo手机官方旗舰店:管家维志 2023-08-28 12:24:07:
+
+    亲亲 您反馈的这个问题我们非常重视，为了更好的解决您的问题，我会将您的情况记录并转接专员为您进一步服务哦~\n辛苦您耐心等待一下哈，专员看到后会及时回复您的呢~/:)-(
