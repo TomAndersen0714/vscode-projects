@@ -1,51 +1,234 @@
-
-    SELECT
-        groupBitmapOr(cnick_id_bitmap)
-    FROM (
-        SELECT
-            day,
-            platform,
-            shop_id,
-            snick,
-            question_id,
-            dialog_qa_stage,
-            dialog_goods_id,
-            recent_order_id,
-            recent_order_status,
-            recent_order_status_timestamp,
-            groupBitmapState(cnick_id) AS cnick_id_bitmap,
-            bitmapCardinality(cnick_id_bitmap) AS dialog_sum
-        FROM (
-            SELECT
-                day,
-                platform,
-                shop_id,
-                snick,
-                cnick_id,
-                question_b_qid AS question_id,
-                CASE
-                    WHEN dialog_qa_sum=0 THEN 0
-                    WHEN dialog_qa_sum>0 AND dialog_qa_sum<=3 THEN 1
-                    WHEN dialog_qa_sum>3 AND dialog_qa_sum<=10 THEN 2
-                    ELSE 3
-                END AS dialog_qa_stage,
-                plat_goods_id AS dialog_goods_id,
-                recent_order_id,
-                recent_order_status,
-                recent_order_status_timestamp
-            FROM dwd.voc_chat_log_detail_all
-            WHERE day = 20230826
-            AND shop_id = '60b72d421edc070017428380'
-            AND plat_goods_id = '718154483681'
-        )
-        GROUP BY day,
-            platform,
-            shop_id,
-            snick,
-            question_id,
-            dialog_qa_stage,
-            dialog_goods_id,
-            recent_order_id,
-            recent_order_status,
-            recent_order_status_timestamp
-    ) AS question_stat_info
+_id
+String
+platform
+String
+channel
+String
+group
+String
+date
+Int32
+seller_nick
+String
+cnick
+String
+real_buyer_nick
+String
+open_uid
+String
+snick
+String
+begin_time
+DateTime64(3)
+end_time
+DateTime64(3)
+is_after_sale
+UInt8
+is_inside
+UInt8
+employee_name
+String
+s_emotion_type
+Array(UInt16)
+s_emotion_rule_id
+Array(String)
+s_emotion_score
+Array(Int32)
+s_emotion_count
+Array(UInt32)
+c_emotion_type
+Array(UInt16)
+c_emotion_rule_id
+Array(String)
+c_emotion_score
+Array(Int32)
+c_emotion_count
+Array(UInt32)
+emotions
+Array(String)
+abnormals_type
+Array(UInt16)
+abnormals_rule_id
+Array(String)
+abnormals_score
+Array(Int32)
+abnormals_count
+Array(UInt32)
+excellents_type
+Array(UInt16)
+excellents_rule_id
+Array(String)
+excellents_score
+Array(Int32)
+excellents_count
+Array(UInt32)
+qc_word_source
+Array(UInt8)
+qc_word_word
+Array(String)
+qc_word_count
+Array(UInt32)
+qid
+Array(Int64)
+service_evaluations_eval_code
+Array(Int64)
+service_evaluations_open_uid
+Array(String)
+service_evaluations_eval_time
+Array(String)
+service_evaluations_send_time
+Array(String)
+service_evaluations_source
+Array(Int64)
+service_evaluations_message_id
+Array(String)
+service_evaluations_desc
+Array(String)
+mark
+String
+mark_time
+DateTime64(3)
+message_marks_id
+Array(String)
+message_marks_mark
+Array(String)
+mark_judge
+Int32
+mark_score
+Int32
+mark_score_add
+Int32
+mark_ids
+Array(String)
+last_mark_id
+String
+human_check
+UInt8
+tag_score_stats_id
+Array(String)
+tag_score_stats_score
+Array(Int32)
+tag_score_stats_count
+Array(UInt32)
+tag_score_stats_md
+Array(UInt8)
+tag_score_stats_mm
+Array(UInt8)
+tag_score_add_stats_id
+Array(String)
+tag_score_add_stats_score
+Array(Int32)
+tag_score_add_stats_count
+Array(UInt32)
+tag_score_add_stats_md
+Array(UInt8)
+tag_score_add_stats_mm
+Array(UInt8)
+rule_stats_id
+Array(String)
+rule_stats_score
+Array(Int32)
+rule_stats_count
+Array(UInt32)
+rule_add_stats_id
+Array(String)
+rule_add_stats_score
+Array(Int32)
+rule_add_stats_count
+Array(UInt32)
+xrule_stats_id
+Array(String)
+xrule_stats_score
+Array(Int32)
+xrule_stats_count
+Array(UInt32)
+top_xrules_id
+Array(String)
+top_xrules_score
+Array(Int32)
+top_xrules_count
+Array(UInt32)
+score
+Int32
+score_add
+Int32
+question_count
+UInt32
+answer_count
+UInt32
+first_answer_time
+DateTime64(3)
+qa_time_sum
+UInt32
+qa_round_sum
+UInt32
+focus_goods_id
+String
+is_remind
+UInt8
+task_list_id
+String
+read_mark
+Array(String)
+last_msg_id
+String
+consulte_transfor_v2
+Int32
+order_info_id
+Array(String)
+order_info_status
+Array(String)
+order_info_payment
+Array(Float32)
+order_info_time
+Array(UInt64)
+order_info_history_status
+Array(Array(String))
+order_info_history_time
+Array(Array(UInt64))
+plat_goods_ids
+Array(String)
+intel_score
+Int32
+remind_ntype
+String
+first_follow_up_time
+DateTime64(3)
+is_follow_up_remind
+UInt8
+emotion_detect_mode
+Int32
+has_withdraw_robot_msg
+UInt8
+is_order_matched
+UInt8
+suspected_positive_emotion
+UInt8
+suspected_problem
+UInt8
+suspected_excellent
+UInt8
+has_after
+UInt8
+cnick_customize_rule
+Array(String)
+update_time
+DateTime('Asia/Shanghai')
+wx_rule_stats_id
+Array(String)
+wx_rule_stats_score
+Array(Int32)
+wx_rule_stats_count
+Array(UInt32)
+wx_rule_add_stats_id
+Array(String)
+wx_rule_add_stats_score
+Array(Int32)
+wx_rule_add_stats_count
+Array(UInt32)
+remark
+String
+desc
+String
+sign
+Int8
