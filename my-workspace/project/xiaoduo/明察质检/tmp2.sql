@@ -1,110 +1,140 @@
-CREATE TABLE dwd.xdqc_backup_dialog_local ON CLUSTER cluster_3s_2r
-(
-    `_id` String,
-    `platform` String,
-    `channel` String,
-    `group` String,
-    `date` Int32,
-    `seller_nick` String,
-    `cnick` String,
-    `real_buyer_nick` String,
-    `open_uid` String,
-    `snick` String,
-    `begin_time` DateTime64(3),
-    `end_time` DateTime64(3),
-    `is_after_sale` UInt8,
-    `is_inside` UInt8,
-    `employee_name` String,
-    `s_emotion_type` Array(UInt16),
-    `s_emotion_rule_id` Array(String),
-    `s_emotion_score` Array(Int32),
-    `s_emotion_count` Array(UInt32),
-    `c_emotion_type` Array(UInt16),
-    `c_emotion_rule_id` Array(String),
-    `c_emotion_score` Array(Int32),
-    `c_emotion_count` Array(UInt32),
-    `emotions` Array(String),
-    `abnormals_type` Array(UInt16),
-    `abnormals_rule_id` Array(String),
-    `abnormals_score` Array(Int32),
-    `abnormals_count` Array(UInt32),
-    `excellents_type` Array(UInt16),
-    `excellents_rule_id` Array(String),
-    `excellents_score` Array(Int32),
-    `excellents_count` Array(UInt32),
-    `qc_word_source` Array(UInt8),
-    `qc_word_word` Array(String),
-    `qc_word_count` Array(UInt32),
-    `qid` Array(Int64),
-    `mark` String,
-    `mark_judge` Int32,
-    `mark_score` Int32,
-    `mark_score_add` Int32,
-    `mark_ids` Array(String),
-    `last_mark_id` String,
-    `human_check` UInt8,
-    `tag_score_stats_id` Array(String),
-    `tag_score_stats_score` Array(Int32),
-    `tag_score_stats_count` Array(UInt32),
-    `tag_score_stats_md` Array(UInt8),
-    `tag_score_stats_mm` Array(UInt8),
-    `tag_score_add_stats_id` Array(String),
-    `tag_score_add_stats_score` Array(Int32),
-    `tag_score_add_stats_count` Array(UInt32),
-    `tag_score_add_stats_md` Array(UInt8),
-    `tag_score_add_stats_mm` Array(UInt8),
-    `rule_stats_id` Array(String),
-    `rule_stats_score` Array(Int32),
-    `rule_stats_count` Array(UInt32),
-    `rule_add_stats_id` Array(String),
-    `rule_add_stats_score` Array(Int32),
-    `rule_add_stats_count` Array(UInt32),
-    `xrule_stats_id` Array(String),
-    `xrule_stats_score` Array(Int32),
-    `xrule_stats_count` Array(UInt32),
-    `top_xrules_id` Array(String),
-    `top_xrules_score` Array(Int32),
-    `top_xrules_count` Array(UInt32),
-    `score` Int32,
-    `score_add` Int32,
-    `question_count` UInt32,
-    `answer_count` UInt32,
-    `first_answer_time` DateTime64(3),
-    `qa_time_sum` UInt32,
-    `qa_round_sum` UInt32,
-    `focus_goods_id` String,
-    `is_remind` UInt8,
-    `task_list_id` String,
-    `read_mark` Array(String),
-    `last_msg_id` String,
-    `consulte_transfor_v2` Int32,
-    `order_info_id` Array(String),
-    `order_info_status` Array(String),
-    `order_info_payment` Array(Float32),
-    `order_info_time` Array(UInt64),
-    `intel_score` Int32,
-    `remind_ntype` String,
-    `first_follow_up_time` DateTime64(3),
-    `is_follow_up_remind` UInt8,
-    `emotion_detect_mode` Int32,
-    `has_withdraw_robot_msg` UInt8,
-    `is_order_matched` UInt8,
-    `suspected_positive_emotion` UInt8,
-    `suspected_problem` UInt8,
-    `suspected_excellent` UInt8,
-    `has_after` UInt8,
-    `cnick_customize_rule` Array(String),
-    `update_time` DateTime('Asia/Shanghai'),
-    `wx_rule_stats_id` Array(String),
-    `wx_rule_stats_score` Array(Int32),
-    `wx_rule_stats_count` Array(UInt32),
-    `wx_rule_add_stats_id` Array(String),
-    `wx_rule_add_stats_score` Array(Int32),
-    `wx_rule_add_stats_count` Array(UInt32),
-    `sign` Int8
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/{database}/tables/{layer}_{shard}/{table}',
-    '{replica}'
-) PARTITION BY toYYYYMMDD(begin_time) PRIMARY KEY (platform, channel, seller_nick)
-ORDER BY (platform, channel, seller_nick, _id) SETTINGS index_granularity = 8192,
-    storage_policy = 'rr'
+_id
+String
+raw_id
+String
+dialog_id
+String
+iscardmsg
+String
+create_time
+String
+update_time
+String
+platform
+String
+plat_goods_id
+String
+channel
+String
+cnick
+String
+real_buyer_nick
+String
+open_uid
+String
+snick
+String
+seller_nick
+String
+room_nick
+String
+source
+Int32
+msg_scenes_source
+String
+content
+String
+content_type
+String
+msg_content_type
+String
+time
+DateTime64(3)
+is_after_sale
+String
+is_reminder
+String
+is_inside
+String
+employee_name
+String
+intent
+Array(Array(Float64))
+qid
+Int64
+answer_explain
+String
+emotion
+Int32
+algo_emotion
+Int32
+emotion_score
+Int32
+suspected_emotion
+String
+abnormal_model
+Int32
+abnormal
+Array(Int32)
+abnormal_scroe.type
+Array(Int32)
+abnormal_scroe.score
+Array(Int32)
+excellent_model
+Int32
+excellent
+Array(Int32)
+excellent_score.type
+Array(Int32)
+excellent_score.score
+Array(Int32)
+suspected_abnormals
+Array(Int32)
+qc_word_stats.source
+Array(Int32)
+qc_word_stats.word
+Array(String)
+qc_word_stats.count
+Array(Int32)
+auto_send
+String
+send_from
+String
+mark
+String
+is_transfer
+String
+ms_msg_time
+DateTime64(3)
+withdraw_ms_time
+DateTime64(3)
+rule_stats.id
+Array(String)
+rule_stats.count
+Array(Int32)
+rule_stats.score
+Array(Int32)
+rule_add_stats.id
+Array(String)
+rule_add_stats.count
+Array(Int32)
+rule_add_stats.score
+Array(Int32)
+xrule_stats.id
+Array(String)
+xrule_stats.count
+Array(UInt32)
+xrule_stats.score
+Array(Int32)
+wx_rule_stats.id
+Array(String)
+wx_rule_stats.count
+Array(Int32)
+wx_rule_stats.score
+Array(Int32)
+wx_rule_add_stats.id
+Array(String)
+wx_rule_add_stats.count
+Array(Int32)
+wx_rule_add_stats.score
+Array(Int32)
+tags.tag_id
+Array(String)
+tags.cal_op
+Array(Int32)
+tags.score
+Array(Int32)
+tags.name
+Array(String)
+day
+UInt32
