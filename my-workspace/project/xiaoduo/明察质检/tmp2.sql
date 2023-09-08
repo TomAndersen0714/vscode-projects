@@ -1,140 +1,54 @@
-_id
-String
-raw_id
-String
-dialog_id
-String
-iscardmsg
-String
-create_time
-String
-update_time
-String
-platform
-String
-plat_goods_id
-String
-channel
-String
-cnick
-String
-real_buyer_nick
-String
-open_uid
-String
-snick
-String
-seller_nick
-String
-room_nick
-String
-source
-Int32
-msg_scenes_source
-String
-content
-String
-content_type
-String
-msg_content_type
-String
-time
-DateTime64(3)
-is_after_sale
-String
-is_reminder
-String
-is_inside
-String
-employee_name
-String
-intent
-Array(Array(Float64))
-qid
-Int64
-answer_explain
-String
-emotion
-Int32
-algo_emotion
-Int32
-emotion_score
-Int32
-suspected_emotion
-String
-abnormal_model
-Int32
-abnormal
-Array(Int32)
-abnormal_scroe.type
-Array(Int32)
-abnormal_scroe.score
-Array(Int32)
-excellent_model
-Int32
-excellent
-Array(Int32)
-excellent_score.type
-Array(Int32)
-excellent_score.score
-Array(Int32)
-suspected_abnormals
-Array(Int32)
-qc_word_stats.source
-Array(Int32)
-qc_word_stats.word
-Array(String)
-qc_word_stats.count
-Array(Int32)
-auto_send
-String
-send_from
-String
-mark
-String
-is_transfer
-String
-ms_msg_time
-DateTime64(3)
-withdraw_ms_time
-DateTime64(3)
-rule_stats.id
-Array(String)
-rule_stats.count
-Array(Int32)
-rule_stats.score
-Array(Int32)
-rule_add_stats.id
-Array(String)
-rule_add_stats.count
-Array(Int32)
-rule_add_stats.score
-Array(Int32)
-xrule_stats.id
-Array(String)
-xrule_stats.count
-Array(UInt32)
-xrule_stats.score
-Array(Int32)
-wx_rule_stats.id
-Array(String)
-wx_rule_stats.count
-Array(Int32)
-wx_rule_stats.score
-Array(Int32)
-wx_rule_add_stats.id
-Array(String)
-wx_rule_add_stats.count
-Array(Int32)
-wx_rule_add_stats.score
-Array(Int32)
-tags.tag_id
-Array(String)
-tags.cal_op
-Array(Int32)
-tags.score
-Array(Int32)
-tags.name
-Array(String)
-day
-UInt32
+INSERT INTO ods.xinghuan_dialog_tag_score_all
+            SELECT
+                seller_nick, platform,
+                company_id, shop_id, group, snick,
+                employee_id, employee_name, department_id, department_name,
+                mark_account_id, account_info.account_name AS mark_account_name,
+                qc_norm_id, qc_norm_name, qc_norm_group_id, qc_norm_group_name, qc_norm_group_full_name,
+                dialog_id, cnick, tag_id, tag_name, tag_score, cal_op, day
+            FROM (
+                SELECT
+                    seller_nick, platform,
+                    company_id, shop_id, group, snick,
+                    employee_id, employee_name, department_id, department_name,
+                    mark_account_id,
+                    qc_norm_id, qc_norm_name, '' AS qc_norm_group_id, '' AS qc_norm_group_name, '' AS qc_norm_group_full_name,
+                    dialog_id, cnick, tag_id, tag_name, tag_score, cal_op, day
+                FROM (
+                    SELECT
+                        toYYYYMMDD(begin_time) AS day,
+                        platform,
+                        seller_nick,
+                        group,
+                        snick,
+                        _id AS dialog_id,
+                        cnick,
+                        '' AS tag_id,
+                        '' AS tag_name,
+                        0 AS tag_score,
+                        -1 AS cal_op,
+                        last_mark_id AS mark_account_id
+                    FROM dwd.xdqc_dialog_all
+                    WHERE toYYYYMMDD(begin_time) = {ds_nodash}
+                    AND length(tag_score_stats_id) = 0
+                    AND length(tag_score_add_stats_id) = 0
+                    AND last_mark_id != ''
+                ) AS tag_dialog_info
+                GLOBAL LEFT JOIN (
+                    SELECT
+                        company_id, shop_id, platform, snick,
+                        employee_id, employee_name, department_id, department_name,
+                        qc_norm_id, qc_norm_name
+                    FROM xqc_dim.snick_full_info_all
+                    WHERE day = {snapshot_ds_nodash}
+                ) AS snick_info
+                USING(platform, snick)
+            ) AS tag_detial
+            GLOBAL LEFT JOIN (
+                SELECT
+                    _id AS account_id,
+                    username AS account_name
+                FROM ods.xinghuan_account_all
+                WHERE day = {snapshot_ds_nodash}
+            ) AS account_info
+            ON tag_detial.mark_account_id = account_info.account_id

@@ -1,76 +1,77 @@
 SELECT
-    plat_goods_id AS `商品ID`,
-    plat_goods_name AS `商品名称`,
-    category_name AS `商品分类`,
-    recv_cnt_sum AS `咨询人数`,
-    recv_pv_sum AS `咨询量`,
-    no_repl_cnt_sum AS `未回复数`,
-    auto_repl_cnt_sum AS `自动回复数`,
-    reply_pct AS `应答率`,
-    pemt_cnt_sum AS `成交人数`,
-    order_convert_pct AS `订单转化率`
+    seller_nick, platform,
+    company_id, shop_id, group, snick,
+    employee_id, employee_name, department_id, department_name,
+    mark_account_id, account_info.account_name AS mark_account_name,
+    qc_norm_id, qc_norm_name, qc_norm_group_id, qc_norm_group_name, qc_norm_group_full_name,
+    dialog_id, cnick, tag_id, tag_name, tag_score, cal_op, day
 FROM (
     SELECT
-        plat_goods_id,
-        sum(recv_cnt) AS recv_cnt_sum,
-        sum(recv_pv) AS recv_pv_sum,
-        sum(no_repl_cnt) AS no_repl_cnt_sum,
-        (recv_pv_sum - no_repl_cnt_sum) AS auto_repl_cnt_sum,
-        if(
-            length(
-                splitByChar('.', toString(round(auto_repl_cnt_sum / recv_pv_sum * 100, 2)))
-            ) != 2,
-            concat(toString(round(auto_repl_cnt_sum / recv_pv_sum * 100, 2)), '.00%'),
-            if(
-                length(
-                    splitByChar('.', toString(round(auto_repl_cnt_sum / recv_pv_sum * 100, 2))) [2]
-                ) = 1,
-                concat(toString(round(auto_repl_cnt_sum / recv_pv_sum * 100, 2)), '0%'),
-                concat(toString(round(auto_repl_cnt_sum / recv_pv_sum * 100, 2)), '%')
-            )
-        ) AS reply_pct,
-        sum(pemt_cnt) AS pemt_cnt_sum,
-        if(
-            length(
-                splitByChar('.', toString(round(pemt_cnt_sum / recv_cnt_sum * 100, 2)))
-            ) != 2,
-            concat(toString(round(pemt_cnt_sum / recv_cnt_sum * 100, 2)), '.00%'),
-            if(
-                length(
-                    splitByChar('.', toString(round(pemt_cnt_sum / recv_cnt_sum * 100, 2))) [2]
-                ) = 1,
-                concat(toString(round(pemt_cnt_sum / recv_cnt_sum * 100, 2)), '0%'),
-                concat(toString(round(pemt_cnt_sum / recv_cnt_sum * 100, 2)), '%')
-            )
-        ) AS order_convert_pct
-    FROM dws.shop_goods_stat_all
-    WHERE shop_id = '{{ shop_id=571a007989bc463220beb677 }}'
-        AND day BETWEEN toYYYYMMDD(
-            toDate('{{ day.start=week_ago }}')
-        ) AND toYYYYMMDD(
-            toDate('{{ day.end=yesterday }}')
-        )
-        AND plat_goods_name != ''
-    GROUP BY plat_goods_id
-) AS shop_goods_stat
-GLOBAL LEFT JOIN (
-    SELECT plat_goods_id,
-        plat_goods_name,
-        category_name
+        seller_nick, platform,
+        company_id, shop_id, group, snick,
+        employee_id, employee_name, department_id, department_name,
+        mark_account_id,
+        qc_norm_id, qc_norm_name, qc_norm_group_id, qc_norm_group_name, qc_norm_group_full_name,
+        dialog_id, cnick, tag_id, tag_name, tag_score, cal_op, day
     FROM (
-        SELECT shop_id,
-            plat_goods_id,
-            plat_goods_name,
-            plat_cid
-        FROM dim.goods_all
-        WHERE shop_id = '{{ shop_id=571a007989bc463220beb677 }}'
-    )
-    GLOBAL INNER JOIN (
-        SELECT shop_id,
-            cid AS plat_cid,
-            name AS category_name
-        FROM dim.shop_cid_sync_all
-        WHERE shop_id = '{{ shop_id=571a007989bc463220beb677 }}'
-    ) USING (shop_id, plat_cid)
-) AS plat_goods_info
-USING (plat_goods_id)
+        SELECT
+            day,
+            company_id, shop_id,
+            platform, seller_nick, group, snick,
+            employee_id, employee_name, department_id, department_name,
+            mark_account_id,
+            dialog_id, cnick, tag_id, tag_score, cal_op
+        FROM (
+            SELECT
+                toYYYYMMDD(begin_time) AS day,
+                platform,
+                seller_nick,
+                group,
+                snick,
+                _id AS dialog_id,
+                cnick,
+                tag_id,
+                tag_score,
+                0 AS cal_op,
+                last_mark_id AS mark_account_id
+            FROM dwd.xdqc_dialog_all
+            ARRAY JOIN
+                tag_score_stats_id AS tag_id,
+                tag_score_stats_score AS tag_score
+            WHERE toYYYYMMDD(begin_time) = {ds_nodash}
+            AND length(tag_score_stats_id) > 0
+        ) AS tag_dialog_info
+        GLOBAL LEFT JOIN (
+            SELECT
+                company_id, shop_id, platform, snick,
+                employee_id, employee_name, department_id, department_name
+            FROM xqc_dim.snick_full_info_all
+            WHERE day = {snapshot_ds_nodash}
+        ) AS snick_info
+        USING(platform, snick)
+    ) AS tag_record
+    LEFT JOIN (
+        -- 关联人工质检项
+        SELECT
+            company_id,
+            platform,
+            _id AS tag_id,
+            name AS tag_name,
+            qc_norm_id,
+            qc_norm_name,
+            qc_norm_group_id,
+            qc_norm_group_name,
+            qc_norm_group_full_name
+        FROM xqc_dim.qc_rule_full_info_latest_all
+        WHERE rule_category = 2
+    ) AS tag_info 
+    USING(tag_id)
+) AS tag_detial
+GLOBAL LEFT JOIN (
+    SELECT
+        _id AS account_id,
+        username AS account_name
+    FROM ods.xinghuan_account_all
+    WHERE day = {snapshot_ds_nodash}
+) AS account_info
+ON tag_detial.mark_account_id = account_info.account_id
