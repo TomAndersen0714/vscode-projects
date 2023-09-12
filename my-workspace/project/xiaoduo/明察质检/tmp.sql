@@ -1,47 +1,14 @@
-关联工单：https://project.feishu.cn/dev_demands/story/detail/13113442
-登录用户：root，登录节点：jstzjk-133175-prod-tb-bigdata-ks-clickhouse，登录集群：ClickHouse
-操作命令：
-执行DDL文件中的命令
-
-登录用户：worker，登录节点：jstzjk-133175-prod-tb-bigdata-ks-clickhouse
-操作命令：
-备份/home/worker/airflow/dags/xqc_etl_ks.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_etl_ks.py文件，替换/home/worker/airflow/dags/xqc_etl_ks.py
-备份/home/worker/airflow/dags/xqc_message_etl_ks.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_message_etl_ks.py文件，替换/home/worker/airflow/dags/xqc_message_etl_ks.py
-
-
-登录用户：root，登录节点：jstzjk-133174-prod-tb-bigdata-dy-clickhouse，登录集群：ClickHouse
-操作命令：
-执行DDL文件中的命令
-
-登录用户：worker，登录节点：jstzjk-133174-prod-tb-bigdata-dy-clickhouse
-操作命令：
-备份/home/worker/airflow/dags/xqc_etl_dy.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_etl_dy.py文件，替换/home/worker/airflow/dags/xqc_etl_dy.py
-备份/home/worker/airflow/dags/xqc_message_etl_dy.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_message_etl_dy.py文件，替换/home/worker/airflow/dags/xqc_message_etl_dy.py
-
-
-登录用户：root，登录节点：jstzjk-002130-prod-tb-bigdata-bigdata，登录集群：ClickHouse
-操作命令：
-执行DDL文件中的命令
-
-登录用户：worker，登录节点：jstzjk-002129-prod-tb-bigdata-bigdata
-操作命令：
-备份/home/worker/airflow/dags/xqc_ods_etl_tb.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_ods_etl_tb.py文件，替换/home/worker/airflow/dags/xqc_ods_etl_tb.py
-备份/home/worker/airflow/dags/xqc_ods_message_etl_tb.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_ods_message_etl_tb.py文件，替换/home/worker/airflow/dags/xqc_ods_message_etl_tb.py
-
-
-登录用户：root，登录节点：mini-bigdata-004，登录集群：ClickHouse
-操作命令：
-执行DDL文件中的命令
-
-登录用户：worker，登录节点：v1mini-bigdata-002
-操作命令：
-备份/home/worker/airflow/dags/xqc_ods_etl_mini.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_ods_etl_mini.py文件，替换/home/worker/airflow/dags/xqc_ods_etl_mini.py
-备份/home/worker/airflow/dags/xqc_message_etl_mini.py文件到对应路径下backup文件夹，并使用20230901作为后缀
-使用/opt/bigdata/gitlab/online/20230901/xqc_message_etl_mini.py文件，替换/home/worker/airflow/dags/xqc_message_etl_mini.py
+SELECT
+    day,
+    snick,
+    COUNT(1)
+FROM (
+    SELECT DISTINCT
+        day, dialog_id, snick, cnick
+    FROM xqc_dwd.xplat_manual_tag_all
+    WHERE platform = 'tb'
+    AND company_id = '644a17ff8dc175f38f3dd916'
+    AND day = 20230909
+)
+GROUP BY day, snick
+ORDER BY day, snick
