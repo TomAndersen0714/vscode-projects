@@ -1,14 +1,2 @@
-SELECT
-    day,
-    snick,
-    COUNT(1)
-FROM (
-    SELECT DISTINCT
-        day, dialog_id, snick, cnick
-    FROM xqc_dwd.xplat_manual_tag_all
-    WHERE platform = 'tb'
-    AND company_id = '644a17ff8dc175f38f3dd916'
-    AND day = 20230909
-)
-GROUP BY day, snick
-ORDER BY day, snick
+备份/home/worker/airflow/dags/xqc_stat_xplat_tb.py文件到对应路径下backup文件夹，并使用20230911作为后缀
+使用/opt/bigdata/gitlab/online/20230911/xqc_stat_xplat_tb.py文件，替换/home/worker/airflow/dags/xqc_stat_xplat_tb.py
