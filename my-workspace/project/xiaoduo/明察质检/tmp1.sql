@@ -1,62 +1,8 @@
-hbn官方旗舰店:abby
-3	
-hbn官方旗舰店:alang
-3	
-hbn官方旗舰店:alis
-2	
-hbn官方旗舰店:aria
-3	
-hbn官方旗舰店:besty
-3	
-hbn官方旗舰店:betty
-2	
-hbn官方旗舰店:cherry
-3	
-hbn官方旗舰店:eva
-3	
-hbn官方旗舰店:grace
-3	
-hbn官方旗舰店:jerry
-3	
-hbn官方旗舰店:jos
-1	
-hbn官方旗舰店:judy
-2	
-hbn官方旗舰店:kimi
-2	
-hbn官方旗舰店:lucky
-2	
-hbn官方旗舰店:lulu
-3	
-hbn官方旗舰店:natural
-3	
-hbn官方旗舰店:nikii
-2	
-hbn官方旗舰店:nini
-2	
-hbn官方旗舰店:noah
-2	
-hbn官方旗舰店:ouou
-3	
-hbn官方旗舰店:poke
-2	
-hbn官方旗舰店:qiqi
-2	
-hbn官方旗舰店:rose
-3	
-hbn官方旗舰店:roy
-2	
-hbn官方旗舰店:solo
-3	
-hbn官方旗舰店:sunny
-3	
-hbn官方旗舰店:theshy
-3	
-hbn官方旗舰店:too
-1	
-hbn官方旗舰店:wilson
-2	
-hbn官方旗舰店:zoe
-3	
-hbn官方旗舰店:zoo
-2	
+SELECT
+    day,
+    COUNT(DISTINCT dialog_id) AS cnt
+FROM xqc_dwd.xplat_manual_tag_all
+WHERE day BETWEEN 20230901 AND 20230909
+AND shop_id = '6449efec2f2b66e59996d6db'
+GROUP BY day
+ORDER BY day
