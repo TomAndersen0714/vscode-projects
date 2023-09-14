@@ -1,117 +1,15 @@
-_id
-platform
-channel
-group
-date
-seller_nick
-cnick
-real_buyer_nick
-open_uid
-snick
-begin_time
-end_time
-is_after_sale
-is_inside
-employee_name
-s_emotion_type
-s_emotion_rule_id
-s_emotion_score
-s_emotion_count
-c_emotion_type
-c_emotion_rule_id
-c_emotion_score
-c_emotion_count
-emotions
-abnormals_type
-abnormals_rule_id
-abnormals_score
-abnormals_count
-excellents_type
-excellents_rule_id
-excellents_score
-excellents_count
-qc_word_source
-qc_word_word
-qc_word_count
-qid
-service_evaluations_eval_code
-service_evaluations_open_uid
-service_evaluations_eval_time
-service_evaluations_send_time
-service_evaluations_source
-service_evaluations_message_id
-service_evaluations_desc
-mark
-mark_time
-message_marks_id
-message_marks_mark
-mark_judge
-mark_score
-mark_score_add
-mark_ids
-last_mark_id
-human_check
-tag_score_stats_id
-tag_score_stats_score
-tag_score_stats_count
-tag_score_stats_md
-tag_score_stats_mm
-tag_score_add_stats_id
-tag_score_add_stats_score
-tag_score_add_stats_count
-tag_score_add_stats_md
-tag_score_add_stats_mm
-rule_stats_id
-rule_stats_score
-rule_stats_count
-rule_add_stats_id
-rule_add_stats_score
-rule_add_stats_count
-xrule_stats_id
-xrule_stats_score
-xrule_stats_count
-top_xrules_id
-top_xrules_score
-top_xrules_count
-score
-score_add
-question_count
-answer_count
-first_answer_time
-qa_time_sum
-qa_round_sum
-focus_goods_id
-is_remind
-task_list_id
-read_mark
-last_msg_id
-consulte_transfor_v2
-order_info_id
-order_info_status
-order_info_payment
-order_info_time
-order_info_history_status
-order_info_history_time
-plat_goods_ids
-intel_score
-remind_ntype
-first_follow_up_time
-is_follow_up_remind
-emotion_detect_mode
-has_withdraw_robot_msg
-is_order_matched
-suspected_positive_emotion
-suspected_problem
-suspected_excellent
-has_after
-cnick_customize_rule
-update_time
-wx_rule_stats_id
-wx_rule_stats_score
-wx_rule_stats_count
-wx_rule_add_stats_id
-wx_rule_add_stats_score
-wx_rule_add_stats_count
-remark
-desc
-sign
+SELECT
+    day,
+    COUNT(DISTINCT dialog_id) AS cnt
+FROM ods.xinghuan_dialog_tag_score_all
+WHERE day BETWEEN 20230901 AND 20230911
+AND shop_id = '6449efec2f2b66e59996d6db'
+GROUP BY day
+ORDER BY day
+
+
+SELECT DISTINCT
+    dialog_id
+FROM ods.xinghuan_dialog_tag_score_all
+WHERE day BETWEEN 20230911 AND 20230911
+AND shop_id = '6449efec2f2b66e59996d6db'

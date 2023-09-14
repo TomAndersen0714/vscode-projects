@@ -1,51 +1,96 @@
-
-    SELECT
-        groupBitmapOr(cnick_id_bitmap)
-    FROM (
-        SELECT
-            day,
-            platform,
-            shop_id,
-            snick,
-            question_id,
-            dialog_qa_stage,
-            dialog_goods_id,
-            recent_order_id,
-            recent_order_status,
-            recent_order_status_timestamp,
-            groupBitmapState(cnick_id) AS cnick_id_bitmap,
-            bitmapCardinality(cnick_id_bitmap) AS dialog_sum
-        FROM (
-            SELECT
-                day,
-                platform,
-                shop_id,
-                snick,
-                cnick_id,
-                question_b_qid AS question_id,
-                CASE
-                    WHEN dialog_qa_sum=0 THEN 0
-                    WHEN dialog_qa_sum>0 AND dialog_qa_sum<=3 THEN 1
-                    WHEN dialog_qa_sum>3 AND dialog_qa_sum<=10 THEN 2
-                    ELSE 3
-                END AS dialog_qa_stage,
-                plat_goods_id AS dialog_goods_id,
-                recent_order_id,
-                recent_order_status,
-                recent_order_status_timestamp
-            FROM dwd.voc_chat_log_detail_all
-            WHERE day = 20230826
-            AND shop_id = '60b72d421edc070017428380'
-            AND plat_goods_id = '718154483681'
-        )
-        GROUP BY day,
-            platform,
-            shop_id,
-            snick,
-            question_id,
-            dialog_qa_stage,
-            dialog_goods_id,
-            recent_order_id,
-            recent_order_status,
-            recent_order_status_timestamp
-    ) AS question_stat_info
+64fe6cd2a753ec0001ace668
+tb
+tb
+20,230,911	
+hbn官方旗舰店
+one_id_2207923989786
+tb4268398493
+AAE_ZosOAKdpZ1prVDrONkJ8
+hbn官方旗舰店:jos
+2023-09-11 09:26:42.000
+2023-09-11 10:18:15.064
+1	0	
+[8]
+[""]
+[0]
+[0]
+[1,2,3,4,5,6,7,8,9,10,11]
+["","","","","","","","","","",""]
+[0,0,0,0,0,0,0,0,0,0,0]
+[0,0,0,0,0,0,0,0,0,0,0]
+[]
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+["","","","","","","","","","","","","","","","","646f0ffdfb0d97c1a5d1eb9e","","","","","","","","","","","",""]
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+["","","","","","","","","","","","","",""]
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+[]
+[]
+[]
+["0","290000293","-10","-14","290000725","290000730","290002529","290000777"]
+["0"]
+["AAE_ZosOAKdpZ1prVDrONkJ8"]
+["2023-09-11 09:35:46"]
+["2023-09-11 09:35:44"]
+["1"]
+["65008c1aa6460e000149f409"]
+[""]
+2023-09-12 11:41:13.004
+[]
+[]
+0	0	0	
+["64b4afddfc73734fded142a8"]
+64b4afddfc73734fded142a8
+0	
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+0	0	9	18	
+1970-01-20 22:39:55.602
+173	7	
+656942865563
+0	
+[]
+64fe78e83fb0c4000120831f
+0	
+["1968058562557988697"]
+["succeeded"]
+[1]
+["1694182758"]
+[["created","paid","shipped","succeeded"]]
+[["1694182761","1694182767","1694229483","1694395601"]]
+["656942865563"]
+0	
+0000-00-00 00:00:00.000
+0	0	0	1	0	0	0	0	
+[]
+2023-09-13 00:04:42
+[]
+[]
+[]
+[]
+[]
+[]
+1
