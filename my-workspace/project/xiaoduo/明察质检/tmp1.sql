@@ -1,19 +1,48 @@
-CREATE TABLE buffer.customer_pool_summary_platform_buffer (
-    `shop_id` String,
-    `keep` Int32,
-    `outflow` Int32,
-    `inflow` Int32,
-    `update_time` DateTime,
-    `day` Int32,
-    `platform` String
-) ENGINE = Buffer(
-    'app_fishpond',
-    'customer_pool_summary_platform_all',
-    16,
-    10,
-    15,
-    81920,
-    409600,
-    67108864,
-    134217728
-)
+day
+company_id
+shop_id
+platform
+seller_nick
+snick
+employee_id
+employee_name
+department_id
+department_name
+qc_norm_id
+qc_norm_name
+qc_norm_tag_cnt
+qc_norm_ai_tag_cnt
+qc_norm_custom_tag_cnt
+qc_norm_manual_tag_cnt
+qc_norm_alert_tag_cnt
+dialog_tag_cnt
+dialog_ai_tag_cnt
+dialog_custom_tag_cnt
+dialog_manual_tag_cnt
+subtract_score_sum
+add_score_sum
+ai_subtract_score_sum
+ai_add_score_sum
+custom_subtract_score_sum
+custom_add_score_sum
+manual_subtract_score_sum
+manual_add_score_sum
+dialog_score_avg
+dialog_cnt
+excellent_dialog_cnt
+tagged_dialog_cnt
+ai_tagged_dialog_cnt
+custom_tagged_dialog_cnt
+manual_tagged_dialog_cnt
+subtract_score_dialog_cnt
+add_score_dialog_cnt
+manual_marked_dialog_cnt
+ai_subtract_score_dialog_cnt
+ai_add_score_dialog_cnt
+ai_zero_score_tagged_dialog_cnt
+custom_subtract_score_dialog_cnt
+custom_add_score_dialog_cnt
+custom_zero_score_tagged_dialog_cnt
+manual_subtract_score_dialog_cnt
+manual_add_score_dialog_cnt
+manual_zero_score_tagged_dialog_cnt
