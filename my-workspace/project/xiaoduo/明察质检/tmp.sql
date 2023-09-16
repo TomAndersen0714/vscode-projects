@@ -1,5 +1,3 @@
-qc_norm_tag_cnt,
-qc_norm_ai_tag_cnt,
-qc_norm_custom_tag_cnt,
-qc_norm_manual_tag_cnt,
-qc_norm_alert_tag_cnt
+{{"a","b"},{"b","c"},{"bc","cd"}}
+
+{"a","b"},{"b","a"},{"a","c"},{"x","y"}
