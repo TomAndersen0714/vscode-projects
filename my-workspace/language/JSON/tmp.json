@@ -1,11 +1,15 @@
-{
-    "builder": {
-      "gc": {
-        "defaultKeepStorage": "20GB",
-        "enabled": true
-      }
-    },
-    "exec-root": "E:/Softwares/Docker/",
-    "data-root": "E:/Softwares/Docker/",
-    "experimental": false
-  }
+province
+city
+gdp
+
+row_number() over(partition by province order by gdp desc)
+
+
+SELECT city, gdp, gdp/
+FROM gdp_table
+INNER JOIN (
+  SELECT province, sum(gdp)
+  FROM gdp_table
+  GROUP BY province
+) AS t
+
