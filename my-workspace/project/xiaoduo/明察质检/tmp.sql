@@ -1,14 +1,12 @@
-dags/clean_partition_daily.py
-dags/data_sync_base_customer_health.py
-dags/data_sync_base_customer_health_v2.py
-dags/dipper_all_imp_to_ch_daily.py
-dags/dipper_ask_order_conversion_stat_sync_daily.py
-dags/dipper_customer_life_cycle_daily.py
-dags/dipper_dy_to_tb_kudu_daily.py
-dags/dipper_ks_customer_life_cycle_daily.py
-dags/DI_sql_health_v3.py
-dags/dy_daily_reception_stat.py
-dags/jd_dipper_sync_to_kudu_daily.py
-dags/ks_xdrs_log_mongo2impala_day.py
-dags/sync_dipper_impala2ch.py
-dags/tb_dipper_pdd_daily.py
+SELECT log.app_id,
+    application.name AS agent,
+    count(*) AS 应答数
+FROM knowledge_log AS log
+    LEFT JOIN application ON log.app_id = application.id
+WHERE log.app_id IN (
+        SELECT id
+        FROM application
+        WHERE tenant_id = 'q-62331bf521774b174b35f079'
+    )
+GROUP BY log.app_id,
+    application.name;
