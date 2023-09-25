@@ -1,6 +1,21 @@
-10.22.113.168:19000
-10.22.113.169:19000
-10.22.113.173:19000
-10.22.113.174:29000
-10.22.113.175:29000
-10.22.133.216:29000
+CREATE TABLE tmp.jd_reminder_trace (
+    trace_id STRING,
+    platform STRING,
+    shop_id STRING,
+    buyer_id STRING,
+    order_id STRING,
+    phase STRING,
+    created_at STRING,
+    event_type STRING,
+    order_state STRING,
+    payment FLOAT,
+    node_type STRING,
+    task_id STRING,
+    timer_expired BIGINT,
+    action STRING,
+    is_silence BOOLEAN,
+    seller_id STRING,
+    task_end_rule STRING,
+    is_exclusive_seller BOOLEAN,
+    stage INT
+) STORED AS PARQUET LOCATION 'hdfs://nameservice1/user/hive/warehouse/tmp.db/jd_reminder_trace'
