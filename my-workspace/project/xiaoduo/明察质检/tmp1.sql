@@ -1,21 +1,12 @@
-CREATE TABLE tmp.jd_reminder_trace (
-    trace_id STRING,
-    platform STRING,
-    shop_id STRING,
-    buyer_id STRING,
-    order_id STRING,
-    phase STRING,
-    created_at STRING,
-    event_type STRING,
-    order_state STRING,
-    payment FLOAT,
-    node_type STRING,
-    task_id STRING,
-    timer_expired BIGINT,
-    action STRING,
-    is_silence BOOLEAN,
-    seller_id STRING,
-    task_end_rule STRING,
-    is_exclusive_seller BOOLEAN,
-    stage INT
-) STORED AS PARQUET LOCATION 'hdfs://nameservice1/user/hive/warehouse/tmp.db/jd_reminder_trace'
+CREATE TABLE tmp.mini_xdre_shop_local ON CLUSTER cluster_3s_2r(
+    `_id` String,
+    `platform` String,
+    `category_id` String,
+    `category_ids` String,
+    `model_type` String
+) ENGINE = ReplicatedMergeTree(
+    '/clickhouse/tmp/tables/{layer}_{shard}/mini_xdre_shop_local',
+    '{replica}'
+)
+ORDER BY _id SETTINGS index_granularity = 8192,
+    storage_policy = 'rr'
