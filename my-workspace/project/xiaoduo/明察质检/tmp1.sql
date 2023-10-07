@@ -1,36 +1,33 @@
-CREATE TABLE `student` (
-    `id` int(11), //学号
-    `name` varchar(11) DEFAULT NULL, //学生姓名
-    `age` int(11) DEFAULT NULL, //年龄
-    `sex` varchar(11) DEFAULT NULL, //性别
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `score_relation` (
-    `id` int(11), //主键id
-    `course_no` int(11) DEFAULT NULL, //课程
-    `student_no` int(11) DEFAULT NULL,//学号
-    `score` int(11) DEFAULT NULL, //成绩
-    PRIMARY KEY (`id`)
-);
-
-查询至少有一门课与学号为"7"同学所学课程相同的同学, 查询这些学生的学号与姓名，去重后，按照学号升序排列。
-
-
-SELECT DISTINCT
-    `id`, `name`
-FROM `student`
-WHERE `id` IN (
-    SELECT
-        student_no
-    FROM `score_relation`
-    WHERE course_no IN (
-        SELECT DISTINCT
-            course_no
-        FROM `score_relation`
-        WHERE student_no = 7
-    ) AS course_no_table
-) AS student_no_table
-ORDER BY `id` ASC
-
-
+SELECT
+    sumIf(
+        dialog_cnt,
+        day BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+    ) AS dialog_sum,
+    sumIf(
+        dialog_cnt,
+        day BETWEEN toYYYYMMDD(
+            toDate('{{ day.start }}') - (toDate('{{ day.end }}') - toDate('{{ day.start }}')) - 1
+        )
+        AND toYYYYMMDD(
+            toDate('{{ day.start }}') - 1
+        )
+    ) AS pre_period_dialog_sum
+FROM xqc_dws.snick_stat_all
+WHERE day BETWEEN toYYYYMMDD(
+        toDate('{{ day.start }}') - (toDate('{{ day.end }}') - toDate('{{ day.start }}')) - 1
+    )
+    AND toYYYYMMDD(toDate('{{ day.end }}'))
+-- 筛选指定平台
+AND platform = 'jd'
+-- 筛选指定店铺
+AND seller_nick = '九牧官方旗舰店'
+-- 筛选指定子账号
+AND snick GLOBAL IN (
+    SELECT snick
+    FROM xqc_dim.snick_full_info_all
+    WHERE day = toYYYYMMDD(yesterday())
+    -- 筛选指定企业
+    AND company_id = '{{ company_id }}'
+    -- 筛选指定平台
+    AND platform = 'jd'
+)
