@@ -1,15 +1,102 @@
-"content": "/:072",
-"content": "你好",
-"content": "online 线上环境标记------------------- 重复答案​​",
-"content": "online 线上环境标记------------------- 重复答案​​​",
-"content": "<a href=\"https://detail.tmall.com/item.htm?id=681094269342&ut_sk=1.Yowvll6ucS0DAPQwose2TbWa.21380790.Contacts.cc_chat_share\" target=\"_blank\">https://detail.tmall.com/item.htm?id=681094269342&ut_sk=1.Yowvll6ucS0DAPQwose2TbWa.21380790.Contacts.cc_chat_share</a>",
-"content": "online 线上环境标记------------------- 111111111111111111111111111111111111111​​",
-"content": "online 线上环境标记------------------- 111111111111111111111111111111111111111​​​",
-"content": "没看见",
-"content": "online 线上环境标记------------------- 亲，您可将您的问题留言额，掌柜回来后会及时回复您的​​",
-"content": "online 线上环境标记------------------- 亲，您可将您的问题留言额，掌柜回来后会及时回复您的​​​",
-"content": "太薄了",
-"content": "试过了",
-"content": "试过了",
-"content": "online 线上环境标记------------------- 好的哦​​",
-"content": "online 线上环境标记------------------- 好的哦​​​",
+day
+Int32
+company_id
+String
+shop_id
+String
+platform
+String
+seller_nick
+String
+snick
+String
+employee_id
+String
+employee_name
+String
+department_id
+String
+department_name
+String
+qc_norm_id
+String
+qc_norm_name
+String
+qc_norm_tag_cnt
+String
+qc_norm_ai_tag_cnt
+String
+qc_norm_custom_tag_cnt
+String
+qc_norm_manual_tag_cnt
+String
+qc_norm_alert_tag_cnt
+String
+dialog_tag_cnt
+Int64
+dialog_ai_tag_cnt
+Int64
+dialog_custom_tag_cnt
+Int64
+dialog_manual_tag_cnt
+Int64
+subtract_score_sum
+Int64
+add_score_sum
+Int64
+valid_subtract_score_sum
+Int64
+valid_add_score_sum
+Int64
+ai_subtract_score_sum
+Int64
+ai_add_score_sum
+Int64
+custom_subtract_score_sum
+Int64
+custom_add_score_sum
+Int64
+manual_subtract_score_sum
+Int64
+manual_add_score_sum
+Int64
+dialog_score_avg
+Float64
+dialog_cnt
+Int64
+valid_dialog_cnt
+Int64
+excellent_dialog_cnt
+Int64
+tagged_dialog_cnt
+Int64
+ai_tagged_dialog_cnt
+Int64
+custom_tagged_dialog_cnt
+Int64
+manual_tagged_dialog_cnt
+Int64
+subtract_score_dialog_cnt
+Int64
+add_score_dialog_cnt
+Int64
+manual_marked_dialog_cnt
+Int64
+ai_subtract_score_dialog_cnt
+Int64
+ai_add_score_dialog_cnt
+Int64
+ai_zero_score_tagged_dialog_cnt
+Int64
+custom_subtract_score_dialog_cnt
+Int64
+custom_add_score_dialog_cnt
+Int64
+custom_zero_score_tagged_dialog_cnt
+Int64
+manual_subtract_score_dialog_cnt
+Int64
+manual_add_score_dialog_cnt
+Int64
+manual_zero_score_tagged_dialog_cnt
+Int64
