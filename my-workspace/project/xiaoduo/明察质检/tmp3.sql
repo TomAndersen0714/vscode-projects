@@ -1,0 +1,11 @@
+ods.xinghuan_company_all
+xqc_dim.xqc_shop_all
+ods.xinghuan_employee_all
+ods.xinghuan_employee_snick_all
+ods.xinghuan_department_all
+ods.xinghuan_account_all
+ods.xinghuan_qc_norm_all
+ods.xinghuan_qc_norm_relate_all
+xqc_dim.qc_rule_all
+xqc_dim.qc_norm_group_all
+xqc_dim.qc_word_setting_all
