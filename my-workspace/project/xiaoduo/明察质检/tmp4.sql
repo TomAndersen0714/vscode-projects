@@ -1,24 +1,21 @@
--- 质检诊断报告(二期)-下拉框-获取子账号分组
+-- 新实时告警-店铺告警-下拉框-获取子账号
 SELECT DISTINCT
-    concat(full_name,'//',_id) AS department_name_id
-FROM xqc_dim.snick_department_full_all
+    snick
+FROM xqc_dim.snick_full_info_all
 WHERE day = toYYYYMMDD(yesterday())
--- 筛选指定企业的子账号分组
-AND company_id = '61e00d0f62cd17f0c4ff10da'
-AND _id GLOBAL IN (
-    SELECT DISTINCT
-        department_id
-    FROM ods.xinghuan_qc_norm_relate_all
-    WHERE day = toYYYYMMDD(yesterday())
-    -- 筛选指定企业的质检标准
-    AND company_id = '61e00d0f62cd17f0c4ff10da'
-    -- 筛选指定平台
-    AND platform = 'tb'
-    -- 下拉框-质检标准ID
-    AND (
-        '{{ qc_norm_ids }}'=''
-        OR
-        qc_norm_id IN splitByChar(',', '{{ qc_norm_ids }}')
-    )
+AND company_id = '6131e6554524490001fc6825'
+-- 下拉框-平台
+AND platform = 'open'
+-- 下拉框-子账号分组id
+AND (
+    '{{ department_ids }}'=''
+    OR
+    department_id IN splitByChar(',','{{ department_ids }}')
 )
-ORDER BY department_name_id COLLATE 'zh'
+-- 下拉框-店铺名
+AND (
+    '{{ shop_ids }}' = ''
+    OR
+    shop_id IN splitByChar(',','{{ shop_ids }}')
+)
+ORDER BY snick COLLATE 'zh'
