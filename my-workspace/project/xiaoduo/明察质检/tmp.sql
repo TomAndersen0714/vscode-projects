@@ -1,13 +1,23 @@
--- ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r 
--- DROP COLUMN IF EXISTS `valid_subtract_score_sum`;
-ALTER TABLE xqc_dws.snick_stat_local ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `valid_subtract_score_sum` Int64 AFTER `add_score_sum`,
-ADD COLUMN IF NOT EXISTS `valid_add_score_sum` Int64 AFTER `valid_subtract_score_sum`,
-ADD COLUMN IF NOT EXISTS `valid_dialog_cnt` Int64 AFTER `dialog_cnt`;
-
--- ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
--- DROP COLUMN IF EXISTS `valid_subtract_score_sum`;
-ALTER TABLE xqc_dws.snick_stat_all ON CLUSTER cluster_3s_2r
-ADD COLUMN IF NOT EXISTS `valid_subtract_score_sum` Int64 AFTER `add_score_sum`,
-ADD COLUMN IF NOT EXISTS `valid_add_score_sum` Int64 AFTER `valid_subtract_score_sum`,
-ADD COLUMN IF NOT EXISTS `valid_dialog_cnt` Int64 AFTER `dialog_cnt`;
+{
+    "id": "b5e92369962d560973f5fd609b68f137",
+    "level": 3,
+    "warning_type": "【天逸&卓越】有客诉了，速速处理",
+    "dialog_id": "652d0b96c351cb000141b487",
+    "message_id": "652d0c3230c058713ca8a2d1",
+    "time": "2023-10-16 18:10:58",
+    "date": 20231016,
+    "is_finish": false,
+    "finish_time": "",
+    "platform": "jd",
+    "seller_nick": "联想京东自营旗舰店",
+    "shop_id": "636388ff32a69a0018072aa5",
+    "snick": "联想京东自营旗舰店:jd_arreudmopzhk=1000000157",
+    "cnick": "ntm2017",
+    "open_uid": "",
+    "buyer_one_id": "",
+    "employee_name": "邢嘉瑞",
+    "superior_name": "曹倩",
+    "content": "我联系京东投诉",
+    "qc_rule_id": "64dc74caf27bc763fd3a963b",
+    "department_id": "64af6a4eb5f0abf805395969"
+}
