@@ -1,23 +1,59 @@
-{
-    "id": "b5e92369962d560973f5fd609b68f137",
-    "level": 3,
-    "warning_type": "【天逸&卓越】有客诉了，速速处理",
-    "dialog_id": "652d0b96c351cb000141b487",
-    "message_id": "652d0c3230c058713ca8a2d1",
-    "time": "2023-10-16 18:10:58",
-    "date": 20231016,
-    "is_finish": false,
-    "finish_time": "",
-    "platform": "jd",
-    "seller_nick": "联想京东自营旗舰店",
-    "shop_id": "636388ff32a69a0018072aa5",
-    "snick": "联想京东自营旗舰店:jd_arreudmopzhk=1000000157",
-    "cnick": "ntm2017",
-    "open_uid": "",
-    "buyer_one_id": "",
-    "employee_name": "邢嘉瑞",
-    "superior_name": "曹倩",
-    "content": "我联系京东投诉",
-    "qc_rule_id": "64dc74caf27bc763fd3a963b",
-    "department_id": "64af6a4eb5f0abf805395969"
-}
+-- 新实时告警-店铺告警-实时告警项
+WITH (
+    -- 告警总量
+    SELECT
+        COUNT(1)
+    FROM xqc_ods.alert_all FINAL
+    PREWHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) 
+    AND toYYYYMMDD(toDate('{{ day.end }}'))
+    AND seller_nick = '华硕京东自营官方旗舰店'
+    -- 下拉框-告警项
+    AND (
+        '{{ warning_types }}' = ''
+        OR
+        warning_type IN splitByChar(',','{{ warning_types }}')
+    )
+) AS all_alert_sum
+SELECT
+    `level`,
+    warning_type as `告警项`,
+    sum(1) AS level_type_alert_cnt,
+    level_type_alert_cnt AS `告警总量`,
+    COUNT(DISTINCT dialog_id) AS `告警会话量`,
+    CONCAT(
+        toString(
+            if(
+                all_alert_sum != 0,
+                round(level_type_alert_cnt / all_alert_sum * 100, 2),
+                0.00
+            )
+        ),
+        '%'
+    ) AS `告警占比`,
+    sum(is_finished = 'False') AS not_finished_level_type_alert_cnt,
+    not_finished_level_type_alert_cnt AS `未处理量`,
+    CONCAT(
+        toString(
+            if(
+                level_type_alert_cnt != 0,
+                round((level_type_alert_cnt - not_finished_level_type_alert_cnt) / level_type_alert_cnt * 100,2),
+                0.00
+            )
+        ),
+        '%'
+    ) AS `告警完结率`
+FROM (
+    SELECT *
+    FROM xqc_ods.alert_all FINAL
+    PREWHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) 
+    AND toYYYYMMDD(toDate('{{ day.end }}'))
+    AND seller_nick = '华硕京东自营官方旗舰店'
+    -- 下拉框-告警项
+    AND (
+        '{{ warning_types }}' = ''
+        OR
+        warning_type IN splitByChar(',','{{ warning_types }}')
+    )
+) AS alert_info
+GROUP BY `level`, warning_type
+ORDER BY `level` DESC, warning_type ASC
