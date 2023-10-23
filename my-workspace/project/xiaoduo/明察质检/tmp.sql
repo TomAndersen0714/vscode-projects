@@ -115,3 +115,86 @@ FROM (
                                         t1.payment
                                     ) AS payment,
                                     order_id,
+                                    t1.time AS time
+                                FROM (
+                                        SELECT platform_cnick AS cnick,
+                                            toFloat64(max(payment)) AS payment,
+                                            order_id,
+                                            min(time) as time
+                                        FROM ods.fishpond_conversion_all
+                                        WHERE status = 'created'
+                                            AND day between 20230807 and 20230812
+                                            AND shop_id = '61824ba1951c610010ce6cbc'
+                                            AND task_id = '64d094e394648322a056beb6'
+                                        GROUP BY cnick,
+                                            order_id
+                                    ) AS t1
+                                    LEFT JOIN (
+                                        SELECT order_id,
+                                            toFloat64(max(payment) / 100) AS payment
+                                        FROM ods.order_event_all
+                                        WHERE day BETWEEN 20230807 AND 20230827
+                                            AND shop_id = '61824ba1951c610010ce6cbc'
+                                            AND order_id IN (
+                                                SELECT DISTINCT order_id
+                                                FROM ods.fishpond_conversion_all
+                                                WHERE day BETWEEN 20230807 AND 20230812
+                                                    AND status = 'created'
+                                                    AND payment = 0
+                                                    AND shop_id = '61824ba1951c610010ce6cbc'
+                                                    AND task_id = '64d094e394648322a056beb6'
+                                            )
+                                        GROUP BY order_id
+                                    ) AS t2 USING(order_id)
+                            )
+                        GROUP BY buyer_nick
+                    ) x3 USING(buyer_nick)
+            ) y2
+            LEFT JOIN (
+                SELECT cnick AS buyer_nick,
+                    sum(payment) AS pay_amount,
+                    groupArray(order_id) AS pay_orders
+                FROM (
+                        SELECT t1.cnick,
+                            if(
+                                t1.payment = 0,
+                                if(t2.payment IS NULL, 0, t2.payment),
+                                t1.payment
+                            ) AS payment,
+                            order_id
+                        FROM (
+                                SELECT platform_cnick AS cnick,
+                                    toFloat64(max(payment)) AS payment,
+                                    order_id
+                                FROM ods.fishpond_conversion_all
+                                WHERE day BETWEEN 20230807 AND 20230812
+                                    AND status = 'paid'
+                                    AND shop_id = '61824ba1951c610010ce6cbc'
+                                    AND task_id = '64d094e394648322a056beb6'
+                                GROUP BY cnick,
+                                    order_id
+                            ) AS t1
+                            LEFT JOIN (
+                                SELECT order_id,
+                                    toFloat64(max(payment) / 100) AS payment
+                                FROM ods.order_event_all
+                                WHERE day BETWEEN 20230807 AND 20230827
+                                    AND shop_id = '61824ba1951c610010ce6cbc'
+                                    AND order_id IN (
+                                        SELECT DISTINCT order_id
+                                        FROM ods.fishpond_conversion_all
+                                        WHERE day BETWEEN 20230807 AND 20230812
+                                            AND status = 'paid'
+                                            AND payment = 0
+                                            AND shop_id = '61824ba1951c610010ce6cbc'
+                                            AND task_id = '64d094e394648322a056beb6'
+                                    )
+                                GROUP BY order_id
+                            ) AS t2 USING(order_id)
+                    )
+                GROUP BY buyer_nick
+            ) x4 USING (buyer_nick)
+    )
+WHERE 1 = 1
+ORDER BY send_time,
+    buyer_nick
