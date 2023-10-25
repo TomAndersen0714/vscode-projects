@@ -1,9 +1,18 @@
-(
-    ('{{ alert_state=-1 }}' = '-1')
-    OR
-    ('{{ alert_state=-1 }}' = '0' AND is_finished!='True' AND toString(status)!='2')
-    OR
-    ('{{ alert_state=-1 }}' = '1' AND is_finished='True')
-    OR
-    ('{{ alert_state=-1 }}' = '2' AND is_finished!='True' AND toString(status)='2')
-)
+order_id
+String
+shop_id
+String
+buyer_nick
+String
+payment
+Int64
+status
+String
+original_status
+String
+time
+DateTime64(6)
+plat_goods_ids
+Array(String)
+day
+Int32

@@ -1,66 +1,18 @@
-DROP TABLE IF EXISTS ods.dy_xdrs_logs_local ON CLUSTER cluster_3s_2r NO DELAY;
-
-
-CREATE TABLE ods.dy_xdrs_logs_local ON CLUSTER cluster_3s_2r
-(
-    `question_type` Int32,
-    `send_msg_from` String,
-    `snick` String,
-    `act` String,
-    `mode` String,
-    `ms_msg_time` Int64,
-    `msg` String,
-    `msg_id` String,
-    `answer_explain` String,
-    `intent` String,
-    `mp_category` String,
-    `shop_id` String,
-    `create_time` DateTime64(6),
-    `mp_version` Int32,
-    `qa_id` String,
-    `question_b_proba` String,
-    `question_b_standard_q` String,
-    `question_b_qid` String,
-    `remind_answer` String,
-    `cnick` String,
-    `platform` String,
-    `plat_goods_id` String,
-    `answer_id` String,
-    `robot_answer` String,
-    `transfer_type` String,
-    `transfer_to` String,
-    `transfer_from` String,
-    `shop_question_type` String,
-    `shop_question_id` String,
-    `day` Int32,
-    `msg_time` DateTime,
-    `is_identified` Int32,
-    `current_sale_stage` String,
-    `is_robot_answer` Int32,
-    `question_b_id` String,
-    `answer_source` String,
-    `checked_order_mark` String,
-    `is_precise_intent` String,
-    `precise_intent_id` String,
-    `precise_intent_standard_q` String,
-    `employee_name` String,
-    `pic_url` String,
-    `task_id` String,
-    `robot_answer_pics` String,
-    `platform_cnick` String DEFAULT '',
-    `msg_scenes_source` String DEFAULT '',
-    `msg_content_type` String DEFAULT '',
-    `robot_assist` String DEFAULT '',
-    `robot_status` String DEFAULT '',
-    `real_buyer_nick` String DEFAULT '',
-    `cond_answer_id` String DEFAULT '',
-    `msg_type` String DEFAULT '',
-    `trace_id` String,
-    `no_reply_reason` Int32,
-    `no_reply_sub_reason` Int32
-) ENGINE = ReplicatedMergeTree(
-    '/clickhouse/ods/tables/{layer}_{shard}/dy_xdrs_logs_local',
-    '{replica}'
-) PARTITION BY day
-ORDER BY (shop_id, snick) SETTINGS index_granularity = 8192,
-    storage_policy = 'rr'
+order_id
+String
+shop_id
+String
+buyer_nick
+String
+payment
+Int64
+status
+String
+original_status
+String
+time
+DateTime64(6)
+plat_goods_ids
+Array(String)
+day
+Int32

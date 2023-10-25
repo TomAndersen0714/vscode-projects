@@ -1,43 +1,17 @@
-CREATE TABLE IF NOT EXISTS buffer.dy_order_event_buffer ON CLUSTER cluster_3s_2r (
-    `order_id` String,
-    `shop_id` String,
-    `buyer_nick` String,
-    `payment` Int64,
-    `status` String,
-    `original_status` String,
-    `time` DateTime64(6),
-    `plat_goods_ids` Array(String),
-    `day` Int32
-) ENGINE = Buffer(
-    'ods',
-    'dy_order_event_all',
-    16,
-    10,
-    30,
-    81920,
-    409600,
-    16777216,
-    67108864
-) 
+6decd0a1801d    data_receiver_jd_order_all_zhike_only
+e80f15b5be0f    data_receiver_chat_event_zhike_only
+58b2c94358f4    data_receiver_history_order_event_zhike_only
+fef57ef75373    data_receiver_complain_tags_zhike_only
 
 
-CREATE TABLE IF NOT EXISTS ods.dy_order_event_all ON CLUSTER cluster_3s_2r (
-    `order_id` String,
-    `shop_id` String,
-    `buyer_nick` String,
-    `payment` Int64,
-    `status` String,
-    `original_status` String,
-    `time` DateTime64(6),
-    `plat_goods_ids` Array(String),
-    `day` Int32
-) ENGINE = Distributed(
-    'cluster_3s_2r',
-    'ods',
-    'dy_order_event_local',
-    xxHash64(shop_id, order_id, status, original_status)
-)
+docker stop 6decd0a1801d
+docker stop e80f15b5be0f
+docker stop 58b2c94358f4
+docker stop fef57ef75373
 
 
-
+docker start 6decd0a1801d
+docker start e80f15b5be0f
+docker start 58b2c94358f4
+docker start fef57ef75373
 
