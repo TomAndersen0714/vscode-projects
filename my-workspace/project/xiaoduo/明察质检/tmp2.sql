@@ -1,18 +1,6 @@
-order_id
-String
-shop_id
-String
-buyer_nick
-String
-payment
-Int64
-status
-String
-original_status
-String
-time
-DateTime64(6)
-plat_goods_ids
-Array(String)
-day
-Int32
+CREATE DATABASE `performance_schema`
+/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */
+/*!80016 DEFAULT ENCRYPTION='N' */
+
+
+CREATE DATABASE `app_fishpond`
