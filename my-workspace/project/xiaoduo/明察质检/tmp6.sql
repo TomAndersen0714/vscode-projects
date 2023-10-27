@@ -1,95 +1,63 @@
-64fe6cd2a753ec0001ace668
-tb
-tb
-20,230,911	
-hbn官方旗舰店
-one_id_2207923989786
-tb4268398493
-AAE_ZosOAKdpZ1prVDrONkJ8
-hbn官方旗舰店:jos
-2023-09-11 09:26:42.000
-2023-09-11 10:18:15.064
-1	0	
-[8]
-[""]
-[0]
-[0]
-[1,2,3,4,5,6,7,8,9,10,11]
-["","","","","","","","","","",""]
-[0,0,0,0,0,0,0,0,0,0,0]
-[0,0,0,0,0,0,0,0,0,0,0]
-[]
-[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
-["","","","","","","","","","","","","","","","","646f0ffdfb0d97c1a5d1eb9e","","","","","","","","","","","",""]
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]
-[1,2,3,4,5,6,7,8,9,10,11,12,13,14]
-["","","","","","","","","","","","","",""]
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-[]
-[]
-[]
-["0","290000293","-10","-14","290000725","290000730","290002529","290000777"]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-0000-00-00 00:00:00.000
-[]
-[]
-0	0	0	
-[]
-0	
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-[]
-["648088813fab64ec0966f6d9"]
-[0]
-[1]
-[]
-[]
-[]
-0	0	9	18	
-1970-01-20 22:39:55.602
-173	7	
-656942865563
-0	
-[]
-64fe78e83fb0c4000120831f
-0	
-["1968058562557988697"]
-["succeeded"]
-[1]
-["1694182758"]
-[["created","paid","shipped","succeeded"]]
-[["1694182761","1694182767","1694229483","1694395601"]]
-["656942865563"]
-0	
-0000-00-00 00:00:00.000
-0	0	0	1	0	0	0	0	
-[]
-2023-09-12 00:52:30
-[]
-[]
-[]
-[]
-[]
-[]
-1
+-- 集团近30日告警趋势
+WITH 
+( SELECT toYYYYMMDD(today()) ) AS today,
+( SELECT toYYYYMMDD(yesterday()) ) AS yesterday,
+( SELECT toYYYYMMDD(today()-30) ) AS month_ago
+SELECT
+    concat(substr(toString(day),5,2),'/',substr(toString(day),7,2))  as d,
+    dialog_cnt, -- 每日会话总量
+    level_2_3_sum, -- 每日告警总量(中高级)
+    if(dialog_cnt!=0, round(level_2_3_sum/dialog_cnt*100,1), 0.0) AS level_2_3_ratio-- 每日告警比例(中高级)
+FROM (
+    SELECT day,
+        COUNT(1) AS dialog_cnt
+    FROM xqc_ods.dialog_all
+    WHERE day BETWEEN month_ago AND today
+    -- 组织架构包含店铺
+    AND shop_id GLOBAL IN (
+        SELECT department_id AS shop_id
+        FROM xqc_dim.group_all
+        WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
+        AND is_shop = 'True'
+        -- AND platform = '{{ platform=jd }}'
+    )
+    -- 权限隔离
+    AND (
+            shop_id IN splitByChar(',','{{ shop_id_list=6139c118e16787000fb8a1cf }}')
+            OR
+            snick IN splitByChar(',','{{ snick_list=NULL }}')
+        )
+    GROUP BY day
+) AS dialog_cnt_daily
+GLOBAL LEFT JOIN (
+    SELECT 
+        day,
+        sum(level=2) AS level_2_cnt, -- 中级告警总量
+        sum(level=3) AS level_3_cnt, -- 高级告警总量
+        (level_2_cnt + level_3_cnt) AS level_2_3_sum -- 中高级告警总和
+    FROM (
+        SELECT DISTINCT
+            day, id, level
+        FROM xqc_ods.alert_all FINAL
+        PREWHERE day BETWEEN month_ago AND today
+        -- 组织架构包含店铺
+        AND shop_id GLOBAL IN (
+            SELECT department_id AS shop_id
+            FROM xqc_dim.group_all
+            WHERE company_id = '{{ company_id=6131e6554524490001fc6825 }}'
+            AND is_shop = 'True'
+            -- AND platform = '{{ platform=jd }}'
+        )
+        -- 权限隔离
+        AND (
+                shop_id IN splitByChar(',','{{ shop_id_list=6139c118e16787000fb8a1cf }}')
+                OR
+                snick IN splitByChar(',','{{ snick_list=NULL }}')
+            )
+        -- 筛选新版本告警
+        AND `level` IN [1,2,3]
+    )
+    GROUP BY day
+) AS level_2_3_sum_daily
+USING day
+ORDER BY day ASC

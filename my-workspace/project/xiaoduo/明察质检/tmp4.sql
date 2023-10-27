@@ -1,21 +1,32 @@
--- 新实时告警-店铺告警-下拉框-获取子账号
-SELECT DISTINCT
-    snick
-FROM xqc_dim.snick_full_info_all
-WHERE day = toYYYYMMDD(yesterday())
-AND company_id = '6131e6554524490001fc6825'
--- 下拉框-平台
-AND platform = 'open'
--- 下拉框-子账号分组id
-AND (
-    '{{ department_ids }}'=''
-    OR
-    department_id IN splitByChar(',','{{ department_ids }}')
-)
--- 下拉框-店铺名
-AND (
-    '{{ shop_ids }}' = ''
-    OR
-    shop_id IN splitByChar(',','{{ shop_ids }}')
-)
-ORDER BY snick COLLATE 'zh'
+SELECT *
+FROM (
+        SELECT task_id,
+            shop_id,
+            count(1) AS paid_pv,
+            uniqExact(cnick) AS paid_uv,
+            sum(payment) AS paid_payment
+        from (
+                select distinct cnick,
+                    task_id,
+                    shop_id,
+                    payment,
+                    order_id
+                FROM ods.fishpond_conversion_all
+                WHERE `day` >= toYYYYMMDD(addDays(today(), -20))
+                    AND `day` <= toYYYYMMDD(today())
+                    AND platform = 'dy'
+                    AND status = 'paid'
+            ) as etl_order
+        GROUP BY shop_id,
+            task_id
+    )
+WHERE task_id GLOBAL IN (
+        select _id
+        from dim.fishpond_task_all
+        where toYYYYMMDD(today()) between `day` and toYYYYMMDD(
+                addDays(
+                    parseDateTimeBestEffort(left(send_time_end, 10)),
+                    5
+                )
+            )
+    )
