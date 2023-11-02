@@ -1,31 +1,25 @@
+
 SELECT
-    task_id, shop_id, platform, paid_pv, paid_uv, paid_payment
-FROM (
-    SELECT task_id,
-        shop_id,
-        platform,
-        count(1) AS paid_pv,
-        uniqExact(cnick) AS paid_uv,
-        sum(payment) AS paid_payment
-    FROM (
-        SELECT DISTINCT cnick,
-            task_id,
-            shop_id,
-            platform,
-            payment,
-            order_id
-        FROM ods.fishpond_conversion_all
-        WHERE `day` >= toYYYYMMDD(addDays(today(), -20))
-            AND `day` <= toYYYYMMDD(today())
-            AND platform = 'dy'
-            AND status = 'paid'
-    ) AS etl_order
-    GROUP BY task_id, shop_id, platform
+    platform, seller_nick, snick, tag_type, tag_id, tag_name,
+    sum(tag_cnt_sum) AS tag_cnt_sum
+FROM xqc_dws.tag_stat_all
+WHERE day BETWEEN toYYYYMMDD(toDate('{{ day.start }}')) AND toYYYYMMDD(toDate('{{ day.end }}'))
+AND platform = 'jd'
+AND seller_nick GLOBAL IN (
+    -- 查询对应企业-平台的店铺
+    SELECT DISTINCT seller_nick
+    FROM xqc_dim.xqc_shop_all
+    WHERE day=toYYYYMMDD(yesterday())
+    AND platform = 'jd'
+    AND company_id = '61602afd297bb79b69c06118'
 )
-WHERE task_id GLOBAL IN (
-    SELECT _id
-    FROM dim.fishpond_task_all
-    WHERE toYYYYMMDD(today()) BETWEEN `day`
-        AND toYYYYMMDD(addDays(parseDateTimeBestEffort(left(send_time_end, 10)),5))
-        AND platform = 'dy'
+AND snick GLOBAL IN (
+    -- 获取最新版本的维度数据(T+1)
+    SELECT distinct snick
+    FROM ods.xinghuan_employee_snick_all
+    WHERE day = toYYYYMMDD(yesterday())
+    AND platform = 'jd'
+    AND company_id = '61602afd297bb79b69c06118'
 )
+AND tag_id = '641d8b61dc72ebff92f598f3'
+GROUP BY platform, seller_nick, snick, tag_type, tag_id, tag_name

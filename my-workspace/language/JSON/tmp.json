@@ -1,14 +1,15 @@
 {
-    "shop_id": "5fa3c5520d70f7000e7423b3",
-    "task_id": "653b5f4e97dfcb6eae206d4e",
-    "snick": "邓锐",
-    "cnick": "93402368502",
+    "shop_id": "6322961ac4b02f0018729b33",
+    "task_id": "653dbe40f221310001a4e17a",
+    "snick": "洗衣机大麦253",
+    "cnick": "赵什么急",
     "platform_cnick": "",
-    "send_time": "2023-10-28 11:45:29",
-    "order_id": "6923112046719079684",
-    "status": "paid",
-    "original_status": "paied",
-    "payment": 0.01,
-    "time": "2023-10-28 11:45:05",
-    "day": 20231028
+    "send_time": "2023-11-01 21:50:21",
+    "order_id": "1000001782_284844272971",
+    "status": "created",
+    "original_status": "TRADE_CREATED",
+    "payment": 0,
+    "time": "2023-11-01 21:49:59",
+    "day": 20231101,
+    "platform": "jd"
 }

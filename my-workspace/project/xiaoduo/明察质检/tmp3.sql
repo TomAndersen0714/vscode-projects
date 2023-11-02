@@ -1,42 +1,139 @@
-CREATE TABLE app_mp.msg_day_platform_nick (
-    `date` STRING NOT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION,
-    platform STRING NOT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION,
-    shop_oid STRING NOT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION,
-    serve_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    s_serve_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_serve_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_serve_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    received_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    received_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    identified_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    identified_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    valid_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    valid_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    s_received_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    s_received_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    s_auto_reply_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    s_auto_reply_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_received_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_received_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_auto_reply_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_auto_reply_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_click_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    h_click_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_received_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_received_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_prompt_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_prompt_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_click_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    r_click_cuv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    auto_reply_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    click_reply_pv BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    xd_shop_nick STRING NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT '',
-    payment BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    order_count BIGINT NULL ENCODING AUTO_ENCODING COMPRESSION DEFAULT_COMPRESSION DEFAULT 0,
-    PRIMARY KEY (`date`, platform, shop_oid)
-) PARTITION BY HASH (`date`, platform) PARTITIONS 4 STORED AS KUDU TBLPROPERTIES (
-    'STATS_GENERATED' = 'TASK',
-    'impala.lastComputeStatsTime' = '1576754425',
-    'kudu.master_addresses' = 'cdh0,cdh1,cdh2',
-    'numRows' = '2257278'
-)
+select count(distinct plat_goods_id) as count
+from (
+        select plat_goods_id,
+            shop_id,
+            question_b_id,
+            subcategory_name,
+            question,
+            create_time,
+            sum(ask_count) as ask_count,
+            sum(goods_no_reply_count) as goods_no_reply_count
+        from (
+                select shop_id,
+                    question_b_id,
+                    subcategory_name,
+                    question,
+                    plat_goods_id,
+                    ask_count,
+                    goods_no_reply_count,
+                    create_time
+                from (
+                        select shop_id,
+                            question_b_id,
+                            subcategory_name,
+                            question,
+                            plat_goods_id,
+                            ask_count,
+                            goods_no_reply_count,
+                            create_time
+                        from (
+                                SELECT shop_id,
+                                    question_b_id,
+                                    plat_goods_id,
+                                    question,
+                                    subcategory_id,
+                                    subcategory_name,
+                                    ask_count,
+                                    goods_no_reply_count,
+                                    no_reply_reason_v2,
+                                    no_reply_sub_reason_v2,
+                                    no_reply_reason_detail_v2,
+                                    sale_status,
+                                    no_reply_count,
+                                    now() AS create_time,
+                                    20231101 AS day
+                                FROM (
+                                        SELECT shop_id,
+                                            question_b_id,
+                                            question,
+                                            plat_goods_id,
+                                            subcategory_id,
+                                            subcategory_name,
+                                            ask_count
+                                        FROM (
+                                                SELECT shop_id,
+                                                    question_b_qid,
+                                                    plat_goods_id,
+                                                    count() AS ask_count
+                                                FROM ods.xdrs_logs_all
+                                                WHERE (day = 20231101)
+                                                    AND notEmpty(plat_goods_id)
+                                                GROUP BY shop_id,
+                                                    question_b_qid,
+                                                    plat_goods_id
+                                            ) AS t4
+                                            LEFT JOIN (
+                                                SELECT dim.question_b_all._id AS question_b_id,
+                                                    qid,
+                                                    question,
+                                                    subcategory_id,
+                                                    name AS subcategory_name
+                                                FROM dim.question_b_all
+                                                    INNER JOIN dim.subcategory_all ON dim.question_b_all.subcategory_id = dim.subcategory_all._id
+                                            ) AS t5 ON t4.question_b_qid = t5.qid
+                                    ) AS t6
+                                    LEFT JOIN (
+                                        SELECT shop_id,
+                                            question_b_id,
+                                            plat_goods_id,
+                                            no_reply_reason_v2,
+                                            no_reply_sub_reason_v2,
+                                            no_reply_reason_detail_v2,
+                                            sale_status,
+                                            no_reply_count,
+                                            goods_no_reply_count
+                                        FROM (
+                                                SELECT shop_id,
+                                                    question_b_id,
+                                                    plat_goods_id,
+                                                    no_reply_reason_v2,
+                                                    no_reply_sub_reason_v2,
+                                                    no_reply_reason_detail_v2,
+                                                    sale_status,
+                                                    countDistinct(msgid) AS no_reply_count
+                                                FROM ods.no_reply_logs_v2_all
+                                                WHERE (day = 20231101)
+                                                    AND notEmpty(question_b_id)
+                                                    AND notEmpty(plat_goods_id)
+                                                GROUP BY shop_id,
+                                                    question_b_id,
+                                                    plat_goods_id,
+                                                    no_reply_reason_v2,
+                                                    no_reply_sub_reason_v2,
+                                                    no_reply_reason_detail_v2,
+                                                    sale_status
+                                            ) AS t1
+                                            LEFT JOIN (
+                                                SELECT shop_id,
+                                                    question_b_id,
+                                                    plat_goods_id,
+                                                    countDistinct(msgid) AS goods_no_reply_count
+                                                FROM ods.no_reply_logs_v2_all
+                                                WHERE (day = 20231101)
+                                                    AND notEmpty(question_b_id)
+                                                    AND notEmpty(plat_goods_id)
+                                                GROUP BY shop_id,
+                                                    question_b_id,
+                                                    plat_goods_id
+                                            ) AS t2 USING (shop_id, question_b_id, plat_goods_id)
+                                    ) AS t3 USING (shop_id, question_b_id, plat_goods_id)
+                            )
+                        where shop_id = '6136d454ec7097000e494038'
+                            and question_b_id = '5639bf1b89bc4603d5c6137e'
+                    )
+                group by shop_id,
+                    question_b_id,
+                    subcategory_name,
+                    question,
+                    plat_goods_id,
+                    ask_count,
+                    goods_no_reply_count,
+                    create_time
+            )
+        group by plat_goods_id,
+            shop_id,
+            question_b_id,
+            subcategory_name,
+            question,
+            create_time
+    ) -- trace:9e3964313cc040a60000001698853321
