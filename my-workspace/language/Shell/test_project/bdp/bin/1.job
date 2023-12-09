@@ -1,0 +1,3 @@
+command="echo ${key2}"
+command="echo ${key3}"
+command="echo ${key4}"

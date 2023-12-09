@@ -1,0 +1,2 @@
+type=command
+command=${ETL_SUBMIT} --type=spark --job-name ${JOB_NAME} --job-args ${JOB_ARGS}
