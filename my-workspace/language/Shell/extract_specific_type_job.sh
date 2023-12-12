@@ -6,7 +6,6 @@ set -e
 export PS4='+${LINENO}: '
 set -x
 
-
 # get hive and spark jobs
 get_hive_and_spark_type_jobs() {
     # get --type=spark jobs
@@ -41,8 +40,6 @@ get_all_client_jobs() {
     done >./etl_submit_jobs
 }
 
-
-
 # parameters
 JOBS_DIR=$1
 MODE=$2
@@ -63,13 +60,15 @@ command_type_jobs=$(echo "$jobs" | xargs -n1 grep -l 'type=command' | sort | uni
 
 # execute MODEtions depend on MODE
 case "${MODE}" in
-    1)
-        get_hive_and_spark_type_jobs
-        ;;
-    2)
-        get_all_client_jobs
-        ;;
-    *)
-        echo "No implementation for MODE=${MODE}"
-        ;;
+1)
+    get_hive_and_spark_type_jobs
+    ;;
+2)
+    get_all_client_jobs
+    ;;
+*)
+    echo "No implementation for MODE=${MODE}"
+    ;;
 esac
+
+# main
