@@ -6,68 +6,58 @@ set -e
 export PS4='+${LINENO}: '
 set -x
 
-# get hive and spark jobs
-get_hive_and_spark_type_jobs() {
-    # get --type=spark jobs
-    pattern="type=spark"
-    echo "${command_type_jobs}" | tr ' ' '\n' | xargs grep -l ${pattern} | sort -u | while read -r file; do
-        # echo the lines
-        echo -e "type=command, --type=spark, ${file}"
-    done >./spark_jobs
-
-    # get --type=hive jobs
-    pattern="type=hive"
-    echo "${command_type_jobs}" | tr ' ' '\n' | xargs grep -l ${pattern} | sort -u | while read -r file; do
-        # echo the lines
-        echo -e "type=command, --type=hive, ${file}"
-    done >./hive_jobs
-}
-
-# get etlTool.py and etl_submit.sh jobs
-get_all_client_jobs() {
-    # get etlTool.py jobs
-    pattern="etlTool.py|HAML_PYTHON_ETL_TOOL"
-    echo "${command_type_jobs}" | tr ' ' '\n' | xargs grep -lE ${pattern} | sort -u | while read -r file; do
-        # echo the lines
-        echo -e "type=command, client=etlTool.py, ${file}"
-    done >./etlTool_jobs
-
-    # get etl_submit.sh jobs
-    pattern="ETL_SUBMIT"
-    echo "${command_type_jobs}" | tr ' ' '\n' | xargs grep -lE ${pattern} | sort -u | while read -r file; do
-        # echo the lines
-        echo -e "type=command, client=etl_submit.sh, ${file}"
-    done >./etl_submit_jobs
+# get all subtype
+parse_all_jobs_types() {
+    echo "${command_type_jobs}" | grep -l "bdp-client" | xargs grep -ohE '\-\-type=[a-zA-Z0-9_]+' | sort -u
+    echo "${command_type_jobs}" | grep -l "bdp-client" | xargs grep -ohE '\-t [a-zA-Z0-9_]+' | sort -u
 }
 
 # parse all command type jobs
 parse_command_type_jobs() {
-    # declare a map
+    # declare a job type map
     declare -A class_patterns
-    class_patterns["subtype"]="type=spark type=hive"
-    class_patterns["client"]="etlTool.py|HAML_PYTHON_ETL_TOOL ETL_SUBMIT"
+    class_patterns["client"]="ETL_SUBMIT,etlTool.py|HAML_PYTHON_ETL_TOOL"
+    class_patterns["subtype"]="blanca,spark,hive,etl,echo,checkDate,sqoop"
 
-    echo "${command_type_jobs}" | tr ' ' '\n' | xargs sort -u | while read -r file; do
-        # result
-        res="type=command"
+    # check pattern
+    # grep -rlE "ETL_SUBMIT|etlTool.py|HAML_PYTHON_ETL_TOOL" | xargs grep -L "bdp-client"
+    # grep -rlE "bdp-client" | xargs grep -LE "ETL_SUBMIT|etlTool.py|HAML_PYTHON_ETL_TOOL"
 
-        # iterate the map and match the pattern
+    # set split character
+    IFS=','
+
+    echo "${command_type_jobs}" | tr ' ' '\n' | sort -u | while read -r file_name; do
+        # result to log
+        res="type='command'"
+
+        # iterate the map and match the patterns
         for key in "${!class_patterns[@]}"; do
-            pattern=${class_patterns[${key}]}
+            patterns=${class_patterns[${key}]}
+            res+=", ${key}="
+            match="false"
 
-            for p in ${pattern}; do
+            for pattern in ${patterns}; do
                 # if match, then store the result and break
-                if grep -qE "${p}" "${file}"; then
-                    res+=", ${key}=${p}"
+                if grep -qEw "${pattern}" "${file_name}"; then
+                    res+="'${pattern}'"
+                    match="true"
                     break
                 fi
             done
+
+            # if not match
+            if [ "${match}" == "false" ]; then
+                res+="''"
+            fi
         done
 
         # echo the lines
-        res+=", ${file}"
+        res+=", job='${file_name}'"
         echo "${res}"
     done >./command_type_jobs
+
+    # cancel split character setting
+    unset IFS
 }
 
 # parameters
@@ -91,12 +81,6 @@ command_type_jobs=$(echo "$jobs" | tr ' ' '\n' | xargs grep -l 'type=command' | 
 # execute MODEtions depend on MODE
 case "${MODE}" in
 1)
-    get_hive_and_spark_type_jobs
-    ;;
-2)
-    get_all_client_jobs
-    ;;
-3)
     parse_command_type_jobs
     ;;
 *)

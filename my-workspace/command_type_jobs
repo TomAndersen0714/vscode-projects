@@ -1,0 +1,5 @@
+type='command', subtype='', client='etlTool.py|HAML_PYTHON_ETL_TOOL', job='language/Shell/test_project/wtss/jobs/a.job'
+type='command', subtype='', client='etlTool.py|HAML_PYTHON_ETL_TOOL', job='language/Shell/test_project/wtss/jobs/b.job'
+type='command', subtype='', client='ETL_SUBMIT', job='language/Shell/test_project/wtss/jobs/d.job'
+type='command', subtype='type=spark', client='ETL_SUBMIT', job='language/Shell/test_project/wtss/jobs/e.job'
+type='command', subtype='type=hive', client='ETL_SUBMIT', job='language/Shell/test_project/wtss/jobs/f.job'
