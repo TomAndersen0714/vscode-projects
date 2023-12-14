@@ -1,0 +1,526 @@
+./conf/aml-spark.properties:spark.app.name:
+./conf/aml-spark.properties:spark.master:
+./conf/aml-spark.properties:spark.yarn.am.memory:
+./conf/aml-spark.properties:spark.driver.memory:
+./conf/aml-spark.properties:spark.driver.cores:
+./conf/aml-spark.properties:spark.executor.memory:
+./conf/aml-spark.properties:spark.serializer:
+./conf/aml-spark.properties:spark.yarn.driver.memoryOverhead:
+./conf/aml-spark.properties:spark.yarn.queue:
+./conf/aml-spark.properties:common_coalesce_size:
+        bin/300/etl/rrs_aml_tb_acc_txn_dpc.hql:58:    distribute by floor (rand()*${common_coalesce_size})
+        bin/300/etl/rrs_aml_tb_acc_txn_dpcbdp.hql:4:select  /*+ COALESCE(${common_coalesce_size}) */    regexp_replace(cust_transdetail.trans_date, '-', '')               as aml_Date       --交易日期
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_multi.hql:4:select  /*+ COALESCE(${common_coalesce_size}) */   regexp_replace(cust_transdetail.trans_date, '-', '')               as aml_Date       --交易日期
+./conf/aml-spark.properties:common_coalesce_less_size:
+        bin/300/etl/rrs_aml_tb_acc_txn_dcp.hql:58:    distribute by floor (rand()*${common_coalesce_less_size})
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit.hql:4:select /*+ COALESCE(${common_coalesce_less_size}) */ regexp_replace(cust_transdetail.trans_date, '-', '')               as aml_Date       --交易日期
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit_forrerun.hql:4:select /*+ COALESCE(${common_coalesce_less_size}) */ regexp_replace(cust_transdetail.trans_date, '-', '')               as aml_Date       --交易日期
+./conf/aml-spark.properties:common_coalesce_nostaff_size:
+./conf/aml-spark.properties:common_coalesce_risk_size:
+./conf/aml-spark.properties:aml.warehouse_db:
+./conf/aml-spark.properties:aml.gateway.uri:
+./conf/aml-spark.properties:aml.app.id:
+./conf/aml-spark.properties:aml.app.token:
+./conf/aml-spark.properties:aml.is.kerberos:
+./conf/aml-spark.properties:aml.kerberos.principal:
+./conf/aml-spark.properties:aml.kerberos.keytab:
+./conf/aml-spark.properties:aml.kerberos.krb5:
+./conf/aml.properties:WHITELIST_PARTY_ID:
+./conf/aml.properties:AML_KY0303_FILTER_ACCT:
+./conf/aml.properties:IMS_REPORT_ALARM_RECEIVER:
+        bin/utils/bash_utils/aml_data_statistic.sh:265:   local receiver="${IMS_REPORT_ALARM_RECEIVER}"
+        bin/utils/bash_utils/aml_data_statistic.sh:328:   local receiver="${IMS_REPORT_ALARM_RECEIVER}"
+./conf/aml.properties:BLACKLIST_ALERT_USER:
+        bin/utils/bash_utils/aml_exit_code_check.sh:9:black_alert_reciver="${BLACKLIST_ALERT_USER}"
+./conf/aml.properties:IT_ALERT_USER:
+        bin/utils/bash_utils/aml_exit_code_check.sh:8:alert_reciver="${IT_ALERT_USER}"
+./conf/aml.properties:REPORT_ALERT_USER:
+./conf/aml.properties:IT_REPORT_ALERT_USER:
+./conf/aml.properties:300_IT_ALARM_RECEIVER:
+./conf/aml.properties:PYTHON_PATH:
+        bin/utils/bash_utils/mysqlUtils.sh:38:        affectRow=`${PYTHON_PATH} ${BASE_PATH}/bin/utils/python_utils/pmysql_exe.py "$1 $limitDmlSql;select row_count();"`
+        bin/utils/bash_utils/mysqlUtils.sh:344:    ${PYTHON_PATH} ${BASE_PATH}/bin/utils/python_utils/pmysql_exe.py "${dmlSql};"
+        bin/utils/bash_utils/mysqlUtils.sh:359:    ${PYTHON_PATH} ${BASE_PATH}/bin/utils/python_utils/pmysql_exe_file.py ${fileFullPath}
+./conf/aml.properties:PYTHON_PATH2:
+./conf/aml.properties:PHOENIX_SQLLINE:
+./conf/aml.properties:FILTER_CHAR:
+./conf/bdp-job-client.properties:TssJob.proxy:
+./conf/bdp-job-client.properties:TssJob.user:
+./conf/bdp-job-client.properties:TssJob.password:
+./conf/bdp-job-client.properties:TssJob.database:
+./conf/bdp.properties:HIVE_TABLE_HDFS_PATH:
+        bin/utils/bash_utils/mysqlUtils.sh:402:    sqoop export -D mapred.job.queue.name=${300_queue_name} --connect "$url?useUnicode=true&characterEncoding=utf-8" --username $username --password $password --table ${mysqlTable} --export-dir ${HIVE_TABLE_HDFS_PATH}/${hiveTable}/${tablePartition}  --fields-terminated-by '|' --update-key ${updateKey} --update-mode allowinsert --input-null-string '\\N' --input-null-non-string '\\N' --null-string '\\N' --null-non-string '\\N'
+        bin/utils/bash_utils/mysqlUtils.sh:410:    sqoop export -D mapred.job.queue.name=${300_queue_name} --connect "$url?useUnicode=true&characterEncoding=utf-8" --username $username --password $password --table ${mysqlTable} --export-dir ${HIVE_TABLE_HDFS_PATH}/${hiveTable}/${tablePartition}  --fields-terminated-by '\001'  --update-key ${updateKey} --update-mode allowinsert --input-null-string '\\N' --input-null-non-string '\\N' --null-string '\\N' --null-non-string '\\N'
+./conf/bdp.properties:DATABASE_NAME:
+        bin/300/120Wdata/120w_tb_acc.hql:60:	from ${DATABASE_NAME}.rrs_aml_tb_acc acc
+        bin/300/120Wdata/120w_tb_acc.hql:62:    (select cst_no as cst_no_1 from ${DATABASE_NAME}.rrs_aml_300_cust_ready where ds = '${300_cust_ready}' and scope = '120W') 120w_cst_no
+        bin/300/120Wdata/120w_tb_acc_txn.hql:86:	from ${DATABASE_NAME}.rrs_aml_tb_acc_txn acc_txn
+./conf/bdp.properties:DM_DATABASE_NAME:
+        bin/300/etl/rrs_aml_cust_third_pricture_flag.hql:9:        from ${DM_DATABASE_NAME}.rrs_deposit_history_kata_cust_attr_dtls_mid
+        bin/300/etl/rrs_aml_cust_third_pricture_flag.hql:13:        from ${DM_DATABASE_NAME}.rrs_dphist_ci_ret_detl_mid
+        bin/300/etl/rrs_aml_cust_third_pricture_flag.hql:17:        from ${DM_DATABASE_NAME}.rrs_edp_ci_ret_detl_mid
+./conf/bdp.properties:BOM300_DATABASE_NAME:
+        bin/bom300/bom_data_statistic/bom_tb_21_statistic_product.conf:12:from ${BOM300_DATABASE_NAME}.bom_dwm_tb_cri_qfd_df
+        bin/bom300/bom_data_statistic/bom_tb_34_statistic_product.conf:12:from ${BOM300_DATABASE_NAME}.bom_dwm_tb_acc_other_df
+        bin/bom300/bom_data_statistic/bom_tb_37_statistic_product.conf:12:from ${BOM300_DATABASE_NAME}.bom_dwm_tb_int_acc_df
+./conf/bdp.properties:AML_DATABASE_NAME:
+        bin/300/300workdb/tb_2_1_high_risk_cst.hql:20:  from ${AML_DATABASE_NAME}.rrs_aml_high_risk_cst
+        bin/300/300workdb/tb_2_2_risk_adjusment_record.hql:16:  from ${AML_DATABASE_NAME}.rrs_aml_risk_adjustment_record
+        bin/300/bdap/tmp_push/rrs_aml_tb_acc_slc_sample.hql:37:join (select cust_id as cst_no from ${AML_DATABASE_NAME}.rrs_aml_bdap_datapush_cust_sample_new where ds = '${fixed_date}' group by cust_id) cst
+./conf/bdp.properties:AML_DM_DATABASE_NAME:
+        bin/300/etl/rrs_aml_tb_acc_llh.hql:30:from ${AML_DM_DATABASE_NAME}.ods_ccpd_dsacct_ads_rrs_aml_llh_act_day
+        bin/300/etl/rrs_aml_tb_acc_txn_llh.hql:90:      from ${AML_DM_DATABASE_NAME}.ods_accp_dsacct_ads_rrs_aml_llh_txn_day
+        bin/data_prepare_2023/test/test.hql:30:from ${AML_DM_DATABASE_NAME}.test_table
+./conf/bdp.properties:MOVE_TO_REVIEW_DATABASE_NAME:
+        bin/move_to_review/tb_acc.hql:1:USE ${MOVE_TO_REVIEW_DATABASE_NAME};
+        bin/move_to_review/tb_acc_other.hql:1:use ${MOVE_TO_REVIEW_DATABASE_NAME};
+        bin/move_to_review/tb_acc_txn.hql:1:use ${MOVE_TO_REVIEW_DATABASE_NAME};
+./conf/bdp.properties:HDFS_CACHE_ROOT_PATH:
+        bin/utils/bash_utils/aml_function_utils.sh:45:HDFS_CACHE_PATH="${HDFS_CACHE_ROOT_PATH}/${NOW_DATE}"
+        bin/utils/bash_utils/aml_risk_function.sh:28:    local RISK_HDFS_PARAM_PATH="${HDFS_CACHE_ROOT_PATH}/${PATH_DATE}/param_risk/param.txt"
+        bin/utils/bash_utils/aml_risk_function.sh:39:    local RISK_HDFS_PARAM_PATH="${HDFS_CACHE_ROOT_PATH}/${PATH_DATE}/param_risk/param.txt"
+./conf/bdp.properties:FULL_HADOOP_CONF_DIR:
+        bin/utils/bulkload/bulkload_phoenix.sh:11:export HADOOP_CONF_DIR=${FULL_HADOOP_CONF_DIR}
+        bin/utils/bulkload/bulkload_phoenix.sh:32:export HADOOP_CONF_DIR=${FULL_HADOOP_CONF_DIR}
+        bin/utils/bulkload/bulkload_phoenix.sh:53:export HADOOP_CONF_DIR=${FULL_HADOOP_CONF_DIR}
+./conf/bdp.properties:300_queue_name:
+        bin/utils/bash_utils/getFunction.sh:282:    hive -e "set mapreduce.job.queuename=${300_queue_name};$1"
+        bin/utils/bash_utils/mysqlUtils.sh:62:      sqoop import -D mapreduce.job.queuename=${300_queue_name} --connect "$url?useUnicode=true&characterEncoding=utf-8" --username $username --password $password --table $src_table --hive-overwrite --fields-terminated-by '|'  -null-string '\\N' -null-non-string '\\N' --delete-target-dir --hcatalog-database $DATABASE_NAME --hcatalog-table $dst_table -m 1
+        bin/utils/bash_utils/mysqlUtils.sh:64:      sqoop import -D mapreduce.job.queuename=${300_queue_name} --connect "$url?useUnicode=true&characterEncoding=utf-8" --username $username --password $password --table $src_table --hive-overwrite --columns "${columns}" --fields-terminated-by '|'  -null-string '\\N' -null-non-string '\\N' --delete-target-dir --hcatalog-database $DATABASE_NAME --hcatalog-table $dst_table -m 1
+./conf/bdp.properties:FromHiveDB:
+        bin/300/etl/rrs_aml_tb_settle_type.hql:15:left join ${FromHiveDB}.rrs_bdm_product_info p
+        bin/300/etl/rrs_aml_tb_settle_type.hql:24:from ${FromHiveDB}.rrs_bdm_product_info p
+        bin/300/history/etl/rrs_aml_tb_acc_product.hql:33:             from ${FromHiveDB}.rrs_bdm_custacct_info_mid
+./conf/bdp.properties:300WorkDB:
+        bin/300/120Wdata/120w_tb_acc.hql:1:use ${300WorkDB};
+        bin/300/120Wdata/120w_tb_acc_txn.hql:1:use ${300WorkDB};
+        bin/300/120Wdata/120w_tb_cst_pers.hql:1:use ${300WorkDB};
+./conf/bdp.properties:FromCcifHiveDB:
+./conf/bdp.properties:FromEcif2HiveDB:
+./conf/bdp.properties:HIVE_COMBINE_SIZE:
+        bin/utils/bulkload/bulkload_phoenix.sh:26:    HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --output ${BULKLOAD_EXPORT_PATH}
+        bin/utils/bulkload/bulkload_phoenix.sh:43:HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --index-table "${IMPORT_HBASE_INDEX}" --output ${BULKLOAD_EXPORT_PATH}
+        bin/utils/bulkload/bulkload_phoenix.sh:65:HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --output ${BULKLOAD_EXPORT_PATH} --partition-filter ${EXPORT_HIVE_TABLE_PARTITION}
+./conf/bdp.properties:HIVE_SLOWSTART_SIZE:
+        bin/utils/bulkload/bulkload_phoenix.sh:26:    HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --output ${BULKLOAD_EXPORT_PATH}
+        bin/utils/bulkload/bulkload_phoenix.sh:43:HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --index-table "${IMPORT_HBASE_INDEX}" --output ${BULKLOAD_EXPORT_PATH}
+        bin/utils/bulkload/bulkload_phoenix.sh:65:HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --output ${BULKLOAD_EXPORT_PATH} --partition-filter ${EXPORT_HIVE_TABLE_PARTITION}
+./conf/bdp.properties:HQL_ENGINE:
+./conf/bdp.properties:HDFS_HOOK_SPARK_PATH:
+        bin/ind_hook/hook_exe.sh:10: ${HDFS_HOOK_SPARK_PATH}/hook-spark.jar \
+./conf/bdp.properties:HDFS_HOOK_DICT_PATH:
+./conf/bdp.properties:DEPOSIT_DPCBDP_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_dpcbdp.hql:114:              where transdetail.ds = '${batch_date}' and transdetail.sysid in('${DEPOSIT_DPCBDP_NAME}','${DPHIST_DPCBDP_NAME}')
+./conf/bdp.properties:DPHIST_DPCBDP_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_dpcbdp.hql:114:              where transdetail.ds = '${batch_date}' and transdetail.sysid in('${DEPOSIT_DPCBDP_NAME}','${DPHIST_DPCBDP_NAME}')
+./conf/bdp.properties:DPCBDP_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_dpcbdp.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${DPCBDP_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_dpcbdp.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${DPCBDP_NAME}') --将主动交易账户数据放入正常表6中
+        bin/300/etl/rrs_aml_tb_acc_txn_dpcbdp.hql:96:                ,'${DPCBDP_NAME}' as sysid
+./conf/bdp.properties:DPHIST_MULTI_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_multi.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${DPHIST_MULTI_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_multi.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${DPHIST_MULTI_NAME}') --将主动交易账户数据放入正常表6中
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_multi.hql:114:                where transdetail.ds = '${batch_date}' and transdetail.sysid = '${DPHIST_MULTI_NAME}'
+./conf/bdp.properties:DEPOSIT_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid = '${DEPOSIT_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid = '${DEPOSIT_NAME}') --将主动交易账户数据放入正常表6中
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit.hql:107:               where transdetail.ds = '${batch_date}' and transdetail.sysid = '${DEPOSIT_NAME}'
+./conf/bdp.properties:GDP_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_gdp.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${GDP_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_gdp.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${GDP_NAME}') --将主动交易账户数据放入正常表6中
+        bin/300/etl/rrs_aml_tb_acc_txn_gdp.hql:114:               where transdetail.ds = '${batch_date}' and transdetail.sysid = '${GDP_NAME}'
+./conf/bdp.properties:EDP_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_edp.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${EDP_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_edp.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${EDP_NAME}') --将主动交易账户数据放入正常表6中
+        bin/300/etl/rrs_aml_tb_acc_txn_edp.hql:114:               where transdetail.ds = '${batch_date}' and transdetail.sysid = '${EDP_NAME}'
+./conf/bdp.properties:DPHIST_FD_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_fd.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${DPHIST_FD_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_fd.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${DPHIST_FD_NAME}') --将主动交易账户数据放入正常表6中
+        bin/300/etl/rrs_aml_tb_acc_txn_dphist_fd.hql:114:             where transdetail.ds = '${batch_date}' and transdetail.sysid = '${DPHIST_FD_NAME}'
+./conf/bdp.properties:WLD_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_wld.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${WLD_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_wld.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${WLD_NAME}')
+        bin/300/etl/rrs_aml_tb_acc_txn_wld.hql:57:where txn.ds = '${batch_date}' and txn.sysid = '${WLD_NAME}'
+./conf/bdp.properties:WCD_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_wcd.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${WCD_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_wcd.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${WCD_NAME}')
+        bin/300/etl/rrs_aml_tb_acc_txn_wcd.hql:57:where txn.ds = '${batch_date}' and txn.sysid = '${WCD_NAME}'
+./conf/bdp.properties:WYD_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_wyd.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${WYD_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_wyd.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${WYD_NAME}')
+        bin/300/etl/rrs_aml_tb_acc_txn_wyd.hql:57:where txn.ds = '${batch_date}' and txn.sysid = '${WYD_NAME}'
+./conf/bdp.properties:DCP_NAME:
+        bin/300/etl/rrs_aml_tb_acc_txn_dcp.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${DCP_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_txn_dcp.hql:3:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${DCP_NAME}')
+        bin/300/etl/rrs_aml_tb_acc_txn_dcp.hql:57:where txn.ds = '${batch_date}' and txn.sysid = '${DCP_NAME}'
+./conf/bdp.properties:LLH_NAME:
+        bin/300/etl/rrs_aml_tb_acc_llh.hql:2:alter table rrs_aml_tb_acc drop partition(ds= '${batch_date}',sysid='${LLH_NAME}');
+        bin/300/etl/rrs_aml_tb_acc_llh.hql:3:insert overwrite table rrs_aml_tb_acc partition(ds= '${batch_date}',sysid='${LLH_NAME}')
+        bin/300/etl/rrs_aml_tb_acc_txn_llh.hql:2:alter table rrs_aml_tb_acc_txn drop if exists partition(ds='${batch_date}',sysid='${LLH_NAME}');
+./conf/bdp.properties:DPC_NAME:
+        bin/300/txn_rerun/txn_rerun_20230826.hql:159:insert overwrite table rrs_aml_tb_acc_txn partition (ds='${batch_date}',sysid='${DPC_NAME}')
+        bin/300/txn_rerun/txn_rerun_20230826.hql:165:where sysid = '${DPC_NAME}'
+./conf/bdp.properties:DEFAULT_EXCHANGE_RATE:
+        bin/300/etl/rrs_aml_tb_acc_txn_dcp.hql:26:        else  round('${DEFAULT_EXCHANGE_RATE}'*org_amt,2)
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit.hql:95:                  else ${DEFAULT_EXCHANGE_RATE}
+        bin/300/etl/rrs_aml_tb_acc_txn_deposit_forrerun.hql:95:                                else ${DEFAULT_EXCHANGE_RATE}
+./conf/bdp.properties:PYTHON_PATH:
+        bin/utils/bash_utils/mysqlUtils.sh:38:        affectRow=`${PYTHON_PATH} ${BASE_PATH}/bin/utils/python_utils/pmysql_exe.py "$1 $limitDmlSql;select row_count();"`
+        bin/utils/bash_utils/mysqlUtils.sh:344:    ${PYTHON_PATH} ${BASE_PATH}/bin/utils/python_utils/pmysql_exe.py "${dmlSql};"
+        bin/utils/bash_utils/mysqlUtils.sh:359:    ${PYTHON_PATH} ${BASE_PATH}/bin/utils/python_utils/pmysql_exe_file.py ${fileFullPath}
+./conf/bdp.properties:HIVE_DB_INSTANCE:
+        bin/utils/bash_utils/etl_util.sh:299:                                     use ${HIVE_DB_INSTANCE};
+        bin/utils/bash_utils/etl_util.sh:314:                                     use ${HIVE_DB_INSTANCE};
+./conf/bdp.properties:source ./conf/db_info.properties:
+./conf/bdp.properties:LWHC_LOG_START_DATE:
+        bin/300/common/tables_cnt_email.conf:18:    select '${batch_date}' as ds,'rrs_aml_tb_lwhc_log' as table_name,count(*) as cnt from rrs_aml_tb_lwhc_log where ds between '${LWHC_LOG_START_DATE}' and '${batch_date}'
+        bin/300/etl/rrs_aml_tb_cst_pers_check_details.hql:7:                 and ds  between '${LWHC_LOG_START_DATE}' and '${batch_date}'
+        bin/300/etl/rrs_aml_tb_cst_pers_check_details.hql:13:                 and ds between '${LWHC_LOG_START_DATE}' and '${batch_date}'
+./conf/bdp.properties:warehouse_db:
+./conf/bdp.properties:yarn.queue:
+./conf/bdp.properties:gateway.uri:
+        bin/utils/bash_utils/message_util.sh:120:    echo "message_util.sh_!! ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+        bin/utils/bash_utils/message_util.sh:123:    wget -q --post-file="${filename_escape}" -O ${varTmpFolder}${_RAND} ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}
+        bin/utils/bash_utils/message_util.sh:128:         echo "Email Message Error or Can not connect the email server,please check the url ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+./conf/bdp.properties:hook.app.id:
+        bin/utils/bash_utils/message_util.sh:120:    echo "message_util.sh_!! ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+        bin/utils/bash_utils/message_util.sh:123:    wget -q --post-file="${filename_escape}" -O ${varTmpFolder}${_RAND} ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}
+        bin/utils/bash_utils/message_util.sh:128:         echo "Email Message Error or Can not connect the email server,please check the url ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+./conf/bdp.properties:hook.app.token:
+        bin/utils/bash_utils/message_util.sh:120:    echo "message_util.sh_!! ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+        bin/utils/bash_utils/message_util.sh:123:    wget -q --post-file="${filename_escape}" -O ${varTmpFolder}${_RAND} ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}
+        bin/utils/bash_utils/message_util.sh:128:         echo "Email Message Error or Can not connect the email server,please check the url ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+./conf/bdp.properties:aux.jars:
+./conf/bdp.properties:email.it.receivers:
+./conf/bdp.properties:email.review.receivers:
+./conf/bdp.properties:is_filter_the_same_statistic_in_email:
+        bin/data_prepare_2023/dp_data_dqc_statistic_sample/aml_dwm_dp_dqc_invalid_4_it_email.conf:83:               where if(a.rec_cnt - nvl(b.rec_cnt, 0) = 0, 0,1) in (${is_filter_the_same_statistic_in_email})
+        bin/data_prepare_2023/dp_data_dqc_statistic_sample/aml_dwm_dp_dqc_invalid_email.conf:27:                         where if(a.ind_value - nvl(b.ind_value,0) = 0, 0,1) in (${is_filter_the_same_statistic_in_email})
+        bin/data_prepare_2023/dp_data_dqc_statistic_sample/aml_dwm_dp_dqc_invalid_fahe_sample.conf:36:              where if(a.ind_value - nvl(b.ind_value, 0) = 0, 0,1) in (${is_filter_the_same_statistic_in_email})
+./conf/bom300.properties:DEPOSIT_DW_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_deposit_ads_acct_aml_5_tb_acc_df.hql:32:from ${DEPOSIT_DW_HIVE_DB_INSTANCE}.ads_acct_aml_5_tb_acc_df
+        bin/bom300/tb_acc_other/ods/bom_ods_deposit_ads_aml_34_tb_acc_other_df.hql:23:from ${DEPOSIT_DW_HIVE_DB_INSTANCE}.ads_acct_aml_34_tb_acc_other_df
+        bin/bom300/tb_int_acc/ods/bom_ods_deposit_ads_acct_aml_37_tb_int_acc_df.hql:16:from ${DEPOSIT_DW_HIVE_DB_INSTANCE}.ads_acct_aml_37_tb_int_acc_df
+./conf/bom300.properties:DEPOSIT_DPHIST_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_dp_ads_acct_aml_5_tb_acc_df.hql:32:from ${DEPOSIT_DPHIST_HIVE_DB_INSTANCE}.ads_acct_aml_5_tb_acc_df
+        bin/bom300/tb_acc_other/ods/bom_ods_dp_ads_aml_34_tb_acc_other_df.hql:23:from ${DEPOSIT_DPHIST_HIVE_DB_INSTANCE}.ads_acct_aml_34_tb_acc_other_df
+        bin/bom300/tb_int_acc/ods/bom_ods_dp_ads_acct_aml_37_tb_int_acc_df.hql:16:from ${DEPOSIT_DPHIST_HIVE_DB_INSTANCE}.ads_acct_aml_37_tb_int_acc_df
+./conf/bom300.properties:DEPOSIT_EDP_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_edp_ads_acct_aml_5_tb_acc_df.hql:32:from ${DEPOSIT_EDP_HIVE_DB_INSTANCE}.ads_acct_aml_5_tb_acc_df
+        bin/bom300/tb_acc_other/ods/bom_ods_edp_ads_aml_34_tb_acc_other_df.hql:23:from ${DEPOSIT_EDP_HIVE_DB_INSTANCE}.ads_acct_aml_34_tb_acc_other_df
+        bin/bom300/tb_int_acc/ods/bom_ods_edp_ads_acct_aml_37_tb_int_acc_df.hql:16:from ${DEPOSIT_EDP_HIVE_DB_INSTANCE}.ads_acct_aml_37_tb_int_acc_df
+./conf/bom300.properties:DEPOSIT_GDP_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_gdp_ads_acct_aml_5_tb_acc_df.hql:32:from ${DEPOSIT_GDP_HIVE_DB_INSTANCE}.ads_acct_aml_5_tb_acc_df
+        bin/bom300/tb_acc_other/ods/bom_ods_gdp_ads_aml_34_tb_acc_other_df.hql:23:from ${DEPOSIT_GDP_HIVE_DB_INSTANCE}.ads_acct_aml_34_tb_acc_other_df
+        bin/bom300/tb_int_acc/ods/bom_ods_gdp_ads_acct_aml_37_tb_int_acc_df.hql:16:from ${DEPOSIT_GDP_HIVE_DB_INSTANCE}.ads_acct_aml_37_tb_int_acc_df
+./conf/bom300.properties:TDTP_ODW_HIVE_DB_INSTANCE:
+        bin/bom300/tb_cri_qfd/ods/bom_ods_ccp_aml_account_final_df.hql:23:from ${TDTP_ODW_HIVE_DB_INSTANCE}.ccp_aml_account_final
+./conf/bom300.properties:CFPD_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_fcts_cnc_rrs_aml_tb_acc_new_da_df.hql:38:from ${CFPD_HIVE_DB_INSTANCE}.dw_fcts_cnc_rrs_aml_tb_acc_new_da
+        bin/bom300/tb_acc_other/ods/bom_ods_fcts_rrs_aml_tb_acc_other_da_df.hql:14:from ${CFPD_HIVE_DB_INSTANCE}.dw_fcts_rrs_aml_tb_acc_other_da
+        bin/bom300/tb_acc_other/ods/bom_ods_fcts_rrs_aml_tb_acc_other_da_df.hql:15:where ds = '#{maxpartition_${CFPD_HIVE_DB_INSTANCE}.dw_fcts_rrs_aml_tb_acc_other_da}';
+./conf/bom300.properties:HDUSER08_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_dm_cust_jianguan_wedongli_to_yunyin_df.hql:16:from ${HDUSER08_HIVE_DB_INSTANCE}.dm_cust_jianguan_wedongli_to_yunyin
+        bin/bom300/tb_acc_other/ods/bom_ods_dm_cust_jianguan_wedongli_to_yunyin_df.hql:17:where ds = '#{maxpartition_${HDUSER08_HIVE_DB_INSTANCE}.dm_cust_jianguan_wedongli_to_yunyin}';
+./conf/bom300.properties:HDUSER06_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_fxq_wfts_five_check_result_three_df.hql:16:from ${HDUSER06_HIVE_DB_INSTANCE}.fxq_wfts_five_check_result_three
+        bin/bom300/tb_acc_other/ods/bom_ods_fxq_wfts_five_check_result_three_df.hql:17:where ds = '#{maxpartition_${HDUSER06_HIVE_DB_INSTANCE}.fxq_wfts_five_check_result_three}';
+        bin/bom300/tb_acc_other/ods/bom_ods_fxq_wfts_five_check_result_two_df.hql:16:from ${HDUSER06_HIVE_DB_INSTANCE}.fxq_wfts_five_check_result_two
+./conf/bom300.properties:CCPD_DFQAUTH_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_wcd_fxq_wbcard_vaildate_info_day_df.hql:16:from ${CCPD_DFQAUTH_HIVE_DB_INSTANCE}.ads_wcd_fxq_wbcard_vaildate_info_day
+        bin/bom300/tb_acc_other/ods/bom_ods_wcd_fxq_wbcard_vaildate_info_day_df.hql:17:where ds = '#{maxpartition_${CCPD_DFQAUTH_HIVE_DB_INSTANCE}.ads_wcd_fxq_wbcard_vaildate_info_day}';
+./conf/bom300.properties:CCPD_DFQACCT_ADS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_car_acct_bom_day_df.hql:38:from ${CCPD_DFQACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_car_acct_bom_day
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_car_acct_bom_day_df.hql:39:where ds = '#{maxpartition_${CCPD_DFQACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_car_acct_bom_day}';
+./conf/bom300.properties:CCPD_DSACCT_ADS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_ds_acct_bom_day_df.hql:38:from ${CCPD_DSACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_ds_acct_bom_day
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_ds_acct_bom_day_df.hql:39:where ds = '#{maxpartition_${CCPD_DSACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_ds_acct_bom_day}';
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_gic_acct_bom_day_df.hql:38:from ${CCPD_DSACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_gic_acct_bom_day
+./conf/bom300.properties:CCPD_RCIACCT_ADS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_rci_acct_bom_day_df.hql:38:from ${CCPD_RCIACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_rci_acct_bom_day
+        bin/bom300/tb_acc/ods/bom_ods_rrs_aml_rci_acct_bom_day_df.hql:39:where ds = '#{maxpartition_${CCPD_RCIACCT_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_rci_acct_bom_day}';
+./conf/bom300.properties:CCPD_WJ_ADS_HIVE_DB_INSTANCE:
+./conf/bom300.properties:CFPD_APP_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_qyjr_rrs_aml_tb_acc_df.hql:37:from ${CFPD_APP_HIVE_DB_INSTANCE}.rrs_aml_tb_acc
+./conf/bom300.properties:RPD_ECIF_ODS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_jgjc_ecif_telephone_info_tmp_df.hql:12:from ${RPD_ECIF_ODS_HIVE_DB_INSTANCE}.jgjc_ecif_telephone_info_tmp
+./conf/bom300.properties:CFPD_ODS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc/ods/bom_ods_efccsur_ur_enterprise_customer_bdcn_df.hql:16:from ${CFPD_ODS_HIVE_DB_INSTANCE}.ods_efccsur_ur_enterprise_customer_bdcn
+        bin/bom300/tb_acc/ods/bom_ods_efccsur_ur_enterprise_customer_bdcn_df.hql:17:where ds = '#{maxpartition_${CFPD_ODS_HIVE_DB_INSTANCE}.ods_efccsur_ur_enterprise_customer_bdcn}';
+        bin/bom300/tb_acc/ods/bom_ods_meatscore_core_enterprise_relate_acct_bdcn_df.hql:18:from ${CFPD_ODS_HIVE_DB_INSTANCE}.ods_meatscore_core_enterprise_relate_acct_bdcn
+./conf/bom300.properties:RPD_DCP_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_rpd_fcts_rrs_aml_tb_acc_other_da_df.hql:15:from ${RPD_DCP_HIVE_DB_INSTANCE}.dw_fcts_rrs_aml_tb_acc_other_da
+        bin/bom300/tb_acc_other/ods/bom_ods_whx_rrs_aml_tb_acc_other_da_df.hql:15:from ${RPD_DCP_HIVE_DB_INSTANCE}.dw_whx_rrs_aml_tb_acc_other_da
+./conf/bom300.properties:HDUSER02_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_fxq_wfts_yz_authentication_result_df.hql:15:from ${HDUSER02_HIVE_DB_INSTANCE}.fxq_wfts_yz_authentication_result;
+./conf/bom300.properties:CCPD_ZRISK_ADS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_risk_yonghui_deposit_info_df.hql:15:from ${CCPD_ZRISK_ADS_HIVE_DB_INSTANCE}.ads_risk_yonghui_deposit_info
+        bin/bom300/tb_acc_other/ods/bom_ods_risk_yonghui_deposit_info_df.hql:16:where ds = '#{maxpartition_${CCPD_ZRISK_ADS_HIVE_DB_INSTANCE}.ads_risk_yonghui_deposit_info}';
+./conf/bom300.properties:CCPD_DFQAUTH_ADS_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_ins_fxq_wbcard_vaildate_info_day_df.hql:16:from ${CCPD_DFQAUTH_ADS_HIVE_DB_INSTANCE}.ads_ins_fxq_wbcard_vaildate_info_day
+        bin/bom300/tb_acc_other/ods/bom_ods_ins_fxq_wbcard_vaildate_info_day_df.hql:17:where ds = '#{maxpartition_${CCPD_DFQAUTH_ADS_HIVE_DB_INSTANCE}.ads_ins_fxq_wbcard_vaildate_info_day}';
+        bin/bom300/tb_acc_other/ods/bom_ods_rrs_aml_nest_wbcard_check_result_day_df.hql:18:from ${CCPD_DFQAUTH_ADS_HIVE_DB_INSTANCE}.ads_rrs_aml_nest_wbcard_check_result_day
+./conf/bom300.properties:HDUSER01_HIVE_DB_INSTANCE:
+        bin/bom300/tb_acc_other/ods/bom_ods_pmms_special_account_verify_info_df.hql:15:from ${HDUSER01_HIVE_DB_INSTANCE}.pmms_special_account_verify_info
+        bin/bom300/tb_acc_other/ods/bom_ods_pmms_special_account_verify_info_df.hql:16:where ds = '#{maxpartition_${HDUSER01_HIVE_DB_INSTANCE}.pmms_special_account_verify_info}';
+./conf/db_info.properties:AML_300_MYSQL_HOST:
+./conf/db_info.properties:AML_300_MYSQL_PORT:
+./conf/db_info.properties:AML_300_MYSQL_INSTANCE:
+./conf/db_info.properties:AML_300_MYSQL_USER:
+./conf/db_info.properties:AML_300_MYSQL_PASS:
+        bin/utils/pythonUtil/config.sh:22:decrypt_password ${AML_300_MYSQL_PASS}
+./conf/hbase.properties:CK_HBASE_CONF_DIR:
+        bin/utils/bulkload/bulkload_phoenix.sh:26:    HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --output ${BULKLOAD_EXPORT_PATH}
+        bin/utils/bulkload/bulkload_phoenix.sh:43:HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --index-table "${IMPORT_HBASE_INDEX}" --output ${BULKLOAD_EXPORT_PATH}
+        bin/utils/bulkload/bulkload_phoenix.sh:65:HADOOP_CLASSPATH=${HIVE_CONF_DIR}:${HIVE_HOME}/lib/*:${HBASE_HOME}/lib/*:${HIVE_HOME}/hcatalog/share/hcatalog/*:/data/bdp/bdp_etl_deploy/hduser02/bdp-config/hadoop-config:${CK_HBASE_CONF_DIR}:/appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar hadoop jar ${BASE_PATH}/tools/lib/aml-phoenix.jar com.webank.aml.phoenix.AmlHcatalogBulkLoadTool -Dmapreduce.job.queuename=${300_queue_name} -Dmapreduce.reduce.memory.mb=7480 -Dhbase.client.scanner.caching=4000 -Dmapreduce.reduce.java.opts=-Xmx7000m -Dmapreduce.task.timeout=6000000 -Dmapreduce.input.fileinputformat.split.maxsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.node=${HIVE_COMBINE_SIZE} -Dmapreduce.input.fileinputformat.split.minsize.per.rack=${HIVE_COMBINE_SIZE} -Dmapreduce.job.reduce.slowstart.completedmaps=${HIVE_SLOWSTART_SIZE} -Dhadoop.tmp.dir=/tmp/hduser02/phoenix1 -Dtmpjars=file:///appcom/Install/phoenix/phoenix-4.9.0-HBase-1.2-client.jar,file://${BASE_PATH}/tools/lib/aml-phoenix.jar,file://${HIVE_HOME}/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar,file://${HIVE_HOME}/lib/hive-exec-1.2.1.jar --input xx --hive-table ${EXPORT_HIVE_TABLE} --hive-db ${EXPORT_HIVE_DB} --table "${IMPORT_HBASE_TABLE}" --output ${BULKLOAD_EXPORT_PATH} --partition-filter ${EXPORT_HIVE_TABLE_PARTITION}
+./conf/hbase.properties:CK_HBASE_HDFS_TMP_PATH:
+        bin/utils/bulkload/bulkload_phoenix.sh:16:local BULKLOAD_HBASE_TMP_BASE_PATH="${CK_HBASE_HDFS_TMP_PATH}/tmp/${batch_date}/"
+        bin/utils/bulkload/bulkload_phoenix.sh:37:local BULKLOAD_HBASE_TMP_BASE_PATH="${CK_HBASE_HDFS_TMP_PATH}/tmp/${batch_date}/"
+        bin/utils/bulkload/bulkload_phoenix.sh:59:local BULKLOAD_HBASE_TMP_BASE_PATH="${CK_HBASE_HDFS_TMP_PATH}/tmp/${batch_date}/"
+./conf/hbase.properties:COMMON_HBASE_HDFS_TMP_PATH:
+./conf/hbase.properties:COMMON_HBASE_CONF_DIR:
+./conf/ims.properties:AML_IMS_ENABLE:
+        bin/utils/bash_utils/aml_exit_code_check.sh:20:        if [ "${AML_IMS_ENABLE}x" == "truex" ];then
+        bin/utils/bash_utils/aml_exit_code_check.sh:31:        if [ "${AML_IMS_ENABLE}x" == "truex" ];then
+        bin/utils/bash_utils/aml_exit_code_check.sh:52:        if [ "${AML_IMS_ENABLE}x" == "truex" ];then
+./conf/ims.properties:IMS_ALERT_IP:
+./conf/ims.properties:IMS_ALERT_PORT:
+./conf/ims.properties:ALARM_SYSTEM_ID:
+./conf/ims.properties:IMS_MSG_REPORT_PORT:
+./conf/ims.properties:SEND_MESSAGE_API:
+./conf/ind.properties:ind_party_risk_nearly_days:
+./conf/ind.properties:ind_repeat_iaddress_num:
+./conf/ind.properties:ind_repeat_caddress_num:
+./conf/ind.properties:ind_repeat_iphone_num:
+./conf/ind.properties:ind_repeat_cphone_num:
+./conf/ind.properties:ind_repeat_finalent_num:
+./conf/ind.properties:ind_repeat_ip_num:
+./conf/ind.properties:ind_repeat_legal_num:
+./conf/ind.properties:ind_repeat_mac_num:
+./conf/ind.properties:ind_ccust_main_name_special_symbols:
+./conf/ind.properties:ind_ccust_main_doubt_industry:
+./conf/ind.properties:ind_ccust_main_high_risk_industry:
+./conf/ind.properties:ind_ccust_main_open_in_days:
+./conf/ind.properties:ind_ccust_main_register_in_days:
+./conf/ind.properties:ind_ccust_main_register_doubt_city:
+./conf/ind.properties:ind_ccust_main_register_high_register_city:
+./conf/ind.properties:ind_common_age_segment_0:
+./conf/ind.properties:ind_common_age_segment_1:
+./conf/ind.properties:ind_common_age_segment_2:
+./conf/ind.properties:ind_common_age_segment_3:
+./conf/ind.properties:ind_common_age_segment_4:
+./conf/ind.properties:ind_common_age_segment_5:
+./conf/ind.properties:ind_common_high_risk_profession:
+./conf/ind.properties:ind_common_high_risk_occupation:
+./conf/ind.properties:ind_icust_eml_duty:
+./conf/ind.properties:ind_icust_main_high_risk_area_4:
+./conf/ind.properties:ind_icust_main_high_risk_area_6:
+./conf/ind.properties:ind_icust_main_spe_country_code:
+./conf/ind.properties:ind_account_in_nearly_open_days:
+./conf/ind.properties:ind_account_in_nearly_close_days:
+./conf/ind.properties:ind_account_in_long_idle_days:
+./conf/ind.properties:ind_trans_usd_rate:
+./conf/ind.properties:ind_trans_amount_segment_0:
+./conf/ind.properties:ind_trans_amount_segment_1:
+./conf/ind.properties:ind_trans_amount_segment_2:
+./conf/ind.properties:ind_trans_amount_segment_3:
+./conf/ind.properties:ind_trans_amount_segment_4:
+./conf/ind.properties:ind_trans_amount_segment_5:
+./conf/ind.properties:ind_trans_amount_segment_6:
+./conf/ind.properties:ind_trans_amount_segment_7:
+./conf/ind.properties:ind_trans_time_segment_0:
+./conf/ind.properties:ind_trans_time_segment_1:
+./conf/ind.properties:ind_trans_time_segment_2:
+./conf/ind.properties:ind_trans_time_segment_3:
+./conf/ind.properties:ind_trans_time_segment_4:
+./conf/ind.properties:ind_trans_time_segment_5:
+./conf/ind.properties:ind_trans_time_segment_6:
+./conf/ind.properties:ind_trans_time_segment_7:
+./conf/ind.properties:ind_trans_time_segment_8_0:
+./conf/ind.properties:ind_trans_time_segment_8_1:
+./conf/ind.properties:ind_trans_large_amount_0501_cny_cash0:
+./conf/ind.properties:ind_trans_large_amount_0502_ccust_cny_cash1:
+./conf/ind.properties:ind_trans_large_amount_0503_icust_cny_cash1_over0:
+./conf/ind.properties:ind_trans_large_amount_0504_icust_cny_cash1_over1:
+./conf/ind.properties:ind_trans_nearly_large_rate:
+./conf/ind.properties:ind_trans_doubt_area:
+./conf/ind.properties:ind_trans_high_risk_area:
+./conf/ind.properties:ind_trans_high_risk_country:
+./conf/kerberosSetting.properties:KEYTAB_FULL_PATH:
+        bin/utils/python_utils/init_kerberos.sh:9:        kinit -kt ${KEYTAB_FULL_PATH} ${KERBEROS_USER_NAME}
+        bin/utils/python_utils/init_kerberos.sh:25:        kinit -kt ${KEYTAB_FULL_PATH} ${KERBEROS_USER_NAME}
+./conf/kerberosSetting.properties:KERBEROS_USER_NAME:
+        bin/utils/python_utils/init_kerberos.sh:9:        kinit -kt ${KEYTAB_FULL_PATH} ${KERBEROS_USER_NAME}
+        bin/utils/python_utils/init_kerberos.sh:25:        kinit -kt ${KEYTAB_FULL_PATH} ${KERBEROS_USER_NAME}
+./conf/kerberosSetting.properties:CK_KERBEROS_ENABLE:
+        bin/utils/python_utils/init_kerberos.sh:22:    if [ "true" == "${CK_KERBEROS_ENABLE}" ];then
+./conf/kerberosSetting.properties:CK_HADOOP_DIR_CONF_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:23:        export HADOOP_CONF_DIR=${CK_HADOOP_DIR_CONF_KERBEROS}
+./conf/kerberosSetting.properties:CK_HBASE_DIR_CONF_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:24:        export HBASE_CONF_DIR=${CK_HBASE_DIR_CONF_KERBEROS}
+./conf/kerberosSetting.properties:CK_HBASE_HDFS_TMP_PATH_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:30:        CK_HBASE_HDFS_TMP_PATH=${CK_HBASE_HDFS_TMP_PATH_KERBEROS}
+./conf/kerberosSetting.properties:CK_HADOOP_DIR_CONF_NO_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:34:        HADOOP_CONF_DIR=${CK_HADOOP_DIR_CONF_NO_KERBEROS}
+./conf/kerberosSetting.properties:CK_HBASE_DIR_CONF_NO_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:35:        HBASE_CONF_DIR=${CK_HBASE_DIR_CONF_NO_KERBEROS}
+./conf/kerberosSetting.properties:COMMON_KERBEROS_ENABLE:
+        bin/utils/python_utils/init_kerberos.sh:6:    if [ "true" == "${COMMON_KERBEROS_ENABLE}" ];then
+./conf/kerberosSetting.properties:COMMON_HADOOP_DIR_CONF_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:7:        export HADOOP_CONF_DIR=${COMMON_HADOOP_DIR_CONF_KERBEROS}
+./conf/kerberosSetting.properties:COMMON_HBASE_DIR_CONF_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:8:        export HBASE_CONF_DIR=${COMMON_HBASE_DIR_CONF_KERBEROS}
+./conf/kerberosSetting.properties:COMMON_HBASE_HDFS_TMP_PATH_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:11:        CK_HBASE_HDFS_TMP_PATH=${COMMON_HBASE_HDFS_TMP_PATH_KERBEROS}
+./conf/kerberosSetting.properties:COMMON_HADOOP_DIR_CONF_NO_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:18:        HADOOP_CONF_DIR=${COMMON_HADOOP_DIR_CONF_NO_KERBEROS}
+./conf/kerberosSetting.properties:COMMON_HBASE_DIR_CONF_NO_KERBEROS:
+        bin/utils/python_utils/init_kerberos.sh:19:        HBASE_CONF_DIR=${COMMON_HBASE_DIR_CONF_NO_KERBEROS}
+./conf/log4j-spark.properties:log4j.rootCategory:
+./conf/log4j-spark.properties:log4j.appender.console:
+./conf/log4j-spark.properties:log4j.appender.console.target:
+./conf/log4j-spark.properties:log4j.appender.console.layout:
+./conf/log4j-spark.properties:log4j.appender.console.layout.ConversionPattern:
+./conf/log4j-spark.properties:log4j.logger.org.spark_project.jetty:
+./conf/log4j-spark.properties:log4j.logger.org.spark_project.jetty.util.component.AbstractLifeCycle:
+./conf/log4j-spark.properties:log4j.logger.org.apache.spark.repl.SparkIMain$exprTyper:
+./conf/log4j-spark.properties:log4j.logger.org.apache.spark.repl.SparkILoop$SparkILoopInterpreter:
+./conf/log4j-spark.properties:log4j.logger.org.apache.parquet:
+./conf/log4j-spark.properties:log4j.logger.parquet:
+./conf/log4j-spark.properties:log4j.logger.org.apache.hadoop.hive.metastore.RetryingHMSHandler:
+./conf/log4j-spark.properties:log4j.logger.org.apache.hadoop.hive.ql.exec.FunctionRegistry:
+./conf/mysql-uat.properties:username:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql-uat.properties:mysql_password:
+        bin/utils/bash_utils/decryptPwd.sh:18:decrypt_password ${mysql_password}
+        bin/utils/bash_utils/mysqlUtils.sh:19:export password=${mysql_password}
+        bin/utils/bash_utils/mysqlUtilsNew.sh:12:export password=${mysql_password}
+./conf/mysql-uat.properties:host:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql-uat.properties:port:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql-uat.properties:dbname:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql-uat.properties:url:
+./conf/mysql-uat.properties:MYSQLSEC_HOME_BIN:
+./conf/mysql.properties:username:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql.properties:mysql_password:
+        bin/utils/bash_utils/decryptPwd.sh:18:decrypt_password ${mysql_password}
+        bin/utils/bash_utils/mysqlUtils.sh:19:export password=${mysql_password}
+        bin/utils/bash_utils/mysqlUtilsNew.sh:12:export password=${mysql_password}
+./conf/mysql.properties:host:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql.properties:port:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql.properties:dbname:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/mysql.properties:url:
+./conf/mysql.properties:MYSQLSEC_HOME_BIN:
+./conf/mysql.properties:user:
+./conf/mysql.properties:password:
+./conf/mysqlsec.properties:appId:
+./conf/mysqlsec.properties:objectId:
+./conf/mysqlsec.properties:privateKey:
+./conf/rrs-spark.properties:spark.app.name:
+./conf/rrs-spark.properties:spark.master:
+./conf/rrs-spark.properties:spark.submit.deployMode:
+./conf/rrs-spark.properties:spark.yarn.am.memory:
+./conf/rrs-spark.properties:spark.driver.memory:
+./conf/rrs-spark.properties:spark.driver.cores:
+./conf/rrs-spark.properties:spark.executor.memory:
+./conf/rrs-spark.properties:spark.serializer:
+./conf/rrs-spark.properties:spark.executor.instances:
+./conf/rrs-spark.properties:spark.executor.cores:
+./conf/rrs-spark.properties:spark.yarn.driver.memoryOverhead:
+./conf/rrs-spark.properties:spark.yarn.queue:
+./conf/rrs-spark.properties:gateway.uri:
+        bin/utils/bash_utils/message_util.sh:120:    echo "message_util.sh_!! ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+        bin/utils/bash_utils/message_util.sh:123:    wget -q --post-file="${filename_escape}" -O ${varTmpFolder}${_RAND} ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}
+        bin/utils/bash_utils/message_util.sh:128:         echo "Email Message Error or Can not connect the email server,please check the url ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+./conf/rrs-spark.properties:hook.app.id:
+        bin/utils/bash_utils/message_util.sh:120:    echo "message_util.sh_!! ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+        bin/utils/bash_utils/message_util.sh:123:    wget -q --post-file="${filename_escape}" -O ${varTmpFolder}${_RAND} ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}
+        bin/utils/bash_utils/message_util.sh:128:         echo "Email Message Error or Can not connect the email server,please check the url ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+./conf/rrs-spark.properties:hook.app.token:
+        bin/utils/bash_utils/message_util.sh:120:    echo "message_util.sh_!! ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+        bin/utils/bash_utils/message_util.sh:123:    wget -q --post-file="${filename_escape}" -O ${varTmpFolder}${_RAND} ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}
+        bin/utils/bash_utils/message_util.sh:128:         echo "Email Message Error or Can not connect the email server,please check the url ${gateway.uri}/message/send_msg.do?appId=${hook.app.id}&appToken=${hook.app.token}"
+./conf/rrs-spark.properties:warehouse_db:
+./conf/rrs-spark.properties:rrs.first.monitor.date:
+./conf/rrs-spark.properties:check.table.name:
+./conf/rrs-spark.properties:check.pk.table.name:
+./conf/rrs-spark.properties:check.result.table.name:
+./conf/rrs-spark.properties:dqc.version:
+./conf/rrs-spark.properties:dqc.dgsa.report:
+./conf/rrs-spark.properties:dqc.dgsa.report.batchsize:
+./conf/rrs-spark.properties:dqc.checker.big.enmu.pathheader:
+./conf/rrs-spark.properties:hive.maxpartition.allow.empty:
+./conf/tidb.properties:user:
+./conf/tidb.properties:password:
+./conf/tidb.properties:host:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/tidb.properties:port:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/tidb.properties:dbname:
+        bin/utils/bash_utils/mysqlUtilsNew.sh:30:	#echo $( mysql -u${username} -p${mysql_password} -P${port} -h${host} -D${dbname} -Nse --default-character-set=UTF8  -e "$1" )
+./conf/tidb.properties:url:
+./conf/validator_init.properties:ReplaceStrPattern:
+./conf/validator_init.properties:SpecialChrPattern:
+./conf/validator_init.properties:Name_NospaceNation:
+./conf/validator_init.properties:IndiNameMaxLen:
+./conf/validator_init.properties:IndiNameMinLen:
+./conf/validator_init.properties:IndiNameLimitPattern:
+./conf/validator_init.properties:CorpNameMinLen:
+./conf/validator_init.properties:IndiCardTypePattern:
+./conf/validator_init.properties:Ident_flag:
+./conf/validator_init.properties:WithOutWideChrPattern:
+./conf/validator_init.properties:validPattern:
+./conf/validator_init.properties:IndiDefaultValue:
+./conf/validator_init.properties:app:
+./conf/validator_init.properties:NotEmptyItems:
+./conf/validator_init.properties:TextFilterItems:
+./conf/validator_init.properties:NoReplaceStrItems:
+./conf/validator_init.properties:OnlySpecialChrItems:
+./conf/validator_init.properties:NoSpaceItems:
+./conf/validator_init.properties:EnumElementItems:
+./conf/validator_init.properties:NameItems:
+./conf/validator_init.properties:IdentItems:
+./conf/validator_init.properties:AccountItems:
+./conf/validator_init.properties:FinInsitCodeItems:
+./conf/validator_init.properties:DateItems:
+./conf/validator_init.properties:DefaultItems:
+./conf/validator_init.properties:MoneyItems:
+./conf/validator_init.properties:PhoneItems:
+./conf/validator_init.properties:fields:
+./conf/validator_init.properties:DateFormatPattern:
+./conf/validator_init.properties:ITEM_SPECIAL_RS:
+./conf/validator_init.properties:CHR_SPECIAL_RS:
+./conf/validator_init.properties:ITEM_CANNOTGET_RS:
+./conf/validator_init.properties:CHR_CANNOTGET_RS:
+./conf/validator_init.properties:ITEM_POLICY_RS:
+./conf/validator_init.properties:CHR_POLICY_RS:
+./conf/validator_init.properties:ITEM_NOTINDIVIDUAL_RS:
+./conf/validator_init.properties:CHR_NOTINDIVIDUAL_RS:
+./conf/validator_init.properties:ITEM_BATDEL1_RS:
+./conf/validator_init.properties:CHR_BATDEL1_RS:
+./conf/validator_init.properties:ITEM_BATDEL2_RS:
+./conf/validator_init.properties:CHR_BATDEL2_RS:
+./conf/validator_init.properties:TDRC_BH_NotRepStr:
+./conf/validator_init.properties:TRCD_BS_NotRepStr:
+./conf/validator_init.properties:TRCD_BH_NotRepStr:
+./conf/validator_init.properties:CFIN_BH_NotRepStr:
+./conf/validator_init.properties:CFIN_BS_NotRepStr:
+./conf/validator_init.properties:CFRC_BS_NotRepStr:
+./conf/validator_init.properties:TCNM_BH_NotRepStr:
+./conf/validator_init.properties:TCNM_BS_NotRepStr:
+./conf/validator_init.properties:TCAC_BS_NotRepStr:
+./conf/validator_init.properties:TCAC_BH_NotRepStr:
+./conf/validator_init.properties:CRSP_BS_NotRepStr:
+./conf/validator_init.properties:CFCT_NotRepStr:
+./conf/validator_init.properties:CFCT_BS_NotRepStr:
+./conf/validator_init.properties:CFCT_BH_NotRepStr:
+./conf/validator_init.properties:CFIC_NotRepStr:
+./conf/validator_init.properties:CFIC_BS_NotRepStr:
+./conf/validator_init.properties:CFIC_BH_NotRepStr:
+./conf/validator_init.properties:TCAC_NotRepStr:
