@@ -16,8 +16,8 @@ parse_all_jobs_types() {
 parse_command_type_jobs() {
     # declare a job type map
     declare -A class_patterns
-    class_patterns["client"]="ETL_SUBMIT,etlTool.py|HAML_PYTHON_ETL_TOOL"
-    class_patterns["subtype"]="blanca,spark,hive,etl,echo,checkDate,sqoop"
+    class_patterns["bdp_client"]="etl_submit.sh|ETL_SUBMIT,etl_submit_4_ira.sh|ETL_SUBMIT_4_IRA,etlTool.py|HAML_PYTHON_ETL_TOOL"
+    class_patterns["bdp_job"]="blanca,spark,hive,etl,echo,checkDate,sqoop"
 
     # check pattern
     # grep -rlE "ETL_SUBMIT|etlTool.py|HAML_PYTHON_ETL_TOOL" | xargs grep -L "bdp-client"
@@ -28,7 +28,7 @@ parse_command_type_jobs() {
 
     echo "${command_type_jobs}" | tr ' ' '\n' | sort -u | while read -r file_name; do
         # result to log
-        res="type='command'"
+        res="wtss_job='command'"
 
         # iterate the map and match the patterns
         for key in "${!class_patterns[@]}"; do
