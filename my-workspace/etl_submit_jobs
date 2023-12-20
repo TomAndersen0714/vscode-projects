@@ -1,3 +1,0 @@
-type=command, client=etl_submit.sh, language/Shell/test_project/wtss/jobs/d.job
-type=command, client=etl_submit.sh, language/Shell/test_project/wtss/jobs/e.job
-type=command, client=etl_submit.sh, language/Shell/test_project/wtss/jobs/f.job
