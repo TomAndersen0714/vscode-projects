@@ -1,1 +1,0 @@
-grep --color=auto -l type=command ./test_project/bdp/bin/1.job ./test_project/bdp/bin/2.job ./test_project/bdp/bin/3.job ./test_project/bdp/bin/4.job ./test_project/wtss/jobs/a.job ./test_project/wtss/jobs/b.job ./test_project/wtss/jobs/c.job ./test_project/wtss/jobs/d.job

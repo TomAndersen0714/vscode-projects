@@ -1,2 +1,0 @@
-type=command, client=etlTool.py, test_project/wtss/jobs/a.job
-type=command, client=etlTool.py, test_project/wtss/jobs/b.job
