@@ -1,8 +1,5 @@
 set -ex
 
-#wtss 工程名
-export WTSS_PROJECT_NAME=rrs_aml_inspect_wtss_ericcheng
-
 #创建部署目录
 if [ ! -d "[!DEPLOY_PATH]/[!PKG_NAME]" ]; then
   mkdir -p [!DEPLOY_PATH]/[!PKG_NAME] # 包的名称，如RRS-AMLETL_wtss_main_-3_10.0.6_78.tar.gz
@@ -52,13 +49,13 @@ do
   cd -
   mv ./${project_name}/rrs_aml_${project_name}_wtss.zip ./
 
-         #环境1 uat
-         WTSS_PWD1=`java -cp wtss_tools/tools/Azkaban-AOMP-1.0/lib/rrs-encrypt-1.0.0.jar:wtss_tools/tools/Azkaban-AOMP-1.0/lib/* cn.webank.rrs.encrypt.RrsEncryptUtil ${WTSS_PWD}|xargs java -cp wtss_tools/tools/Azkaban-AOMP-1.0/lib/Azkaban-AOMP-2.0.jar:wtss_tools/tools/Azkaban-AOMP-1.0/lib/* com.webank.azkaban.utils.RSAUtils |awk -F ':' 'NR==2{print $2}'`
-        sh wtss_tools/tools/Azkaban-AOMP-1.0/bin/app-ext.sh -f rrs_aml_${project_name}_wtss.zip -p rrs_aml_${project_name}_wtss_ottoxia  -u${WTSS_USER} -w${WTSS_PWD1}
-         if [ $? -ne 0 ]; then
-            echo "WTSS发版本异常"
-            exit 1
-         fi
+  #环境1 uat
+  WTSS_PWD1=`java -cp wtss_tools/tools/Azkaban-AOMP-1.0/lib/rrs-encrypt-1.0.0.jar:wtss_tools/tools/Azkaban-AOMP-1.0/lib/* cn.webank.rrs.encrypt.RrsEncryptUtil ${WTSS_PWD}|xargs java -cp wtss_tools/tools/Azkaban-AOMP-1.0/lib/Azkaban-AOMP-2.0.jar:wtss_tools/tools/Azkaban-AOMP-1.0/lib/* com.webank.azkaban.utils.RSAUtils |awk -F ':' 'NR==2{print $2}'`
+  sh wtss_tools/tools/Azkaban-AOMP-1.0/bin/app-ext.sh -f rrs_aml_${project_name}_wtss.zip -p rrs_aml_${project_name}_wtss_ericcheng  -u${WTSS_USER} -w${WTSS_PWD1}
+  if [ $? -ne 0 ]; then
+    echo "WTSS发版本异常"
+    exit 1
+  fi
 
   rm rrs_aml_${project_name}_wtss.zip
 done
