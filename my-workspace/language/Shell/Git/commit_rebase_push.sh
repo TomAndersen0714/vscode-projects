@@ -1,16 +1,17 @@
 #!/bin/bash
-paths=(
+repository_abs_paths=(
     '/root/workspace/project/vscode-projects'
     '/root/workspace/project/notebooks'
 )
 
-for path in "${paths[@]}"; do
+for path in "${repository_abs_paths[@]}"; do
     date
     cd "$path" || exit
     echo "$path"
-    git add \*
+    git add .
     git commit -m "update $(date)"
-    git push origin master
+    git rebase origin_gitee/master
+    git push
     printf "%0.s-" {1..40} && echo
     echo
 done
