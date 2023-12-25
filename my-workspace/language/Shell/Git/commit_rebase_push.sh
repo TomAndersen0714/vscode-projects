@@ -8,6 +8,7 @@ for path in "${repository_abs_paths[@]}"; do
     date
     cd "$path" || exit
     echo "$path"
+    git fetch
     git add .
     git commit -m "update $(date)"
     git rebase origin_gitee/master
