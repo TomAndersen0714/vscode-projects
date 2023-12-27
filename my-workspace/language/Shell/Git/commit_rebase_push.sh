@@ -8,9 +8,9 @@ for path in "${repository_abs_paths[@]}"; do
     date
     cd "$path" || exit
     echo "$path"
-    git fetch
     git add .
     git commit -m "update $(date)"
+    git fetch --all
     git rebase origin_gitee/master
     git push
     printf "%0.s-" {1..40} && echo
