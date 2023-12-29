@@ -1,0 +1,7 @@
+# 解析命令行参数
+args = parser.parse_args()
+# 基于命令行参数, 构建对应的内置 DateTime 变量
+dataDate = DataDate(args.date, args.freq).dataDate
+
+# 根据 type 执行对应类型的 Task
+aml_bdp.bin.utils.pythonUtil.etlTool.excuteTask
