@@ -10,7 +10,7 @@
             "name": "Bash-Debug (Current File)",
             "cwd": "${workspaceFolder}",
             "program": "${file}",
-            "args": ["language/Shell/test_project/wtss/jobs", "3"]
+            "args": ["2023-12-07", "5"]
         },
         {
             "type": "bashdb",
