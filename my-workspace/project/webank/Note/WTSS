@@ -1,0 +1,14 @@
+# 说明在当前 flow 中存在一个名为 BDAP_DATA_FOR_RISK_MODEL 的Job
+aml_wtss/src/main/resources/wtss/bdp/BDAP_DATA_PUSH/jobs/BDAP_DATA_FOR_RISK_MODEL.job:
+    # 说明当前 Job 是 flow 类型
+    type=flow
+    # 说明当前 Job 的依赖
+    dependencies=BDAP_DATA_PUSH_TMP
+    # 说明当前 Job 中 flow 的名字是 BDAP_DATA_FOR_RISK_MODEL_, 同时该name对应的job是此 subflow 的最后一个Job
+    flow.name=BDAP_DATA_FOR_RISK_MODEL_
+
+
+# WTSS job and flow name 映射关系
+flow 在project中的name, 直接等于 DAG 的最后一个 job name
+subflow 在所属flow中的name, 等于对应 flow job 文件的 job name
+subflow 在project中的name, 等于 flow.name, 即等于该 flow 对应 DAG 的最后一个 job name
