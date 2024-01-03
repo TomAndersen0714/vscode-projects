@@ -1,7 +1,9 @@
-数据同步方式:
-pythonUtil/etlTool.py --type=sqoop
-etl_submit.sh --type=sqoop
-etl_submit.sh --type=spark
-etl_submit.sh --type=blanca
-    sparkJob
-    jdbc
+
+
+webank-aml 数据同步任务客户端:
+    aml_bdp/bin/utils/python_utils/etlTool.py --type=spark
+    aml_bdp/bin/utils/bash_utils/etl_submit.sh --type=sqoop
+    aml_bdp/bin/utils/bash_utils/etl_submit.sh --type=spark
+    aml_bdp/bin/utils/bash_utils/etl_submit.sh --type=blanca
+        sparkJob
+        jdbc
