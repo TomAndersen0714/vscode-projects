@@ -1,0 +1,41 @@
+ads_aml_model_dxqz_1d_aggregate_wzh_di.conf
+    imd_amlai_ads_safe.ads_aml_model_dxqz_1d_aggregate_wzh_di, 地下钱庄模型微账户单日交易汇总表
+        imd_aml_safe.rrs_aml_wash_integration_txn_info, 整合交易信息wash表
+
+
+ads_aml_model_dxqz_1d_feature_wzh_di.conf
+    imd_amlai_ads_safe.ads_aml_model_dxqz_1d_feature_wzh_di, 地下钱庄模型微账户单日交易特征表 
+        imd_amlai_ads_safe.ads_aml_model_dxqz_1d_aggregate_wzh_di, 地下钱庄模型微账户单日交易汇总表
+
+ads_aml_model_dxqz_1d_same_feature_wzh_di.conf
+    imd_amlai_ads_safe.ads_aml_model_dxqz_1d_in_same_feature_wzh_di, 地下钱庄模型微账户单日相同金额转入
+        imd_aml_safe.rrs_aml_wash_integration_txn_info, 整合交易信息wash表
+        imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表
+    imd_amlai_ads_safe.ads_aml_model_dxqz_1d_out_same_feature_wzh_di, 地下钱庄模型微账户单日相同金额转出
+        imd_aml_safe.rrs_aml_wash_integration_txn_info, 整合交易信息wash表
+        imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表
+
+ads_aml_model_dxqz_cust_acct_feature_di.conf
+    imd_amlai_ads_safe.ads_aml_model_dxqz_cust_acct_feature_di, 地下钱庄模型客户属性和账户属性
+        imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表
+        imd_aml_safe.rrs_aml_base_icust_info_fact, ecif 对私客户信息基础表
+        imd_aml_safe.rrs_aml_dws_ind_icust_acct_df, 对私客户账户标签表
+        aml_dxqz_acct_tmp
+            imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表
+            imd_aml_safe.rrs_aml_base_all_account_info_fact, 账户信息基础表(所有)
+
+ads_aml_model_dxqz_cust_id_di.conf
+    imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表
+        imd_aml_safe.rrs_aml_dw_ind_trans_di, 交易基础_指标合并过滤表
+        imd_aml_safe.rrs_aml_wash_integration_txn_info, 整合交易信息wash表
+        imd_aml_safe.rrs_aml_case_base_info, 案例基本表
+
+ads_aml_model_dxqz_feature_lqt_di.conf
+    imd_amlai_ads_safe.ads_aml_model_dxqz_in_feature_lqt_di, 地下钱庄模型零钱通转入特征
+        imd_aml_safe.rrs_aml_wash_integration_txn_info, 整合交易信息wash表
+        imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表
+
+
+    imd_amlai_ads_safe.ads_aml_model_dxqz_out_feature_lqt_di
+        imd_aml_safe.rrs_aml_wash_integration_txn_info, 整合交易信息wash表
+        imd_amlai_ads_safe.ads_aml_model_dxqz_cust_id_di, 参与地下钱庄模型打分的客户表

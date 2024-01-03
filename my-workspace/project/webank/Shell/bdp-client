@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# @author chriscchen
+#
+
+# Attempts to locate java home, prints an error and exits if no
+# java can be found.
+# Added by chriscchen
+locate_java_home() {
+  local JAVA7_HOME_CANDIDATES='\
+    /usr/java/jdk1.7* \
+    /nemo/jdk1.7*'
+
+  JAVA_HOME_CANDIDATES="$JAVA7_HOME_CANDIDATES"
+
+  # attempt to find java 7
+  flag=""
+  for candidate_regex in $JAVA_HOME_CANDIDATES ; do
+      for candidate in `ls -rd $candidate_regex 2>/dev/null`; do
+        if [ -e $candidate/bin/java ]; then
+          export JAVA_HOME=$candidate
+          flag="true"
+          break 2
+        fi
+      done
+  done
+
+  if [ -z "$flag" ]; then
+    echo -e "\033[0;31;40mNo JDK 7 found. bdp-client requires Java 1.7\033[0m" 1>&2
+    exit 1
+  fi
+
+  verify_java_home
+}
+
+# Verify that JAVA_HOME set - does not verify that it's set to a meaningful
+# value.
+verify_java_home() {
+  if [ -z "$JAVA_HOME" ]; then
+    cat 1>&2 <<EOF
++======================================================================+
+|      Error: JAVA_HOME is not set and Java could not be found         |
++----------------------------------------------------------------------+
+EOF
+    exit 1
+  fi
+}
+
+JAVA=`which java 2>/dev/null`
+if [ $? != 0 ]; then
+    if [ -z "$JAVA_HOME" ]; then
+        locate_java_home
+    fi
+
+    JAVA=${JAVA_HOME}/bin/java
+fi
+
+current_dir=`pwd`
+workdir=`dirname "$0"`/../
+workdir=`cd ${workdir};pwd`
+cd ${workdir}/
+
+CLASSPATH=${workdir}:${workdir}/lib/*:${CLASSPATH}
+
+export LANG=en_US.utf-8
+export BDP_JOB_CLIENT_PATH=${workdir}
+
+if [ -f "${BDP_JOB_CLIENT_PATH}/bin/env.sh" ]; then
+  . "${BDP_JOB_CLIENT_PATH}/bin/env.sh"
+fi
+
+BDP_TSS_CLIENT_LOG_DIR=${BDP_TSS_CLIENT_LOG_DIR:-"${workdir}/logs"}
+BDP_TSS_CLIENT_CONF_DIR=${BDP_TSS_CLIENT_CONF_DIR:-"${workdir}/conf"}
+UDES_CLIENT_DIR=${workdir}/udes
+
+BDP_CLIENT_HEAP_OPTS="-server -Xms32m -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${BDP_TSS_CLIENT_LOG_DIR} -XX:ErrorFile=${BDP_TSS_CLIENT_LOG_DIR}/ps_err_pid%p.log"
+BDP_CLIENT_GC_OPTS="-XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=80 -XX:+DisableExplicitGC"
+BDP_CLIENT_LOG_OPTS="-Dlog.home=${BDP_TSS_CLIENT_LOG_DIR} -Dlog4j.configurationFile=bdp-client-log4j2.xml -Dlog.file=bdp-client.${USER}.log.`date '+%Y%m%d%H%M%S%N'`"
+BDP_CLIENT_OPTS=${BDP_CLIENT_OPTS:-"-Djob.client.submitted.by=jobserver"}
+
+cd ${current_dir}
+
+${JAVA} ${BDP_CLIENT_HEAP_OPTS} ${BDP_CLIENT_GC_OPTS} ${BDP_CLIENT_OPTS}  -classpath ${CLASSPATH} -Dconfig.path=${BDP_TSS_CLIENT_CONF_DIR} ${BDP_CLIENT_LOG_OPTS} -Dudes.path=${UDES_CLIENT_DIR}   cn.webank.bdp.job.client.ClientApplication "$@"
+exitCode=$?
+
+exit ${exitCode}

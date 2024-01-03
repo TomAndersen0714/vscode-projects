@@ -1,0 +1,13 @@
+log4j.rootCategory
+log4j.appender.console
+log4j.appender.console.target
+log4j.appender.console.layout
+log4j.appender.console.layout.ConversionPattern
+log4j.logger.org.spark_project.jetty
+log4j.logger.org.spark_project.jetty.util.component.AbstractLifeCycle
+log4j.logger.org.apache.spark.repl.SparkIMain$exprTyper
+log4j.logger.org.apache.spark.repl.SparkILoop$SparkILoopInterpreter
+log4j.logger.org.apache.parquet
+log4j.logger.parquet
+log4j.logger.org.apache.hadoop.hive.metastore.RetryingHMSHandler
+log4j.logger.org.apache.hadoop.hive.ql.exec.FunctionRegistry
