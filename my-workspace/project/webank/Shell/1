@@ -1,132 +1,256 @@
-BLACK_HIT_TRACKING_NEW/jobs/HIT_ALERT_NEW.job:2:dependencies=SQOOP_CP_HIT_2_MYSQL_NEW,HIT_NEW_THEN_2_MYSQL
-BLACK_HIT_TRACKING_NEW/jobs/SQOOP_CP_HIT_2_MYSQL_NEW.job:3:flow.name=SQOOP_CP_HIT_2_MYSQL_NEW_
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_BLACKLIST_CP_HIT_NEW.job:2:dependencies=SQOOP_RRS_AML_T07_BLACKLIST_2_HIVE_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_BLACKLIST_DO_HIT_NEW.job:2:dependencies=SQOOP_RRS_AML_T07_BLACKLIST_2_HIVE_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_BLACKLIST_DT_HIT_NEW.job:2:dependencies=SQOOP_RRS_AML_T07_BLACKLIST_2_HIVE_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_BLACKLIST_HIT_NEW.job:2:dependencies=SQOOP_RRS_AML_T07_BLACKLIST_2_HIVE_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_BLACKLIST_LE_HIT_NEW.job:2:dependencies=SQOOP_RRS_AML_T07_BLACKLIST_2_HIVE_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_BLACKLIST_SH_HIT_NEW.job:2:dependencies=SQOOP_RRS_AML_T07_BLACKLIST_2_HIVE_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/AML_FINAL_HIT_NEW.job:2:dependencies=SQOOP_I_AML_BLACKLIST_HIT_2_MYSQL_NEW,SQOOP_C_AML_BLACKLIST_HIT_2_MYSQL_NEW,I_AML_BLACKLIST_CP_HIT_COUNT_CHECK_NEW,I_AML_BLACKLIST_DO_HIT_COUNT_CHECK_NEW,I_AML_BLACKLIST_LE_HIT_COUNT_CHECK_NEW,I_AML_BLACKLIST_SH_HIT_COUNT_CHECK_NEW,I_AML_BLACKLIST_HIT_NEW_9LIST_MONITOR
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/E_HAML_DT_REPORT.job:2:dependencies=SQOOP_AML_BLACKLIST_DT_HIT_2_MYSQL
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/SQOOP_C_AML_BLACKLIST_HIT_2_MYSQL_NEW.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=aml --cust_type=C" -v ${HAML_VERSION}
-BLACK_HIT_TRACKING_NEW/subFlows/AML_HIT_BATCH_NEW/jobs/SQOOP_I_AML_BLACKLIST_HIT_2_MYSQL_NEW.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=aml --cust_type=I" -v ${HAML_VERSION}
-BLACK_HIT_TRACKING_NEW/subFlows/OPERATOR_HIT_BATCH_NEW/jobs/OPERATOR_FINAL_HIT_NEW.job:2:dependencies=SQOOP_I_OPERATOR_BLACKLIST_HIT_2_MYSQL_NEW,SQOOP_C_OPERATOR_BLACKLIST_HIT_2_MYSQL_NEW,I_OPERATOR_BLACKLIST_CP_HIT_COUNT_CHECK_NEW,I_OPERATOR_BLACKLIST_DO_HIT_COUNT_CHECK_NEW,I_OPERATOR_BLACKLIST_LE_HIT_COUNT_CHECK_NEW,I_OPERATOR_BLACKLIST_SH_HIT_COUNT_CHECK_NEW,SP_SYNC_HIT_STATUS_LOG_BATCH_OPERATOR_C,SP_SYNC_HIT_STATUS_LOG_BATCH_OPERATOR_I
-BLACK_HIT_TRACKING_NEW/subFlows/RISK_HIT_BATCH_NEW/jobs/RISK_FINAL_HIT_NEW.job:2:dependencies=SQOOP_I_RISK_BLACKLIST_HIT_2_MYSQL_NEW,SQOOP_C_RISK_BLACKLIST_HIT_2_MYSQL_NEW,I_RISK_BLACKLIST_CP_HIT_COUNT_CHECK_NEW,I_RISK_BLACKLIST_DO_HIT_COUNT_CHECK_NEW,I_RISK_BLACKLIST_LE_HIT_COUNT_CHECK_NEW,I_RISK_BLACKLIST_SH_HIT_COUNT_CHECK_NEW,SP_SYNC_HIT_STATUS_LOG_BATCH_RISK_C,SP_SYNC_HIT_STATUS_LOG_BATCH_RISK_I
-BLACK_HIT_TRACKING_NEW/subFlows/RISK_HIT_BATCH_NEW/jobs/RISK_MANUAL_FINAL_HIT_NEW.job:2:dependencies=SQOOP_I_RISK_MANUAL_BLACKLIST_HIT_2_MYSQL_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/RISK_HIT_BATCH_NEW/jobs/SQOOP_C_RISK_BLACKLIST_HIT_2_MYSQL_NEW.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=risk --cust_type=C" -v ${HAML_VERSION}
-BLACK_HIT_TRACKING_NEW/subFlows/RISK_HIT_BATCH_NEW/jobs/SQOOP_I_RISK_BLACKLIST_HIT_2_MYSQL_NEW.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=risk --cust_type=I" -v ${HAML_VERSION}
-BLACK_HIT_TRACKING_NEW/subFlows/RISK_HIT_BATCH_NEW/jobs/SQOOP_I_RISK_MANUAL_BLACKLIST_HIT_2_MYSQL_NEW.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=risk_manual --cust_type=I" -v ${HAML_VERSION}
-BLACK_HIT_TRACKING_NEW/subFlows/SQOOP_CP_HIT_2_MYSQL_NEW/jobs/SI_BLACKLIST_CP_HIT_2_MYSQL_NEW.job:2:dependencies=SQOOP_CP_HIT_2_MYSQL_DEL_HIS_NEW
-BLACK_HIT_TRACKING_NEW/subFlows/SQOOP_CP_HIT_2_MYSQL_NEW/jobs/SI_BLACKLIST_CP_HIT_2_MYSQL_NEW.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --SqoopBlacklistHitStatusAMLJob" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/E_HAML_ALERT_BH_CASE_FINISH.job:2:dependencies=SG_HAML_CASE_SQOOP_EXP,SG_HAML_CASE_SQOOP_EXP_ABH,SG_HAML_CASE_SQOOP_EXP_ABS,SG_HAML_CASE_SQOOP_EXP_MAN_BS,SG_HAML_CASE_SQOOP_EXP_SBS
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_HISTORY.job:2:dependencies=SG_HAML_CASE_REBOOT_SQOOP_IMP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_REBOOT_SQOOP_IMP.job:3:flow.name=SG_HAML_CASE_REBOOT_SQOOP_IMP_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_SQOOP_EXP.job:3:flow.name=SG_HAML_CASE_SQOOP_EXP_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_SQOOP_EXP_ABH.job:3:flow.name=SG_HAML_CASE_SQOOP_EXP_ABH_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_SQOOP_EXP_ABS.job:3:flow.name=SG_HAML_CASE_SQOOP_EXP_ABS_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_SQOOP_EXP_MAN_BS.job:3:flow.name=SG_HAML_CASE_SQOOP_EXP_MAN_BS_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/jobs/SG_HAML_CASE_SQOOP_EXP_SBS.job:3:flow.name=SG_HAML_CASE_SQOOP_EXP_SBS_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_BLOAD_HIS/jobs/SG_HAML_BLOAD_HIS_RECEIPT1.job:2:dependencies=SG_HAML_ISQOOP_RECEIPT1
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_BLOAD_HIS/jobs/SG_HAML_ISQOOP_RECEIPT1.job:2:flow.name=SG_HAML_ISQOOP_RECEIPT1_
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_BLOAD_HIS/subFlows/SG_HAML_ISQOOP_RECEIPT1/jobs/SI_HAML_RECEIPT_ELEMENT.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/receipt/rrs_aml_isqoop_receipt_field_error_msg.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_BLOAD_HIS/subFlows/SG_HAML_ISQOOP_RECEIPT1/jobs/SI_HAML_RECEIPT_FILE.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/receipt/rrs_aml_isqoop_receipt_file_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_BLOAD_HIS/subFlows/SG_HAML_ISQOOP_RECEIPT1/jobs/SI_HAML_RECEIPT_MAP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/receipt/rrs_aml_isqoop_report_package_case_mapping.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_MONITOR/jobs/SE_HAML_CASE_CONTINUE_MONITOR.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_cust_continue_monitor.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_CASE.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_base_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_CASE_DOUBT_CUST.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_doubt_cust.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_CASE_DOUBT_MODEL.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_doubt_model.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_CASE_DOUBT_TRANS.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_doubt_trans.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_CASE_LARGE_REBOOK_TRANS.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_large_rebook_trans.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_REBOOT_ACCT.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_rebook_acct_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_REBOOT_CUST.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_rebook_cust_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_REBOOT_SQOOP_IMP/jobs/SI_HAML_REBOOT_TRANS.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_rebook_trans_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=BH" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BH_CUST.job:2:dependencies=SP_HAML_CASE_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BH_CUST.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_cust.job --dt=export" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BH_MODEL.job:2:dependencies=SP_HAML_CASE_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BH_MODEL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_model.job --dt=export" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BH_TRANS.job:2:dependencies=SP_HAML_CASE_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BH_TRANS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_trans.job --dt=export" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS_CUST.job:2:dependencies=SP_HAML_CASE_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS_CUST.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=export" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS_MODEL.job:2:dependencies=SP_HAML_CASE_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS_MODEL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=export" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS_TRANS.job:2:dependencies=SP_HAML_CASE_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_BS_TRANS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=export" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_MUL_CUST_REL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=BH" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_CASE_MUL_CUST_REL_BS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_REBOOT_ACCT.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_acct_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_REBOOT_CUST.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_cust_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SE_HAML_REBOOT_TRANS.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_trans_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP/jobs/SP_HAML_CASE_DEL_FOR_SQOOP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --create_user=batch --delete_daily_case_before_sqoop" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABH/jobs/SE_HAML_CASE_ABH.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=ABH" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABH/jobs/SE_HAML_CASE_ABH_MUL_CUST_REL.job:2:dependencies=SP_HAML_CASE_ABH_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABH/jobs/SE_HAML_CASE_ABH_MUL_CUST_REL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=ABH" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABH/jobs/SE_HAML_CASE_REBOOK_TRANS.job:2:dependencies=SP_HAML_CASE_ABH_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABH/jobs/SE_HAML_CASE_REBOOK_TRANS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_rebook_trans.job --dt=ABH" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABH/jobs/SP_HAML_CASE_ABH_DEL_FOR_SQOOP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --create_user=amend_bh --delete_daily_case_before_sqoop" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=ABS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_CUST.job:2:dependencies=SP_HAML_CASE_ABS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_CUST.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=ABS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_MODEL.job:2:dependencies=SP_HAML_CASE_ABS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_MODEL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=ABS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_MUL_CUST_REL.job:2:dependencies=SP_HAML_CASE_ABS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_MUL_CUST_REL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=ABS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_TRANS.job:2:dependencies=SP_HAML_CASE_ABS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SE_HAML_CASE_ABS_TRANS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=ABS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_ABS/jobs/SP_HAML_CASE_ABS_DEL_FOR_SQOOP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --create_user=amend_bs --delete_daily_case_before_sqoop" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_CUST.job:2:dependencies=SP_HAML_CASE_MAN_BS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_CUST.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_MODEL.job:2:dependencies=SP_HAML_CASE_MAN_BS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_MODEL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_MUL_CUST_REL.job:2:dependencies=SP_HAML_CASE_MAN_BS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_MUL_CUST_REL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_TRANS.job:2:dependencies=SP_HAML_CASE_MAN_BS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SE_HAML_CASE_MAN_BS_TRANS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_MAN_BS/jobs/SP_HAML_CASE_MAN_BS_DEL_FOR_SQOOP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --create_user=MANUAL_BS --delete_daily_case_before_sqoop" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=SBS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_CUST.job:2:dependencies=SP_HAML_CASE_SBS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_CUST.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=SBS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_MODEL.job:2:dependencies=SP_HAML_CASE_SBS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_MODEL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=SBS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_MUL_CUST_REL.job:2:dependencies=SP_HAML_CASE_SBS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_MUL_CUST_REL.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=SBS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_TRANS.job:2:dependencies=SP_HAML_CASE_SBS_DEL_FOR_SQOOP
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SE_HAML_CASE_SBS_TRANS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=SBS" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_ALERT_CASE/subFlows/SG_HAML_CASE_SQOOP_EXP_SBS/jobs/SP_HAML_CASE_SBS_DEL_FOR_SQOOP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --create_user=SBS --delete_daily_case_before_sqoop" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_BLACK_CDK/jobs/SG_BLACK_CDK_.job:2:dependencies=SG_HAML_CDK_SQOOP,SG_HAML_CDK_HIT_NEW_THEN_2MYSQL
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_BLACK_CDK/jobs/SG_HAML_CDK_SQOOP.job:3:flow.name=SG_HAML_CDK_SQOOP_
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_BLACK_CDK/subFlows/SG_HAML_CDK_SQOOP/jobs/SI_HAML_BLACK_STATUS_CDK_C.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_inquiry.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_BLACK_CDK/subFlows/SG_HAML_CDK_SQOOP/jobs/SI_HAML_BLACK_STATUS_CDK_D.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_hold.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_BLACK_CDK/subFlows/SG_HAML_CDK_SQOOP/jobs/SI_HAML_BLACK_STATUS_CDK_K.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_deduct.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_HAML_OPERATOR/jobs/S_IMPORT_M_LIST_TYPE2.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/blacklist/operator/import_mlist_type.py --batch_date=${run_today_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_PHK_HIT_BATCH/jobs/P_HAML_PHK_FINAL_HIT.job:2:dependencies=SQOOP_BATCH_PHK_HIT_C,SQOOP_BATCH_PHK_HIT_I
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_RISK_HANDLE_AUDIT/subFlows/SG_RISK_CURRENT_PROCESS/jobs/P_RRS_AML_CUST_RISK_DAILY_AUDIT_PROCESS_MODIFY_ORDER.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_audit_process_modify_order.py --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_RISK_HANDLE_AUDIT/subFlows/SG_RISK_CURRENT_PROCESS/jobs/P_RRS_AML_CUST_RISK_DAILY_AUDIT_PROCESS_ORDER.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_audit_process_order.py --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_RISK_HANDLE_AUDIT/subFlows/SG_RISK_CURRENT_PROCESS/jobs/P_RRS_AML_CUST_RISK_DAILY_ORI_BATCH.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_ori_batch.py --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_RISK_HANDLE_AUDIT/subFlows/SG_RISK_CURRENT_PROCESS/jobs/P_RRS_AML_CUST_RISK_DAILY_ORI_MODIFY.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_ori_modify.py --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_BASE/subFlows/SG_RISK_HANDLE_AUDIT/subFlows/SG_RISK_CURRENT_PROCESS/jobs/P_RRS_AML_CUST_RISK_DAILY_ORI_RECORDS.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_ori_records.py --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_WASH/subFlows/SG_WASH_BRANCH/jobs/EXPORT_MYSQL_RRS_AML_WASH_BDM_BRANCH_INFO.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std}  --SqoopExportBdmBranchInfoJob" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_HAML_WASH/subFlows/SG_WASH_WEBANK_STAFF/jobs/SG_WASH_WEBANK_STAFF_.job:2:dependencies=J_CNT_RRS_AML_WASH_WEBANK_STAFF_INFO_FACT,SQOOP_ECIF_MULTI_CLIENT
-G_HAML_MAIN/subFlows/SG_HAML_WASH/subFlows/SG_WASH_WEBANK_STAFF/jobs/SQOOP_ECIF_MULTI_CLIENT.job:3:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wash/ecif/sqoop_export_ecif_multiple_client_info.conf --batch_date=${run_date_std} " -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/jobs/SI_CASE_ADVICE.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_advice.conf --batch_date=${run_date_std}"  -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/jobs/SI_PREPARE_AI_MODEL_INFO.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/aml_f_machine_learn_model.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/jobs/SI_PREPARE_DOLLAR_EXCHANGE_RATE.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_dollar_exchange_rate.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/jobs/SI_PREPARE_MODEL_INFO.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/aml_f_model_defined.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/jobs/WASH_ODS_AML_OPERATE_LOG_DI.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/sqoop/case/import/ods_aml_operate_log_di.conf --batch_date=${run_date_std}"  -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_BLACK/jobs/SI_BLACK_CONF_TYPE.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=sqoop --sqoop_job=${HAML_BIN_PATH}/sqoop/import/prepare/si_rrs_aml_conf_web_black_type_dict.conf --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_BLACK/jobs/SI_BLACK_CONF_TYPE_GROUP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=sqoop --sqoop_job=${HAML_BIN_PATH}/sqoop/import/prepare/si_rrs_aml_conf_web_black_type_group.conf --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_BLACK/jobs/SI_BLACK_LIST.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_black_web_fact.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_BLACK/jobs/SI_BLACK_LIST_MODIFY.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_black_modify_web_fact.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_BLACK/jobs/SI_BLACK_WHITE_OPP_ACCT.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_black_white_acct.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_CONF_PBC/jobs/SI_CONF_PBC_AREA.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_pbc_area.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_CONF_PBC/jobs/SI_CONF_PBC_COUNTRY.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_pbc_country.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_CONF_RISK_AREA/jobs/SI_CONF_AREA_MAP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_area_map.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_CONF_RISK_AREA/jobs/SI_CONF_BANK_AREA.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_bank_id_area.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_CONF_RISK_AREA/jobs/SI_CONF_RISK_SCORE.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_risk_score.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_DUED_TASK.jobs/SI_DUED_TASK_INFO.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_dued_task_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_DUED_TASK.jobs/SI_SDK_USER_INFO.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_sdk_user_info.job" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_WHITE/jobs/SI_WHITE_ACCT.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=sqoop --sqoop_job=${HAML_BIN_PATH}/sqoop/import/prepare/si_rrs_aml_white_web_cust_acct.conf --batch_date=${run_date_std}" -v ${HAML_VERSION}
-G_HAML_MAIN/subFlows/SG_PREPARE/subFlows/SG_PREPARE_WHITE/jobs/SI_WHITE_OPP.job:2:command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_white_web_opp_acct.job" -v ${HAML_VERSION}
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/bdap/delete/delete_sample_table.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/bdap/blanca_config/black/rrs_aml_black_list_hit_all_dim.conf --batch_date=${run_date_std} --fixed_date=${fixed_date}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/bdap/blanca_config/cust/rrs_aml_base_ccust_info_fact.conf --batch_date=${run_date_std} --fixed_date=${fixed_date}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_today_std}  --BlacklistTerroristReportAndHit "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_today_std}  --TrackingBlacklistByCcifPostNameJob "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --ExportHiveTable2Mysql --source_data_file=${HAML_BIN_PATH}/hit/aml/rrs_aml_blacklist_terrorist_report_for_export.hql --target_data_pks=uuid --target_table=aml_f_terrorist_blacklist_hit --is_delete_exist_result=true --deleted_data_file=${HAML_BIN_PATH}/hit/aml/aml_f_terrorist_blacklist_hit_need_deleted.sql"
+${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=aml --cust_type=C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=aml --cust_type=I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/hit/rrs_aml_t07_blacklist_for_export.py --batch_date=${run_today_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --blacklist_hit_back_tracking "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --blacklist_hit_report "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_aml_I     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_aml_C     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_operator_I     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_operator_C     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_risk_I     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_risk_C     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_today_std} --batch_date=${run_today_std}   --blacklist_dt=batch_risk_manual_I     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --HitStatusLogToTiDB --batch_date=${run_today_std} --dt=batch_operator_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --HitStatusLogToTiDB --batch_date=${run_today_std} --dt=batch_operator_I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistHitStatusToMySql --batch_date=${run_today_std} --dt=batch_operator_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistHitStatusToMySql --batch_date=${run_today_std} --dt=batch_operator_I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --HitStatusLogToTiDB --batch_date=${run_today_std} --dt=batch_risk_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --HitStatusLogToTiDB --batch_date=${run_today_std} --dt=batch_risk_I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=risk --cust_type=C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=risk --cust_type=I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/hit/sqoop2mysql.py --batch_date=${run_today_std} --module=risk_manual --cust_type=I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --SqoopBlacklistHitStatusAMLJob"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --blacklist_Hit_Status_aml_to_mysql_del"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --blacklist_c_export_job "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --blacklist_i_export_job "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --mlist_type_export_job "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${batch_date} --aml_model_grep --batch_date=${batch_date} --model_key=${model_key} --model_version=${model_version} --exe_id=${exe_id} --model_uuid=${model_uuid}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${batch_date} --aml_risk_model_grep --batch_date=${batch_date} --model_key=${model_key} --model_version=${model_version} --exe_id=${exe_id} --model_uuid=${model_uuid} ${changeable_param}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/prod_eval/export_mysql_prod_eval.conf --batch_date=${batch_date}  --batch_date_temp=${batch_date_temp} --qm_eval_dt=${qm_eval_dt} --eval_cycle=${eval_cycle} --task_type=official --eval_year=${eval_year}  --remain_risk_list=\\"${remain_risk_list}\\""
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/prod_eval/export_mysql_prod_eval_inst_ind.conf --batch_date=${batch_date}  --batch_date_temp=${batch_date_temp} --eval_cycle=${eval_cycle} --eval_year=${eval_year} "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/prod_eval/inst/ads_aml_prod_eval_inst_df.conf --batch_date=${batch_date}  --batch_date_temp=${batch_date_temp} --qj_eval_start_dt=${qj_eval_start_dt} --qm_eval_dt=${qm_eval_dt} --eval_cycle=${eval_cycle}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/prod_eval/export_mysql_prod_eval_once.conf --batch_date=${batch_date}  --batch_date_temp=${batch_date_temp} --qm_eval_dt=${qm_eval_dt} --eval_cycle=${eval_cycle} --inst_cd=${inst_cd} --task_type=${task_type}  --eval_year=${eval_year} --task_cd=${task_cd}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/prod_eval/inst/ads_aml_prod_eval_one_inst_df.conf --batch_date=${batch_date}  --batch_date_temp=${batch_date_temp} --qj_eval_start_dt=${qj_eval_start_dt} --qm_eval_dt=${qm_eval_dt} --eval_cycle=${eval_cycle} --inst_cd=${inst_cd}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/review/blklist/ads_aml_blklist_stat.conf --batch_date=${run_date_std-3}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/ads/review/dued/ads_aml_dued_chk.conf --batch_date=${run_date_std-3}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_aggregate_ind_icust_acct_15_day.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_base_account_info_fact.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_base_ccust_info_fact.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_base_icust_info_fact.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_base_outer_account_info_fact.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_black_list_all_dim.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_black_list_hit_all_dim.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_t07_blacklist_batch_full.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_dpc_tb_acc_mid.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_dphist_ci_ret_detl_mid3.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_ind_cust_acct_tags1.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_ind_icust_acct_fact.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_risk_cust_rate_reason_detail.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_risk_rate_current.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_tb_cst_pers.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_tb_cust_product_full_mapping.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_tb_cust_product_mapping.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_tb_risk_new.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_wash_card_custacct_info.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_wash_cust_product_info_fact.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_wash_deposit_all_ba_hold_detl_info.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/backup/rrs_aml_wash_outer_account_info_lqt_t0.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/z_others/delete/auto_delete_table.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --ControlUserInfoJob "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --control_result_hive_2_mysql "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --rrs_aml_control_user_info "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/dwd/dued/dwd_aml_dued_task_fact_df.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std} --cust_sample_by_pregel --summary_partition=${summary_partition} --reverse_partition=${reverse_partition} --insert_partition=${insert_partition} --maxIterations=${maxIterations} --spark.executor.memory=20g"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std} --subgraph_by_pregel --summary_partition=${summary_partition} --insert_partition=${insert_partition} --maxIterations=${maxIterations} --spark.executor.memory=20g"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std}  --GenerateLoadNewBsBlacklistJob "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std}  --PushNewKyBlacklistJob "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --batch_date=${run_date_std} --type=spark --CaseAlertReport"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --manual_correct_receipt_to_hive "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --aml_update_amend_file_status --case_type=BH "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --aml_update_amend_file_status --case_type=BS "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --aml_supplement_cust_trans1 "
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/receipt/rrs_aml_isqoop_receipt_field_error_msg.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/receipt/rrs_aml_isqoop_receipt_file_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/receipt/rrs_aml_isqoop_report_package_case_mapping.job"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --FindBsModelTransJob"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_cust_continue_monitor.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_base_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_doubt_cust.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_doubt_model.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_doubt_trans.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_large_rebook_trans.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_rebook_acct_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_rebook_cust_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --import_txt_by_log --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_rebook_trans_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=BH"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_cust.job --dt=export"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_model.job --dt=export"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_trans.job --dt=export"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=export"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=export"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=export"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=BH"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_acct_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_cust_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_trans_info.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=ABH"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=ABH"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_rebook_trans.job --dt=ABH"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=ABS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=ABS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=ABS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=ABS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=ABS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=MANUAL_BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=MANUAL_BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=MANUAL_BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=MANUAL_BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=MANUAL_BS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=SBS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=SBS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=SBS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=SBS"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=SBS"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std} --freq=day --date=${run_date_std} --aml_man_alert_trans_report"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std} --freq=day --date=${run_date_std} --aml_manual_bs_case_model"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=etl --freq=day --date=${run_date_std} --hqlPath=${HAML_BIN_PATH}/case/export/rrs_aml_rebook_acct_info.hql"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=etl --freq=day --date=${run_date_std} --hqlPath=${HAML_BIN_PATH}/case/export/rrs_aml_rebook_cust_info.hql"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=etl --freq=day --date=${run_date_std} --hqlPath=${HAML_BIN_PATH}/case/export/rrs_aml_rebook_trans_info.hql"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --MysqlRebookStatusFixJob --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/email/EmailBatchFinsh.py --aml_batch_type=export --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --generate_report --case_type=BH --report_type=C --spark.sql.adaptive.enabled=false"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --generate_report --case_type=BH --report_type=D --spark.sql.adaptive.enabled=false"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --generate_report --case_type=BH --report_type=N --spark.sql.adaptive.enabled=false "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --generate_report --case_type=BS --report_type=C --spark.sql.adaptive.enabled=false"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --generate_report --case_type=BS --report_type=N --spark.sql.adaptive.enabled=false"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/dwd/cdk/dwd_aml_query_freez_deduct_base_request_di_to_tidb.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}   --blacklist_dt=cdk_c     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}   --blacklist_dt=cdk_d     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}   --blacklist_dt=cdk_k     --BlacklistHitNewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --remove_blacklist_new --REMOVE_BLACKLIST_NEW_DT='^(cdk_cd|cdk_dd|cdk_kd)$' "
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_inquiry.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_hold.job"
+${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_deduct.job"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=cdk_c"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=cdk_d"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=cdk_k"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --CombineBlacklistHitJob --hit_type=cp_hit"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std}  --BlacklistHitOfStaffJob "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --CombineBlacklistHitJob --hit_type=hit"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --StatisticBlacklistCountJob"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_today_std} --type=spark --ProductInfoHive2Mysql "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/base/blacklist/operator/export_tidb_blacklist_batch_access_log_di.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/blacklist/operator/import_mlist_type.py --batch_date=${run_today_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=operator_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=operator_I"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=operator_inc_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=operator_inc_I"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --batch_date=${run_date_std} --type=spark --PHKCountAnormalReport"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --RegulatoryBatchToTiDB --batch_date=${run_date_std} --dt=phk_I,phk_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --BlacklistBatchToMysql --batch_date=${run_date_std} --dt=risk_manual,risk"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --risk_blacklist_statistic_report "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --RegulatoryHitStatusToTiDB --batch_date=${run_date_std} --dt=batch_phk_C"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --RegulatoryHitStatusToTiDB --batch_date=${run_date_std} --dt=batch_phk_I"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_cust_risk_daily_audited_tidb.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/audited_push2tidb.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_cust_risk_daily_mapping_tidb.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/mapping_push2tidb.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_HQL_ENGINE_PATH} --batch_date=${run_date_std} --hqlPath=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_cust_risk_daily_audited_batch.hql"
+${PYTHON_PATH} ${HAML_HQL_ENGINE_PATH} --batch_date=${run_date_std} --hqlPath=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_cust_risk_daily_audited_modify.hql"
+${PYTHON_PATH} ${HAML_HQL_ENGINE_PATH} --batch_date=${run_date_std} --hqlPath=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_cust_risk_daily_audited_single.hql"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --risk_audited_delete "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --risk_current_process_merge --spark.sql.autoBroadcastJoinThreshold=512000000 "
+${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_audit_process_modify_order.py --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_audit_process_order.py --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_ori_batch.py --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_ori_modify.py --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/sqoop/import/risk/RiskCurrentAndProcess/import_rrs_aml_cust_risk_daily_ori_records.py --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --batch_date=${run_date_std} --check_table=rrs_aml_dw_outer_report_acct_df --dw_outer_dqc_mail"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --batch_date=${run_date_std} --check_table=rrs_aml_dw_outer_report_trans_di --dw_outer_dqc_mail"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --cust_null_statistic "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std} --OuterTxnIndToTriple"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --RiskReasonResultEmail "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --RiskRateApproveReasonAutoGenerate "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --risk_audit_new_all "
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --risk_audit_batch "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/new/manaul_push2tdsql.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_cust_risk_wait_audit_tidb.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/wait_audit_push2tidb.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustRiskLevelStatReport"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --TxnTerrorBlacklistStatReport"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --terror_blacklist_to_mysql"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --DailyTrackingTxnTerrorBlacklistJob --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --UpdateTxnTerrorBlacklistJob --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=spark --batch_date=${run_date_std} --job=MakerJob --src=/data/bdp/bdp_etl_deploy/hduser1009/aml_bdp/bin/dm/wash/ip_2_region/ipv6_segment_region_mapping.hql  --ipType=ipv6"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std}  --SqoopExportBdmBranchInfoJob"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --rrs_aml_kapb_rdzhxx_upsert "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --CorpRegulatoryListDF --list_type=phk"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_date_std}  --IndividualRegulatoryListDF --list_type=phk"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wash/ecif/sqoop_export_ecif_multiple_client_info.conf --batch_date=${run_date_std} "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/risk/audit1/tidb/rrs_aml_rate_modify_event_tdsql2hive.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/sqoop/case/import/si_rrs_aml_case_advice.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/aml_f_machine_learn_model.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_dollar_exchange_rate.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/aml_f_model_defined.job"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/sqoop/case/import/ods_aml_operate_log_di.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=sqoop --sqoop_job=${HAML_BIN_PATH}/sqoop/import/prepare/si_rrs_aml_conf_web_black_type_dict.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=sqoop --sqoop_job=${HAML_BIN_PATH}/sqoop/import/prepare/si_rrs_aml_conf_web_black_type_group.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_black_web_fact.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_black_modify_web_fact.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_black_white_acct.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_pbc_area.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_pbc_country.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_area_map.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_bank_id_area.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_conf_web_risk_score.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_dued_task_info.job"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_sdk_user_info.job"
+sh ${ETL_SUBMIT} --type=sqoop --sqoop_job=${HAML_BIN_PATH}/sqoop/import/prepare/si_rrs_aml_white_web_cust_acct.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_SQOOP_TOOL} --import_hcatalog --drop-partition --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/import/prepare/rrs_aml_white_web_opp_acct.job"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --date_dim_generate_job"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --high_level_risk_party_detl_merge "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --HighLevelRiskPartyAppendToTiDB"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --batch_date=${run_date_std} --type=spark --high_level_risk_party_reason_result "
+${PYTHON_PATH} ${HAML_BIN_PATH}/blacklist/export/export_risk_blacklist.py --batch_date=${run_today_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/blacklist/export/export_dict.py --batch_date=${run_today_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/blacklist/export/export_mlist_type.py --batch_date=${run_today_std}"
+${PYTHON_PATH} ${HAML_BIN_PATH}/utils/python_utils/etlTool.py --type=spark --StatsDoubtModelReportJob --batch_date=${run_date_std} --batch_no=${batch_no} --start_date=${start_date} --end_date=${end_date} --report_type=${report_type} --cust_type=${cust_type}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/nrt/hit/alert/blacklist_txn_oppo_alert_without_error_hit.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/nrt/hit/alert/rrs_aml_acct_base_info_backup.conf --batch_date=${run_date_std} --delete_day=30 --freq=day"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${batch_date} --aml_cust_trans_sync --batch_date=${batch_date} --exe_batch_id=${exe_batch_id}  ${selected_batch_id_param} --spark.executor.instances=${trans_sync_executors_number} --spark.executor.cores=2 "
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --update_manual_cust_option --batch_date=${run_date_std} --exe_batch_id=${exe_batch_id} "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/blacklist/fg/rrs_aml_blacklist_in_fg.conf --batch_date=${run_today_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wash/cust/rrs_aml_ecif_webank_client_info.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --BindCardReplaceToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --BlackListHitCpAllDimReplaceToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CaseRecordsHistoryReplaceDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustIdRelationReplaceDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustInfoViewReplaceDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustNoRelationReplaceDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --IcustCcifRelationReplaceToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --RiskRateCustRecordsHistoryReplaceDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --WebankStaffInfoAppendToTiDB"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wash/cust/rrs_aml_ecif_webank_client_info_init.conf --batch_date=${run_date_std}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --BindCardInfoAppendToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CaseRecordsHistoryAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustIdRelationAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustInfoViewAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --CustNoRelationAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --RiskRateCustRecordsHistoryAppendDataToTiDB"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --date=${run_date_std} --batch_date=${run_date_std}  --WebankStaffInfoAppendToTiDB"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/z_others/init_table/rrs_aml_blacklist_txn_oppo/sync_rrs_aml_blacklist_txn_oppo.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/combined/rrs_aml_base_trans_main_fact_combined_0_copy.conf --batch_date=${run_date_std} --start_ds=${start_ds}  --end_ds=${end_ds} --batch_days=${batch_days}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/combined/rrs_aml_dw_ind_trans_di_deposit_combined_0_copy.conf --batch_date=${run_date_std} --start_ds=${start_ds}  --end_ds=${end_ds} --batch_days=${batch_days}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/combined/rrs_aml_ind_icust_acct_fact_combined_0_copy.conf --batch_date=${run_date_std} --start_ds=${start_ds}  --end_ds=${end_ds} --batch_days=${batch_days}"
+${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --freq=day --date=${run_today_std} --start_date=${start_date} --end_date=${end_date} --batch_no=${batch_no} --ManualTrackingTxnTerrorBlacklistJob --batch_date=${run_today_std}  "
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wedata/export/aml_bs_case_report_info.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wedata/export/aml_report_metric_info.conf --batch_date=${run_date_std}"
+sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wedata/export/init_aml_bs_case_report_info.conf --batch_date=${run_date_std}"

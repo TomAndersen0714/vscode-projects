@@ -1,37 +1,50 @@
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_cust_continue_monitor.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=BH" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_cust.job --dt=export" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_model.job --dt=export" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_trans.job --dt=export" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=export" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=export" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=export" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=BH" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_acct_info.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_cust_info.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_rebook_trans_info.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=ABH" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=ABH" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_large_rebook_trans.job --dt=ABH" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=ABS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=ABS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=ABS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=ABS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=ABS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=MANUAL_BS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_base_info.job --dt=SBS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_cust.job --dt=SBS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_model.job --dt=SBS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_multi_cust_relation.job --dt=SBS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_hcatalog --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/case/export/se_rrs_aml_case_doubt_trans.job --dt=SBS" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_inquiry.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_hold.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH}  ${HAML_PYTHON_SQOOP_TOOL} --export_txt --date=${run_date_std} --sqoopFile=${HAML_BIN_PATH}/sqoop/export/blacklist/cdk/rrs_aml_blacklist_hit_status_deduct.job" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "${PYTHON_PATH} ${HAML_PYTHON_ETL_TOOL} --type=spark --batch_date=${run_date_std}  --SqoopExportBdmBranchInfoJob" -v ${HAML_VERSION}
-command=bdp-client -c ${BDP_CFG_FILE} shell --cmd "sh ${ETL_SUBMIT} --type=blanca --conf=${HAML_BIN_PATH}/wash/ecif/sqoop_export_ecif_multiple_client_info.conf --batch_date=${run_date_std} " -v ${HAML_VERSION}
+blacklist_txn_oppo_alert_check.conf
+risk_daily_audited_hbase_to_tidb2.conf
+risk_daily_audited_hbase_to_tidb.conf
+sync_rrs_aml_blacklist_txn_oppo.conf
+init_ods_aml_operate_log.conf
+init_query_freez_deduct_base.conf
+rrs_aml_statistic_blacklist_count.conf
+tidb_risk_history_trigger_reason_fix.conf
+manual_rate_level_reason_fix.conf
+BlacklistHitNullFix.conf
+BlacklistHitCdkListFix.conf
+BlacklistCdkTidbAndTdsqlFix.conf
+rrs_aml_t07_regulatory_batch_fix.conf
+init_aml_bs_case_report_info.conf
+aml_report_metric_info.conf
+aml_bs_case_report_info.conf
+sqoop_export_ecif_multiple_client_info.conf
+rrs_aml_ecif_webank_client_info_init.conf
+rrs_aml_ecif_webank_client_info.conf
+si_rrs_aml_case_advice.conf
+ods_aml_operate_log_di.conf
+wait_audit_push2tidb.conf
+rrs_aml_rate_modify_event_tdsql2hive.conf
+mapping_push2tidb.conf
+audited_push2tidb.conf
+manaul_push2tdsql.conf
+rrs_aml_blacklist_txn_oppo_alert_4_0.conf
+rrs_aml_blacklist_txn_oppo_alert_3_5.conf
+rrs_aml_blacklist_txn_oppo_alert_3_0.conf
+rrs_aml_blacklist_txn_oppo_alert_2_0.conf
+rrs_aml_blacklist_txn_oppo_alert.conf
+rrs_aml_acct_base_info_backup.conf
+blacklist_txn_oppo_alert_without_error_hit.conf
+rrs_aml_acct_base_info_4_0.conf
+rrs_aml_acct_base_info_3_5.conf
+rrs_aml_acct_base_info_3_0.conf
+rrs_aml_acct_base_info_2_0.conf
+rrs_aml_acct_base_info.conf
+dwd_aml_dued_task_fact_df.conf
+dwd_aml_query_freez_deduct_base_request_di_to_tidb.conf
+rrs_aml_blacklist_in_fg.conf
+export_tidb_blacklist_batch_access_log_final_info_once_init.conf
+export_tidb_blacklist_batch_access_log_di.conf
+ads_aml_dued_chk.conf
+ads_aml_blklist_stat.conf
+ads_aml_prod_eval_one_inst_df.conf
+ads_aml_prod_eval_inst_df.conf
+export_mysql_prod_eval_inst_ind.conf
+export_mysql_prod_eval.conf
+export_mysql_prod_eval_once.conf
