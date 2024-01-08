@@ -7,10 +7,11 @@ echo "TEST_VAR=123" > ./test
 echo "TEST_VAR=123" >> ./test
 echo "TEST_VAR=123" >> ./test
 
-# sed command replace the first match line starting with 'TEST_VAR='
+# sed command replace the content starting with 'TEST_VAR=' in the first line
 sed -i -e '1s/TEST_VAR=.*/TEST_VAR=456\/jim/' ./test
-# sed command replace the second match line starting with 'TEST_VAR='
+# sed command replace the content starting with 'TEST_VAR=' in the second line
 sed -i -e '2s/TEST_VAR=.*/TEST_VAR=456\/jim/' ./test
+
 
 # sed command can't handle '/' in replacement string, so we need to escape it
 replacement="TEST_VAR=2\/jim"

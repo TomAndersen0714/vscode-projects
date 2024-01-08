@@ -31,7 +31,7 @@ cd [!DEPLOY_PATH]/[!PKG_NAME]
 
 # WTSS上传脚本, 参考 wtss_deploy.sh
 wtss_deploy() {
-  CURRENT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  CURRENT_PATH="."
   DEPLOY_PATH=$1
   TARGET_ENV=$2
   PROJECT_NAME=$3
@@ -44,7 +44,7 @@ wtss_deploy() {
   WTSS_PWD=${WTSS_PWD}
 
   # 修改WTSS配置, 指定bdp-client请求的BDP部署路径后缀, 仅在自测时使用
-  sed -i -e "1s|HAML_VERSION=.*|HAML_VERSION=${BDP_DEPLOY_PATH_SUFFIX}|" "${CURRENT_PATH}/sys.properties"
+  sed -i -e "s|HAML_VERSION=.*|HAML_VERSION=${BDP_DEPLOY_PATH_SUFFIX}|" "${CURRENT_PATH}/sys.properties"
 
   for project_name in ${NEED_PROJECT_NAMES[@]};
   do

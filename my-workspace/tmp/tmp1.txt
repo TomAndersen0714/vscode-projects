@@ -1,0 +1,33 @@
+标准错误:
+++ export WTSS_PROJECT_NAME=rrs_aml_bdp_wtss_ericcheng
+++ WTSS_PROJECT_NAME=rrs_aml_bdp_wtss_ericcheng
+++ export TARGET_ENV=no_grey
+++ TARGET_ENV=no_grey
+++ export BDP_DEPLOY_PATH_SUFFIX=ericcheng/aml_bdp
+++ BDP_DEPLOY_PATH_SUFFIX=ericcheng/aml_bdp
+++ '[' '!' -d /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz ']'
+++ mkdir -p /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz
+++ '[' '!' -d /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir ']'
+++ mkdir -p /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir
+++ tar -zxvf /data/aomp-data/273288511485239298/AML-ETL_24.01.1_21.tar.gz -C /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir
+++ tar -zxvf /data/aomp-data/273288511485239298/conf_AML-ETL_24.01.1_21.tar.gz -C /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir
+++ cp -rf /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/bdp /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/bdp-job-client.properties /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/bdp-job-client-without_rolling.properties /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/sys.properties /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/VERSION /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/wtss_deploy.sh /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir/aml_wtss/wtss_tools /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz
+++ rm -rf /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz/wtss_tmp_dir
+++ cd /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss/AML-ETL_24.01.1_21.tar.gz
+++ wtss_deploy /data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss no_grey rrs_aml_bdp_wtss_ericcheng
+++++ dirname /tmp/__salt.tmp.guj62bd2
++++ cd /tmp
++++ pwd
+++ CURRENT_PATH=/tmp
+++ DEPLOY_PATH=/data/bdp/bdp_etl_deploy/hduser1009/ericcheng/aml_bdp_wtss
+++ TARGET_ENV=no_grey
+++ PROJECT_NAME=rrs_aml_bdp_wtss_ericcheng
+++ declare -a NEED_PROJECT_NAMES
+++ NEED_PROJECT_NAMES=("bdp")
+++ source ./wtss_tools/wtss_user.properties
++++ WTSS_USER=WTSS_DBDP_IMD_RRS
++++ WTSS_PWD=2c8548271764670c0654d1473c679ede3653d2540a5312575f80d271bd800f6186e38ac63562d6578eb9ceffc54bdbcce3afd15b879997565e6bfada5e6895501202fcf7c51a27b8a6a0b2cd946d170bb31a6bb6efa1988fe9f46df20dc64df84655878f65114688a913a2b1877387029d0aa429ad0a5a2587a60d6cc7ec7be62e7fc8accf5760757aaee8be749eb5c602dd8110fdcc6b13cc35173c87bef38c81850fd6db67e5bba841657d84a8c4930f182b65288b25af2ea6f863f0b97fadb8f41e76ca69c271387bea56b5d521f3de9d18ae0dcb2e6c2d6e5134d56fac24e3d36b81f3dc7e7fc505262c8f243d19b0dca14204a962aaec36b8d3a1c69c414fb11e4ca30d4caadfe6d8421e52990dec56e151abc96bf05cc0c178e8f072189972af5961d2d2507ba04ccc2614e7a2ba1ccf41ca72e12b9b4d4b3d6fc6e9ad71f0af76ff15628687ea8f4afafb2b47725c799bdf643f2c876c51a01fa4ec48713bd07353405ea66068e78770cccaa8420607799183974fd235255c45d3779f2055b6b6022a90fd1071411367fb271f327fdffcfbc311ae82250051c4f44f89f74a8f8a9bffb69bb5e480307332ad4b1a37fdf879ca7e2802a4497700b2dc17bd0c37c500e814fff2704dd945f7d80c12e0640ec7624689fd69f815f1efca75ce4841ccd689a82210b1eacb5dbfa39cfa09b799376f56f48ff3e382b5cb5b93
+++ WTSS_USER=WTSS_DBDP_IMD_RRS
+++ WTSS_PWD=2c8548271764670c0654d1473c679ede3653d2540a5312575f80d271bd800f6186e38ac63562d6578eb9ceffc54bdbcce3afd15b879997565e6bfada5e6895501202fcf7c51a27b8a6a0b2cd946d170bb31a6bb6efa1988fe9f46df20dc64df84655878f65114688a913a2b1877387029d0aa429ad0a5a2587a60d6cc7ec7be62e7fc8accf5760757aaee8be749eb5c602dd8110fdcc6b13cc35173c87bef38c81850fd6db67e5bba841657d84a8c4930f182b65288b25af2ea6f863f0b97fadb8f41e76ca69c271387bea56b5d521f3de9d18ae0dcb2e6c2d6e5134d56fac24e3d36b81f3dc7e7fc505262c8f243d19b0dca14204a962aaec36b8d3a1c69c414fb11e4ca30d4caadfe6d8421e52990dec56e151abc96bf05cc0c178e8f072189972af5961d2d2507ba04ccc2614e7a2ba1ccf41ca72e12b9b4d4b3d6fc6e9ad71f0af76ff15628687ea8f4afafb2b47725c799bdf643f2c876c51a01fa4ec48713bd07353405ea66068e78770cccaa8420607799183974fd235255c45d3779f2055b6b6022a90fd1071411367fb271f327fdffcfbc311ae82250051c4f44f89f74a8f8a9bffb69bb5e480307332ad4b1a37fdf879ca7e2802a4497700b2dc17bd0c37c500e814fff2704dd945f7d80c12e0640ec7624689fd69f815f1efca75ce4841ccd689a82210b1eacb5dbfa39cfa09b799376f56f48ff3e382b5cb5b93
+++ sed -i -e '1s|HAML_VERSION=.*|HAML_VERSION=ericcheng/aml_bdp|' /tmp/sys.properties
+sed: can't read /tmp/sys.properties: No such file or directory
