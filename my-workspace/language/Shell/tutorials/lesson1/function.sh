@@ -8,6 +8,7 @@ set -x
 
 # parameter
 FUNC=$1
+export ENV_VAR="test_env_var"
 
 # test command
 echo "test"
@@ -20,7 +21,15 @@ test_func() {
     echo "$TEST_ARG"
 
     # 2. shell function can access function parameter using $1, $2, $3, ...
-    echo "$1"
+    echo "function paramter: ${1}"
+
+
+    # 3. shell function can access evnironment variable in the same shell script
+    echo "ENV_VAR: ${ENV_VAR}"
+    
+    # 4. shell function can modify global variable in the same shell script
+    ENV_VAR="test_env_var_modified"
+    echo "ENV_VAR: ${ENV_VAR}"
 }
 
 # global variable
@@ -30,8 +39,8 @@ TEST_ARG="test_arg"
 # case 
 case "${FUNC}" in
     1)
-        test_func 1
-        test_func
+        test_func 2
+        test_func 3
         ;;
     2)
         echo "2"

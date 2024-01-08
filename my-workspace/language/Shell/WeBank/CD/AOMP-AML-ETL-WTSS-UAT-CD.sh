@@ -19,7 +19,7 @@ tar -zxvf [!PKG_PATH]/[!PKG_NAME] -C [!DEPLOY_PATH]/[!PKG_NAME]/[&PACKAGE_TMP_DI
 #替换差异化变量
  ( tar -zxvf [!PKG_PATH]/[!CONF_PKG_NAME] -C [!DEPLOY_PATH]/[!PKG_NAME]/[&PACKAGE_TMP_DIR] || echo -n ) ;
 
-#将BDP的目录内容复制到包名内
+#将子目录内容复制到根目录
 cp -rf [!DEPLOY_PATH]/[!PKG_NAME]/[&PACKAGE_TMP_DIR]/[&CHILD_PROJECT_DIR_NAME]/* [!DEPLOY_PATH]/[!PKG_NAME];
 
 #删除临时目录
@@ -32,11 +32,10 @@ cd [!DEPLOY_PATH]/[!PKG_NAME]
 #find ./ -name *.zip  -maxdepth 2 | xargs -i rm {}
 #find ./ -name *.properties  -maxdepth 2 | xargs -i rm {}
 
-# znodeConfig=$(grep 'TssJob.zookeeper.root.path=' bdp-job-client.properties) 
-# sed -i "3c ${znodeConfig}" bdp-job-client.properties
+#znodeConfig=$(grep 'TssJob.zookeeper.root.path=' bdp-job-client.properties)
+#sed -i "3c ${znodeConfig}-hive233" bdp-job-client.properties
 
-#上传WTSS项目到WTSS服务端
-sh wtss_deploy.sh [!DEPLOY_PATH] grey
+sh wtss_deploy.sh [!DEPLOY_PATH]
 
 #清除历史部署包,仅在测试环境使用，生产环境请删除
 echo "删除下面目录七天前文件"
