@@ -3,8 +3,8 @@
     2. aml_bdp/bin/utils/bash_utils/etl_submit.sh | ETL_SUBMIT --type=sqoop
     3. aml_bdp/bin/utils/bash_utils/etl_submit.sh | ETL_SUBMIT --type=spark
     4. aml_bdp/bin/utils/bash_utils/etl_submit.sh | ETL_SUBMIT --type=blanca
-        1. Sink-SparkJob
-        2. Source-Jdbc-dbInstance, Sink-Jdbc-dbInstance
+        1. SparkJob
+        2. Jdbc-dbInstance, Jdbc-dbInstance
     5. aml_bdp/bin/utils/python_utils/Sqoop.py | HAML_PYTHON_SQOOP_TOOL
     6. 其他脚本文件作为入口
         如: sqoop/import/blacklist/operator/import_mlist_type.py
