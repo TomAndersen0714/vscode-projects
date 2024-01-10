@@ -24,6 +24,15 @@ com.webank.rrs.blanca.BlancaRunner#main:
                                 binder().bind(RestApiList.class).toProvider(RestProviderList.class).in(Scopes.SINGLETON);
                                     // 每次在 @Inject 注解处, 直接调用 Provider.get 方法, 来生成对应的实例, 并注入给 @Inject 注解的变量
                                     com.webank.rrs.blanca.api.rest.RestProviderList#get
+                                        List<RestApi> restApis = new ArrayList<>();
+                                        // 加载默认的 RestAPI 请求配置
+                                        RestApi defaultApi = restProducer.defaultRestTemplate(fileConfigParser.getConfigMap());
+                                            com.webank.rrs.blanca.api.rest.RrsEtlRestProducer#defaultRestTemplate(java.util.Map<java.lang.String,java.lang.String>):
+                                                // 读取配置中的 ETL_GATEWAY_URI(gateway.uri) 变量, 目前默认为 DQC
+                                                HttpComponentsClientHttpRequestFactory factory = getBaseHttpRequestFactory();
+                                                String uri = restProps.get(CommonConstant.ETL_GATEWAY_URI);
+                                        restApis.add(defaultApi);
+                                        Config config = fileConfigParser.getConfig();
                                         // 如果 fileConfigParser 配置中存在 ETL_WEB_RESOURCE 参数, 则继续获取其他参数, 并构建
                                         // 对应的 HTTP 请求模板对象, 后续会在 webConfBuilder 对象注入过程中, 发起对应的 HTTP 请求
                                         if (config.hasPath(CommonConstant.ETL_WEB_RESOURCE)) {
@@ -61,7 +70,8 @@ com.webank.rrs.blanca.BlancaRunner#main:
                                         // 将解析的参数添加到 allConfigs
                                         allConfigs.putAll(entry.getValue().getConfigMap());
 
-                                // 加载 Web端参数配置(目前配置的是DQC), 并注入到对应依赖类的注解变量中, 并存储到 rrsConfMapMap, 然后注入到依赖变量, PS: 注意请求位置和旧版本不同
+                                // 请求所有 RestAPI (默认是DQC, 可通过 ETL_WEB_RESOURCE(web.source.from) 参数支持其他的 RestAPI ), 解析对应的参数
+                                // 并注入到对应依赖类的注解变量中, 并存储到 rrsConfMapMap, 然后注入到依赖变量, PS: 注意请求位置和旧版本不同
                                 binder().bind(ConfigParser.class).annotatedWith(Names.named("webConfBuilder")).to(WebConfigBuilder.class).in(Scopes.SINGLETON);
                                 // 加载环境变量参数配置, 加载 Java properties 配置, 并合并到 rrsConfMap, 然后注入到依赖变量
                                 binder().bind(ConfigParser.class).annotatedWith(Names.named("sysConfBuilder")).to(SystemConfigBuilder.class).in(Scopes.SINGLETON);
