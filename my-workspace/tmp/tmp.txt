@@ -1,29 +1,18 @@
-慢查询 (Bad Job):
-1. 资源开销大
-2. 执行时间长:
-    1. 客户端资源申请不足
-    2. 服务端资源余额不足
+待办事项:
+    1. 针对数据同步的所有任务, WTSS命名规范, 修改WTSS工作流下游依赖的节点, 其依赖的配置同样需要更名
+    2. 针对数据 export 同步的 Spark Job, 抽离 partitionNum, batchSize, 通过参数配置
+    3. 针对资源超额申请的 Spark Job, 通过 WTSS command 命令行设置 spark.executor 参数, 限制CPU开销
+        Q: 此类型参数的调优, 是否应该去采集整个WTSS项目的 Spark Job 任务开销, 然后再去进行调优? 仅针对数据同步任务, 进行优化, 效果似乎比较有限
+    4. 针对通过封装Sqoop.py脚本进行调用的任务, 抽离配置, 统一客户端
+    5. 针对同时包含ETL和数据同步的任务, 拆分 ETL 任务和数据同步任务
+        Q: 拆分之后, ETL 任务部分, 我理解就必须得落表了, 这样的话维护成本
 
-
-AOMP部署模板:
-RRS-AML-ALL-BDP-SIT-FOR_ALLPACKAGE
-RRS-AML-ALL-BDP-UAT-FOR_ALLPACKAGE
-RRS-AML-ALL-WTSS-SIT-FOR_ALLPACKAGE
-RRS-AML-ALL-WTSS-FOR_ALLPACKAGE
-
-配置自测自动化工具PACE方案:
-1. 查看集成测试PACE流水线, 确定其 "构建" 阶段调用的 PACE"基础构建"
-2. 查看对应"基础构建", 并基于其内容, 创建自定义"基础构建"
-    1. Git地址选择自己fork的git仓库地址
-    2. 构建命令, 使用自己的构建命令
-
-1. 查看集成测试PACE流水线, 确定其 "部署" 阶段调用的 AOMP发布模板
-2. 复制AOMP发布模板, 生成新的AOMP模板, 作为自测AOMP模板, 然后设置自定义参数
-    1. 修改"部署路径"变量, 如 "hduser_1009" 替换为 "hduser_1009/ericcheng", 即设置自定义的BDP和WTSS部署路径
-    2. 修改"执行部署"阶段的"脚本内容", 设置自定义部署路径
-        1. WTSS项目是通过调用WTSS客户端工具的方式, 上传到WTSS服务端, 并创建或更新对应的WTSS项目, 因此需要修改上传时使用的WTSS项目名, 而WTSS项目名, 在项目调用的wtss部署脚本中, 并未将其解耦, 因此需要自己手动编写对应的部署脚本
-        2. WTSS项目脚本内容中, 需要将wtss配置文件中的 HAML_VERSION 参数, 修改为对应 BDP 自定义部署路径的后缀, 如 "ericcheng/aml_bdp"
-3. 复制集成测试PACE流水线, 生成新的PACE, 作为自测的PACE模板, 然后设置自定义参数
-    1. 将生成的PACE流水线"部署"阶段设置为调用自定义的AOMP模板
-    2. 设置PACE流水线"构建"阶段调用的脚本中的自定义参数
-4. 
+规范化:
+    1. 针对数据同步的所有任务, WTSS命名规范, 修改WTSS工作流下游依赖的节点, 其依赖的配置同样需要更名
+    2. 针对通过封装 Sqoop.py 脚本进行调用的任务, 抽离配置生成配置文件, 统一客户端
+    3. 针对同时包含 Transform 和数据同步的任务, 拆分 Transform 任务和数据同步任务
+        Q: 拆分之后, Transform 任务的输出, 我理解就必须得落表了, 这样的话维护成本就上去了, 如何把握尺度, 是仅针对有JOIN的Transform 任务吗?
+性能调优:
+    1. 针对数据 export 同步的 Spark Job, 抽离 partitionNum, batchSize 并参数化, 通过配置控制参数值
+    2. 针对资源超额申请的 Spark Job, 通过 WTSS command 命令行设置 spark.executor 参数, 限制CPU开销
+        Q: 此类型参数的调优, 是否应该去采集整个WTSS项目的 Spark Job 任务开销, 然后再去进行调优? 仅针对数据同步任务, 进行优化, 效果似乎比较有限?
