@@ -1,2 +1,0 @@
-type=command
-command=${ETL_SUBMIT} --job-name ${JOB_NAME} --job-args ${JOB_ARGS}

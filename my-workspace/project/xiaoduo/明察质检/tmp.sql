@@ -1,19 +1,11 @@
-  ecif_no String COMMENT '客户号',
-  personal_name String  COMMENT ' 姓名',
-  personal_identification_type  String COMMENT '证件类型',
-  personal_identification_number  String COMMENT '证件号码',
-  gender  String COMMENT '性别',
-  nationality   String COMMENT  '国籍',
-  validate  String COMMENT '证件有效期',
-  occupation_type   String COMMENT '职业' ,
-  telephone_01  String COMMENT '办公电话',
-  telephone_02  String COMMENT '住宅电话',
-  telephone_04 String COMMENT '移动电话',
-  telephone_99  String COMMENT '其他电话',
-  address_01  String  COMMENT '居住地址' ,
-  address_02  String COMMENT '单位地址' ,
-  address_03  String COMMENT '户籍地址' ,
-  address_10  String COMMENT '通讯地址' ,
-  address_99  String COMMENT '其他地址' ,
-  address_11  String COMMENT '身份证地址' ,
-  version String COMMENT '版本号'
+set hive.optimize.cte.materialize.threshold=1
+
+with a as (
+  select 1
+),
+b as (
+  select 2
+)
+select *
+from a
+  join b;
