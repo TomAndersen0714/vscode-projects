@@ -48,8 +48,8 @@ function zip_package() {
 
     # remove expired git_repo package
     rm -f "$pkg_file"
-    find "$sync_path_1" -name "${git_repo}_*.zip" -type f -mtime +3 -exec rm -f '{}' ';'
-    find "$sync_path_2" -name "${git_repo}_*.zip" -type f -mtime +3 -exec rm -f '{}' ';'
+    find "$sync_path_1" -name "${git_repo}_*.zip" -type f -mtime +2 -exec rm -f '{}' ';'
+    find "$sync_path_2" -name "${git_repo}_*.zip" -type f -mtime +2 -exec rm -f '{}' ';'
 }
 
 # main
