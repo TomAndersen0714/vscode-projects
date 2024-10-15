@@ -1,0 +1,14 @@
+<idea-plugin>
+    <id>com.example.cursorplugin</id>
+    <name>SQL in JSON Highlighter</name>
+    <vendor>Your Company</vendor>
+    <description>Highlights SQL syntax in JSON files for keys named 'sql'</description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.database</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <multiHostInjector implementation="com.example.cursorplugin.SqlInJsonLanguageInjector"/>
+    </extensions>
+</idea-plugin>

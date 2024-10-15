@@ -1,6 +1,7 @@
+#!/bin/bash
 set -ex
 
-#wtss 工程名
+# WTSS project name
 export WTSS_PROJECT_NAME=rrs_aml_bdp_wtss
 
 #创建部署目录

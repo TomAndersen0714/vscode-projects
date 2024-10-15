@@ -6,7 +6,7 @@ set -ex
 # get parameters
 git_path=${1:-"."}
 option=${2:-"commit"}
-git_commit_msg=$3
+trailing_params=$3
 
 
 # check parameters
@@ -15,24 +15,26 @@ if [ ! -d "$git_path" ]; then
     exit 1
 fi
 
-if [ "$option" != "commit" ] && [ "$option" != "pack" ]; then
-    echo "option must be commit or pack"
+if [ "$option" != "commit" ] && [ "$option" != "pack" ] && [ "$option" != "push" ]; then
+    echo "option must be commit, pack or push"
     exit 1
 fi
 
 # handle parameters
 git_repo=$(basename "$(git -C "${git_path}" rev-parse --show-toplevel)")
-if [ -z "$git_commit_msg" ]; then
-    git_commit_msg="update $(date)"
-else
-    git_commit_msg="update $(date) $git_commit_msg"
-fi
 
 # define functions
 function git_commit() {
+    # handle commit message
+    if [ -z "$trailing_params" ]; then
+        trailing_params="update $(date)"
+    else
+        trailing_params="update $(date) $trailing_params"
+    fi
+
     # git commit
     git -C "$git_path" add .
-    git -C "$git_path" commit -m "$git_commit_msg"
+    git -C "$git_path" commit -m "$trailing_params"
 }
 
 function zip_package() {
@@ -52,6 +54,15 @@ function zip_package() {
     find "$sync_path_2" -name "${git_repo}_*.zip" -type f -mtime +2 -exec rm -f '{}' ';'
 }
 
+function git_push() {
+    # git push
+    if [ -z "$trailing_params" ]; then
+        git -C "$git_path" push
+    else
+        git -C "$git_path" push "$trailing_params"
+    fi
+}
+
 # main
 # choose function to execute depend on option using case statement
 case $option in
@@ -60,5 +71,8 @@ commit)
     ;;
 pack)
     zip_package
+    ;;
+push)
+    git_push
     ;;
 esac
