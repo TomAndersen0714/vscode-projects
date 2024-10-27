@@ -6,8 +6,8 @@ set -ex
 # get parameters
 git_path=${1:-"."}
 option=${2:-"commit"}
-trailing_params=$3
-
+shift 2
+trailing_params=("$@")
 
 # check parameters
 if [ ! -d "$git_path" ]; then
@@ -26,15 +26,13 @@ git_repo=$(basename "$(git -C "${git_path}" rev-parse --show-toplevel)")
 # define functions
 function git_commit() {
     # handle commit message
-    if [ -z "$trailing_params" ]; then
-        trailing_params="update $(date)"
-    else
-        trailing_params="update $(date) $trailing_params"
+    if [ -z "${trailing_params[0]}" ]; then
+        trailing_params="-m update $(date)"
     fi
 
     # git commit
     git -C "$git_path" add .
-    git -C "$git_path" commit -m "$trailing_params"
+    git -C "$git_path" commit "$trailing_params"
 }
 
 function zip_package() {
@@ -56,11 +54,7 @@ function zip_package() {
 
 function git_push() {
     # git push
-    if [ -z "$trailing_params" ]; then
-        git -C "$git_path" push
-    else
-        git -C "$git_path" push "$trailing_params"
-    fi
+    git -C "$git_path" push "$trailing_params"
 }
 
 # main
