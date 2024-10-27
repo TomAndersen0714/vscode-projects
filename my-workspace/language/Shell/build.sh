@@ -54,7 +54,11 @@ function zip_package() {
 
 function git_push() {
     # git push
-    git -C "$git_path" push "$trailing_params"
+    if [ -z "${trailing_params[0]}" ]; then
+        git -C "$git_path" push
+    else
+        git -C "$git_path" push "$trailing_params"
+    fi
 }
 
 # main
